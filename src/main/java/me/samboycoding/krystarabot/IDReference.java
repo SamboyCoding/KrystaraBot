@@ -11,8 +11,7 @@ public class IDReference
     //public static final String SERVERID = "236897364697284618"; //Real
     
     public static final String LOGCHANNELID = "247394226319392768"; //Testing
-    //public static final String LOGCHANNELID = "SNAKEINEEDYOUTOFILLTHISIN"; //Real. 
-    //TODO: Fill above in.
+    //public static final String LOGCHANNELID = "237546188994379776"; //Real. 
     
     public static final String CODESCHANNELID = "247394202844004363"; //Testing
     //public static final String CODESCHANNELID = "237455339857903617"; //Real

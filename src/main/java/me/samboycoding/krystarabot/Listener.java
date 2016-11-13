@@ -98,7 +98,7 @@ public class Listener
                 command = content.substring(1, content.length());
                 arguments = "";
             }
-            System.out.println("Recieved Command: " + command + " from user \"" + nameOfSender + "\"");
+            main.log("Recieved Command: " + command + " from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
             switch (command)
             {
                 case "ping":
