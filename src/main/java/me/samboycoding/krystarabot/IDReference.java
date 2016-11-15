@@ -30,7 +30,7 @@ public class IDReference
     public enum RoleID
     {
         ADMIN("247394012162424843"), DEV("247395805567123467"), MODERATOR("247395922177163264"), STREAMER("247395963243593728"), MUTED("247396046416773121"); //Testing
-        //ADMIN(""), DEV(""), MODERATOR(""), STREAMER(""), MUTED(""); //Testing
+        //ADMIN(""), DEV(""), MODERATOR("236897692599451648"), STREAMER(""), MUTED(""); //Real
         //TODO: Fill above
         
         private final String id;
