@@ -6,6 +6,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import org.apache.commons.lang3.time.StopWatch;
+import org.json.JSONObject;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
@@ -99,7 +101,7 @@ public class Listener
                 arguments.addAll(Arrays.asList(content.trim().substring(content.indexOf(" ") + 1, content.length()).split(" "))); //From the character after the first space, to the end.
             } else
             {
-                command = content.substring(1, content.length());
+                command = content.substring(1, content.length()).toLowerCase();
                 //Do not change arguments
             }
             main.log("Recieved Command: " + command + " from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
@@ -167,6 +169,60 @@ public class Listener
                         chnl.sendMessage("Unknown error!");
                         ex3.printStackTrace();
                     }
+                    break;
+                case "troop":
+                    if(arguments.size() < 1)
+                    {
+                        chnl.sendMessage("You need to specify a name to search for!");
+                        break;
+                    }
+                    String troopName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
+                    StopWatch troopTimer = new StopWatch();
+                    troopTimer.start();
+                    JSONObject troopInfo = main.data.getTroopInfo(troopName);
+                    troopTimer.stop();
+                    if(troopInfo == null)
+                    {
+                        chnl.sendMessage("No troop info found.");
+                        break;
+                    }
+                    chnl.sendMessage("Found data in `" + troopTimer.getTime() + "ms`. Data: ```JSON\n" + troopInfo.toString(4) + "```");
+                    break;
+                case "trait":
+                    if(arguments.size() < 1)
+                    {
+                        chnl.sendMessage("You need to specify a name to search for!");
+                        break;
+                    }
+                    String traitName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
+                    StopWatch traitTimer = new StopWatch();
+                    traitTimer.start();
+                    JSONObject traitInfo = main.data.getTraitInfo(traitName);
+                    traitTimer.stop();
+                    if(traitInfo == null)
+                    {
+                        chnl.sendMessage("No trait info found.");
+                        break;
+                    }
+                    chnl.sendMessage("Found data in `" + traitTimer.getTime() + "ms`. Data: ```JSON\n" + traitInfo.toString(4) + "```");
+                    break;
+                case "spell":
+                    if(arguments.size() < 1)
+                    {
+                        chnl.sendMessage("You need to specify a name to search for!");
+                        break;
+                    }
+                    String spellName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
+                    StopWatch spellTimer = new StopWatch();
+                    spellTimer.start();
+                    JSONObject spellInfo = main.data.getSpellInfo(spellName);
+                    spellTimer.stop();
+                    if(spellInfo == null)
+                    {
+                        chnl.sendMessage("No spell info found.");
+                        break;
+                    }
+                    chnl.sendMessage("Found data in `" + spellTimer.getTime() + "ms`. Data: ```JSON\n" + spellInfo.toString(4) + "```");
                     break;
                 default:
                     chnl.sendMessage("Invalid command \"" + command + "\"");

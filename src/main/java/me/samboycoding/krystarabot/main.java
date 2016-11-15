@@ -18,7 +18,7 @@ public class main
 {
 
     private static IDiscordClient cl;
-    private static GameData data = new GameData();
+    public static GameData data = new GameData();
 
     public static IDiscordClient getClient(String token)
     {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import static java.nio.charset.Charset.defaultCharset;
+import java.util.Iterator;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,15 +25,16 @@ public class GameData
     {
         if (sourceJSON.exists())
         {
-            main.log("Source-File 'Data.json' is available - start data import.");
+            main.log("Source-File 'Data.json' is available - starting data import.");
             readJSON();
+            main.log("Data import done.");
         } else
         {
             main.log("Error: Source-File 'Data.json' is NOT available.");
         }
     }
 
-    public void readJSON() throws IOException
+    private void readJSON() throws IOException
     {
         try
         {
@@ -43,44 +45,47 @@ public class GameData
         } catch (FileNotFoundException e)
         {
             main.log("Error: " + e.getMessage());
-        } catch(JSONException e2)
+        } catch (JSONException e2)
         {
             main.log("JSON file is corrupt! The GameData class will be broken for the entire session. Details: " + e2.getMessage());
         }
     }
-    
+
     public JSONObject getTroopInfo(String troopName)
     {
         JSONObject troop = null;
-        for(int i=0; i<arrayTroops.length(); i++) {
-            JSONObject checkTroop = arrayTroops.getJSONObject(i);
-            if(checkTroop.get("Name") == troopName)
+        for (Iterator<Object> it = arrayTroops.iterator(); it.hasNext();)
+        {
+            JSONObject checkTroop = (JSONObject) it.next();
+            if (checkTroop.get("Name").equals(troopName))
             {
                 return checkTroop;
             }
         }
         return troop;
     }
-    
+
     public JSONObject getTraitInfo(String traitName)
     {
         JSONObject trait = null;
-        for(int i=0; i<arrayTraits.length(); i++) {
-            JSONObject checkTrait = arrayTraits.getJSONObject(i);
-            if(checkTrait.get("Name") == traitName)
+        for (Iterator<Object> it = arrayTraits.iterator(); it.hasNext();)
+        {
+            JSONObject checkTrait = (JSONObject) it.next();
+            if (checkTrait.get("Name").equals(traitName))
             {
                 return checkTrait;
             }
         }
         return trait;
     }
-    
+
     public JSONObject getSpellInfo(String spellName)
     {
         JSONObject spell = null;
-        for(int i=0; i<arraySpells.length(); i++) {
-            JSONObject checkSpell = arraySpells.getJSONObject(i);
-            if(checkSpell.get("Name") == spellName)
+        for (Iterator<Object> it = arraySpells.iterator(); it.hasNext();)
+        {
+            JSONObject checkSpell = (JSONObject) it.next();
+            if (checkSpell.get("Name").equals(spellName))
             {
                 return checkSpell;
             }
