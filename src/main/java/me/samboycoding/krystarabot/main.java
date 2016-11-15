@@ -1,9 +1,9 @@
 package me.samboycoding.krystarabot;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import org.apache.commons.io.FileUtils;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -55,9 +55,12 @@ public class main
         log("Logged in and listener registered.");
         data.importData();
     }
-    
+
     public static void log(String msg)
     {
-        System.out.println("****[BOT MAIN]          " + msg);
+        DateFormat df = new SimpleDateFormat("[dd/MM/yy | HH:mm:ss] ");
+        Date dateobj = new Date();
+        String timestamp = df.format(dateobj);
+        System.out.println("****" + timestamp + " [BOT MAIN]          " + msg);
     }
 }

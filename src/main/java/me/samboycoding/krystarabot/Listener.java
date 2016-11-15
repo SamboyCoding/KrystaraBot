@@ -49,33 +49,10 @@ public class Listener
             cl.changeStatus(Status.game("Made by SamboyCoding and MrSnake"));
             main.log("My ID: " + main.getClient(null).getApplicationClientID());
             IDReference.MYID = main.getClient(null).getApplicationClientID();
-            //logToLogChannel("Bot started", cl.getGuildByID(IDReference.SERVERID));
             main.log("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
         {
             ex.printStackTrace();
-        }
-    }
-
-    public static void logToLogChannel(String msg, IGuild srv) throws MissingPermissionsException, RateLimitException, DiscordException
-    {
-        try
-        {
-            DateFormat df = new SimpleDateFormat("[dd/MM/yy | HH:mm:ss] ");
-            Date dateobj = new Date();
-            String timestamp = df.format(dateobj);
-            if (msg.length() > 1999)
-            {
-                msg = msg.substring(0, 1900);
-                msg += "\n-----SNIPPED TO FIT 2000 CHAR LIMIT-----";
-            }
-            srv.getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage(timestamp + msg);
-        } catch (Exception e)
-        {
-            main.log("Something went wrong, while logging something. PERMISSIONS?!");
-            main.log("**********BEGIN ERROR REPORT**********");
-            e.printStackTrace();
-            main.log("**********END ERROR REPORT**********");
         }
     }
 
@@ -252,7 +229,7 @@ public class Listener
                         break;
                     }
                 case "kick":
-                    if(arguments.size() < 1)
+                    if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need an @mention of a user to kick!");
                         break;
@@ -261,7 +238,7 @@ public class Listener
                     {
                         String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
                         IUser usr = chnl.getGuild().getUserByID(id);
-                        if(usr == null)
+                        if (usr == null)
                         {
                             chnl.sendMessage("Invaild @mention!");
                             break;
@@ -275,7 +252,7 @@ public class Listener
                     }
                     break;
                 case "ban":
-                    if(arguments.size() < 1)
+                    if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need an @mention of a user to ban!");
                         break;
@@ -284,7 +261,7 @@ public class Listener
                     {
                         String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
                         IUser usr = chnl.getGuild().getUserByID(id);
-                        if(usr == null)
+                        if (usr == null)
                         {
                             chnl.sendMessage("Invaild @mention!");
                             break;
@@ -306,18 +283,32 @@ public class Listener
                     int numRolesSdr = sdrRoles.size() - 1; //-1 to remove @everyone
                     List<IRole> guildRoles = chnl.getGuild().getRoles();
                     int numRolesGuild = guildRoles.size() - 1; //Again, -1 to remove @everyone
-                    
+
                     List<String> sdrRolesNice = new ArrayList<>();
                     for (IRole r : sdrRoles)
                     {
-                        if(r.isEveryoneRole()) continue;
+                        if (r.isEveryoneRole())
+                        {
+                            continue;
+                        }
+                        if (r.getID().equals(IDReference.RoleID.MUTED.toString()))
+                        {
+                            continue;
+                        }
+                        if (r.getName().equals("KrystaraBot"))
+                        {
+                            continue;
+                        }
                         sdrRolesNice.add(r.getName());
                     }
-                    
+
                     String toSend = "```\n---------User Info---------";
                     toSend += "\nName: " + name;
                     toSend += "\nHas Nickname: " + hasNick;
-                    if(hasNick) toSend += "\nNickname: " + nickname;
+                    if (hasNick)
+                    {
+                        toSend += "\nNickname: " + nickname;
+                    }
                     toSend += "\nIs playing: " + state.getType().equals(StatusType.GAME);
                     toSend += "\nIs streaming: " + state.getType().equals(StatusType.STREAM);
                     toSend += "\nStream URL: " + (state.getUrl().isPresent() ? state.getUrl().get() : "None");
@@ -330,13 +321,51 @@ public class Listener
                     toSend += "\n---------Roles Info---------";
                     for (IRole r2 : guildRoles)
                     {
-                        if(r2.isEveryoneRole()) continue;
+                        if (r2.isEveryoneRole())
+                        {
+                            continue;
+                        }
+                        if (r2.getID().equals(IDReference.RoleID.MUTED.toString()))
+                        {
+                            continue;
+                        }
+                        if (r2.getName().equals("KrystaraBot"))
+                        {
+                            continue;
+                        }
                         toSend += "\nNumber of users in role " + r2.getName() + ": " + chnl.getGuild().getUsersByRole(r2).size();
                     }
-                    
+
                     toSend += "\n```";
-                    
+
                     chnl.sendMessage(toSend);
+                    break;
+                case "warn":
+                    if (arguments.size() < 2)
+                    {
+                        chnl.sendMessage("You need a minimum of an @mention and a message to send. (That's a minimum of two arguments)");
+                    }
+                    if (Utilities.userHasRole(msg.getGuild(), sdr, admin) || Utilities.userHasRole(msg.getGuild(), sdr, dev) || Utilities.userHasRole(msg.getGuild(), sdr, mod))
+                    {
+                        String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
+                        IUser usr = chnl.getGuild().getUserByID(id);
+                        if (usr == null)
+                        {
+                            chnl.sendMessage("Invaild @mention!");
+                            break;
+                        }
+                        @SuppressWarnings("unchecked")
+                        ArrayList<String> messageArray = (ArrayList<String>) arguments.clone();
+
+                        messageArray.remove(0); //Remove the @mention
+                        String message = messageArray.toString().replace("[", "").replace("]", "").replace(",", "");
+
+                        usr.getOrCreatePMChannel().sendMessage("Warning from user **" + nameOfSender + "** in channel **" + chnl.getName() + "**. Text:```\n" + message + "```");
+                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + (usr.getNicknameForGuild(chnl.getGuild()).isPresent() ? usr.getNicknameForGuild(chnl.getGuild()).get() : usr.getName()) + "** was warned by **" + nameOfSender + "**. Message: ```\n" + message + "```");
+                    } else
+                    {
+                        chnl.sendMessage("You cannot do that!");
+                    }
                     break;
                 default:
                     chnl.sendMessage("Invalid command \"" + command + "\"");
