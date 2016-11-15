@@ -7,33 +7,33 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>me.samboycoding.krystarabot.main</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.4.3</version>
         <executions>
           <execution>
-            <id>PackageShade</id>
             <phase>package</phase>
             <goals>
               <goal>shade</goal>
             </goals>
-          </execution>
-          <execution>
-            <id>NoShadeOnExec</id>
-            <phase>exec</phase>
+            <configuration>
+              <transformers>
+                <transformer>
+                  <mainClass>bootstrap.Main</mainClass>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                    <exclude>META-INF/*.INF</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
           </execution>
         </executions>
-        <configuration />
       </plugin>
     </plugins>
   </build>
