@@ -8,6 +8,7 @@ import java.io.IOException;
 import static java.nio.charset.Charset.defaultCharset;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -44,6 +45,9 @@ public class GameData
         } catch (FileNotFoundException e)
         {
             main.log("Error: " + e.getMessage());
+        } catch(JSONException e2)
+        {
+            main.log("JSON file is corrupt! The GameData class will be broken for the entire session. Details: " + e2.getMessage());
         }
     }
 }
