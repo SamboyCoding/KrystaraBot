@@ -272,6 +272,29 @@ public class Listener
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
+                case "ban":
+                    if(arguments.size() < 1)
+                    {
+                        chnl.sendMessage("You need an @mention of a user to ban!");
+                        break;
+                    }
+                    if (Utilities.userHasRole(msg.getGuild(), sdr, admin) || Utilities.userHasRole(msg.getGuild(), sdr, dev) || Utilities.userHasRole(msg.getGuild(), sdr, mod))
+                    {
+                        String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
+                        IUser usr = chnl.getGuild().getUserByID(id);
+                        if(usr == null)
+                        {
+                            chnl.sendMessage("Invaild @mention!");
+                            break;
+                        }
+                        chnl.getGuild().banUser(usr);
+                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** banned user **" + usr.getName() + "**");
+                        chnl.sendMessage("User banned.");
+                    } else
+                    {
+                        chnl.sendMessage("You cannot do that!");
+                    }
+                    break;
                 default:
                     chnl.sendMessage("Invalid command \"" + command + "\"");
                     break;
