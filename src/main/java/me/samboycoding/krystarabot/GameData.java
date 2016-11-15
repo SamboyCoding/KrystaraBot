@@ -1,9 +1,7 @@
 package me.samboycoding.krystarabot;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import static java.nio.charset.Charset.defaultCharset;
 import org.apache.commons.io.FileUtils;
@@ -49,5 +47,44 @@ public class GameData
         {
             main.log("JSON file is corrupt! The GameData class will be broken for the entire session. Details: " + e2.getMessage());
         }
+    }
+    
+    public JSONObject getTroopInfo(String troopName)
+    {
+        JSONObject troop = null;
+        for(int i=0; i<arrayTroops.length(); i++) {
+            JSONObject checkTroop = arrayTroops.getJSONObject(i);
+            if(checkTroop.get("Name") == troopName)
+            {
+                return checkTroop;
+            }
+        }
+        return troop;
+    }
+    
+    public JSONObject getTraitInfo(String traitName)
+    {
+        JSONObject trait = null;
+        for(int i=0; i<arrayTraits.length(); i++) {
+            JSONObject checkTrait = arrayTraits.getJSONObject(i);
+            if(checkTrait.get("Name") == traitName)
+            {
+                return checkTrait;
+            }
+        }
+        return trait;
+    }
+    
+    public JSONObject getSpellInfo(String spellName)
+    {
+        JSONObject spell = null;
+        for(int i=0; i<arraySpells.length(); i++) {
+            JSONObject checkSpell = arraySpells.getJSONObject(i);
+            if(checkSpell.get("Name") == spellName)
+            {
+                return checkSpell;
+            }
+        }
+        return spell;
     }
 }
