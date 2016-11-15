@@ -82,12 +82,15 @@ public class Listener
     {
         try
         {
-
             IMessage msg = e.getMessage();
             IUser sdr = msg.getAuthor();
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
             IChannel chnl = msg.getChannel();
             String content = msg.getContent();
+            IRole admin = msg.getGuild().getRoleByID(IDReference.RoleID.ADMIN.toString());
+            IRole dev = msg.getGuild().getRoleByID(IDReference.RoleID.DEV.toString());
+            IRole mod = msg.getGuild().getRoleByID(IDReference.RoleID.MODERATOR.toString());
+
             if (!content.startsWith("?"))
             {
                 //Not a command.
@@ -121,9 +124,6 @@ public class Listener
                             break;
                         }
 
-                        IRole admin = msg.getGuild().getRoleByID(IDReference.RoleID.ADMIN.toString());
-                        IRole dev = msg.getGuild().getRoleByID(IDReference.RoleID.DEV.toString());
-                        IRole mod = msg.getGuild().getRoleByID(IDReference.RoleID.MODERATOR.toString());
                         int amount = Integer.parseInt(arguments.get(0));
                         if (amount < 1 || amount > 100)
                         {
@@ -154,6 +154,7 @@ public class Listener
                         {
                             msgs.bulkDelete(toDelete);
                             Utilities.cleanupMessage(chnl.sendMessage(toDelete.size() + " messages deleted (out of " + amount + " requested)"), 3000);
+                            chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** cleared " + toDelete.size() + " messages from channel **" + chnl.getName() + "**");
                         } else
                         {
                             chnl.sendMessage("You cannot do that!");
@@ -171,7 +172,7 @@ public class Listener
                     }
                     break;
                 case "troop":
-                    if(arguments.size() < 1)
+                    if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need to specify a name to search for!");
                         break;
@@ -181,7 +182,7 @@ public class Listener
                     troopTimer.start();
                     JSONObject troopInfo = main.data.getTroopInfo(troopName);
                     troopTimer.stop();
-                    if(troopInfo == null)
+                    if (troopInfo == null)
                     {
                         chnl.sendMessage("No troop info found.");
                         break;
@@ -189,7 +190,7 @@ public class Listener
                     chnl.sendMessage("Found data in `" + troopTimer.getTime() + "ms`. Data: ```JSON\n" + troopInfo.toString(4) + "```");
                     break;
                 case "trait":
-                    if(arguments.size() < 1)
+                    if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need to specify a name to search for!");
                         break;
@@ -199,7 +200,7 @@ public class Listener
                     traitTimer.start();
                     JSONObject traitInfo = main.data.getTraitInfo(traitName);
                     traitTimer.stop();
-                    if(traitInfo == null)
+                    if (traitInfo == null)
                     {
                         chnl.sendMessage("No trait info found.");
                         break;
@@ -207,7 +208,7 @@ public class Listener
                     chnl.sendMessage("Found data in `" + traitTimer.getTime() + "ms`. Data: ```JSON\n" + traitInfo.toString(4) + "```");
                     break;
                 case "spell":
-                    if(arguments.size() < 1)
+                    if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need to specify a name to search for!");
                         break;
@@ -217,12 +218,59 @@ public class Listener
                     spellTimer.start();
                     JSONObject spellInfo = main.data.getSpellInfo(spellName);
                     spellTimer.stop();
-                    if(spellInfo == null)
+                    if (spellInfo == null)
                     {
                         chnl.sendMessage("No spell info found.");
                         break;
                     }
                     chnl.sendMessage("Found data in `" + spellTimer.getTime() + "ms`. Data: ```JSON\n" + spellInfo.toString(4) + "```");
+                    break;
+                case "platform":
+                    if (arguments.size() < 1)
+                    {
+                        chnl.sendMessage("Please specify a platform.");
+                        break;
+                    }
+                    String role = arguments.get(0).toLowerCase();
+                    if (role.equals("pc/mobile"))
+                    {
+                        sdr.addRole(chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString()));
+                        chnl.sendMessage(sdr.mention() + ", you joined **PC/Mobile**");
+                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** assigned themselves to **PC/Mobile**");
+                        break;
+                    } else if (role.equals("console"))
+                    {
+                        sdr.addRole(chnl.getGuild().getRoleByID(IDReference.RoleID.CONSOLE.toString()));
+                        chnl.sendMessage(sdr.mention() + ", you joined **Console**");
+                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** assigned themselves to **Console**");
+                        break;
+                    } else
+                    {
+                        chnl.sendMessage("Please enter a valid platform. Valid platforms are: \"Pc/Mobile\" or \"Console\".");
+                        break;
+                    }
+                case "kick":
+                    if(arguments.size() < 1)
+                    {
+                        chnl.sendMessage("You need an @mention of a user to kick!");
+                        break;
+                    }
+                    if (Utilities.userHasRole(msg.getGuild(), sdr, admin) || Utilities.userHasRole(msg.getGuild(), sdr, dev) || Utilities.userHasRole(msg.getGuild(), sdr, mod))
+                    {
+                        String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
+                        IUser usr = chnl.getGuild().getUserByID(id);
+                        if(usr == null)
+                        {
+                            chnl.sendMessage("Invaild @mention!");
+                            break;
+                        }
+                        chnl.getGuild().kickUser(usr);
+                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** kicked user **" + usr.getName() + "**");
+                        chnl.sendMessage("User kicked.");
+                    } else
+                    {
+                        chnl.sendMessage("You cannot do that!");
+                    }
                     break;
                 default:
                     chnl.sendMessage("Invalid command \"" + command + "\"");
