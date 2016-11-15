@@ -57,7 +57,7 @@ public class GameData
         for (Iterator<Object> it = arrayTroops.iterator(); it.hasNext();)
         {
             JSONObject checkTroop = (JSONObject) it.next();
-            if (checkTroop.get("Name").equals(troopName))
+            if (checkTroop.getString("Name").toLowerCase().equals(troopName.toLowerCase()))
             {
                 return checkTroop;
             }
@@ -71,7 +71,7 @@ public class GameData
         for (Iterator<Object> it = arrayTraits.iterator(); it.hasNext();)
         {
             JSONObject checkTrait = (JSONObject) it.next();
-            if (checkTrait.get("Name").equals(traitName))
+            if (checkTrait.getString("Name").toLowerCase().equals(traitName.toLowerCase()))
             {
                 return checkTrait;
             }
@@ -85,7 +85,7 @@ public class GameData
         for (Iterator<Object> it = arraySpells.iterator(); it.hasNext();)
         {
             JSONObject checkSpell = (JSONObject) it.next();
-            if (checkSpell.get("Name").equals(spellName))
+            if (checkSpell.getString("Name").toLowerCase().equals(spellName.toLowerCase()))
             {
                 return checkSpell;
             }
