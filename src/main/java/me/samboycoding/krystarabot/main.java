@@ -18,6 +18,7 @@ public class main
 {
 
     private static IDiscordClient cl;
+    private static GameData data = new GameData();
 
     public static IDiscordClient getClient(String token)
     {
@@ -49,10 +50,10 @@ public class main
     public static void main(String[] args) throws DiscordException, RateLimitException, IOException
     {
         log("Attempting to log in... please wait");
-
         cl = getClient(IDReference.MYTOKEN);
         cl.getDispatcher().registerListener(new Listener());
         log("Logged in and listener registered.");
+        data.importData();
     }
     
     public static void log(String msg)
