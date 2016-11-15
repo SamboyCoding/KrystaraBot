@@ -34,7 +34,7 @@ public class GameData
         }
     }
 
-    public void readJSON() throws IOException
+    public void readJSON()
     {
         try
         {
@@ -48,6 +48,9 @@ public class GameData
         } catch(JSONException e2)
         {
             main.log("JSON file is corrupt! The GameData class will be broken for the entire session. Details: " + e2.getMessage());
+        } catch(IOException e3)
+        {
+            main.log("Unknown error reading JSON file! Is it in use or do we not have rights to it? Details: " + e3.getMessage());
         }
     }
 }
