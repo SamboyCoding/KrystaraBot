@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import org.apache.commons.lang3.time.StopWatch;
 import org.json.JSONObject;
 import sx.blah.discord.api.IDiscordClient;
@@ -18,6 +19,7 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Status;
+import sx.blah.discord.handle.obj.Status.StatusType;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageList;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -294,6 +296,47 @@ public class Listener
                     {
                         chnl.sendMessage("You cannot do that!");
                     }
+                    break;
+                case "userstats":
+                    String name = sdr.getName();
+                    String nickname = nameOfSender;
+                    Boolean hasNick = !name.equals(nickname);
+                    Status state = sdr.getStatus();
+                    List<IRole> sdrRoles = sdr.getRolesForGuild(chnl.getGuild());
+                    int numRolesSdr = sdrRoles.size() - 1; //-1 to remove @everyone
+                    List<IRole> guildRoles = chnl.getGuild().getRoles();
+                    int numRolesGuild = guildRoles.size() - 1; //Again, -1 to remove @everyone
+                    
+                    List<String> sdrRolesNice = new ArrayList<>();
+                    for (IRole r : sdrRoles)
+                    {
+                        if(r.isEveryoneRole()) continue;
+                        sdrRolesNice.add(r.getName());
+                    }
+                    
+                    String toSend = "```\n---------User Info---------";
+                    toSend += "\nName: " + name;
+                    toSend += "\nHas Nickname: " + hasNick;
+                    if(hasNick) toSend += "\nNickname: " + nickname;
+                    toSend += "\nIs playing: " + state.getType().equals(StatusType.GAME);
+                    toSend += "\nIs streaming: " + state.getType().equals(StatusType.STREAM);
+                    toSend += "\nStream URL: " + (state.getUrl().isPresent() ? state.getUrl().get() : "None");
+                    toSend += "\nGame: \"" + (state.getStatusMessage().equals("") ? "nothing" : state.getStatusMessage()) + "\"";
+                    toSend += "\nNumber of roles: " + numRolesSdr;
+                    toSend += "\nList of Roles: " + sdrRolesNice.toString();
+                    toSend += "\n---------Server Info---------";
+                    toSend += "\nNumber of roles: " + numRolesGuild;
+                    toSend += "\nNumber of members: " + chnl.getGuild().getUsers().size();
+                    toSend += "\n---------Roles Info---------";
+                    for (IRole r2 : guildRoles)
+                    {
+                        if(r2.isEveryoneRole()) continue;
+                        toSend += "\nNumber of users in role " + r2.getName() + ": " + chnl.getGuild().getUsersByRole(r2).size();
+                    }
+                    
+                    toSend += "\n```";
+                    
+                    chnl.sendMessage(toSend);
                     break;
                 default:
                     chnl.sendMessage("Invalid command \"" + command + "\"");
