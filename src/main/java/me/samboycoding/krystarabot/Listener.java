@@ -109,11 +109,14 @@ public class Listener
             main.log("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
             switch (command)
             {
+                //<editor-fold defaultstate="collapsed" desc="Ping">
                 //?ping
                 case "ping":
                     String lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())).toString();
                     chnl.sendMessage("Pong! `" + lagTime + "ms lag`.");
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Clear">
                 //?clear [number]    
                 case "clear":
                     try
@@ -172,6 +175,8 @@ public class Listener
                         ex3.printStackTrace();
                     }
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Troop">
                 //?troop [string]
                 case "troop":
                     if (arguments.size() < 1)
@@ -241,6 +246,8 @@ public class Listener
                     chnl.sendMessage(info);
                     chnl.sendFile(URL, troopId + ".jpg");
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Trait">
                 //?trait [string]    
                 case "trait":
                     if (arguments.size() < 1)
@@ -260,6 +267,8 @@ public class Listener
 
                     chnl.sendMessage("**" + traitName + "**: " + traitDesc);
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Spell">
                 //?spell [string]
                 case "spell":
                     if (arguments.size() < 1)
@@ -281,6 +290,8 @@ public class Listener
 
                     chnl.sendMessage("**" + spellName + " (" + spellCost + "):** " + spellDesc);
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Class">
                 //?class [string]
                 case "class":
                     if (arguments.size() < 1)
@@ -308,6 +319,8 @@ public class Listener
 
                     chnl.sendMessage("**" + className + "** (" + classKingdom + ")\nTraits: " + classTrait1 + ", " + classTrait2 + ", " + classTrait3 + "\nAugments: " + classAugment1 + ", " + classAugment2 + ", " + classAugment3);
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Kingdom">
                 //?kindom [string]
                 case "kingdom":
                     if (arguments.size() < 1)
@@ -345,6 +358,8 @@ public class Listener
                         chnl.sendFile(bannerURL, kingdomId + ".png");
                     }
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Search">
                 //?search [kingdoms|troops|traits|spells] [string]
                 case "search":
                     if (arguments.size() < 2)
@@ -357,22 +372,28 @@ public class Listener
 
                     String searchTerm = searchTermArray.toString().replace("[", "").replace("]", "").replace(",", "");
                     ArrayList<String> results = null;
+                    main.log(type);
                     switch (type)
                     {
                         case "troops":
+                            main.log("troops");
                             results = main.data.searchForTroop(searchTerm);
                             break;
                         case "traits":
+                            main.log("traits");
                             results = main.data.searchForTrait(searchTerm);
                             break;
                         case "spells":
+                            main.log("spells");
                             results = main.data.searchForSpell(searchTerm);
                             break;
                         case "kingdoms":
+                            main.log("kingdoms");
                             results = main.data.searchForKingdom(searchTerm);
                             break;
                         default:
-                            chnl.sendMessage("`" + type + "` is not a valid search type, " + sdr.mention() + ". Do ?help for a list of search terms.");
+                            main.log("default");
+                            chnl.sendMessage("`" + type + "` is not a valid search type, " + sdr.mention() + ". Do `?help` for a list of search terms.");
                             break;
                     }
                     if (results == null)
@@ -382,6 +403,8 @@ public class Listener
 
                     chnl.sendMessage("Results: " + results.toString().replace("[", "").replace("]", ""));
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Platform">
                 //?platform [string]
                 case "platform":
                     if (arguments.size() < 1)
@@ -407,6 +430,8 @@ public class Listener
                         chnl.sendMessage("Please enter a valid platform. Valid platforms are: \"Pc/Mobile\" or \"Console\".");
                         break;
                     }
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Kick">
                 //?kick [@user]    
                 case "kick":
                     if (arguments.size() < 1)
@@ -431,6 +456,8 @@ public class Listener
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Ban">
                 //?ban [@user]    
                 case "ban":
                     if (arguments.size() < 1)
@@ -455,6 +482,8 @@ public class Listener
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Userstats">
                 //?userstats    
                 case "userstats":
                     String name = sdr.getName();
@@ -522,6 +551,8 @@ public class Listener
 
                     chnl.sendMessage(toSend);
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Warn">
                 //?warn [@user] [message]
                 case "warn":
                     if (arguments.size() < 2)
@@ -550,6 +581,8 @@ public class Listener
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Code">
                 //?code [string] 
                 case "code":
                     if (arguments.size() < 1)
@@ -566,6 +599,8 @@ public class Listener
                         chnl.sendMessage("Please check your code - it has to be 10 characters!");
                         break;
                     }
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Dead">
                 //?dead [string]    
                 case "dead":
                     if (arguments.size() < 1)
@@ -582,6 +617,8 @@ public class Listener
                         chnl.sendMessage("Please check your code - it has to be 10 characters!");
                         break;
                     }
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Help">
                 //?help
                 case "help":
                     toSend = "I recognize the following commands: \n";
@@ -604,6 +641,7 @@ public class Listener
                     sdr.getOrCreatePMChannel().sendMessage(toSend);
                     chnl.sendMessage(sdr.mention() + ", I've sent you a list of commands over PM.");
                     break;
+                //</editor-fold>
                 default:
                     chnl.sendMessage("Invalid command \"" + command + "\"");
                     break;
