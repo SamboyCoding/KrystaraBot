@@ -59,7 +59,7 @@ public class Listener
             new Command("?spell [name]", "Shows information for the specified spell.", false)._register();
             new Command("?class [name]", "Shows information for the specified hero class.", false)._register();
             new Command("?kingdom [name]", "Shows information for the specified kingdom.", false)._register();
-            new Command("?search [text]", "Tries to find troops, traits, spells, hero classes or kingdoms containing the specified text.", false)._register();
+            new Command("?search [text]", "Search for troops, traits, spells, hero classes or kingdoms containing the specified text.", false)._register();
             new Command("?platform [\"pc/mobile\" / \"console\"]", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time.", false)._register();
             new Command("?userstats", "Shows information on you, and the server.", false)._register();
             new Command("?code [code]", "Post a new code into the #codes channel.", false)._register();
@@ -642,7 +642,7 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Help">
                 //?help
                 case "help":
-                    toSend = "I recognize the following commands: \n\nCommand accessible to all users: ";
+                    toSend = "I recognize the following commands: \n";
                     for (Command c : main.getRegisteredCommands())
                     {
                         toSend += "```" + c.getName() + ": " + c.getDescription();
