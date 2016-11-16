@@ -45,7 +45,7 @@ public class Listener
         }
         try
         {
-            cl.changeStatus(Status.game("Say ?help :: Made by SamboyCoding and MrSnake"));
+            cl.changeStatus(Status.game("?help"));
             main.log("My ID: " + main.getClient(null).getApplicationClientID());
             IDReference.MYID = main.getClient(null).getApplicationClientID();
             main.log("Registering commands...");
@@ -191,9 +191,13 @@ public class Listener
                         chnl.sendMessage("No troop `" + troopName + "` found, " + sdr.mention());
                         break;
                     }
-                    String desc = troopInfo.getString("Description");
+                    String desc = troopInfo.getString("Description").replace("\n", "");
                     troopName = troopInfo.getString("Name");
                     String kingdom = troopInfo.getString("Kingdom");
+                    String rarity = troopInfo.getString("Rarity");
+                    String type;
+                    String type1 = troopInfo.getString("Type_1");
+                    String type2 = troopInfo.getString("Type_2");
                     String spell = troopInfo.getString("Spell");
                     int summonCost = troopInfo.getInt("Cost");
                     String trait1 = troopInfo.getString("Trait_1");
@@ -213,7 +217,7 @@ public class Listener
                     String emojiMagic = chnl.getGuild().getEmojiByName("gow_magic").toString();
 
                     ArrayList<String> manaTypes = new ArrayList<>();
-
+                  
                     if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorBlue"))
                     {
                         manaTypes.add(chnl.getGuild().getEmojiByName("mana_blue").toString());
@@ -239,9 +243,15 @@ public class Listener
                         manaTypes.add(chnl.getGuild().getEmojiByName("mana_green").toString());
                     }
 
-                    String info = "**" + troopName + "** (" + kingdom + ")\nDescription: " + desc + "\nMana: ";
+                    if(type2.equals("None")) {
+                        type = type1;
+                    } else {
+                        type = type1 + "/" + type2;
+                    }
+                    
+                    String info = "**" + troopName + "**\n(" + rarity + " from " + kingdom + ", Type: " + type + ")\nDescription: " + desc + "\nMana: ";
                     info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
-                    info += "\nSpell: " + spell + "     Cost:" + summonCost + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nStats (Max Level): " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
+                    info += "\nSpell: " + spell + "     Cost:" + summonCost + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
 
                     chnl.sendMessage(info);
                     chnl.sendFile(URL, troopId + ".jpg");
@@ -513,7 +523,7 @@ public class Listener
                         sdrRolesNice.add(r.getName());
                     }
 
-                    String toSend = "```\n---------User Info---------";
+                    String toSend = "```\n--User Info---------";
                     toSend += "\nName: " + name;
                     toSend += "\nHas Nickname: " + hasNick;
                     if (hasNick)
@@ -526,10 +536,11 @@ public class Listener
                     toSend += "\nGame: \"" + (state.getStatusMessage() == null ? "nothing" : state.getStatusMessage()) + "\"";
                     toSend += "\nNumber of roles: " + numRolesSdr;
                     toSend += "\nList of Roles: " + sdrRolesNice.toString();
-                    toSend += "\n---------Server Info---------";
-                    toSend += "\nNumber of roles: " + numRolesGuild;
-                    toSend += "\nNumber of members: " + chnl.getGuild().getUsers().size();
-                    toSend += "\n---------Roles Info---------";
+                    toSend += "\n--Server Info---------";
+                    toSend += "\nRoles: " + numRolesGuild;
+                    toSend += "\nChannels: " + chnl.getGuild().getChannels().size();
+                    toSend += "\nMembers: " + chnl.getGuild().getUsers().size();
+                    toSend += "\n--Roles Info---------";
                     for (IRole r2 : guildRoles)
                     {
                         if (r2.isEveryoneRole())
@@ -544,7 +555,7 @@ public class Listener
                         {
                             continue;
                         }
-                        toSend += "\nNumber of users in role " + r2.getName() + ": " + chnl.getGuild().getUsersByRole(r2).size();
+                        toSend += "\n" + chnl.getGuild().getUsersByRole(r2).size() + "x " + r2.getName();
                     }
 
                     toSend += "\n```";
