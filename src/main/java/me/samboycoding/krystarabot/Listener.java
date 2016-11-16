@@ -186,7 +186,7 @@ public class Listener
                     troopTimer.stop();
                     if (troopInfo == null)
                     {
-                        chnl.sendMessage("No troop info found.");
+                        chnl.sendMessage("No troop `" + troopName + "` found, " + sdr.mention());
                         break;
                     }
                     String desc = troopInfo.getString("Description");
