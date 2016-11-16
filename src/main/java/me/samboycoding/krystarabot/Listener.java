@@ -67,6 +67,10 @@ public class Listener {
     @EventSubscriber
     public void onCommand(MessageReceivedEvent e) {
         try {
+            if (e.getMessage().getChannel().isPrivate()) {
+                e.getMessage().getChannel().sendMessage("Sorry, the bot doesn't support PM commands. Please re-enter the command in a server.");
+                return;
+            }
             IMessage msg = e.getMessage();
             IUser sdr = msg.getAuthor();
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
@@ -365,8 +369,12 @@ public class Listener {
                     }
                 case "help":
                     toSend = "I recognize the following commands: \n";
-                    //TODO: Tweak the following code.
+                    int hidden = 0;
                     for (Command c : main.getRegisteredCommands()) {
+                        if (c.requiresAdmin() && !Utilities.canUseAdminCommand(sdr, chnl.getGuild())) {
+                            hidden++;
+                            continue; //Don't show commands the user cannot do.
+                        }
                         toSend += "```" + c.getName() + ": " + c.getDescription();
 
                         if (c.getAliases().length > 0) {
@@ -376,14 +384,11 @@ public class Listener {
                             }
                             toSend = toSend.substring(0, toSend.length() - 1);
                         }
-
-                        if (c.requiresAdmin()) {
-                            toSend += "\nREQUIRES ADMIN ACCESS!";
-                        }
                         toSend += "```";
-
                     }
+                    if(hidden != 0) toSend += "\n\n(" + hidden + " commands not shown because you do not have a high-enough rank on the specified server)";
                     sdr.getOrCreatePMChannel().sendMessage(toSend);
+                    chnl.sendMessage(sdr.mention() + ", I've sent you a list of commands over PM.");
                     break;
                 default:
                     chnl.sendMessage("Invalid command \"" + command + "\"");
