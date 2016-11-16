@@ -51,18 +51,18 @@ public class Listener
             IDReference.MYID = main.getClient(null).getApplicationClientID();
             main.log("Registering commands...");
 
-            new Command("ping", "Checks how much lag discord + the bot are getting.", false)._register();
-            new Command("clear", "Clears the specified amount of messages. \nArguments (1): The amount of messages to delete, between 1 and 100.", true)._register();
-            new Command("troop", "Looks up information on the specified troop.\nArguments: What to look up. Can include spaces.", false)._register();
-            new Command("trait", "Looks up information on the specified trait.\nArguments: What to look up. Can include spaces.", false)._register();
-            new Command("spell", "Looks up information on the specified spell.\nArguments: What to look up. Can include spaces.", false)._register();
-            new Command("platform", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time.\nArguments: The platform to join. Valid platforms are: 'pc/mobile' and 'console'.", false)._register();
-            new Command("kick", "Kicks the specified user from the server.\nArguments: An @mention of who to kick.", true)._register();
-            new Command("ban", "Bans the specified user from the server.\nArguments: An @mention of who to ban.", true)._register();
-            new Command("userstats", "Shows information on you, the server, and the roles.", false)._register();
-            new Command("warn", "Sends a PM warning to the specified user.\nArguments: an @mention of the user, and the text to warn (can include spaces).", true)._register();
-            new Command("code", "Post a code into the #codes channel.", false)._register();
-            new Command("dead", "Note a code as dead in the #codes channel.", false)._register();
+            new Command("ping", "Checks how much lag discord + the bot are getting. Usage: ?ping", false)._register();
+            new Command("clear", "Clears the specified amount of messages. Usage: ?clear [amount]", true)._register();
+            new Command("troop", "Looks up information on the specified troop. Usage: ?troop [name]", false)._register();
+            new Command("trait", "Looks up information on the specified trait. Usage: ?trait [name]", false)._register();
+            new Command("spell", "Looks up information on the specified spell. Usage: ?spell [name]", false)._register();
+            new Command("platform", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time. Usage: ?platform [\"pc/mobile\"/\"console\"", false)._register();
+            new Command("kick", "Kicks the specified user from the server. Usage: ?kick [@user]", true)._register();
+            new Command("ban", "Bans the specified user from the server. Usage: ?ban [@user]", true)._register();
+            new Command("userstats", "Shows information on you, the server, and the roles. Usage: ?userstats", false)._register();
+            new Command("warn", "Sends a PM warning to the specified user. Usage: ?warn [@user] [message]", true)._register();
+            new Command("code", "Post a code into the #codes channel. Usage: ?code [code]", false)._register();
+            new Command("dead", "Note a code as dead in the #codes channel. Usage: ?dead [code]", false)._register();
 
             main.log("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
@@ -486,6 +486,7 @@ public class Listener
                         chnl.sendMessage("Please check your code - it has to be 10 characters!");
                         break;
                     }
+                //?help
                 case "help":
                     toSend = "I recognize the following commands: \n";
                     int hidden = 0;
@@ -497,16 +498,7 @@ public class Listener
                             continue; //Don't show commands the user cannot do.
                         }
                         toSend += "```" + c.getName() + ": " + c.getDescription();
-
-                        if (c.getAliases().length > 0)
-                        {
-                            toSend += "\nAliases: ";
-                            for (String alias : c.getAliases())
-                            {
-                                toSend += alias + ",";
-                            }
-                            toSend = toSend.substring(0, toSend.length() - 1);
-                        }
+                        
                         toSend += "```";
                     }
                     if (hidden != 0)
