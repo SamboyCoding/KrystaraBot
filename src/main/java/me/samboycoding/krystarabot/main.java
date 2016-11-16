@@ -69,6 +69,11 @@ public class main
     {
         return registeredCommands.remove(c);
     }
+    
+    public static ArrayList<Command> getRegisteredCommands()
+    {
+        return (ArrayList<Command>) registeredCommands.clone();
+    }
 
     public static void log(String msg)
     {

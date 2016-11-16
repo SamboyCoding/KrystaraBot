@@ -13,8 +13,7 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author Sam
  */
-public class Utilities
-{
+public class Utilities {
 
     /**
      * Deletes the specified message after the specified delay. This spawns a
@@ -25,18 +24,13 @@ public class Utilities
      * @param delay The time, in milliseconds, to wait before deleting the
      * message.
      */
-    public static void cleanupMessage(IMessage msg, int delay)
-    {
-        new Timer("MsgSelfDestruct" + System.currentTimeMillis()).schedule(new TimerTask()
-        {
+    public static void cleanupMessage(IMessage msg, int delay) {
+        new Timer("MsgSelfDestruct" + System.currentTimeMillis()).schedule(new TimerTask() {
             @Override
-            public void run()
-            {
-                try
-                {
+            public void run() {
+                try {
                     msg.delete();
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Ignore
                 }
             }
@@ -54,22 +48,31 @@ public class Utilities
      * @return true if the role is found, false otherwise, including if an
      * exception is thrown.
      */
-    public static Boolean userHasRole(IGuild srv, IUser usr, IRole role)
-    {
-        try
-        {
+    public static Boolean userHasRole(IGuild srv, IUser usr, IRole role) {
+        try {
             List<IRole> roles = usr.getRolesForGuild(srv);
-            for (IRole r : roles)
-            {
-                if (r.equals(role))
-                {
+            for (IRole r : roles) {
+                if (r.equals(role)) {
                     return true;
                 }
             }
             return false;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * Returns true if the user has either the admin, dev, or moderator role
+     * @param usr The user to check
+     * @param server The server to check on.
+     * @return Whether the user can use admin commands.
+     */
+    public static Boolean canUseAdminCommand(IUser usr, IGuild server) {
+        IRole admin = server.getRoleByID(IDReference.RoleID.ADMIN.toString());
+        IRole dev = server.getRoleByID(IDReference.RoleID.DEV.toString());
+        IRole mod = server.getRoleByID(IDReference.RoleID.MODERATOR.toString());
+        
+        return userHasRole(server, usr, admin) || userHasRole(server, usr, dev) || userHasRole(server, usr, mod);
     }
 }
