@@ -200,7 +200,7 @@ public class Listener
                     int magic = troopInfo.getJSONArray("MagicPerLevel").getInt(19);
                     String troopId = troopInfo.getString("FileBase");
                     URL URL = new URL("http://ashtender.com/gems/assets/cards/" + troopId + ".jpg");
-                    
+
                     //Emojis
                     String emojiArmor = chnl.getGuild().getEmojiByName("gow_armor").toString();
                     String emojiLife = chnl.getGuild().getEmojiByName("gow_life").toString();
@@ -224,10 +224,6 @@ public class Listener
                     if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorPurple"))
                     {
                         manaTypes.add(chnl.getGuild().getEmojiByName("mana_purple").toString());
-                    }
-                    if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorOrange"))
-                    {
-                        manaTypes.add(chnl.getGuild().getEmojiByName("mana_orange").toString());
                     }
                     if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorYellow"))
                     {
@@ -261,7 +257,7 @@ public class Listener
                     }
                     traitName = traitInfo.getString("Name");
                     String traitDesc = traitInfo.getString("Description");
-                    
+
                     chnl.sendMessage("**" + traitName + "**: " + traitDesc);
                     break;
                 //?spell [string]
@@ -278,11 +274,11 @@ public class Listener
                         chnl.sendMessage("No spell `" + spellName + "` found, " + sdr.mention());
                         break;
                     }
-                    
+
                     spellName = spellInfo.getString("Name");
                     String spellDesc = spellInfo.getString("Description");
                     int spellCost = spellInfo.getInt("Cost");
-                    
+
                     chnl.sendMessage("**" + spellName + " (" + spellCost + "):** " + spellDesc);
                     break;
                 //?class [string]
@@ -294,13 +290,13 @@ public class Listener
                     }
                     String className = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
                     JSONObject classInfo = main.data.getClassInfo(className);
-                    
+
                     if (classInfo == null)
                     {
                         chnl.sendMessage("No hero class `" + className + "` found, " + sdr.mention());
                         break;
                     }
-                    
+
                     className = classInfo.getString("Name");
                     String classKingdom = classInfo.getString("Kingdom");
                     String classTrait1 = classInfo.getString("Trait_1");
@@ -309,8 +305,82 @@ public class Listener
                     String classAugment1 = classInfo.getString("Augment_1");
                     String classAugment2 = classInfo.getString("Augment_2");
                     String classAugment3 = classInfo.getString("Augment_3");
-                    
+
                     chnl.sendMessage("**" + className + "** (" + classKingdom + ")\nTraits: " + classTrait1 + ", " + classTrait2 + ", " + classTrait3 + "\nAugments: " + classAugment1 + ", " + classAugment2 + ", " + classAugment3);
+                    break;
+                //?kindom [string]
+                case "kingdom":
+                    if (arguments.size() < 1)
+                    {
+                        chnl.sendMessage("You need to specify a name to search for!");
+                        break;
+                    }
+                    String kingdomName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
+                    JSONObject kingdomInfo = main.data.getKingdomInfo(kingdomName);
+                    if (kingdomInfo == null)
+                    {
+                        chnl.sendMessage("No kingdom `" + kingdomName + "` found, " + sdr.mention());
+                        break;
+                    }
+
+                    kingdomName = kingdomInfo.getString("Name");
+                    int numTroops = kingdomInfo.getJSONArray("Troops").length();
+                    String bannerName = kingdomInfo.getString("BannerName");
+                    String bannerDesc = kingdomInfo.getString("BannerDescription");
+                    String bonus2 = kingdomInfo.getString("Bonus_2");
+                    String bonus3 = kingdomInfo.getString("Bonus_3");
+                    String bonus4 = kingdomInfo.getString("Bonus_4");
+                    String bonus2Desc = kingdomInfo.getString("Bonus_2_Description");
+                    String bonus3Desc = kingdomInfo.getString("Bonus_3_Description");
+                    String bonus4Desc = kingdomInfo.getString("Bonus_4_Description");
+                    String kingdomId = kingdomInfo.getString("FileBase");
+                    if (bannerName.equals("Unnamed Banner"))
+                    {
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops: " + numTroops + "\nBanner: None" + "\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
+                    } else
+                    {
+                        URL bannerURL = new URL("http://ashtender.com/gems/assets/banners/" + kingdomId + ".png");
+
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops: " + numTroops + "\nBanner: " + bannerName + " (" + bannerDesc + ")\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
+                        chnl.sendFile(bannerURL, kingdomId + ".png");
+                    }
+                    break;
+                //?search [kingdoms|troops|traits|spells] [string]
+                case "search":
+                    if (arguments.size() < 2)
+                    {
+                        chnl.sendMessage("You need to specify a type, and a search term! Do ?help for a list of types.");
+                        break;
+                    }
+                    String type = arguments.get(0).trim().toLowerCase();
+                    @SuppressWarnings("unchecked") ArrayList<String> searchTermArray = (ArrayList<String>) arguments.clone();
+
+                    String searchTerm = searchTermArray.toString().replace("[", "").replace("]", "").replace(",", "");
+                    ArrayList<String> results = null;
+                    switch (type)
+                    {
+                        case "troops":
+                            results = main.data.searchForTroop(searchTerm);
+                            break;
+                        case "traits":
+                            results = main.data.searchForTrait(searchTerm);
+                            break;
+                        case "spells":
+                            results = main.data.searchForSpell(searchTerm);
+                            break;
+                        case "kingdoms":
+                            results = main.data.searchForKingdom(searchTerm);
+                            break;
+                        default:
+                            chnl.sendMessage("`" + type + "` is not a valid search type, " + sdr.mention() + ". Do ?help for a list of search terms.");
+                            break;
+                    }
+                    if (results == null)
+                    {
+                        break;
+                    }
+
+                    chnl.sendMessage("Results: " + results.toString().replace("[", "").replace("]", ""));
                     break;
                 //?platform [string]
                 case "platform":
@@ -524,7 +594,7 @@ public class Listener
                             continue; //Don't show commands the user cannot do.
                         }
                         toSend += "```" + c.getName() + ": " + c.getDescription();
-                        
+
                         toSend += "```";
                     }
                     if (hidden != 0)
