@@ -131,7 +131,7 @@ public class GameData
         for (Iterator<Object> it = arrayTroops.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
-            if(name.contains(searchTerm))
+            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
             }
@@ -147,7 +147,7 @@ public class GameData
         for (Iterator<Object> it = arrayTraits.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
-            if(name.contains(searchTerm))
+            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
             }
@@ -163,7 +163,23 @@ public class GameData
         for (Iterator<Object> it = arraySpells.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
-            if(name.contains(searchTerm))
+            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
+            {
+                res.add(name);
+            }
+        }
+        
+        return res;
+    }
+    
+    public ArrayList<String> searchForClass(String searchTerm)
+    {
+        ArrayList<String> res = new ArrayList<>();
+        
+        for (Iterator<Object> it = arrayClasses.iterator(); it.hasNext();)
+        {
+            String name = ((JSONObject) it.next()).getString("Name");
+            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
             }
@@ -179,7 +195,7 @@ public class GameData
         for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
-            if(name.contains(searchTerm))
+            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
             }

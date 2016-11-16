@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -21,6 +22,7 @@ public class main
 {
 
     private static final ArrayList<Command> registeredCommands = new ArrayList<>();
+    private static final ArrayList<AdminCommand> registeredAdminCommands = new ArrayList<>();
     private static IDiscordClient cl;
     public static GameData data = new GameData();
 
@@ -65,11 +67,6 @@ public class main
         registeredCommands.add(c);
     }
     
-    public static Boolean removeCommand(Command c)
-    {
-        return registeredCommands.remove(c);
-    }
-    
     public static ArrayList<Command> getRegisteredCommands()
     {
         return (ArrayList<Command>) registeredCommands.clone();
@@ -81,5 +78,15 @@ public class main
         Date dateobj = new Date();
         String timestamp = df.format(dateobj);
         System.out.println("****" + timestamp + " [BOT MAIN]          " + msg);
+    }
+
+    public static void registerAdminCommand(AdminCommand c)
+    {
+        registeredAdminCommands.add(c);
+    }
+    
+    public static ArrayList<AdminCommand> getRegisteredAdminCommands()
+    {
+        return (ArrayList<AdminCommand>) registeredAdminCommands.clone();
     }
 }

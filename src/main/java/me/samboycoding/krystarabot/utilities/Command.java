@@ -8,10 +8,10 @@ import me.samboycoding.krystarabot.main;
  */
 public class Command {
 
-    private final String name;
-    private final String desc;
-    private final Boolean adm;
-    private Boolean reg = false;
+    protected final String name;
+    protected final String desc;
+    protected final Boolean adm;
+    protected Boolean reg = false;
 
     /**
      * Creates a command with no aliases. You need to register is with
