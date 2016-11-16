@@ -48,11 +48,7 @@ public class IDReference
     public static final String SERVERID = "247393304151326721"; //Testing
     //public static final String SERVERID = "236897364697284618"; //Real
     
-    //Token for Samboy
-    //public static final String MYTOKEN = "MjQ3Mzk2MzA0NDc1NTIxMDI1.CwooOQ.PAiqYMD92L-dEYb5RqDuUGoIHQY";
-    
-    //Token for MrSnake
-    public static final String MYTOKEN = "MjM5MzEwNTc2NDE1NjcwMjcz.CwWVAA.4E24JzzDpVVaN4AC2aUYRG__ht8";
-    
+    public static final String MYTOKEN = "MjQ3Mzk2MzA0NDc1NTIxMDI1.CwooOQ.PAiqYMD92L-dEYb5RqDuUGoIHQY";
+        
     public static String MYID = null; //Gets set once readyevent done.
 }
