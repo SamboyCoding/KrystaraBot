@@ -317,7 +317,7 @@ public class Listener
                     toSend += "\nIs playing: " + state.getType().equals(StatusType.GAME);
                     toSend += "\nIs streaming: " + state.getType().equals(StatusType.STREAM);
                     toSend += "\nStream URL: " + (state.getUrl().isPresent() ? state.getUrl().get() : "None");
-                    toSend += "\nGame: \"" + (state.getStatusMessage().equals("") ? "nothing" : state.getStatusMessage()) + "\"";
+                    toSend += "\nGame: \"" + (state.getStatusMessage() == null ? "nothing" : state.getStatusMessage()) + "\"";
                     toSend += "\nNumber of roles: " + numRolesSdr;
                     toSend += "\nList of Roles: " + sdrRolesNice.toString();
                     toSend += "\n---------Server Info---------";
