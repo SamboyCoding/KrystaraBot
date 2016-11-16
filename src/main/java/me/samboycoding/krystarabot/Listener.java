@@ -162,7 +162,46 @@ public class Listener {
                         chnl.sendMessage("No troop info found.");
                         break;
                     }
-                    chnl.sendMessage("Found data in `" + troopTimer.getTime() + "ms`. Data: ```JSON\n" + troopInfo.toString(4) + "```");
+                    String desc = troopInfo.getString("Description");
+                    troopName = troopInfo.getString("Name");
+                    String kingdom = troopInfo.getString("Kingdom");
+                    
+                    ArrayList<String> manaTypes = new ArrayList<>();
+                    
+                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorBlue"))
+                    {
+                        manaTypes.add(":mana_blue:");
+                    }
+                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorRed"))
+                    {
+                        manaTypes.add(":mana_red:");
+                    }
+                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorBrown"))
+                    {
+                        manaTypes.add(":mana_brown:");
+                    }
+                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorPurple"))
+                    {
+                        manaTypes.add(":mana_purple:");
+                    }
+                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorOrange"))
+                    {
+                        manaTypes.add(":mana_orange:");
+                    }
+                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorYellow"))
+                    {
+                        manaTypes.add(":mana_yellow:");
+                    }
+                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorGreen"))
+                    {
+                        manaTypes.add(":mana_green:");
+                    }
+                    
+                    String info = "**" + troopName + "** (" + kingdom + ")\nDescription: " + desc + "\nMana: ";
+                    info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", " / ");
+                    info += "\nSpell: (SPELLNAME) ((SPELLCOST) mana)\nTraits: (TRAITS)\nStats (Max Level): (STATS)";
+                    
+                    chnl.sendMessage(info);
                     break;
                 //?trait [string]    
                 case "trait":
