@@ -1,5 +1,6 @@
 package me.samboycoding.krystarabot;
 
+import java.net.URL;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import java.time.ZoneId;
@@ -196,6 +197,18 @@ public class Listener
                     String trait1 = troopInfo.getString("Trait_1");
                     String trait2 = troopInfo.getString("Trait_2");
                     String trait3 = troopInfo.getString("Trait_3");
+                    int armor = troopInfo.getJSONArray("ArmorPerLevel").getInt(19);
+                    int life = troopInfo.getJSONArray("HealthPerLevel").getInt(19);
+                    int attack = troopInfo.getJSONArray("AttackPerLevel").getInt(19);
+                    int magic = troopInfo.getJSONArray("MagicPerLevel").getInt(19);
+                    String troopId = troopInfo.getString("FileBase");
+                    URL URL = new URL("http://ashtender.com/gems/assets/cards/" + troopId + ".jpg");
+                    
+                    //Emojis
+                    String emojiArmor = chnl.getGuild().getEmojiByName("gow_armor").toString();
+                    String emojiLife = chnl.getGuild().getEmojiByName("gow_life").toString();
+                    String emojiAttack = chnl.getGuild().getEmojiByName("gow_attack").toString();
+                    String emojiMagic = chnl.getGuild().getEmojiByName("gow_magic").toString();
 
                     ArrayList<String> manaTypes = new ArrayList<>();
 
@@ -230,9 +243,10 @@ public class Listener
 
                     String info = "**" + troopName + "** (" + kingdom + ")\nDescription: " + desc + "\nMana: ";
                     info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
-                    info += "\nSpell: " + spell + " (" + spellCost + " mana)\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nStats (Max Level): (STATS)";
+                    info += "\nSpell: " + spell + "     Cost:" + spellCost + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nStats (Max Level): " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
 
                     chnl.sendMessage(info);
+                    chnl.sendFile(URL, troopId + ".jpg");
                     break;
                 //?trait [string]    
                 case "trait":
