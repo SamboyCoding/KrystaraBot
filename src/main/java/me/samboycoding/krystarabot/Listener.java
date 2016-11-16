@@ -86,13 +86,15 @@ public class Listener
                 command = content.substring(1, content.length()).toLowerCase();
                 //Do not change arguments
             }
-            main.log("Recieved Command: " + command + " from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
+            main.log("Recieved Command: '" + command + "' from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
             switch (command)
             {
+                //?ping
                 case "ping":
                     String lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())).toString();
                     chnl.sendMessage("Pong! `" + lagTime + "ms lag`.");
                     break;
+                //?clear [number]    
                 case "clear":
                     try
                     {
@@ -150,6 +152,7 @@ public class Listener
                         ex3.printStackTrace();
                     }
                     break;
+                //?troop [string]
                 case "troop":
                     if (arguments.size() < 1)
                     {
@@ -168,6 +171,7 @@ public class Listener
                     }
                     chnl.sendMessage("Found data in `" + troopTimer.getTime() + "ms`. Data: ```JSON\n" + troopInfo.toString(4) + "```");
                     break;
+                //?trait [string]    
                 case "trait":
                     if (arguments.size() < 1)
                     {
@@ -186,6 +190,7 @@ public class Listener
                     }
                     chnl.sendMessage("Found data in `" + traitTimer.getTime() + "ms`. Data: ```JSON\n" + traitInfo.toString(4) + "```");
                     break;
+                //?spell [string]
                 case "spell":
                     if (arguments.size() < 1)
                     {
@@ -204,6 +209,7 @@ public class Listener
                     }
                     chnl.sendMessage("Found data in `" + spellTimer.getTime() + "ms`. Data: ```JSON\n" + spellInfo.toString(4) + "```");
                     break;
+                //?platform [string]
                 case "platform":
                     if (arguments.size() < 1)
                     {
@@ -228,6 +234,7 @@ public class Listener
                         chnl.sendMessage("Please enter a valid platform. Valid platforms are: \"Pc/Mobile\" or \"Console\".");
                         break;
                     }
+                //?kick [@user]    
                 case "kick":
                     if (arguments.size() < 1)
                     {
@@ -251,6 +258,7 @@ public class Listener
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
+                //?ban [@user]    
                 case "ban":
                     if (arguments.size() < 1)
                     {
@@ -274,6 +282,7 @@ public class Listener
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
+                //?userstats    
                 case "userstats":
                     String name = sdr.getName();
                     String nickname = nameOfSender;
@@ -340,6 +349,7 @@ public class Listener
 
                     chnl.sendMessage(toSend);
                     break;
+                //?warn [@user] [message]
                 case "warn":
                     if (arguments.size() < 2)
                     {
@@ -367,6 +377,34 @@ public class Listener
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
+                //?code [string] 
+                case "code":
+                    if (arguments.size() < 1)
+                    {
+                        chnl.sendMessage("You have to enter a code first!");
+                        break;
+                    }
+                    if (arguments.get(0).length() == 10) {
+                        chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage("new code: " + arguments.get(0).toUpperCase());
+                        break;
+                    } else {
+                        chnl.sendMessage("Please check your code - it has to be 10 characters!");
+                        break;
+                    }
+                //?dead [string]    
+                case "dead":
+                    if (arguments.size() < 1)
+                    {
+                        chnl.sendMessage("You have to enter a code first!");
+                        break;
+                    }
+                    if (arguments.get(0).length() == 10) {
+                        chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage(arguments.get(0).toUpperCase() + " is dead!");
+                        break;
+                    } else {
+                        chnl.sendMessage("Please check your code - it has to be 10 characters!");
+                        break;
+                    }
                 default:
                     chnl.sendMessage("Invalid command \"" + command + "\"");
                     break;
