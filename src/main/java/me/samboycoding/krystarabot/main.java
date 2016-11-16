@@ -1,9 +1,12 @@
 package me.samboycoding.krystarabot;
 
+import me.samboycoding.krystarabot.utilities.IDReference;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import me.samboycoding.krystarabot.utilities.Command;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -17,6 +20,7 @@ import sx.blah.discord.util.RateLimitException;
 public class main
 {
 
+    private static final ArrayList<Command> registeredCommands = new ArrayList<>();
     private static IDiscordClient cl;
     public static GameData data = new GameData();
 
@@ -54,6 +58,16 @@ public class main
         cl.getDispatcher().registerListener(new Listener());
         log("Logged in and listener registered.");
         data.importData();
+    }
+    
+    public static void registerCommand(Command c)
+    {
+        registeredCommands.add(c);
+    }
+    
+    public static Boolean removeCommand(Command c)
+    {
+        return registeredCommands.remove(c);
     }
 
     public static void log(String msg)

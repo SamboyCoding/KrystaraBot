@@ -1,4 +1,4 @@
-package me.samboycoding.krystarabot;
+package me.samboycoding.krystarabot.utilities;
 
 /**
  * Class to contain references for various IDs

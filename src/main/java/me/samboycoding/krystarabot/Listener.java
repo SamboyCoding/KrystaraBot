@@ -1,5 +1,7 @@
 package me.samboycoding.krystarabot;
 
+import me.samboycoding.krystarabot.utilities.Utilities;
+import me.samboycoding.krystarabot.utilities.IDReference;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;

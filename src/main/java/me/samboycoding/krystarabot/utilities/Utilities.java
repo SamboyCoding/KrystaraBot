@@ -1,4 +1,4 @@
-package me.samboycoding.krystarabot;
+package me.samboycoding.krystarabot.utilities;
 
 import java.util.List;
 import java.util.Timer;
