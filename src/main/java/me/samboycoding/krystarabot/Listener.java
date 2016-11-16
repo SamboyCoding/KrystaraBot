@@ -29,17 +29,22 @@ import sx.blah.discord.util.RateLimitException;
  *
  * @author Sam
  */
-public class Listener {
+public class Listener
+{
 
     @EventSubscriber
-    public void onReady(ReadyEvent e) throws DiscordException, RateLimitException, MissingPermissionsException {
+    public void onReady(ReadyEvent e) throws DiscordException, RateLimitException, MissingPermissionsException
+    {
         IDiscordClient cl = main.getClient(null);
-        try {
+        try
+        {
             cl.changeUsername("Krystara");
-        } catch (DiscordException ex) {
+        } catch (DiscordException ex)
+        {
             main.log("Failed to change username. Rate limited most likely.");
         }
-        try {
+        try
+        {
             cl.changeStatus(Status.game("Made by SamboyCoding and MrSnake"));
             main.log("My ID: " + main.getClient(null).getApplicationClientID());
             IDReference.MYID = main.getClient(null).getApplicationClientID();
@@ -59,15 +64,19 @@ public class Listener {
             new Command("dead", "Note a code as dead in the #codes channel.", false)._register();
 
             main.log("Finished processing readyEvent. Bot is 100% up now.\n\n");
-        } catch (Exception ex) {
+        } catch (Exception ex)
+        {
             ex.printStackTrace();
         }
     }
 
     @EventSubscriber
-    public void onCommand(MessageReceivedEvent e) {
-        try {
-            if (e.getMessage().getChannel().isPrivate()) {
+    public void onCommand(MessageReceivedEvent e)
+    {
+        try
+        {
+            if (e.getMessage().getChannel().isPrivate())
+            {
                 e.getMessage().getChannel().sendMessage("Sorry, the bot doesn't support PM commands. Please re-enter the command in a server.");
                 return;
             }
@@ -80,21 +89,25 @@ public class Listener {
             IRole dev = msg.getGuild().getRoleByID(IDReference.RoleID.DEV.toString());
             IRole mod = msg.getGuild().getRoleByID(IDReference.RoleID.MODERATOR.toString());
 
-            if (!content.startsWith("?")) {
+            if (!content.startsWith("?"))
+            {
                 //Not a command.
                 return;
             }
             String command;
             ArrayList<String> arguments = new ArrayList<>();
-            if (content.contains(" ")) {
+            if (content.contains(" "))
+            {
                 command = content.substring(1, content.indexOf(" ")); //From the character after the '?' to the character before the first space.
                 arguments.addAll(Arrays.asList(content.trim().substring(content.indexOf(" ") + 1, content.length()).split(" "))); //From the character after the first space, to the end.
-            } else {
+            } else
+            {
                 command = content.substring(1, content.length()).toLowerCase();
                 //Do not change arguments
             }
             main.log("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
-            switch (command) {
+            switch (command)
+            {
                 //?ping
                 case "ping":
                     String lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())).toString();
@@ -102,54 +115,66 @@ public class Listener {
                     break;
                 //?clear [number]    
                 case "clear":
-                    try {
+                    try
+                    {
                         MessageList msgs = chnl.getMessages();
-                        if (arguments.size() < 1) {
+                        if (arguments.size() < 1)
+                        {
                             chnl.sendMessage(sdr.mention() + ", that command needs an argument (a number between 1 and 100)");
                             break;
                         }
 
                         int amount = Integer.parseInt(arguments.get(0));
-                        if (amount < 1 || amount > 100) {
+                        if (amount < 1 || amount > 100)
+                        {
                             chnl.sendMessage("Amount must be between 1 and 100");
                             break;
                         }
 
-                        if (amount == 1) {
+                        if (amount == 1)
+                        {
                             //Cannot delete one with .bulkDelete()
                             msgs.get(1).delete(); //Again, ignore index 0, as it's the command
                             break;
                         }
 
                         ArrayList<IMessage> toDelete = new ArrayList<>();
-                        try {
+                        try
+                        {
                             for (int i = 1; i < amount + 1; i++) //Start at 1 to ignore command - it's removed later.
                             {
                                 toDelete.add(msgs.get(i));
                             }
-                        } catch (ArrayIndexOutOfBoundsException ignored) {
+                        } catch (ArrayIndexOutOfBoundsException ignored)
+                        {
                             //Ignored
                         }
 
-                        if (Utilities.canUseAdminCommand(sdr, chnl.getGuild())) {
+                        if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+                        {
                             msgs.bulkDelete(toDelete);
                             Utilities.cleanupMessage(chnl.sendMessage(toDelete.size() + " messages deleted (out of " + amount + " requested)"), 3000);
                             chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** cleared " + toDelete.size() + " messages from channel **" + chnl.getName() + "**");
-                        } else {
+                        } else
+                        {
                             chnl.sendMessage("You cannot do that!");
                         }
-                    } catch (NumberFormatException ex) {
+                    } catch (NumberFormatException ex)
+                    {
                         chnl.sendMessage("Invalid number of messages to delete specified. Must be a whole number between 1 and 100");
-                    } catch (ArrayIndexOutOfBoundsException ex2) {
+                    } catch (ArrayIndexOutOfBoundsException ex2)
+                    {
                         Utilities.cleanupMessage(chnl.sendMessage("No messages found!"), 3000);
-                    } catch (Exception ex3) {
+                    } catch (Exception ex3)
+                    {
                         chnl.sendMessage("Unknown error!");
                         ex3.printStackTrace();
                     }
                     break;
                 //?troop [string]
                 case "troop":
-                    if (arguments.size() < 1) {
+                    if (arguments.size() < 1)
+                    {
                         chnl.sendMessage("You need to specify a name to search for!");
                         break;
                     }
@@ -158,54 +183,61 @@ public class Listener {
                     troopTimer.start();
                     JSONObject troopInfo = main.data.getTroopInfo(troopName);
                     troopTimer.stop();
-                    if (troopInfo == null) {
+                    if (troopInfo == null)
+                    {
                         chnl.sendMessage("No troop info found.");
                         break;
                     }
                     String desc = troopInfo.getString("Description");
                     troopName = troopInfo.getString("Name");
                     String kingdom = troopInfo.getString("Kingdom");
-                    
+                    String spell = troopInfo.getString("Spell");
+                    int spellCost = troopInfo.getInt("Cost");
+                    String trait1 = troopInfo.getString("Trait_1");
+                    String trait2 = troopInfo.getString("Trait_2");
+                    String trait3 = troopInfo.getString("Trait_3");
+
                     ArrayList<String> manaTypes = new ArrayList<>();
-                    
-                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorBlue"))
+
+                    if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorBlue"))
                     {
-                        manaTypes.add(":mana_blue:");
+                        manaTypes.add(chnl.getGuild().getEmojiByName("mana_blue").toString());
                     }
-                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorRed"))
+                    if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorRed"))
                     {
-                        manaTypes.add(":mana_red:");
+                        manaTypes.add(chnl.getGuild().getEmojiByName("mana_red").toString());
                     }
-                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorBrown"))
+                    if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorBrown"))
                     {
-                        manaTypes.add(":mana_brown:");
+                        manaTypes.add(chnl.getGuild().getEmojiByName("mana_brown").toString());
                     }
-                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorPurple"))
+                    if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorPurple"))
                     {
-                        manaTypes.add(":mana_purple:");
+                        manaTypes.add(chnl.getGuild().getEmojiByName("mana_purple").toString());
                     }
-                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorOrange"))
+                    if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorOrange"))
                     {
-                        manaTypes.add(":mana_orange:");
+                        manaTypes.add(chnl.getGuild().getEmojiByName("mana_orange").toString());
                     }
-                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorYellow"))
+                    if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorYellow"))
                     {
-                        manaTypes.add(":mana_yellow:");
+                        manaTypes.add(chnl.getGuild().getEmojiByName("mana_yellow").toString());
                     }
-                    if(troopInfo.getJSONObject("ManaColors").getBoolean("ColorGreen"))
+                    if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorGreen"))
                     {
-                        manaTypes.add(":mana_green:");
+                        manaTypes.add(chnl.getGuild().getEmojiByName("mana_green").toString());
                     }
-                    
+
                     String info = "**" + troopName + "** (" + kingdom + ")\nDescription: " + desc + "\nMana: ";
-                    info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", " / ");
-                    info += "\nSpell: (SPELLNAME) ((SPELLCOST) mana)\nTraits: (TRAITS)\nStats (Max Level): (STATS)";
-                    
+                    info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
+                    info += "\nSpell: " + spell + " (" + spellCost + " mana)\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nStats (Max Level): (STATS)";
+
                     chnl.sendMessage(info);
                     break;
                 //?trait [string]    
                 case "trait":
-                    if (arguments.size() < 1) {
+                    if (arguments.size() < 1)
+                    {
                         chnl.sendMessage("You need to specify a name to search for!");
                         break;
                     }
@@ -214,7 +246,8 @@ public class Listener {
                     traitTimer.start();
                     JSONObject traitInfo = main.data.getTraitInfo(traitName);
                     traitTimer.stop();
-                    if (traitInfo == null) {
+                    if (traitInfo == null)
+                    {
                         chnl.sendMessage("No trait info found.");
                         break;
                     }
@@ -222,7 +255,8 @@ public class Listener {
                     break;
                 //?spell [string]
                 case "spell":
-                    if (arguments.size() < 1) {
+                    if (arguments.size() < 1)
+                    {
                         chnl.sendMessage("You need to specify a name to search for!");
                         break;
                     }
@@ -231,7 +265,8 @@ public class Listener {
                     spellTimer.start();
                     JSONObject spellInfo = main.data.getSpellInfo(spellName);
                     spellTimer.stop();
-                    if (spellInfo == null) {
+                    if (spellInfo == null)
+                    {
                         chnl.sendMessage("No spell info found.");
                         break;
                     }
@@ -239,62 +274,74 @@ public class Listener {
                     break;
                 //?platform [string]
                 case "platform":
-                    if (arguments.size() < 1) {
+                    if (arguments.size() < 1)
+                    {
                         chnl.sendMessage("Please specify a platform.");
                         break;
                     }
                     String role = arguments.get(0).toLowerCase();
-                    if (role.equals("pc/mobile")) {
+                    if (role.equals("pc/mobile"))
+                    {
                         sdr.addRole(chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString()));
                         chnl.sendMessage(sdr.mention() + ", you joined **PC/Mobile**");
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** assigned themselves to **PC/Mobile**");
                         break;
-                    } else if (role.equals("console")) {
+                    } else if (role.equals("console"))
+                    {
                         sdr.addRole(chnl.getGuild().getRoleByID(IDReference.RoleID.CONSOLE.toString()));
                         chnl.sendMessage(sdr.mention() + ", you joined **Console**");
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** assigned themselves to **Console**");
                         break;
-                    } else {
+                    } else
+                    {
                         chnl.sendMessage("Please enter a valid platform. Valid platforms are: \"Pc/Mobile\" or \"Console\".");
                         break;
                     }
                 //?kick [@user]    
                 case "kick":
-                    if (arguments.size() < 1) {
+                    if (arguments.size() < 1)
+                    {
                         chnl.sendMessage("You need an @mention of a user to kick!");
                         break;
                     }
-                    if (Utilities.canUseAdminCommand(sdr, chnl.getGuild())) {
+                    if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+                    {
                         String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
                         IUser usr = chnl.getGuild().getUserByID(id);
-                        if (usr == null) {
+                        if (usr == null)
+                        {
                             chnl.sendMessage("Invaild @mention!");
                             break;
                         }
                         chnl.getGuild().kickUser(usr);
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** kicked user **" + usr.getName() + "**");
                         chnl.sendMessage("User kicked.");
-                    } else {
+                    } else
+                    {
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
                 //?ban [@user]    
                 case "ban":
-                    if (arguments.size() < 1) {
+                    if (arguments.size() < 1)
+                    {
                         chnl.sendMessage("You need an @mention of a user to ban!");
                         break;
                     }
-                    if (Utilities.canUseAdminCommand(sdr, chnl.getGuild())) {
+                    if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+                    {
                         String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
                         IUser usr = chnl.getGuild().getUserByID(id);
-                        if (usr == null) {
+                        if (usr == null)
+                        {
                             chnl.sendMessage("Invaild @mention!");
                             break;
                         }
                         chnl.getGuild().banUser(usr);
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** banned user **" + usr.getName() + "**");
                         chnl.sendMessage("User banned.");
-                    } else {
+                    } else
+                    {
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
@@ -310,14 +357,18 @@ public class Listener {
                     int numRolesGuild = guildRoles.size() - 1; //Again, -1 to remove @everyone
 
                     List<String> sdrRolesNice = new ArrayList<>();
-                    for (IRole r : sdrRoles) {
-                        if (r.isEveryoneRole()) {
+                    for (IRole r : sdrRoles)
+                    {
+                        if (r.isEveryoneRole())
+                        {
                             continue;
                         }
-                        if (r.getID().equals(IDReference.RoleID.MUTED.toString())) {
+                        if (r.getID().equals(IDReference.RoleID.MUTED.toString()))
+                        {
                             continue;
                         }
-                        if (r.getName().equals("KrystaraBot")) {
+                        if (r.getName().equals("KrystaraBot"))
+                        {
                             continue;
                         }
                         sdrRolesNice.add(r.getName());
@@ -326,7 +377,8 @@ public class Listener {
                     String toSend = "```\n---------User Info---------";
                     toSend += "\nName: " + name;
                     toSend += "\nHas Nickname: " + hasNick;
-                    if (hasNick) {
+                    if (hasNick)
+                    {
                         toSend += "\nNickname: " + nickname;
                     }
                     toSend += "\nIs playing: " + state.getType().equals(StatusType.GAME);
@@ -339,14 +391,18 @@ public class Listener {
                     toSend += "\nNumber of roles: " + numRolesGuild;
                     toSend += "\nNumber of members: " + chnl.getGuild().getUsers().size();
                     toSend += "\n---------Roles Info---------";
-                    for (IRole r2 : guildRoles) {
-                        if (r2.isEveryoneRole()) {
+                    for (IRole r2 : guildRoles)
+                    {
+                        if (r2.isEveryoneRole())
+                        {
                             continue;
                         }
-                        if (r2.getID().equals(IDReference.RoleID.MUTED.toString())) {
+                        if (r2.getID().equals(IDReference.RoleID.MUTED.toString()))
+                        {
                             continue;
                         }
-                        if (r2.getName().equals("KrystaraBot")) {
+                        if (r2.getName().equals("KrystaraBot"))
+                        {
                             continue;
                         }
                         toSend += "\nNumber of users in role " + r2.getName() + ": " + chnl.getGuild().getUsersByRole(r2).size();
@@ -358,13 +414,16 @@ public class Listener {
                     break;
                 //?warn [@user] [message]
                 case "warn":
-                    if (arguments.size() < 2) {
+                    if (arguments.size() < 2)
+                    {
                         chnl.sendMessage("You need a minimum of an @mention and a message to send. (That's a minimum of two arguments)");
                     }
-                    if (Utilities.canUseAdminCommand(sdr, chnl.getGuild())) {
+                    if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+                    {
                         String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
                         IUser usr = chnl.getGuild().getUserByID(id);
-                        if (usr == null) {
+                        if (usr == null)
+                        {
                             chnl.sendMessage("Invaild @mention!");
                             break;
                         }
@@ -376,56 +435,70 @@ public class Listener {
 
                         usr.getOrCreatePMChannel().sendMessage("Warning from user **" + nameOfSender + "** in channel **" + chnl.getName() + "**. Text:```\n" + message + "```");
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + (usr.getNicknameForGuild(chnl.getGuild()).isPresent() ? usr.getNicknameForGuild(chnl.getGuild()).get() : usr.getName()) + "** was warned by **" + nameOfSender + "**. Message: ```\n" + message + "```");
-                    } else {
+                    } else
+                    {
                         chnl.sendMessage("You cannot do that!");
                     }
                     break;
                 //?code [string] 
                 case "code":
-                    if (arguments.size() < 1) {
+                    if (arguments.size() < 1)
+                    {
                         chnl.sendMessage("You have to enter a code first!");
                         break;
                     }
-                    if (arguments.get(0).length() == 10) {
+                    if (arguments.get(0).length() == 10)
+                    {
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage("new code: " + arguments.get(0).toUpperCase());
                         break;
-                    } else {
+                    } else
+                    {
                         chnl.sendMessage("Please check your code - it has to be 10 characters!");
                         break;
                     }
                 //?dead [string]    
                 case "dead":
-                    if (arguments.size() < 1) {
+                    if (arguments.size() < 1)
+                    {
                         chnl.sendMessage("You have to enter a code first!");
                         break;
                     }
-                    if (arguments.get(0).length() == 10) {
+                    if (arguments.get(0).length() == 10)
+                    {
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage(arguments.get(0).toUpperCase() + " is dead!");
                         break;
-                    } else {
+                    } else
+                    {
                         chnl.sendMessage("Please check your code - it has to be 10 characters!");
                         break;
                     }
                 case "help":
                     toSend = "I recognize the following commands: \n";
                     int hidden = 0;
-                    for (Command c : main.getRegisteredCommands()) {
-                        if (c.requiresAdmin() && !Utilities.canUseAdminCommand(sdr, chnl.getGuild())) {
+                    for (Command c : main.getRegisteredCommands())
+                    {
+                        if (c.requiresAdmin() && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+                        {
                             hidden++;
                             continue; //Don't show commands the user cannot do.
                         }
                         toSend += "```" + c.getName() + ": " + c.getDescription();
 
-                        if (c.getAliases().length > 0) {
+                        if (c.getAliases().length > 0)
+                        {
                             toSend += "\nAliases: ";
-                            for (String alias : c.getAliases()) {
+                            for (String alias : c.getAliases())
+                            {
                                 toSend += alias + ",";
                             }
                             toSend = toSend.substring(0, toSend.length() - 1);
                         }
                         toSend += "```";
                     }
-                    if(hidden != 0) toSend += "\n\n(" + hidden + " commands not shown because you do not have a high-enough rank on the specified server)";
+                    if (hidden != 0)
+                    {
+                        toSend += "\n\n(" + hidden + " commands not shown because you do not have a high-enough rank on the specified server)";
+                    }
                     sdr.getOrCreatePMChannel().sendMessage(toSend);
                     chnl.sendMessage(sdr.mention() + ", I've sent you a list of commands over PM.");
                     break;
@@ -434,7 +507,8 @@ public class Listener {
                     break;
             }
             msg.delete(); //Cleanup command
-        } catch (Exception ex) {
+        } catch (Exception ex)
+        {
             ex.printStackTrace();
         }
     }
