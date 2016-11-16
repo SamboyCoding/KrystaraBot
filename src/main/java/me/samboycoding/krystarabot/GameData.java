@@ -19,7 +19,7 @@ public class GameData
 {
 
     private final File sourceJSON = new File("Data.json"); //Source File
-    public static JSONArray arrayTroops, arrayTraits, arraySpells; //JSON arrays for original data
+    public static JSONArray arrayTroops, arrayTraits, arraySpells, arrayClasses; //JSON arrays for original data
 
     public void importData() throws IOException
     {
@@ -42,6 +42,7 @@ public class GameData
             arrayTroops = jsonFull.getJSONArray("Troops");
             arrayTraits = jsonFull.getJSONArray("Traits");
             arraySpells = jsonFull.getJSONArray("Spells");
+            arrayClasses = jsonFull.getJSONArray("HeroClasses");
         } catch (FileNotFoundException e)
         {
             main.log("Error: " + e.getMessage());
@@ -91,5 +92,19 @@ public class GameData
             }
         }
         return spell;
+    }
+    
+    public JSONObject getClassInfo(String className)
+    {
+        JSONObject hClass = null;
+        for (Iterator<Object> it = arrayClasses.iterator(); it.hasNext();)
+        {
+            JSONObject checkClass = (JSONObject) it.next();
+            if (checkClass.getString("Name").toLowerCase().equals(className.toLowerCase()))
+            {
+                return checkClass;
+            }
+        }
+        return hClass;
     }
 }

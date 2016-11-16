@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import me.samboycoding.krystarabot.utilities.Command;
-import org.apache.commons.lang3.time.StopWatch;
 import org.json.JSONObject;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -46,7 +45,7 @@ public class Listener
         }
         try
         {
-            cl.changeStatus(Status.game("Made by SamboyCoding and MrSnake"));
+            cl.changeStatus(Status.game("Say ?help :: Made by SamboyCoding and MrSnake"));
             main.log("My ID: " + main.getClient(null).getApplicationClientID());
             IDReference.MYID = main.getClient(null).getApplicationClientID();
             main.log("Registering commands...");
@@ -56,6 +55,7 @@ public class Listener
             new Command("?troop [name]", "Looks up information on the specified troop.", false)._register();
             new Command("?trait [name]", "Looks up information on the specified trait.", false)._register();
             new Command("?spell [name]", "Looks up information on the specified spell.", false)._register();
+            new Command("?class [name]", "Looks up information on the specified hero class.", false)._register();
             new Command("?platform [\"pc/mobile\" / \"console\"]", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time.", false)._register();
             new Command("?kick [@user]", "Kicks the specified user from the server.", true)._register();
             new Command("?ban [@user]", "Bans the specified user from the server.", true)._register();
@@ -180,10 +180,7 @@ public class Listener
                         break;
                     }
                     String troopName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-                    StopWatch troopTimer = new StopWatch();
-                    troopTimer.start();
                     JSONObject troopInfo = main.data.getTroopInfo(troopName);
-                    troopTimer.stop();
                     if (troopInfo == null)
                     {
                         chnl.sendMessage("No troop `" + troopName + "` found, " + sdr.mention());
@@ -193,7 +190,7 @@ public class Listener
                     troopName = troopInfo.getString("Name");
                     String kingdom = troopInfo.getString("Kingdom");
                     String spell = troopInfo.getString("Spell");
-                    int spellCost = troopInfo.getInt("Cost");
+                    int summonCost = troopInfo.getInt("Cost");
                     String trait1 = troopInfo.getString("Trait_1");
                     String trait2 = troopInfo.getString("Trait_2");
                     String trait3 = troopInfo.getString("Trait_3");
@@ -243,7 +240,7 @@ public class Listener
 
                     String info = "**" + troopName + "** (" + kingdom + ")\nDescription: " + desc + "\nMana: ";
                     info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
-                    info += "\nSpell: " + spell + "     Cost:" + spellCost + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nStats (Max Level): " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
+                    info += "\nSpell: " + spell + "     Cost:" + summonCost + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nStats (Max Level): " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
 
                     chnl.sendMessage(info);
                     chnl.sendFile(URL, troopId + ".jpg");
@@ -256,16 +253,16 @@ public class Listener
                         break;
                     }
                     String traitName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-                    StopWatch traitTimer = new StopWatch();
-                    traitTimer.start();
                     JSONObject traitInfo = main.data.getTraitInfo(traitName);
-                    traitTimer.stop();
                     if (traitInfo == null)
                     {
-                        chnl.sendMessage("No trait info found.");
+                        chnl.sendMessage("No trait `" + traitName + "` found, " + sdr.mention());
                         break;
                     }
-                    chnl.sendMessage("Found data in `" + traitTimer.getTime() + "ms`. Data: ```JSON\n" + traitInfo.toString(4) + "```");
+                    traitName = traitInfo.getString("Name");
+                    String traitDesc = traitInfo.getString("Description");
+                    
+                    chnl.sendMessage("**" + traitName + "**: " + traitDesc);
                     break;
                 //?spell [string]
                 case "spell":
@@ -275,16 +272,45 @@ public class Listener
                         break;
                     }
                     String spellName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-                    StopWatch spellTimer = new StopWatch();
-                    spellTimer.start();
                     JSONObject spellInfo = main.data.getSpellInfo(spellName);
-                    spellTimer.stop();
                     if (spellInfo == null)
                     {
-                        chnl.sendMessage("No spell info found.");
+                        chnl.sendMessage("No spell `" + spellName + "` found, " + sdr.mention());
                         break;
                     }
-                    chnl.sendMessage("Found data in `" + spellTimer.getTime() + "ms`. Data: ```JSON\n" + spellInfo.toString(4) + "```");
+                    
+                    spellName = spellInfo.getString("Name");
+                    String spellDesc = spellInfo.getString("Description");
+                    int spellCost = spellInfo.getInt("Cost");
+                    
+                    chnl.sendMessage("**" + spellName + " (" + spellCost + "):** " + spellDesc);
+                    break;
+                //?class [string]
+                case "class":
+                    if (arguments.size() < 1)
+                    {
+                        chnl.sendMessage("You need to specify a name to search for!");
+                        break;
+                    }
+                    String className = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
+                    JSONObject classInfo = main.data.getClassInfo(className);
+                    
+                    if (classInfo == null)
+                    {
+                        chnl.sendMessage("No hero class `" + className + "` found, " + sdr.mention());
+                        break;
+                    }
+                    
+                    className = classInfo.getString("Name");
+                    String classKingdom = classInfo.getString("Kingdom");
+                    String classTrait1 = classInfo.getString("Trait_1");
+                    String classTrait2 = classInfo.getString("Trait_2");
+                    String classTrait3 = classInfo.getString("Trait_3");
+                    String classAugment1 = classInfo.getString("Augment_1");
+                    String classAugment2 = classInfo.getString("Augment_2");
+                    String classAugment3 = classInfo.getString("Augment_3");
+                    
+                    chnl.sendMessage("**" + className + "** (" + classKingdom + ")\nTraits: " + classTrait1 + ", " + classTrait2 + ", " + classTrait3 + "\nAugments: " + classAugment1 + ", " + classAugment2 + ", " + classAugment3);
                     break;
                 //?platform [string]
                 case "platform":
