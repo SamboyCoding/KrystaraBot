@@ -46,6 +46,7 @@ public class CodesHandler
         try
         {
             String jsonRaw = FileUtils.readFileToString(codes, Charset.defaultCharset());
+            main.log("Raw codes JSON: " + jsonRaw);
             codesJSON = new JSONObject(jsonRaw);
             main.log("Succesfully loaded " + codesJSON.length() + " codes from file!");
         } catch (IOException ex)
@@ -100,12 +101,13 @@ public class CodesHandler
         return getDeadCodes().contains(code);
     }
     
-    public void addCode(String code)
+    public void addCode(String code) throws IOException
     {
         codesJSON.put(code, false);
+        FileUtils.writeStringToFile(codes, codesJSON.toString(4), Charset.defaultCharset());
     }
     
-    public void makeCodeDead(String code)
+    public void makeCodeDead(String code) throws IOException
     {
         if(!isCodePresent(code))
         {
@@ -119,5 +121,6 @@ public class CodesHandler
         
         codesJSON.remove(code);
         codesJSON.put(code, true);
+        FileUtils.writeStringToFile(codes, codesJSON.toString(4), Charset.defaultCharset());
     }
 }
