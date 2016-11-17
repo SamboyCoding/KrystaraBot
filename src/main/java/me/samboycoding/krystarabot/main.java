@@ -25,6 +25,7 @@ public class main
     private static final ArrayList<AdminCommand> registeredAdminCommands = new ArrayList<>();
     private static IDiscordClient cl;
     public static GameData data = new GameData();
+    public static CodesHandler codes = new CodesHandler();
 
     public static IDiscordClient getClient(String token)
     {
@@ -60,6 +61,7 @@ public class main
         cl.getDispatcher().registerListener(new Listener());
         log("Logged in and listener registered.");
         data.importData();
+        codes.loadJSON();
     }
     
     public static void registerCommand(Command c)

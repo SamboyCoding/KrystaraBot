@@ -7,8 +7,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
 import org.json.JSONObject;
@@ -64,7 +62,8 @@ public class Listener
             new Command("?search [text]", "Search for troops, traits, spells, hero classes or kingdoms containing the specified text.", false)._register();
             new Command("?platform [\"pc/mobile\" / \"console\"]", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time.", false)._register();
             new Command("?userstats", "Shows information on you, and the server.", false)._register();
-            new Command("?code [code]", "Post a new code into the #codes channel.", false)._register();
+            new Command("?newcode [code]", "Post a new code into the #codes channel.", false)._register();
+            new Command("?codes", "Lists the currently \"Alive\" codes.", false)._register();
             new Command("?dead [code]", "Report a code as dead in the #codes channel.", false)._register();
 
             main.log("Registering Admin commands...");
@@ -440,7 +439,7 @@ public class Listener
                         break;
                     }
                     String role = arguments.get(0).toLowerCase();
-                    if (role.equals("pc/mobile"))
+                    if (role.equals("pc/mobile") || role.equals("pc") || role.equals("mobile"))
                     {
                         sdr.addRole(chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString()));
                         chnl.sendMessage(sdr.mention() + ", you joined **PC/Mobile**");
@@ -619,22 +618,29 @@ public class Listener
                     }
                     break;
                 //</editor-fold>
-                //<editor-fold defaultstate="collapsed" desc="Code">
-                //?code [string] 
-                case "code":
+                //<editor-fold defaultstate="collapsed" desc="Newcode">
+                //?newcode [string] 
+                case "newcode":
                     String newEmoji = ":new:";
                     if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You have to enter a code first!");
                         break;
                     }
-                    if (arguments.get(0).length() == 10)
+                    String code = arguments.get(0);
+                    if (code.length() == 10)
                     {
+                        if(main.codes.isCodePresent(code))
+                        {
+                            chnl.sendMessage("That code is already present! Did you mean `?dead [code]`?");
+                            break;
+                        }
+                        main.codes.addCode(code);
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage(newEmoji + " Code: `" + arguments.get(0).toUpperCase() + "` " + newEmoji);
                         break;
                     } else
                     {
-                        chnl.sendMessage("Please check your code - it has to be 10 characters!");
+                        chnl.sendMessage("Please check your code - it has to be 10 characters long, and yours is " + code.length() + "!");
                         break;
                     }
                 //</editor-fold>
@@ -647,15 +653,38 @@ public class Listener
                         chnl.sendMessage("You have to enter a code first!");
                         break;
                     }
-                    if (arguments.get(0).length() == 10)
+                    String code2 = arguments.get(0);
+                    if (code2.length() == 10)
                     {
+                        if(!main.codes.isCodePresent(code2))
+                        {
+                            chnl.sendMessage("No code `" + code2 + "` found!");
+                            break;
+                        }
+                        if(main.codes.isCodeDead(code2))
+                        {
+                            chnl.sendMessage("That code is already marked as dead!");
+                            break;
+                        }
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage(skullEmoji + " Code `" + arguments.get(0).toUpperCase() + "` is dead! " + skullEmoji);
                         break;
                     } else
                     {
-                        chnl.sendMessage("Please check your code - it has to be 10 characters!");
+                        chnl.sendMessage("Please check your code - it has to be 10 characters long, and yours is " + code2.length() + "!");
                         break;
                     }
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Codes">
+                //?codes
+                case "codes":
+                    ArrayList<String> codes = main.codes.getLiveCodes();
+                    if(codes.isEmpty())
+                    {
+                        chnl.sendMessage("No codes are currently \"Alive\".");
+                        break;
+                    }
+                    chnl.sendMessage("Currently \"Alive\" codes: `" + codes.toString().replace("[", "").replace("]", "").replace("\"", "") + "`.");
+                    break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Help">
                 //?help
@@ -663,22 +692,18 @@ public class Listener
                     toSend = "I recognize the following commands: \n";
                     for (Command c : main.getRegisteredCommands())
                     {
-                        toSend += "```**" + c.getName() + "**: " + c.getDescription();
-
-                        toSend += "```";
+                        toSend += "\n**" + c.getName() + "**: " + c.getDescription();
                     }
                     if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
                     {
                         toSend += "\nAdmin Commands (These actions WILL be logged):";
                         for (AdminCommand ac : main.getRegisteredAdminCommands())
                         {
-                            toSend += "```" + ac.getName() + ": " + ac.getDescription();
-
-                            toSend += "```";
+                            toSend += "\n**" + ac.getName() + "**: " + ac.getDescription();
                         }
                     } else
                     {
-                        toSend += "(" + main.getRegisteredAdminCommands().size() + " commands not shown because you are not a high-enough rank)";
+                        toSend += "\n\n(" + main.getRegisteredAdminCommands().size() + " commands not shown because you are not a high-enough rank)";
                     }
                     sdr.getOrCreatePMChannel().sendMessage(toSend);
                     chnl.sendMessage(sdr.mention() + ", I've sent you a list of commands over PM.");
