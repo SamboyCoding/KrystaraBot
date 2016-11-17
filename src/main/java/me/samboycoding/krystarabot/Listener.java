@@ -215,7 +215,10 @@ public class Listener
                     int magic = troopInfo.getJSONArray("MagicPerLevel").getInt(19);
                     String troopId = troopInfo.getString("FileBase");
                     URL URL = new URL("http://ashtender.com/gems/assets/cards/" + troopId + ".jpg");
-
+                    //get spell description
+                    JSONObject troopSpell = main.data.getSpellInfo(spell);
+                    String troopSpellDesc = troopSpell.getString("Description");
+                    
                     //Emojis
                     String emojiArmor = chnl.getGuild().getEmojiByName("gow_armor").toString();
                     String emojiLife = chnl.getGuild().getEmojiByName("gow_life").toString();
@@ -259,7 +262,7 @@ public class Listener
 
                     String info = "**" + troopName + "**\n(" + rarity + " from " + kingdom + ", Type: " + troopType + ")\nDescription: " + desc + "\nMana: ";
                     info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
-                    info += "\nSpell: " + spell + "     Cost:" + summonCost + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
+                    info += "\nSpell: " + spell + " (" + summonCost + ")\n" +troopSpellDesc + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
 
                     chnl.sendMessage(info);
                     chnl.sendFile(URL, troopId + ".jpg");
