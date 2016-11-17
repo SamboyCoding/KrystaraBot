@@ -61,7 +61,7 @@ public class Listener
             new Command("?spell [name]", "Shows information for the specified spell.", false)._register();
             new Command("?class [name]", "Shows information for the specified hero class.", false)._register();
             new Command("?kingdom [name]", "Shows information for the specified kingdom.", false)._register();
-            new Command("?search [text]", "Tries to find troops, traits, spells, hero classes or kingdoms containing the specified text.", false)._register();
+            new Command("?search [text]", "Search for troops, traits, spells, hero classes or kingdoms containing the specified text.", false)._register();
             new Command("?platform [\"pc/mobile\" / \"console\"]", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time.", false)._register();
             new Command("?userstats", "Shows information on you, and the server.", false)._register();
             new Command("?code [code]", "Post a new code into the #codes channel.", false)._register();
@@ -405,13 +405,30 @@ public class Listener
                     kingdomResults.addAll(main.data.searchForKingdom(searchTerm));
                     classResults.addAll(main.data.searchForClass(searchTerm));
 
-                    String troopRes = troopResults.isEmpty() ? "No troops found" : troopResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-                    String traitRes = traitResults.isEmpty() ? "No traits found" : traitResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-                    String spellRes = spellResults.isEmpty() ? "No spells found" : spellResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-                    String kingdomRes = kingdomResults.isEmpty() ? "No kingdoms found" : kingdomResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-                    String classRes = classResults.isEmpty() ? "No Hero Classes found" : classResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String troopRes = troopResults.isEmpty() ? "None" : troopResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String traitRes = traitResults.isEmpty() ? "None" : traitResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String spellRes = spellResults.isEmpty() ? "None" : spellResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String kingdomRes = kingdomResults.isEmpty() ? "None" : kingdomResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String classRes = classResults.isEmpty() ? "None" : classResults.toString().replace("[", "").replace("]", "").replace("\"", "");
 
-                    chnl.sendMessage("Search results for `" + searchTerm + "`:\nTroops:\n" + troopRes + "\nTraits:\n" + traitRes + "\nSpells:\n" + spellRes + "\nKingdoms:\n" + kingdomRes + "\nHero Classes:\n" + classRes);
+                    String searchOutput = "Search results for `" + searchTerm + "`:\n\n";
+                    if(!troopRes.equals("None")) {
+                        searchOutput += "Troops:\n" + troopRes + "\n\n";
+                    }
+                    if(!traitRes.equals("None")) {
+                        searchOutput += "Traits:\n" + traitRes + "\n\n";
+                    }
+                    if(!spellRes.equals("None")) {
+                        searchOutput += "Spells:\n" + spellRes + "\n\n";
+                    }
+                    if(!kingdomRes.equals("None")) {
+                        searchOutput += "Kingdoms:\n" + kingdomRes + "\n\n";
+                    }
+                    if(!classRes.equals("None")) {
+                        searchOutput += "Hero Classes:\n" + classRes + "\n\n";
+                    }
+                    
+                    chnl.sendMessage(searchOutput);
                     break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Platform">
@@ -643,7 +660,7 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Help">
                 //?help
                 case "help":
-                    toSend = "I recognize the following commands: \n\nCommand accessible to all users: ";
+                    toSend = "I recognize the following commands: \n";
                     for (Command c : main.getRegisteredCommands())
                     {
                         toSend += "```" + c.getName() + ": " + c.getDescription();
