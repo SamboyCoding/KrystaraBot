@@ -404,13 +404,30 @@ public class Listener
                     kingdomResults.addAll(main.data.searchForKingdom(searchTerm));
                     classResults.addAll(main.data.searchForClass(searchTerm));
 
-                    String troopRes = troopResults.isEmpty() ? "No troops found" : troopResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-                    String traitRes = traitResults.isEmpty() ? "No traits found" : traitResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-                    String spellRes = spellResults.isEmpty() ? "No spells found" : spellResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-                    String kingdomRes = kingdomResults.isEmpty() ? "No kingdoms found" : kingdomResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-                    String classRes = classResults.isEmpty() ? "No Hero Classes found" : classResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String troopRes = troopResults.isEmpty() ? "None" : troopResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String traitRes = traitResults.isEmpty() ? "None" : traitResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String spellRes = spellResults.isEmpty() ? "None" : spellResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String kingdomRes = kingdomResults.isEmpty() ? "None" : kingdomResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+                    String classRes = classResults.isEmpty() ? "None" : classResults.toString().replace("[", "").replace("]", "").replace("\"", "");
 
-                    chnl.sendMessage("Search results for `" + searchTerm + "`:\nTroops:\n" + troopRes + "\nTraits:\n" + traitRes + "\nSpells:\n" + spellRes + "\nKingdoms:\n" + kingdomRes + "\nHero Classes:\n" + classRes);
+                    String searchOutput = "Search results for `" + searchTerm + "`:\n\n";
+                    if(!troopRes.equals("None")) {
+                        searchOutput += "Troops:\n" + troopRes + "\n\n";
+                    }
+                    if(!traitRes.equals("None")) {
+                        searchOutput += "Traits:\n" + traitRes + "\n\n";
+                    }
+                    if(!spellRes.equals("None")) {
+                        searchOutput += "Spells:\n" + spellRes + "\n\n";
+                    }
+                    if(!kingdomRes.equals("None")) {
+                        searchOutput += "Kingdoms:\n" + kingdomRes + "\n\n";
+                    }
+                    if(!classRes.equals("None")) {
+                        searchOutput += "Hero Classes:\n" + classRes + "\n\n";
+                    }
+                    
+                    chnl.sendMessage(searchOutput);
                     break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Platform">
