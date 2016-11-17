@@ -23,6 +23,7 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.handle.obj.Status.StatusType;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.Image;
 import sx.blah.discord.util.MessageList;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
@@ -42,6 +43,7 @@ public class Listener
         try
         {
             cl.changeUsername("Krystara");
+            cl.changeAvatar(Image.forUrl("png", "http://repo.samboycoding.me/static/krystarabot_icon.png"));
         } catch (DiscordException ex)
         {
             main.log("Failed to change username. Rate limited most likely.");
@@ -60,7 +62,7 @@ public class Listener
             new Command("?class [name]", "Shows information for the specified hero class.", false)._register();
             new Command("?kingdom [name]", "Shows information for the specified kingdom.", false)._register();
             new Command("?search [text]", "Search for troops, traits, spells, hero classes or kingdoms containing the specified text.", false)._register();
-            new Command("?platform [\"pc/mobile\" / \"console\"]", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time.", false)._register();
+            new Command("?platform [pc|mobile|console]", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time.", false)._register();
             new Command("?userstats", "Shows information on you, and the server.", false)._register();
             new Command("?newcode [code]", "Post a new code into the #codes channel.", false)._register();
             new Command("?codes", "Lists the currently \"Alive\" codes.", false)._register();
@@ -117,7 +119,11 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Ping">
                 //?ping
                 case "ping":
-                    String lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())).toString();
+                    long lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+                    if(lagTime < 0)
+                    {
+                        lagTime += lagTime + lagTime; //Makes it positive.
+                    }
                     chnl.sendMessage("Pong! `" + lagTime + "ms lag`.");
                     break;
                 //</editor-fold>
@@ -568,7 +574,7 @@ public class Listener
                     toSend += "\nMembers: " + chnl.getGuild().getUsers().size();
                     toSend += "\n--Roles Info---------";
 
-                    int unassigned = 0;
+                    int unassigned = chnl.getGuild().getUsers().size();
                     for (IRole r2 : guildRoles)
                     {
                         if (r2.isEveryoneRole())
@@ -583,11 +589,14 @@ public class Listener
                         {
                             continue;
                         }
-                        if (r2.getID().equals(IDReference.RoleID.PCMOBILE.toString()) || r2.getID().equals(IDReference.RoleID.CONSOLE.toString()))
-                        {
-                            unassigned += r2.getGuild().getUsersByRole(r2).size();
-                        }
                         toSend += "\n" + chnl.getGuild().getUsersByRole(r2).size() + "x " + r2.getName();
+                    }
+                    for(IUser usr : chnl.getGuild().getUsers())
+                    {
+                        if(Utilities.userHasRole(chnl.getGuild(), usr, chnl.getGuild().getRoleByID(IDReference.RoleID.CONSOLE.toString())) || Utilities.userHasRole(chnl.getGuild(), usr, chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString())))
+                        {
+                            unassigned--;
+                        }
                     }
                     toSend += "\n" + unassigned + "x Not Assigned";
                     toSend += "\n```";
@@ -714,6 +723,8 @@ public class Listener
                     {
                         toSend += "\n\n(" + main.getRegisteredAdminCommands().size() + " commands not shown because you are not a high-enough rank)";
                     }
+                    toSend += "\n-------------------------------------------------------------";
+
                     sdr.getOrCreatePMChannel().sendMessage(toSend);
                     chnl.sendMessage(sdr.mention() + ", I've sent you a list of commands over PM.");
                     break;

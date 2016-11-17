@@ -102,24 +102,24 @@ public class CodesHandler
     
     public void addCode(String code) throws IOException
     {
-        codesJSON.put(code, false);
+        codesJSON.put(code.toUpperCase(), false);
         FileUtils.writeStringToFile(codes, codesJSON.toString(4), Charset.defaultCharset());
     }
     
     public void makeCodeDead(String code) throws IOException
     {
-        if(!isCodePresent(code))
+        if(!isCodePresent(code.toUpperCase()))
         {
             throw new IllegalArgumentException("Tried to make a code dead that wasn't present!");
         }
         
-        if(isCodeDead(code))
+        if(isCodeDead(code.toUpperCase()))
         {
             return;
         }
         
-        codesJSON.remove(code);
-        codesJSON.put(code, true);
+        codesJSON.remove(code.toUpperCase());
+        codesJSON.put(code.toUpperCase(), true);
         FileUtils.writeStringToFile(codes, codesJSON.toString(4), Charset.defaultCharset());
     }
 }
