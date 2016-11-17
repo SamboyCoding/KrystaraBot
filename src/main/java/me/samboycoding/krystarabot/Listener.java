@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
 import org.json.JSONObject;
@@ -142,7 +144,10 @@ public class Listener
                         if (amount == 1)
                         {
                             //Cannot delete one with .bulkDelete()
-                            msgs.get(1).delete(); //Again, ignore index 0, as it's the command
+                            msgs.get(0).delete(); //Again, ignore index 0, as it's the command
+                            Utilities.cleanupMessage(chnl.sendMessage("1 message deleted. This message will self-destruct in 3 seconds..."), 3000);
+                            chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** cleared 1 message from channel **" + chnl.getName() + "**");
+                            msg.delete();
                             break;
                         }
 
@@ -175,10 +180,6 @@ public class Listener
                     } catch (ArrayIndexOutOfBoundsException ex2)
                     {
                         Utilities.cleanupMessage(chnl.sendMessage("No messages found!"), 3000);
-                    } catch (Exception ex3)
-                    {
-                        chnl.sendMessage("Unknown error!");
-                        ex3.printStackTrace();
                     }
                     break;
                 //</editor-fold>
@@ -656,7 +657,7 @@ public class Listener
                         {
                             toSend += "```" + ac.getName() + ": " + ac.getDescription();
 
-                        toSend += "```";
+                            toSend += "```";
                         }
                     } else
                     {
@@ -671,7 +672,18 @@ public class Listener
                     break;
             }
             //msg.delete(); //Cleanup command
-        } catch (Exception ex)
+        } catch(RateLimitException rle)
+        {
+            try
+            {
+                main.log("Rate limited! Time until un-ratelimited: " + rle.getRetryDelay());
+                main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("Bot needs to slow down! We're rate limited for another " + rle.getRetryDelay() + " milliseconds, please tell SamboyCoding or MrSnake that the following section is too fast: " + rle.getRoute());
+            } catch (Exception e2)
+            {
+                main.log("Exception sending ratelimit warning!");
+                e2.printStackTrace();
+            }
+        }catch (Exception ex)
         {
             ex.printStackTrace();
         }
