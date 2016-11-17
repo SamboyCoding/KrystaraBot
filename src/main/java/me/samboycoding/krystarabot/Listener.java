@@ -218,7 +218,7 @@ public class Listener
                     //get spell description
                     JSONObject troopSpell = main.data.getSpellInfo(spell);
                     String troopSpellDesc = troopSpell.getString("Description");
-                    
+
                     //Emojis
                     String emojiArmor = chnl.getGuild().getEmojiByName("gow_armor").toString();
                     String emojiLife = chnl.getGuild().getEmojiByName("gow_life").toString();
@@ -260,9 +260,9 @@ public class Listener
                         troopType = type1 + "/" + type2;
                     }
 
-                    String info = "**" + troopName + "**\n(" + rarity + " from " + kingdom + ", Type: " + troopType + ")\nDescription: " + desc + "\nMana: ";
+                    String info = "**" + troopName + "**\n" + rarity + " from " + kingdom + ", Type: " + troopType + "\nDescription: " + desc + "\nMana: ";
                     info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
-                    info += "\nSpell: " + spell + " (" + summonCost + ")\n" +troopSpellDesc + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
+                    info += "\nSpell: \n**" + spell + "** (" + summonCost + "): " + troopSpellDesc + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
 
                     chnl.sendMessage(info);
                     chnl.sendFile(URL, troopId + ".jpg");
@@ -414,22 +414,27 @@ public class Listener
                     String classRes = classResults.isEmpty() ? "None" : classResults.toString().replace("[", "").replace("]", "").replace("\"", "");
 
                     String searchOutput = "Search results for `" + searchTerm + "`:\n\n";
-                    if(!troopRes.equals("None")) {
+                    if (!troopRes.equals("None"))
+                    {
                         searchOutput += "**Troops**:\n" + troopRes + "\n\n";
                     }
-                    if(!traitRes.equals("None")) {
+                    if (!traitRes.equals("None"))
+                    {
                         searchOutput += "**Traits**:\n" + traitRes + "\n\n";
                     }
-                    if(!spellRes.equals("None")) {
+                    if (!spellRes.equals("None"))
+                    {
                         searchOutput += "**Spells**:\n" + spellRes + "\n\n";
                     }
-                    if(!kingdomRes.equals("None")) {
+                    if (!kingdomRes.equals("None"))
+                    {
                         searchOutput += "**Kingdoms**:\n" + kingdomRes + "\n\n";
                     }
-                    if(!classRes.equals("None")) {
+                    if (!classRes.equals("None"))
+                    {
                         searchOutput += "**Hero Classes**:\n" + classRes + "\n\n";
                     }
-                    
+
                     chnl.sendMessage(searchOutput);
                     break;
                 //</editor-fold>
@@ -633,7 +638,7 @@ public class Listener
                     String code = arguments.get(0);
                     if (code.length() == 10)
                     {
-                        if(main.codes.isCodePresent(code))
+                        if (main.codes.isCodePresent(code))
                         {
                             chnl.sendMessage("That code is already present! Did you mean `?dead [code]`?");
                             break;
@@ -659,12 +664,12 @@ public class Listener
                     String code2 = arguments.get(0);
                     if (code2.length() == 10)
                     {
-                        if(!main.codes.isCodePresent(code2))
+                        if (!main.codes.isCodePresent(code2))
                         {
                             chnl.sendMessage("No code `" + code2 + "` found!");
                             break;
                         }
-                        if(main.codes.isCodeDead(code2))
+                        if (main.codes.isCodeDead(code2))
                         {
                             chnl.sendMessage("That code is already marked as dead!");
                             break;
@@ -681,7 +686,7 @@ public class Listener
                 //?codes
                 case "codes":
                     ArrayList<String> codes = main.codes.getLiveCodes();
-                    if(codes.isEmpty())
+                    if (codes.isEmpty())
                     {
                         chnl.sendMessage("No codes are currently \"Alive\".");
                         break;
@@ -717,7 +722,7 @@ public class Listener
                     break;
             }
             //msg.delete(); //Cleanup command
-        } catch(RateLimitException rle)
+        } catch (RateLimitException rle)
         {
             try
             {
@@ -728,7 +733,7 @@ public class Listener
                 main.log("Exception sending ratelimit warning!");
                 e2.printStackTrace();
             }
-        }catch (Exception ex)
+        } catch (Exception ex)
         {
             ex.printStackTrace();
         }
