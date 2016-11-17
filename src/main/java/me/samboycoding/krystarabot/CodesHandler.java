@@ -46,7 +46,6 @@ public class CodesHandler
         try
         {
             String jsonRaw = FileUtils.readFileToString(codes, Charset.defaultCharset());
-            main.log("Raw codes JSON: " + jsonRaw);
             codesJSON = new JSONObject(jsonRaw);
             main.log("Succesfully loaded " + codesJSON.length() + " codes from file!");
         } catch (IOException ex)

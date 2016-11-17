@@ -705,7 +705,7 @@ public class Listener
                     }
                     if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
                     {
-                        toSend += "\nAdmin Commands (These actions WILL be logged):";
+                        toSend += "\n\nAdmin Commands (These actions WILL be logged):\n";
                         for (AdminCommand ac : main.getRegisteredAdminCommands())
                         {
                             toSend += "\n**" + ac.getName() + "**: " + ac.getDescription();
