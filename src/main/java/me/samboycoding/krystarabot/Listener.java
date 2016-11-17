@@ -260,9 +260,9 @@ public class Listener
                         troopType = type1 + "/" + type2;
                     }
 
-                    String info = "**" + troopName + "**\n" + rarity + " from " + kingdom + ", Type: " + troopType + "\nDescription: " + desc + "\nMana: ";
+                    String info = "**" + troopName + "** (" + desc + ")\n" + rarity + " from " + kingdom + ", Type: " + troopType + "\nMana: ";
                     info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
-                    info += "\nSpell: \n**" + spell + "** (" + summonCost + "): " + troopSpellDesc + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
+                    info += "\nSpell: " + spell + " (" + summonCost + "):\n" + troopSpellDesc + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
 
                     chnl.sendMessage(info);
                     chnl.sendFile(URL, troopId + ".jpg");
@@ -674,6 +674,7 @@ public class Listener
                             chnl.sendMessage("That code is already marked as dead!");
                             break;
                         }
+                        main.codes.makeCodeDead(code2);
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage(skullEmoji + " Code `" + arguments.get(0).toUpperCase() + "` is dead! " + skullEmoji);
                         break;
                     } else
