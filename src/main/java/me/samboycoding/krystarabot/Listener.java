@@ -55,7 +55,7 @@ public class Listener
             IDReference.MYID = main.getClient(null).getApplicationClientID();
             main.log("Registering commands...");
 
-            new Command("?ping", "Check if the bot is able to respond.", false)._register();
+            new Command("?ping", "Check if the bot is able to respond to commands.", false)._register();
             new Command("?troop [name]", "Shows information for the specified troop.", false)._register();
             new Command("?trait [name]", "Shows information for the specified trait.", false)._register();
             new Command("?spell [name]", "Shows information for the specified spell.", false)._register();
@@ -413,19 +413,19 @@ public class Listener
 
                     String searchOutput = "Search results for `" + searchTerm + "`:\n\n";
                     if(!troopRes.equals("None")) {
-                        searchOutput += "Troops:\n" + troopRes + "\n\n";
+                        searchOutput += "**Troops**:\n" + troopRes + "\n\n";
                     }
                     if(!traitRes.equals("None")) {
-                        searchOutput += "Traits:\n" + traitRes + "\n\n";
+                        searchOutput += "**Traits**:\n" + traitRes + "\n\n";
                     }
                     if(!spellRes.equals("None")) {
-                        searchOutput += "Spells:\n" + spellRes + "\n\n";
+                        searchOutput += "**Spells**:\n" + spellRes + "\n\n";
                     }
                     if(!kingdomRes.equals("None")) {
-                        searchOutput += "Kingdoms:\n" + kingdomRes + "\n\n";
+                        searchOutput += "**Kingdoms**:\n" + kingdomRes + "\n\n";
                     }
                     if(!classRes.equals("None")) {
-                        searchOutput += "Hero Classes:\n" + classRes + "\n\n";
+                        searchOutput += "**Hero Classes**:\n" + classRes + "\n\n";
                     }
                     
                     chnl.sendMessage(searchOutput);
@@ -663,7 +663,7 @@ public class Listener
                     toSend = "I recognize the following commands: \n";
                     for (Command c : main.getRegisteredCommands())
                     {
-                        toSend += "```" + c.getName() + ": " + c.getDescription();
+                        toSend += "```**" + c.getName() + "**: " + c.getDescription();
 
                         toSend += "```";
                     }
