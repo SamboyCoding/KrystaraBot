@@ -268,7 +268,7 @@ public class Listener
 
                     String info = "**" + troopName + "** (" + desc + ")\n" + rarity + " from " + kingdom + ", Type: " + troopType + "\nMana: ";
                     info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
-                    info += "\nSpell: " + spell + " (" + summonCost + "):\n" + troopSpellDesc + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
+                    info += "\nSpell: " + spell + " (" + summonCost + ")\n" + troopSpellDesc + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
 
                     chnl.sendMessage(info);
                     chnl.sendFile(URL, troopId + ".jpg");
