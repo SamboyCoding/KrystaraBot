@@ -22,7 +22,7 @@ public class ImageUtils
      * @return The stitched image
      * @throws IOException If one of the images cannot be read
      */
-    public BufferedImage joinHorizontal(File left, File right) throws IOException
+    public static BufferedImage joinHorizontal(File left, File right) throws IOException
     {
         final BufferedImage leftImage = ImageIO.read(left);
         final BufferedImage rightImage = ImageIO.read(right);
@@ -47,7 +47,7 @@ public class ImageUtils
      * @return The stitched image
      * @throws IOException if one of the images cannot be read
      */
-    public BufferedImage joinVertical(File top, File bottom) throws IOException
+    public static BufferedImage joinVertical(File top, File bottom) throws IOException
     {
         final BufferedImage topImage = ImageIO.read(top);
         final BufferedImage bottomImage = ImageIO.read(bottom);
@@ -75,7 +75,7 @@ public class ImageUtils
      * @throws IOException If the image cannot be written, or the file is
      * inaccessible
      */
-    public void writeImageToFile(BufferedImage image, String imageType, File where) throws IOException
+    public static void writeImageToFile(BufferedImage image, String imageType, File where) throws IOException
     {
         ImageIO.write(image, imageType, where);
     }
