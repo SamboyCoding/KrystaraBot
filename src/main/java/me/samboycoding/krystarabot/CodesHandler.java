@@ -57,7 +57,7 @@ public class CodesHandler
     
     public Boolean isCodePresent(String code)
     {
-        return codesJSON.has(code);
+        return codesJSON.has(code.toUpperCase());
     }
     
     public ArrayList<String> getLiveCodes()
@@ -92,12 +92,12 @@ public class CodesHandler
     
     public Boolean isCodeAlive(String code)
     {
-        return getLiveCodes().contains(code);
+        return getLiveCodes().contains(code.toUpperCase());
     }
     
     public Boolean isCodeDead(String code)
     {
-        return getDeadCodes().contains(code);
+        return getDeadCodes().contains(code.toUpperCase());
     }
     
     public void addCode(String code) throws IOException
@@ -108,12 +108,12 @@ public class CodesHandler
     
     public void makeCodeDead(String code) throws IOException
     {
-        if(!isCodePresent(code.toUpperCase()))
+        if(!isCodePresent(code))
         {
             throw new IllegalArgumentException("Tried to make a code dead that wasn't present!");
         }
         
-        if(isCodeDead(code.toUpperCase()))
+        if(isCodeDead(code))
         {
             return;
         }
