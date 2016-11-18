@@ -1,5 +1,6 @@
 package me.samboycoding.krystarabot;
 
+import java.io.File;
 import java.net.URL;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import me.samboycoding.krystarabot.utilities.IDReference;
@@ -383,15 +384,17 @@ public class Listener
                     String bonus3Desc = kingdomInfo.getString("Bonus_3_Description");
                     String bonus4Desc = kingdomInfo.getString("Bonus_4_Description");
                     String kingdomId = kingdomInfo.getString("FileBase");
+                    String troops = kingdomInfo.getJSONArray("Troops").toString().replace("[", "").replace("]", "").replace(",", ", ").replace("\"", "");
+                    
                     if (bannerName.equals("Unnamed Banner"))
                     {
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops: " + numTroops + "\nBanner: None" + "\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
+                        chnl.sendFile(new File("images/kingdoms/" + kingdomId + ".png"));
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nBanner: None" + "\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
                     } else
                     {
-                        URL bannerURL = new URL("http://ashtender.com/gems/assets/banners/" + kingdomId + ".png");
-
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops: " + numTroops + "\nBanner: " + bannerName + " (" + bannerDesc + ")\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
-                        chnl.sendFile(bannerURL, kingdomId + ".png");
+                        chnl.sendFile(new File("images/kingdoms/" + kingdomId + ".png"));
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nBanner: " + bannerName + " (" + bannerDesc + ")\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
+                        chnl.sendFile(new File("images/banner/" + kingdomId + ".png"));
                     }
                     break;
                 //</editor-fold>
