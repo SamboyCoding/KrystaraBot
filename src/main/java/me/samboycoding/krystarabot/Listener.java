@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
+import me.samboycoding.krystarabot.utilities.ImageUtils;
 import org.json.JSONObject;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -97,21 +98,21 @@ public class Listener
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
             IChannel chnl = msg.getChannel();
             String content = msg.getContent();
-            
+
             if (!content.startsWith("?"))
             {
                 //Not a command.
                 return;
             }
-            
-            if(!chnl.getID().equals(IDReference.ChannelID.BOTCOMMANDS.toString()) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+
+            if (!chnl.getID().equals(IDReference.ChannelID.BOTCOMMANDS.toString()) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
             {
                 //Not admin, and not in #bot-commands
                 sdr.getOrCreatePMChannel().sendMessage("Please only use commands in #bot-commands. Thank you.");
                 msg.delete();
                 return;
             }
-            
+
             String command;
             ArrayList<String> arguments = new ArrayList<>();
             if (content.contains(" "))
@@ -130,7 +131,7 @@ public class Listener
                 //?ping
                 case "ping":
                     long lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-                    if(lagTime < 0)
+                    if (lagTime < 0)
                     {
                         lagTime += lagTime + lagTime; //Makes it positive.
                     }
@@ -385,16 +386,23 @@ public class Listener
                     String bonus4Desc = kingdomInfo.getString("Bonus_4_Description");
                     String kingdomId = kingdomInfo.getString("FileBase");
                     String troops = kingdomInfo.getJSONArray("Troops").toString().replace("[", "").replace("]", "").replace(",", ", ").replace("\"", "");
-                    
+
                     if (bannerName.equals("Unnamed Banner"))
                     {
+                        //No banner, do not stitch.
                         chnl.sendFile(new File("images/kingdoms/" + kingdomId + ".png"));
                         chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nBanner: None" + "\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
                     } else
                     {
-                        chnl.sendFile(new File("images/kingdoms/" + kingdomId + ".png"));
+                        File stitched = new File("images/kingdoms/" + kingdomId + "_stitched.png");
+                        File left = new File("images/kingdoms/" + kingdomId + ".png");
+                        File right = new File("images/banner/" + kingdomId + ".png");
+                        if (!stitched.exists())
+                        {
+                            ImageUtils.writeImageToFile(ImageUtils.joinHorizontal(left, right), "png", stitched);
+                        }
+                        chnl.sendFile(stitched);
                         chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nBanner: " + bannerName + " (" + bannerDesc + ")\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
-                        chnl.sendFile(new File("images/banner/" + kingdomId + ".png"));
                     }
                     break;
                 //</editor-fold>
@@ -603,9 +611,9 @@ public class Listener
                         }
                         toSend += "\n" + chnl.getGuild().getUsersByRole(r2).size() + "x " + r2.getName();
                     }
-                    for(IUser usr : chnl.getGuild().getUsers())
+                    for (IUser usr : chnl.getGuild().getUsers())
                     {
-                        if(Utilities.userHasRole(chnl.getGuild(), usr, chnl.getGuild().getRoleByID(IDReference.RoleID.CONSOLE.toString())) || Utilities.userHasRole(chnl.getGuild(), usr, chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString())))
+                        if (Utilities.userHasRole(chnl.getGuild(), usr, chnl.getGuild().getRoleByID(IDReference.RoleID.CONSOLE.toString())) || Utilities.userHasRole(chnl.getGuild(), usr, chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString())))
                         {
                             unassigned--;
                         }

@@ -1,5 +1,6 @@
 package me.samboycoding.krystarabot.utilities;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -30,9 +31,12 @@ public class ImageUtils
         final int width = leftImage.getWidth();
         final int height = leftImage.getHeight();
 
-        final BufferedImage result = new BufferedImage(2 * width, height, BufferedImage.TYPE_INT_RGB);
+        final BufferedImage result = new BufferedImage(2 * width, height, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D drawer = result.createGraphics();
+        drawer.setComposite(AlphaComposite.Clear);
+        drawer.fillRect(0, 0, 2 * width, height);
+        drawer.setComposite(AlphaComposite.Src);
         drawer.drawImage(leftImage, 0, 0, null);
         drawer.drawImage(rightImage, width, 0, null);
 
@@ -55,9 +59,12 @@ public class ImageUtils
         final int width = topImage.getWidth();
         final int height = topImage.getHeight();
 
-        final BufferedImage result = new BufferedImage(width, 2 * height, BufferedImage.TYPE_INT_RGB);
+        final BufferedImage result = new BufferedImage(width, 2 * height, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D drawer = result.createGraphics();
+        drawer.setComposite(AlphaComposite.Clear);
+        drawer.fillRect(0, 0, width, 2 * height);
+        drawer.setComposite(AlphaComposite.Src);
         drawer.drawImage(topImage, 0, 0, null);
         drawer.drawImage(bottomImage, 0, height, null);
 
