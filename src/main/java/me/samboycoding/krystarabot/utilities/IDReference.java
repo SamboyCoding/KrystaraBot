@@ -1,9 +1,5 @@
 package me.samboycoding.krystarabot.utilities;
 
-import java.io.File;
-import java.nio.charset.Charset;
-import org.apache.commons.io.FileUtils;
-
 /**
  * Class to contain references for various IDs
  *

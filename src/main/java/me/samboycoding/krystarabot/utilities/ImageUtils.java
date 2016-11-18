@@ -2,6 +2,8 @@ package me.samboycoding.krystarabot.utilities;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -69,6 +71,26 @@ public class ImageUtils
         drawer.drawImage(bottomImage, 0, height, null);
 
         return result;
+    }
+
+    /**
+     * Scales an image. Value examples: 1 = keep the same, 0.5 = halve, 2 =
+     * double
+     *
+     * @param scaleX How much to scale the x-axis by
+     * @param scaleY How much to scale the y-axis by
+     * @param before The original image
+     * @return The resulting image
+     */
+    public static BufferedImage scaleImage(float scaleX, float scaleY, BufferedImage before)
+    {
+        BufferedImage after = new BufferedImage(Math.round(before.getWidth() * scaleX), Math.round(before.getHeight() * scaleY), BufferedImage.TYPE_INT_ARGB);
+        AffineTransform at = new AffineTransform();
+        at.scale(scaleX, scaleY);
+        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+        after = scaleOp.filter(before, after);
+
+        return after;
     }
 
     /**

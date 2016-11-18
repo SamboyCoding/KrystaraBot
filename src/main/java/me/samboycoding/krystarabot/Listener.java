@@ -1,5 +1,6 @@
 package me.samboycoding.krystarabot;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 import me.samboycoding.krystarabot.utilities.Utilities;
@@ -8,6 +9,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
 import me.samboycoding.krystarabot.utilities.ImageUtils;
@@ -355,6 +357,13 @@ public class Listener
                     String classAugment2 = classInfo.getString("Augment_2");
                     String classAugment3 = classInfo.getString("Augment_3");
 
+                    File classIcon = new File("images/classes/" + className.toLowerCase() + ".png");
+                    if (classIcon.exists())
+                    {
+                        File classIconShrunk = new File("images/classes/" + className.toLowerCase() + "_scaled.png");
+                        ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(classIcon)), "png", classIconShrunk);
+                        chnl.sendFile(classIconShrunk);
+                    }
                     chnl.sendMessage("**" + className + "** (" + classKingdom + ")\nTraits: " + classTrait1 + ", " + classTrait2 + ", " + classTrait3 + "\nAugments: " + classAugment1 + ", " + classAugment2 + ", " + classAugment3);
                     break;
                 //</editor-fold>
@@ -390,8 +399,12 @@ public class Listener
                     if (bannerName.equals("Unnamed Banner"))
                     {
                         //No banner, do not stitch.
-                        chnl.sendFile(new File("images/kingdoms/" + kingdomId + ".png"));
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nBanner: None" + "\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
+                        File logo = new File("images/kingdoms/" + kingdomId + ".png");
+                        File scaled = new File("images/kingdoms/" + kingdomId + "_scaled.png");
+                        BufferedImage kingdomIcon = ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(logo));
+                        ImageUtils.writeImageToFile(kingdomIcon, "png", scaled);
+                        chnl.sendFile(scaled);
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\nBonus x2: " + bonus2 + " - " + bonus2Desc + "\nBonus x3: " + bonus3 + " - " + bonus3Desc + "\nBonus x4: " + bonus4 + " - " + bonus4Desc);
                     } else
                     {
                         File stitched = new File("images/kingdoms/" + kingdomId + "_stitched.png");
@@ -399,10 +412,10 @@ public class Listener
                         File right = new File("images/banner/" + kingdomId + ".png");
                         if (!stitched.exists())
                         {
-                            ImageUtils.writeImageToFile(ImageUtils.joinHorizontal(left, right), "png", stitched);
+                            ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageUtils.joinHorizontal(left, right)), "png", stitched);
                         }
                         chnl.sendFile(stitched);
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nBanner: " + bannerName + " (" + bannerDesc + ")\nBonus x2: " + bonus2 + " (" + bonus2Desc + ")\nBonus x3: " + bonus3 + " (" + bonus3Desc + ")\nBonus x4: " + bonus4 + " (" + bonus4Desc + ")");
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\nBonus x2: " + bonus2 + " - " + bonus2Desc + "\nBonus x3: " + bonus3 + " - " + bonus3Desc + "\nBonus x4: " + bonus4 + " - " + bonus4Desc);
                     }
                     break;
                 //</editor-fold>
