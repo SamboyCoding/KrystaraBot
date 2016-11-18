@@ -61,6 +61,7 @@ public class main
     {
         log("Attempting to log in... please wait");
         IDReference.MYTOKEN = FileUtils.readFileToString(new File("token.txt"), Charset.defaultCharset());
+        log("Logging in with token: \"" + IDReference.MYTOKEN + "\"");
         cl = getClient(IDReference.MYTOKEN);
         cl.getDispatcher().registerListener(new Listener());
         log("Logged in and listener registered.");

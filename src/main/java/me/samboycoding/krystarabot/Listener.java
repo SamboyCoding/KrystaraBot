@@ -96,12 +96,21 @@ public class Listener
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
             IChannel chnl = msg.getChannel();
             String content = msg.getContent();
-
+            
             if (!content.startsWith("?"))
             {
                 //Not a command.
                 return;
             }
+            
+            if(!chnl.getID().equals(IDReference.ChannelID.BOTCOMMANDS.toString()) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+            {
+                //Not admin, and not in #bot-commands
+                sdr.getOrCreatePMChannel().sendMessage("Please only use commands in #bot-commands. Thank you.");
+                msg.delete();
+                return;
+            }
+            
             String command;
             ArrayList<String> arguments = new ArrayList<>();
             if (content.contains(" "))
@@ -159,7 +168,7 @@ public class Listener
                         ArrayList<IMessage> toDelete = new ArrayList<>();
                         try
                         {
-                            for (int i = 1; i < amount + 1; i++) //Start at 1 to ignore command - it's removed later.
+                            for (int i = 0; i < amount; i++) //Start at 1 to ignore command - it's removed later.
                             {
                                 toDelete.add(msgs.get(i));
                             }
