@@ -1,13 +1,16 @@
 package me.samboycoding.krystarabot;
 
+import java.io.File;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
+import org.apache.commons.io.FileUtils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -57,6 +60,7 @@ public class main
     public static void main(String[] args) throws DiscordException, RateLimitException, IOException
     {
         log("Attempting to log in... please wait");
+        IDReference.MYTOKEN = FileUtils.readFileToString(new File("token.txt"), Charset.defaultCharset());
         cl = getClient(IDReference.MYTOKEN);
         cl.getDispatcher().registerListener(new Listener());
         log("Logged in and listener registered.");

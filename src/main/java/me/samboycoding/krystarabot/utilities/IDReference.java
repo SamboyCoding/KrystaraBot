@@ -1,5 +1,9 @@
 package me.samboycoding.krystarabot.utilities;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import org.apache.commons.io.FileUtils;
+
 /**
  * Class to contain references for various IDs
  *
@@ -48,7 +52,7 @@ public class IDReference
     //public static final String SERVERID = "247393304151326721"; //Testing
     public static final String SERVERID = "236897364697284618"; //Real
     
-    public static final String MYTOKEN = "MjQ3Mzk2MzA0NDc1NTIxMDI1.CwooOQ.PAiqYMD92L-dEYb5RqDuUGoIHQY";
+    public static String MYTOKEN; //Set in main method.
         
     public static String MYID = null; //Gets set once readyevent done.
 }
