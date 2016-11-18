@@ -67,7 +67,8 @@ public class Listener
             new Command("?kingdom [name]", "Shows information for the specified kingdom.", false)._register();
             new Command("?search [text]", "Search for troops, traits, spells, hero classes or kingdoms containing the specified text.", false)._register();
             new Command("?platform [pc|mobile|console]", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time.", false)._register();
-            new Command("?userstats", "Shows information on you, and the server.", false)._register();
+            new Command("?userstats [optional @mention]", "Shows information on you, or the specified user", false)._register();
+            new Command("?serverstats", "Shows information on the server.", false)._register();
             new Command("?newcode [code]", "Post a new code into the #codes channel.", false)._register();
             new Command("?codes", "Lists the currently \"Alive\" codes.", false)._register();
             new Command("?dead [code]", "Report a code as dead in the #codes channel.", false)._register();
@@ -561,14 +562,21 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Userstats">
                 //?userstats    
                 case "userstats":
-                    String name = sdr.getName();
-                    String nickname = nameOfSender;
+                    IUser userstatsUsr;
+                    if (arguments.isEmpty())
+                    {
+                        userstatsUsr = sdr;
+                    } else
+                    {
+                        String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
+                        userstatsUsr = chnl.getGuild().getUserByID(id);
+                    }
+                    String name = userstatsUsr.getName();
+                    String nickname = userstatsUsr.getNicknameForGuild(chnl.getGuild()).isPresent() ? userstatsUsr.getNicknameForGuild(chnl.getGuild()).get() : userstatsUsr.getName();
                     Boolean hasNick = !name.equals(nickname);
-                    Status state = sdr.getStatus();
-                    List<IRole> sdrRoles = sdr.getRolesForGuild(chnl.getGuild());
+                    Status state = userstatsUsr.getStatus();
+                    List<IRole> sdrRoles = userstatsUsr.getRolesForGuild(chnl.getGuild());
                     int numRolesSdr = sdrRoles.size() - 1; //-1 to remove @everyone
-                    List<IRole> guildRoles = chnl.getGuild().getRoles();
-                    int numRolesGuild = guildRoles.size() - 1; //Again, -1 to remove @everyone
 
                     List<String> sdrRolesNice = new ArrayList<>();
                     for (IRole r : sdrRoles)
@@ -578,10 +586,6 @@ public class Listener
                             continue;
                         }
                         if (r.getID().equals(IDReference.RoleID.MUTED.toString()))
-                        {
-                            continue;
-                        }
-                        if (r.getName().equals("KrystaraBot"))
                         {
                             continue;
                         }
@@ -600,12 +604,22 @@ public class Listener
                     toSend += "\nStream URL: " + (state.getUrl().isPresent() ? state.getUrl().get() : "None");
                     toSend += "\nGame: " + (state.getStatusMessage() == null ? "nothing" : "\"" + state.getStatusMessage() + "\"");
                     toSend += "\nNumber of roles: " + numRolesSdr;
-                    toSend += "\nList of Roles: " + sdrRolesNice.toString();
-                    toSend += "\n--Server Info---------";
-                    toSend += "\nRoles: " + numRolesGuild;
-                    toSend += "\nChannels: " + chnl.getGuild().getChannels().size();
-                    toSend += "\nMembers: " + chnl.getGuild().getUsers().size();
-                    toSend += "\n--Roles Info---------";
+                    toSend += "\nList of Roles: " + sdrRolesNice.toString() + "\n```";
+
+                    chnl.sendMessage(toSend);
+                    break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Serverstats">
+                //?serverstats
+                case "serverstats":
+                    List<IRole> guildRoles = chnl.getGuild().getRoles();
+                    int numRolesGuild = guildRoles.size() - 1; //Again, -1 to remove @everyone
+
+                    String toSendServer = "```\n--Server Info---------";
+                    toSendServer += "\nRoles: " + numRolesGuild;
+                    toSendServer += "\nChannels: " + chnl.getGuild().getChannels().size();
+                    toSendServer += "\nMembers: " + chnl.getGuild().getUsers().size();
+                    toSendServer += "\n--Roles Info---------";
 
                     int unassigned = chnl.getGuild().getUsers().size();
                     for (IRole r2 : guildRoles)
@@ -622,19 +636,19 @@ public class Listener
                         {
                             continue;
                         }
-                        toSend += "\n" + chnl.getGuild().getUsersByRole(r2).size() + "x " + r2.getName();
+                        toSendServer += "\n" + chnl.getGuild().getUsersByRole(r2).size() + "x " + r2.getName();
                     }
-                    for (IUser usr : chnl.getGuild().getUsers())
+                    for (IUser u : chnl.getGuild().getUsers())
                     {
-                        if (Utilities.userHasRole(chnl.getGuild(), usr, chnl.getGuild().getRoleByID(IDReference.RoleID.CONSOLE.toString())) || Utilities.userHasRole(chnl.getGuild(), usr, chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString())))
+                        if (Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.RoleID.CONSOLE.toString())) || Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString())))
                         {
                             unassigned--;
                         }
                     }
-                    toSend += "\n" + unassigned + "x Not Assigned";
-                    toSend += "\n```";
+                    toSendServer += "\n" + unassigned + "x Not Assigned";
+                    toSendServer += "\n```";
 
-                    chnl.sendMessage(toSend);
+                    chnl.sendMessage(toSendServer);
                     break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Warn">
@@ -731,34 +745,34 @@ public class Listener
                     ArrayList<String> codes = main.codes.getLiveCodes();
                     if (codes.isEmpty())
                     {
-                        chnl.sendMessage("No codes are currently \"Alive\".");
+                        sdr.getOrCreatePMChannel().sendMessage("No codes are currently \"Alive\".");
                         break;
                     }
-                    chnl.sendMessage("Currently \"Alive\" codes: `" + codes.toString().replace("[", "").replace("]", "").replace("\"", "") + "`.");
+                    sdr.getOrCreatePMChannel().sendMessage("Currently \"Alive\" codes: `" + codes.toString().replace("[", "").replace("]", "").replace("\"", "") + "`.");
                     break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Help">
                 //?help
                 case "help":
-                    toSend = "I recognize the following commands: \n";
+                    toSendServer = "I recognize the following commands: \n";
                     for (Command c : main.getRegisteredCommands())
                     {
-                        toSend += "\n**" + c.getName() + "**: " + c.getDescription();
+                        toSendServer += "\n**" + c.getName() + "**: " + c.getDescription();
                     }
                     if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
                     {
-                        toSend += "\n\nAdmin Commands (These actions WILL be logged):\n";
+                        toSendServer += "\n\nAdmin Commands (These actions WILL be logged):\n";
                         for (AdminCommand ac : main.getRegisteredAdminCommands())
                         {
-                            toSend += "\n**" + ac.getName() + "**: " + ac.getDescription();
+                            toSendServer += "\n**" + ac.getName() + "**: " + ac.getDescription();
                         }
                     } else
                     {
-                        toSend += "\n\n(" + main.getRegisteredAdminCommands().size() + " commands not shown because you are not a high-enough rank)";
+                        toSendServer += "\n\n(" + main.getRegisteredAdminCommands().size() + " commands not shown because you are not a high-enough rank)";
                     }
-                    toSend += "\n-------------------------------------------------------------";
+                    toSendServer += "\n-------------------------------------------------------------";
 
-                    sdr.getOrCreatePMChannel().sendMessage(toSend);
+                    sdr.getOrCreatePMChannel().sendMessage(toSendServer);
                     chnl.sendMessage(sdr.mention() + ", I've sent you a list of commands over PM.");
                     break;
                 //</editor-fold>
