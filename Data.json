@@ -49,7 +49,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -153,11 +152,10 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
-		"Rarity": "----",
+		"Rarity": "Mythic",
 		"Kingdom": "Blighted Lands",
 		"PrimaryColor": "Blue",
 		"FileBase": "Troop_K33_03",
@@ -257,7 +255,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -361,7 +358,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -465,7 +461,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -569,7 +564,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -673,7 +667,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -777,7 +770,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -881,7 +873,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -985,7 +976,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -1089,7 +1079,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -1193,7 +1182,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -1297,7 +1285,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -1401,7 +1388,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -1505,7 +1491,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -1609,7 +1594,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -1713,7 +1697,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -1817,7 +1800,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -1921,7 +1903,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -2025,7 +2006,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -2129,7 +2109,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -2233,7 +2212,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -2337,7 +2315,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -2441,7 +2418,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -2545,7 +2521,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -2649,7 +2624,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -2753,7 +2727,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -2857,7 +2830,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -2961,7 +2933,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -3065,7 +3036,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -3169,7 +3139,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -3273,7 +3242,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -3377,7 +3345,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -3481,7 +3448,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -3585,7 +3551,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -3689,7 +3654,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -3793,7 +3757,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -3897,7 +3860,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -4001,7 +3963,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -4105,7 +4066,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -4209,7 +4169,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -4313,7 +4272,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -4417,7 +4375,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -4521,7 +4478,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -4625,7 +4581,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -4729,7 +4684,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -4833,7 +4787,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -4937,7 +4890,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -5041,7 +4993,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -5145,7 +5096,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -5249,7 +5199,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -5353,7 +5302,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -5457,7 +5405,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -5561,11 +5508,10 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
-		"Rarity": "----",
+		"Rarity": "Mythic",
 		"Kingdom": "Apocalypse",
 		"PrimaryColor": "Purple",
 		"FileBase": "Troop_K34_03",
@@ -5665,7 +5611,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -5769,7 +5714,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -5873,7 +5817,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -5977,7 +5920,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -6081,7 +6023,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -6185,7 +6126,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -6289,7 +6229,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -6393,11 +6332,10 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
-		"Rarity": "----",
+		"Rarity": "Mythic",
 		"Kingdom": "Ghulvania",
 		"PrimaryColor": "Blue",
 		"FileBase": "Troop_K33_02",
@@ -6497,7 +6435,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -6601,7 +6538,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -6705,7 +6641,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -6809,7 +6744,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -6913,7 +6847,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -7017,7 +6950,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -7121,7 +7053,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -7225,7 +7156,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -7329,7 +7259,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -7433,7 +7362,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -7537,7 +7465,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -7641,7 +7568,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -7745,7 +7671,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -7849,7 +7774,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -7953,7 +7877,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -8057,7 +7980,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -8161,7 +8083,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -8265,7 +8186,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -8369,7 +8289,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -8473,11 +8392,10 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
-		"Rarity": "----",
+		"Rarity": "Mythic",
 		"Kingdom": "Apocalypse",
 		"PrimaryColor": "Brown",
 		"FileBase": "Troop_K34_02",
@@ -8577,7 +8495,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -8681,7 +8598,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -8785,7 +8701,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -8889,7 +8804,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -8993,7 +8907,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -9097,7 +9010,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -9201,7 +9113,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -9305,7 +9216,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -9409,7 +9319,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -9513,7 +9422,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -9617,7 +9525,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -9721,7 +9628,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -9825,7 +9731,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -9929,11 +9834,10 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
-		"Rarity": "----",
+		"Rarity": "Mythic",
 		"Kingdom": "Whitehelm",
 		"PrimaryColor": "Yellow",
 		"FileBase": "Troop_K07_08",
@@ -10033,7 +9937,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -10137,7 +10040,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -10241,7 +10143,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -10345,7 +10246,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -10449,7 +10349,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -10553,7 +10452,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -10657,7 +10555,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -10761,7 +10658,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -10865,7 +10761,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -10969,7 +10864,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -11073,7 +10967,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -11177,7 +11070,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -11281,7 +11173,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -11385,7 +11276,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -11489,7 +11379,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -11593,7 +11482,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -11697,7 +11585,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -11801,7 +11688,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -11905,7 +11791,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -12009,7 +11894,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -12113,7 +11997,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -12217,7 +12100,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -12321,7 +12203,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -12425,7 +12306,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -12529,7 +12409,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -12633,7 +12512,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -12737,7 +12615,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -12841,7 +12718,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -12945,7 +12821,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -13049,11 +12924,10 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
-		"Rarity": "----",
+		"Rarity": "Mythic",
 		"Kingdom": "Khetar",
 		"PrimaryColor": "Purple",
 		"FileBase": "Troop_K09_10",
@@ -13153,7 +13027,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -13257,7 +13130,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -13361,7 +13233,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -13465,7 +13336,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -13569,7 +13439,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -13673,7 +13542,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -13777,7 +13645,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -13881,7 +13748,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -13985,7 +13851,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -14089,7 +13954,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -14193,7 +14057,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -14297,7 +14160,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -14401,7 +14263,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -14505,7 +14366,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -14609,7 +14469,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -14713,7 +14572,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -14817,7 +14675,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -14921,7 +14778,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -15025,7 +14881,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -15129,7 +14984,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -15233,7 +15087,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -15337,7 +15190,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -15441,7 +15293,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -15545,7 +15396,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -15649,7 +15499,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -15753,7 +15602,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -15857,7 +15705,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -15961,7 +15808,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -16065,7 +15911,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -16169,7 +16014,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -16273,7 +16117,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -16377,7 +16220,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -16481,7 +16323,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -16585,7 +16426,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -16689,7 +16529,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -16793,7 +16632,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -16897,7 +16735,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -17001,7 +16838,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -17105,7 +16941,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -17209,7 +17044,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -17313,7 +17147,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -17417,7 +17250,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -17521,7 +17353,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -17625,7 +17456,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -17729,7 +17559,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -17833,7 +17662,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -17937,7 +17765,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -18041,7 +17868,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -18145,7 +17971,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -18249,7 +18074,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -18353,7 +18177,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -18457,7 +18280,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -18561,7 +18383,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -18665,7 +18486,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -18769,7 +18589,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -18873,7 +18692,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -18977,11 +18795,10 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
-		"Rarity": "----",
+		"Rarity": "Mythic",
 		"Kingdom": "Apocalypse",
 		"PrimaryColor": "Green",
 		"FileBase": "Troop_K34_01",
@@ -19081,7 +18898,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -19185,7 +19001,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -19289,7 +19104,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -19393,7 +19207,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -19497,7 +19310,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -19601,7 +19413,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -19705,7 +19516,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -19809,7 +19619,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -19913,7 +19722,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -20017,7 +19825,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -20121,7 +19928,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -20225,7 +20031,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -20329,7 +20134,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -20433,7 +20237,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -20537,7 +20340,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -20641,7 +20443,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -20745,7 +20546,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -20849,7 +20649,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -20953,7 +20752,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -21057,7 +20855,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -21161,7 +20958,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -21265,7 +21061,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -21369,7 +21164,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -21473,7 +21267,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -21577,7 +21370,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -21681,7 +21473,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -21785,7 +21576,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -21889,7 +21679,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -21993,7 +21782,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -22097,7 +21885,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -22201,7 +21988,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -22305,7 +22091,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -22409,7 +22194,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -22513,7 +22297,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -22617,7 +22400,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -22721,7 +22503,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -22825,7 +22606,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -22929,7 +22709,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -23033,7 +22812,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -23137,7 +22915,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -23241,7 +23018,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -23345,7 +23121,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -23449,7 +23224,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -23553,7 +23327,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -23657,7 +23430,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -23761,7 +23533,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -23865,7 +23636,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -23969,7 +23739,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -24073,7 +23842,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -24177,7 +23945,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -24281,7 +24048,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -24385,7 +24151,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -24489,7 +24254,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -24593,7 +24357,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -24697,7 +24460,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -24801,7 +24563,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -24905,7 +24666,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -25009,7 +24769,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -25113,7 +24872,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -25217,7 +24975,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -25321,7 +25078,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -25425,7 +25181,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -25529,7 +25284,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -25633,7 +25387,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -25737,7 +25490,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -25841,7 +25593,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -25945,7 +25696,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -26049,7 +25799,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -26153,7 +25902,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -26257,7 +26005,6 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -26361,7 +26108,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -26465,7 +26211,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -26569,7 +26314,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -26673,7 +26417,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -26777,7 +26520,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -26881,7 +26623,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -26985,7 +26726,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -27089,7 +26829,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -27193,7 +26932,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -27297,7 +27035,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -27401,7 +27138,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -27505,7 +27241,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -27609,7 +27344,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -27713,7 +27447,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -27817,7 +27550,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -27921,7 +27653,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -28025,7 +27756,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -28129,7 +27859,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -28233,7 +27962,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -28337,7 +28065,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -28441,7 +28168,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -28545,7 +28271,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -28649,7 +28374,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -28753,11 +28477,10 @@
 			"ColorRed": true,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
-		"Rarity": "----",
+		"Rarity": "Mythic",
 		"Kingdom": "Apocalypse",
 		"PrimaryColor": "Red",
 		"FileBase": "Troop_K34_00",
@@ -28857,7 +28580,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -28961,7 +28683,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -29065,7 +28786,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -29169,7 +28889,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -29273,7 +28992,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -29377,7 +29095,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -29481,7 +29198,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -29585,7 +29301,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -29689,7 +29404,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": true,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -29793,7 +29507,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -29897,7 +29610,6 @@
 			"ColorRed": true,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -30001,7 +29713,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": true
 		},
@@ -30105,7 +29816,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -30209,7 +29919,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -30313,7 +30022,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -30417,7 +30125,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -30521,7 +30228,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -30625,7 +30331,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": true
 		},
@@ -30729,7 +30434,6 @@
 			"ColorRed": false,
 			"ColorBrown": true,
 			"ColorPurple": false,
-			"ColorOrange": true,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
@@ -30833,7 +30537,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": false,
-			"ColorOrange": false,
 			"ColorYellow": true,
 			"ColorGreen": false
 		},
@@ -30937,7 +30640,6 @@
 			"ColorRed": false,
 			"ColorBrown": false,
 			"ColorPurple": true,
-			"ColorOrange": false,
 			"ColorYellow": false,
 			"ColorGreen": false
 		},
