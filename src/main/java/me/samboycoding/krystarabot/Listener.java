@@ -8,11 +8,13 @@ import me.samboycoding.krystarabot.utilities.IDReference;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
 import me.samboycoding.krystarabot.utilities.ImageUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -78,6 +80,8 @@ public class Listener
             new AdminCommand("?ban [@user]", "Bans the specified user from the server.", true)._register();
             new AdminCommand("?clear [amount (1-100)]", "Deletes the specified amount of messages.", true)._register();
             new AdminCommand("?warn [@user] [message]", "Sends a PM warning to the specified user.", true)._register();
+            new AdminCommand("?clearcache", "Clears cached scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
+            new AdminCommand("?buildcache", "Builds a cache of scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
 
             main.log("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
@@ -202,8 +206,164 @@ public class Listener
                     }
                     break;
                 //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Clearcache">
+                case "clearcache":
+                    if (!Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+                    {
+                        msg.delete(); //Delete silently.
+                        break;
+                    }
+                    File kingdomsDir = new File("images/kingdoms/");
+                    if (!kingdomsDir.isDirectory())
+                    {
+                        chnl.sendMessage("!!!!Kingdoms Directory is NOT a directory?!?!!!!");
+                        break;
+                    }
+                    File classesDir = new File("images/classes/");
+                    if (!classesDir.isDirectory())
+                    {
+                        chnl.sendMessage("!!!!Classes Directory is NOT a directory?!?!!!!");
+                        break;
+                    }
+
+                    int count = 0;
+                    long start = System.currentTimeMillis();
+                    for (File f : kingdomsDir.listFiles())
+                    {
+                        if (f.getName().contains("stitched") || f.getName().contains("scaled"))
+                        {
+                            f.delete();
+                            count++;
+                        }
+                    }
+                    for (File f : classesDir.listFiles())
+                    {
+                        if (f.getName().contains("scaled"))
+                        {
+                            f.delete();
+                            count++;
+                        }
+                    }
+                    if (count == 0)
+                    {
+                        chnl.sendMessage("Cache already empty.");
+                    } else
+                    {
+                        long time = System.currentTimeMillis() - start;
+                        System.out.println(time);
+                        float rate = (float) count / (float) time;
+
+                        chnl.sendMessage("Cleared image cache. Removed " + count + " files that were stitched or scaled, leaving only the raw files, in " + time + " milliseconds, at a rate of " + rate + " image(s)/millisecond.");
+                    }
+                    msg.delete();
+                    break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Buildcache">
+                case "buildcache":
+                    if (!Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+                    {
+                        msg.delete(); //Delete silently.
+                        break;
+                    }
+                    kingdomsDir = new File("images/kingdoms/");
+                    if (!kingdomsDir.isDirectory())
+                    {
+                        chnl.sendMessage("!!!!Kingdoms Directory is NOT a directory?!?!!!!");
+                        break;
+                    }
+                    classesDir = new File("images/classes/");
+                    if (!classesDir.isDirectory())
+                    {
+                        chnl.sendMessage("!!!!Classes Directory is NOT a directory?!?!!!!");
+                        break;
+                    }
+
+                    int genCount = 0;
+                    start = System.currentTimeMillis();
+
+                    JSONArray kingdoms = GameData.arrayKingdoms;
+                    JSONArray classes = GameData.arrayClasses;
+
+                    for (Iterator<Object> it = kingdoms.iterator(); it.hasNext();)
+                    {
+                        JSONObject kingdom = (JSONObject) it.next();
+
+                        String thisId = kingdom.getString("FileBase");
+
+                        if (kingdom.getString("BannerName").equals("Unnamed Banner"))
+                        {
+                            //No banner, just generate scaled.
+                            File raw = new File("images/kingdoms/" + thisId + ".png");
+                            File scaled = new File("images/kingdoms/" + thisId + "_scaled.png");
+                            if (scaled.exists())
+                            {
+                                continue;
+                            }
+                            BufferedImage kingdomIcon = ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(raw));
+                            ImageUtils.writeImageToFile(kingdomIcon, "png", scaled);
+
+                            genCount++;
+                        } else
+                        {
+                            File stitched = new File("images/kingdoms/" + thisId + "_stitched.png");
+                            if (stitched.exists())
+                            {
+                                continue;
+                            }
+                            File left = new File("images/kingdoms/" + thisId + ".png");
+                            File right = new File("images/banner/" + thisId + ".png");
+
+                            if(!left.exists())
+                            {
+                                main.log("Unable to generate image for kingdom " + kingdom.getString("Name") + " because the file: " + left.getName() + " doesn't exist!");
+                                continue;
+                            }
+                            if(!right.exists())
+                            {
+                                main.log("Unable to generate image for kingdom " + kingdom.getString("Name") + " because the file: " + left.getName() + " doesn't exist!");
+                                continue;
+                            }
+                            ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageUtils.joinHorizontal(left, right)), "png", stitched);
+                            
+                            genCount++;
+                        }
+                    }
+                    
+                    for(Iterator<Object> it2 = classes.iterator(); it2.hasNext();)
+                    {
+                        JSONObject hClass = (JSONObject) it2.next();
+                        String thisId = hClass.getString("Name").toLowerCase();
+                        
+                        File original = new File("images/classes/" + thisId + ".png");
+                        if(!original.exists())
+                        {
+                            main.log("Unable to generate image for class " + thisId + ", becuase the file: " + original.getName() + " doesn't exist!");
+                            continue;
+                        }
+                        
+                        File scaled = new File("images/classes/" + thisId + "_scaled.png");
+                        ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(original)), "png", scaled);
+                        
+                        genCount++;
+                    }
+
+                    if (genCount == 0)
+                    {
+                        chnl.sendMessage("Cache already populated.");
+                    } else
+                    {
+                        long time = System.currentTimeMillis() - start;
+                        float timeSeconds = (float) time / 1000f;
+                        float rate = (float) genCount / timeSeconds;
+
+                        chnl.sendMessage("Populated image cache. Generated " + genCount + " files, in " + time + " milliseconds, at a rate of " + rate + " image(s)/second.");
+                    }
+                    msg.delete();
+                    break;
+                //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Troop">
                 //?troop [string]
+
                 case "troop":
                     if (arguments.size() < 1)
                     {
@@ -799,7 +959,8 @@ public class Listener
     }
 
     @EventSubscriber
-    public void onJoin(UserJoinEvent e)
+    public void onJoin(UserJoinEvent e
+    )
     {
         try
         {
@@ -812,7 +973,8 @@ public class Listener
     }
 
     @EventSubscriber
-    public void onLeave(UserLeaveEvent e)
+    public void onLeave(UserLeaveEvent e
+    )
     {
         try
         {
