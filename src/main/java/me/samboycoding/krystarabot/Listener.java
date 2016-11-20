@@ -867,6 +867,7 @@ public class Listener
                         }
                         main.codes.addCode(code);
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage(newEmoji + " Code: `" + arguments.get(0).toUpperCase() + "` " + newEmoji);
+                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** posted '" + code + "' as new code.");
                         break;
                     } else
                     {
@@ -898,6 +899,7 @@ public class Listener
                         }
                         main.codes.makeCodeDead(code2);
                         chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage(skullEmoji + " Code `" + arguments.get(0).toUpperCase() + "` is dead! " + skullEmoji);
+                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**" + nameOfSender + "** reported '" + code2 + "' as dead.");
                         break;
                     } else
                     {
