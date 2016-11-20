@@ -8,8 +8,12 @@ import me.samboycoding.krystarabot.utilities.IDReference;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
@@ -43,7 +47,7 @@ public class Listener
 {
 
     public static MessageCounterHandler messageCounter = main.messageCounter;
-    
+
     @EventSubscriber
     public void onReady(ReadyEvent e) throws DiscordException, RateLimitException, MissingPermissionsException
     {
@@ -76,6 +80,7 @@ public class Listener
             new Command("?newcode [code]", "Post a new code into the #codes channel.", false)._register();
             new Command("?codes", "Lists the currently \"Alive\" codes.", false)._register();
             new Command("?dead [code]", "Report a code as dead in the #codes channel.", false)._register();
+            new Command("?top10", "Shows the 10 most talkative (i.e. those that sent the most messages) on the server.", false)._register();
 
             main.log("Registering Admin commands...");
             new AdminCommand("?kick [@user]", "Kicks the specified user from the server.", true)._register();
@@ -102,20 +107,26 @@ public class Listener
                 e.getMessage().getChannel().sendMessage("Sorry, the bot doesn't support PM commands. Please re-enter the command in a server.");
                 return;
             }
+            if (e.getMessage().getAuthor().getID().equals(IDReference.MYID))
+            {
+                return; //Do not process own messages. (I don't think this happens, but still.)
+            }
             IMessage msg = e.getMessage();
             IUser sdr = msg.getAuthor();
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
             IChannel chnl = msg.getChannel();
             String content = msg.getContent();
-            
+
             //Message Counter
             messageCounter.countMessage(sdr, chnl.getGuild());
-                    
+
             if (!content.startsWith("?"))
             {
                 //Not a command.
                 return;
             }
+
+            messageCounter.countCommand(sdr, chnl.getGuild());
 
             if (!chnl.getID().equals(IDReference.ChannelID.BOTCOMMANDS.toString()) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
             {
@@ -318,37 +329,37 @@ public class Listener
                             File left = new File("images/kingdoms/" + thisId + ".png");
                             File right = new File("images/banner/" + thisId + ".png");
 
-                            if(!left.exists())
+                            if (!left.exists())
                             {
                                 main.log("Unable to generate image for kingdom " + kingdom.getString("Name") + " because the file: " + left.getName() + " doesn't exist!");
                                 continue;
                             }
-                            if(!right.exists())
+                            if (!right.exists())
                             {
                                 main.log("Unable to generate image for kingdom " + kingdom.getString("Name") + " because the file: " + left.getName() + " doesn't exist!");
                                 continue;
                             }
                             ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageUtils.joinHorizontal(left, right)), "png", stitched);
-                            
+
                             genCount++;
                         }
                     }
-                    
-                    for(Iterator<Object> it2 = classes.iterator(); it2.hasNext();)
+
+                    for (Iterator<Object> it2 = classes.iterator(); it2.hasNext();)
                     {
                         JSONObject hClass = (JSONObject) it2.next();
                         String thisId = hClass.getString("Name").toLowerCase();
-                        
+
                         File original = new File("images/classes/" + thisId + ".png");
-                        if(!original.exists())
+                        if (!original.exists())
                         {
                             main.log("Unable to generate image for class " + thisId + ", becuase the file: " + original.getName() + " doesn't exist!");
                             continue;
                         }
-                        
+
                         File scaled = new File("images/classes/" + thisId + "_scaled.png");
                         ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(original)), "png", scaled);
-                        
+
                         genCount++;
                     }
 
@@ -742,6 +753,8 @@ public class Listener
                     Status state = userstatsUsr.getStatus();
                     List<IRole> sdrRoles = userstatsUsr.getRolesForGuild(chnl.getGuild());
                     int numRolesSdr = sdrRoles.size() - 1; //-1 to remove @everyone
+                    int messageCount = messageCounter.getMessageCountForUser(sdr, chnl.getGuild());
+                    int commandCount = messageCounter.getCommandCountForUser(sdr, chnl.getGuild());
 
                     List<String> sdrRolesNice = new ArrayList<>();
                     for (IRole r : sdrRoles)
@@ -769,7 +782,10 @@ public class Listener
                     toSend += "\nStream URL: " + (state.getUrl().isPresent() ? state.getUrl().get() : "None");
                     toSend += "\nGame: " + (state.getStatusMessage() == null ? "nothing" : "\"" + state.getStatusMessage() + "\"");
                     toSend += "\nNumber of roles: " + numRolesSdr;
-                    toSend += "\nList of Roles: " + sdrRolesNice.toString() + "\n```";
+                    toSend += "\nList of Roles: " + sdrRolesNice.toString();
+                    toSend += "\nMessages sent: " + messageCount;
+                    toSend += "\nCommands sent: " + commandCount;
+                    toSend += "\n```";
 
                     chnl.sendMessage(toSend);
                     break;
@@ -784,6 +800,17 @@ public class Listener
                     toSendServer += "\nRoles: " + numRolesGuild;
                     toSendServer += "\nChannels: " + chnl.getGuild().getChannels().size();
                     toSendServer += "\nMembers: " + chnl.getGuild().getUsers().size();
+
+                    int msgCount = 0;
+                    int cmdCount = 0;
+                    for (String id : messageCounter.getUserIDList(chnl.getGuild()))
+                    {
+                        msgCount += messageCounter.getMessageCountForUser(chnl.getGuild().getUserByID(id), chnl.getGuild());
+                        cmdCount += messageCounter.getCommandCountForUser(chnl.getGuild().getUserByID(id), chnl.getGuild());
+                    }
+
+                    toSendServer += "\nMessages sent: " + msgCount;
+                    toSendServer += "\nCommands sent: " + cmdCount;
                     toSendServer += "\n--Roles Info---------";
 
                     int unassigned = chnl.getGuild().getUsers().size();
@@ -918,6 +945,39 @@ public class Listener
                     sdr.getOrCreatePMChannel().sendMessage("Currently \"Alive\" codes: `" + codes.toString().replace("[", "").replace("]", "").replace("\"", "") + "`.");
                     break;
                 //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Top10">
+                case "top10":
+                    LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
+                    ValueComparator comp = new ValueComparator((Map<IUser, Integer>) unordered);
+                    TreeMap<IUser, Integer> ordered = new TreeMap<>(comp);
+
+                    for (String id : messageCounter.getUserIDList(chnl.getGuild()))
+                    {
+                        IUser current = chnl.getGuild().getUserByID(id);
+                        unordered.put(current, messageCounter.getMessageCountForUser(current, chnl.getGuild()));
+                    }
+                    
+                    ordered.putAll(unordered); //Now it's sorted, by values
+                    
+                    String toSend1 = "```\nName                 Number of messages";
+                    
+                    int count1 = 0;
+                    for (IUser u : ordered.descendingKeySet())
+                    {
+                        count1++;
+                        toSend1 += "\n" + u.getName() + "                   " + ordered.get(u);
+                        if(count1 > 10)
+                        {
+                            break;
+                        }
+                    }
+                    
+                    toSend1 += "\n```";
+                    
+                    msg.delete();
+                    chnl.sendMessage(toSend1);
+                    break;
+                //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Help">
                 //?help
                 case "help":
@@ -991,5 +1051,29 @@ public class Listener
         {
             //Ignore.
         }
+    }
+}
+
+class ValueComparator implements Comparator<IUser>
+{
+
+    Map<IUser, Integer> base;
+
+    public ValueComparator(Map<IUser, Integer> base)
+    {
+        this.base = base;
+    }
+
+    // Note: this comparator imposes orderings that are inconsistent with equals.    
+    @Override
+    public int compare(IUser a, IUser b)
+    {
+        if (base.get(a) >= base.get(b))
+        {
+            return -1;
+        } else
+        {
+            return 1;
+        } // returning 0 would merge keys
     }
 }
