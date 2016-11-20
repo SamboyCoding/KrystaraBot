@@ -42,7 +42,7 @@ import sx.blah.discord.util.RateLimitException;
 public class Listener
 {
 
-    public static MessageCounterHandler messageCounter = new MessageCounterHandler();
+    public static MessageCounterHandler messageCounter = main.messageCounter;
     
     @EventSubscriber
     public void onReady(ReadyEvent e) throws DiscordException, RateLimitException, MissingPermissionsException
@@ -109,8 +109,7 @@ public class Listener
             String content = msg.getContent();
             
             //Message Counter
-            String sdrID = sdr.getID();
-            //messageCounter.countMessage(sdrID);
+            messageCounter.countMessage(sdr, chnl.getGuild());
                     
             if (!content.startsWith("?"))
             {
