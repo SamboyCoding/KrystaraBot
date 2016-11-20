@@ -42,6 +42,8 @@ import sx.blah.discord.util.RateLimitException;
 public class Listener
 {
 
+    public static MessageCounterHandler messageCounter = new MessageCounterHandler();
+    
     @EventSubscriber
     public void onReady(ReadyEvent e) throws DiscordException, RateLimitException, MissingPermissionsException
     {
@@ -105,7 +107,11 @@ public class Listener
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
             IChannel chnl = msg.getChannel();
             String content = msg.getContent();
-
+            
+            //Message Counter
+            String sdrID = sdr.getID();
+            //messageCounter.countMessage(sdrID);
+                    
             if (!content.startsWith("?"))
             {
                 //Not a command.
@@ -565,7 +571,7 @@ public class Listener
                         BufferedImage kingdomIcon = ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(logo));
                         ImageUtils.writeImageToFile(kingdomIcon, "png", scaled);
                         chnl.sendFile(scaled);
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\nBonus x2: " + bonus2 + " - " + bonus2Desc + "\nBonus x3: " + bonus3 + " - " + bonus3Desc + "\nBonus x4: " + bonus4 + " - " + bonus4Desc);
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\n**Kingdom Bonus**\n" + bonus2 + " - " + bonus2Desc + "\n" + bonus3 + " - " + bonus3Desc + "\n" + bonus4 + " - " + bonus4Desc);
                     } else
                     {
                         File stitched = new File("images/kingdoms/" + kingdomId + "_stitched.png");
@@ -576,7 +582,7 @@ public class Listener
                             ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageUtils.joinHorizontal(left, right)), "png", stitched);
                         }
                         chnl.sendFile(stitched);
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\nBonus x2: " + bonus2 + " - " + bonus2Desc + "\nBonus x3: " + bonus3 + " - " + bonus3Desc + "\nBonus x4: " + bonus4 + " - " + bonus4Desc);
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\n**Kingdom Bonus**\n" + bonus2 + " - " + bonus2Desc + "\n" + bonus3 + " - " + bonus3Desc + "\n" + bonus4 + " - " + bonus4Desc);
                     }
                     break;
                 //</editor-fold>
