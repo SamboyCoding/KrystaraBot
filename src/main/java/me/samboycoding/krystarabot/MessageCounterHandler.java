@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IGuild;
@@ -59,7 +60,12 @@ public class MessageCounterHandler
         }
     }
 
-    //count the messages for the user
+    /**
+     * Adds one to a users message count.
+     * @param usr Who to add to
+     * @param server The server the message was sent in.
+     * @throws IOException If the file can not be updated.
+     */
     public void countMessage(IUser usr, IGuild server) throws IOException
     {
         if(!msgCounterJSON.has(server.getID()))
@@ -82,5 +88,30 @@ public class MessageCounterHandler
             currentUser.put("messages", messages);
         }
         FileUtils.writeStringToFile(messageCounter, msgCounterJSON.toString(4), Charset.defaultCharset());
+    }
+    
+    public ArrayList<String> getUserIDList(IGuild forServer)
+    {
+        if(!msgCounterJSON.has(forServer.getID()))
+        {
+            return null;
+        }
+        ArrayList<String> res = new ArrayList<>();
+        for (String s : msgCounterJSON.getJSONObject(forServer.getID()).keySet())
+        {
+            res.add(s);
+        }
+        
+        return res;
+    }
+    
+    public int getMessagesForUser(IUser who, IGuild where)
+    {
+        if(!msgCounterJSON.has(where.getID()))
+        {
+            return -1;
+        }
+        
+        return msgCounterJSON.getJSONObject(where.getID()).getJSONObject(who.getID()).getInt("messages");
     }
 }
