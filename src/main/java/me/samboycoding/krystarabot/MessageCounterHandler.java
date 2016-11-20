@@ -105,7 +105,7 @@ public class MessageCounterHandler
         {
             msgCounterJSON.put(server.getID(), new JSONObject());
         }
-        
+
         JSONObject serverJSON = msgCounterJSON.getJSONObject(server.getID());
         if (serverJSON.isNull(usr.getID()))
         {
@@ -158,16 +158,17 @@ public class MessageCounterHandler
      */
     public int getMessageCountForUser(IUser who, IGuild where)
     {
-        if (!msgCounterJSON.has(where.getID()))
+        if (msgCounterJSON.isNull(where.getID()))
         {
+            main.log("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
             return -1; //No server data. (Almost) impossible since the countXxx function is should be called before this, so the server data should be created.
         }
 
-        if(!msgCounterJSON.getJSONObject(where.getID()).has(who.getID()))
+        if (msgCounterJSON.getJSONObject(where.getID()).isNull(who.getID()))
         {
             return 0; //No user data
         }
-        
+
         return msgCounterJSON.getJSONObject(where.getID()).getJSONObject(who.getID()).getInt("messages");
     }
 
@@ -182,15 +183,17 @@ public class MessageCounterHandler
      */
     public int getCommandCountForUser(IUser who, IGuild where)
     {
-        if (!msgCounterJSON.has(where.getID()))
+        if (msgCounterJSON.isNull(where.getID()))
         {
+            main.log("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
             return -1; //No server data. (Almost) impossible since the countXxx function is should be called before this, so the server data should be created.
         }
-        
-        if(!msgCounterJSON.getJSONObject(where.getID()).has(who.getID()))
+
+        if (msgCounterJSON.getJSONObject(where.getID()).isNull(who.getID()))
         {
             return 0; //No user data
         }
+
         return msgCounterJSON.getJSONObject(where.getID()).getJSONObject(who.getID()).getInt("commands");
     }
 }

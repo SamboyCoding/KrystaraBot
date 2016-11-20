@@ -111,6 +111,11 @@ public class Listener
             {
                 return; //Do not process own messages. (I don't think this happens, but still.)
             }
+            if (e.getMessage().getChannel().getID().equals("247417978440777728"))
+            {
+                //Dev #bot-updates channel
+                return;
+            }
             IMessage msg = e.getMessage();
             IUser sdr = msg.getAuthor();
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
@@ -953,28 +958,34 @@ public class Listener
 
                     for (String id : messageCounter.getUserIDList(chnl.getGuild()))
                     {
+                        if (id.equals(IDReference.MYID))
+                        {
+                            continue; //Skip the bot.
+                        }
                         IUser current = chnl.getGuild().getUserByID(id);
+
                         unordered.put(current, messageCounter.getMessageCountForUser(current, chnl.getGuild()));
                     }
-                    
+                    main.log("Top10: Unordered: " + unordered);
                     ordered.putAll(unordered); //Now it's sorted, by values
-                    
-                    String toSend1 = "```\nName                 Number of messages";
-                    
+                    main.log("Top10: Ordered: " + ordered);
+
+                    String toSend1 = "```\nTOP 10 USERS (BY MESSAGE COUNT) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Number of messages\n";
+
                     int count1 = 0;
+                    int numSpaces = 60;
                     for (IUser u : ordered.descendingKeySet())
                     {
                         count1++;
-                        toSend1 += "\n" + u.getName() + "                   " + ordered.get(u);
-                        if(count1 > 10)
+                        toSend1 += "\n" + u.getName() + Utilities.repeatString(" ", numSpaces - u.getName().length()) + unordered.get(u);
+                        if (count1 > 10)
                         {
                             break;
                         }
                     }
-                    
+
                     toSend1 += "\n```";
-                    
-                    msg.delete();
+
                     chnl.sendMessage(toSend1);
                     break;
                 //</editor-fold>
@@ -1070,10 +1081,10 @@ class ValueComparator implements Comparator<IUser>
     {
         if (base.get(a) >= base.get(b))
         {
-            return -1;
+            return 1;
         } else
         {
-            return 1;
+            return -1;
         } // returning 0 would merge keys
     }
 }
