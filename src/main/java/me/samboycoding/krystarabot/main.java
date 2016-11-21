@@ -76,6 +76,7 @@ public class main
         registeredCommands.add(c);
     }
     
+    @SuppressWarnings("unchecked")
     public static ArrayList<Command> getRegisteredCommands()
     {
         return (ArrayList<Command>) registeredCommands.clone();
@@ -94,6 +95,7 @@ public class main
         registeredAdminCommands.add(c);
     }
     
+    @SuppressWarnings("unchecked")
     public static ArrayList<AdminCommand> getRegisteredAdminCommands()
     {
         return (ArrayList<AdminCommand>) registeredAdminCommands.clone();

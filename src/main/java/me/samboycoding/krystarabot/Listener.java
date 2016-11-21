@@ -133,7 +133,7 @@ public class Listener
 
             messageCounter.countCommand(sdr, chnl.getGuild());
 
-            if (!chnl.getID().equals(IDReference.ChannelID.BOTCOMMANDS.toString()) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+            if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
             {
                 //Not admin, and not in #bot-commands
                 sdr.getOrCreatePMChannel().sendMessage("Please only use commands in #bot-commands. Thank you.");
@@ -190,7 +190,7 @@ public class Listener
                             //Cannot delete one with .bulkDelete()
                             msgs.get(0).delete(); //Again, ignore index 0, as it's the command
                             Utilities.cleanupMessage(chnl.sendMessage("1 message deleted. This message will self-destruct in 3 seconds..."), 3000);
-                            chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[DELETE]** - **" + nameOfSender + "** cleared 1 message from channel **" + chnl.getName() + "**");
+                            chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[DELETE]** - **" + nameOfSender + "** cleared 1 message from channel **" + chnl.getName() + "**");
                             msg.delete();
                             break;
                         }
@@ -211,7 +211,7 @@ public class Listener
                         {
                             msgs.bulkDelete(toDelete);
                             Utilities.cleanupMessage(chnl.sendMessage(toDelete.size() + " messages deleted (out of " + amount + " requested). This message will self-destruct in 10 seconds..."), 10000);
-                            chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[DELETE]** - **" + nameOfSender + "** cleared " + toDelete.size() + " messages from channel **" + chnl.getName() + "**");
+                            chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[DELETE]** - **" + nameOfSender + "** cleared " + toDelete.size() + " messages from channel **" + chnl.getName() + "**");
                         } else
                         {
                             chnl.sendMessage("You cannot do that!");
@@ -670,15 +670,15 @@ public class Listener
                     String role = arguments.get(0).toLowerCase();
                     if (role.equals("pc/mobile") || role.equals("pc") || role.equals("mobile"))
                     {
-                        sdr.addRole(chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString()));
+                        sdr.addRole(chnl.getGuild().getRoleByID(IDReference.PCMOBILEROLE));
                         chnl.sendMessage(sdr.mention() + ", you joined **PC/Mobile**");
-                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[ROLE]** - **" + nameOfSender + "** assigned themselves to **PC/Mobile**");
+                        chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[ROLE]** - **" + nameOfSender + "** assigned themselves to **PC/Mobile**");
                         break;
                     } else if (role.equals("console"))
                     {
-                        sdr.addRole(chnl.getGuild().getRoleByID(IDReference.RoleID.CONSOLE.toString()));
+                        sdr.addRole(chnl.getGuild().getRoleByID(IDReference.CONSOLEROLE));
                         chnl.sendMessage(sdr.mention() + ", you joined **Console**");
-                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[ROLE]** - **" + nameOfSender + "** assigned themselves to **Console**");
+                        chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[ROLE]** - **" + nameOfSender + "** assigned themselves to **Console**");
                         break;
                     } else
                     {
@@ -704,7 +704,7 @@ public class Listener
                             break;
                         }
                         chnl.getGuild().kickUser(usr);
-                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[KICK]** - **" + nameOfSender + "** kicked user **" + usr.getName() + "**");
+                        chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[KICK]** - **" + nameOfSender + "** kicked user **" + usr.getName() + "**");
                         chnl.sendMessage("User kicked.");
                         msg.delete();
                     } else
@@ -731,7 +731,7 @@ public class Listener
                             break;
                         }
                         chnl.getGuild().banUser(usr);
-                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[BAN]** - **" + nameOfSender + "** banned user **" + usr.getName() + "**");
+                        chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[BAN]** - **" + nameOfSender + "** banned user **" + usr.getName() + "**");
                         chnl.sendMessage("User banned.");
                         msg.delete();
                     } else
@@ -768,7 +768,7 @@ public class Listener
                         {
                             continue;
                         }
-                        if (r.getID().equals(IDReference.RoleID.MUTED.toString()))
+                        if (r.getID().equals(IDReference.MUTEDROLE))
                         {
                             continue;
                         }
@@ -825,7 +825,7 @@ public class Listener
                         {
                             continue;
                         }
-                        if (r2.getID().equals(IDReference.RoleID.MUTED.toString()))
+                        if (r2.getID().equals(IDReference.MUTEDROLE))
                         {
                             continue;
                         }
@@ -837,7 +837,7 @@ public class Listener
                     }
                     for (IUser u : chnl.getGuild().getUsers())
                     {
-                        if (Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.RoleID.CONSOLE.toString())) || Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.RoleID.PCMOBILE.toString())))
+                        if (Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.CONSOLEROLE)) || Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.PCMOBILEROLE)))
                         {
                             unassigned--;
                         }
@@ -871,7 +871,7 @@ public class Listener
                         String message = messageArray.toString().replace("[", "").replace("]", "").replace(",", "");
 
                         usr.getOrCreatePMChannel().sendMessage("Warning from user **" + nameOfSender + "** in channel **" + chnl.getName() + "**. Text:```\n" + message + "```");
-                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[WARNING]** - **" + (usr.getNicknameForGuild(chnl.getGuild()).isPresent() ? usr.getNicknameForGuild(chnl.getGuild()).get() : usr.getName()) + "** was warned by **" + nameOfSender + "**. Message: ```\n" + message + "```");
+                        chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[WARNING]** - **" + (usr.getNicknameForGuild(chnl.getGuild()).isPresent() ? usr.getNicknameForGuild(chnl.getGuild()).get() : usr.getName()) + "** was warned by **" + nameOfSender + "**. Message: ```\n" + message + "```");
                         msg.delete();
                     } else
                     {
@@ -897,8 +897,8 @@ public class Listener
                             break;
                         }
                         main.codes.addCode(code);
-                        chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage(newEmoji + " Code: `" + arguments.get(0).toUpperCase() + "` " + newEmoji);
-                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[NEW CODE]** - **" + nameOfSender + "** posted '" + code + "' as new code.");
+                        chnl.getGuild().getChannelByID(IDReference.CODESCHANNEL).sendMessage(newEmoji + " Code: `" + arguments.get(0).toUpperCase() + "` " + newEmoji);
+                        chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[NEW CODE]** - **" + nameOfSender + "** posted '" + code + "' as new code.");
                         break;
                     } else
                     {
@@ -929,8 +929,8 @@ public class Listener
                             break;
                         }
                         main.codes.makeCodeDead(code2);
-                        chnl.getGuild().getChannelByID(IDReference.ChannelID.CODES.toString()).sendMessage(skullEmoji + " Code `" + arguments.get(0).toUpperCase() + "` is dead! " + skullEmoji);
-                        chnl.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[DEAD CODE]** - **" + nameOfSender + "** reported '" + code2 + "' as dead.");
+                        chnl.getGuild().getChannelByID(IDReference.CODESCHANNEL).sendMessage(skullEmoji + " Code `" + arguments.get(0).toUpperCase() + "` is dead! " + skullEmoji);
+                        chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[DEAD CODE]** - **" + nameOfSender + "** reported '" + code2 + "' as dead.");
                         break;
                     } else
                     {
@@ -1024,7 +1024,7 @@ public class Listener
             try
             {
                 main.log("Rate limited! Time until un-ratelimited: " + rle.getRetryDelay());
-                main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**[RATELIMIT]** - Bot needs to slow down! We're rate limited for another " + rle.getRetryDelay() + " milliseconds, please tell SamboyCoding or MrSnake that the following section is too fast: " + rle.getRoute());
+                main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[RATELIMIT]** - Bot needs to slow down! We're rate limited for another " + rle.getRetryDelay() + " milliseconds, please tell SamboyCoding or MrSnake that the following section is too fast: " + rle.getRoute());
             } catch (Exception e2)
             {
                 main.log("Exception sending ratelimit warning!");
@@ -1043,7 +1043,7 @@ public class Listener
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
-            e.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**>>>>>** User **" + nameOfUser + "** joined the server!");
+            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**>>>>>** User **" + nameOfUser + "** joined the server!");
         } catch (Exception ignored)
         {
             //Ignore.
@@ -1057,7 +1057,7 @@ public class Listener
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
-            e.getGuild().getChannelByID(IDReference.ChannelID.LOGS.toString()).sendMessage("**<<<<<** User **" + nameOfUser + "** left the server!");
+            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**<<<<<** User **" + nameOfUser + "** left the server!");
         } catch (Exception ignored)
         {
             //Ignore.

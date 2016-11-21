@@ -6,50 +6,57 @@ package me.samboycoding.krystarabot.utilities;
  * @author Sam
  */
 public class IDReference
-{   
-    
-    public enum ChannelID
-    {
-        
-        LOGS("247394226319392768"), CODES("247394202844004363"), BOTCOMMANDS("247394319449849856"); //Testing
-        //LOGS("237546188994379776"), CODES("237455339857903617"), BOTCOMMANDS("237500381880516609"); //Real
-        
-        private final String id;
-        
-        private ChannelID(String ID)
-        {
-            this.id = ID;
-        }
-        
-        @Override
-        public String toString()
-        {
-            return id;
-        }
-    }
-    
-    public enum RoleID
-    {
-        ADMIN("247394012162424843"), DEV("247395805567123467"), MODERATOR("247395922177163264"), STREAMER("247395963243593728"), MUTED("247396046416773121"), PCMOBILE("247395991127457792"), CONSOLE("247396031422005248"); //Testing
-        //ADMIN("236897540262330370"), DEV("237461438548017154"), MODERATOR("236897692599451648"), STREAMER("240689877325185024"), MUTED("241943239374929920"), PCMOBILE("237500925982277634"), CONSOLE("237500960576897024"); //Real
-        
-        private final String id;
-        
-        private RoleID(String ID)
-        {
-            this.id = ID;
-        }
-        
-        @Override
-        public String toString()
-        {
-            return id;
-        }
-    }
-    public static final String SERVERID = "247393304151326721"; //Testing
-    //public static final String SERVERID = "236897364697284618"; //Real
-    
+{
+
+    private static final boolean LIVE = false;
+
+    public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL;
+    public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, MUTEDROLE, PCMOBILEROLE, CONSOLEROLE;
+    public static String SERVERID;
     public static String MYTOKEN; //Set in main method.
-        
-    public static String MYID = null; //Gets set once readyevent done.
+    public static String MYID; //Gets set once readyevent done.
+    
+    public IDReference()
+    {
+        if (LIVE)
+        {
+            //REAL
+            
+            //Channels
+            LOGSCHANNEL = "237546188994379776";
+            CODESCHANNEL = "237455339857903617";
+            BOTCOMMANDSCHANNEL = "237500381880516609";
+            
+            
+            //Roles
+            ADMINROLE = "236897540262330370";
+            DEVROLE = "237461438548017154";
+            MODROLE = "236897692599451648";
+            STREAMERROLE = "240689877325185024";
+            MUTEDROLE = "241943239374929920";
+            PCMOBILEROLE = "237500925982277634";
+            CONSOLEROLE = "237500960576897024";
+            
+            SERVERID = "236897364697284618";
+        } else
+        {
+            //DEV
+            
+            //Channels
+            LOGSCHANNEL = "247394226319392768";
+            CODESCHANNEL = "247394202844004363";
+            BOTCOMMANDSCHANNEL = "247394319449849856";
+            
+            //Roles
+            ADMINROLE = "247394012162424843";
+            DEVROLE = "247395805567123467";
+            MODROLE = "247395922177163264";
+            STREAMERROLE = "247395963243593728";
+            MUTEDROLE = "247396046416773121";
+            PCMOBILEROLE = "247395991127457792";
+            CONSOLEROLE = "247396031422005248";
+            
+            SERVERID = "247393304151326721";
+        }
+    }
 }

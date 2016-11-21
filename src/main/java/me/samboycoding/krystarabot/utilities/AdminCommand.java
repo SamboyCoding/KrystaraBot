@@ -3,7 +3,7 @@ package me.samboycoding.krystarabot.utilities;
 import me.samboycoding.krystarabot.main;
 
 /**
- * TODO: Javadocs
+ * Represents a command that requires admin access.
  *
  * @author Sam
  */

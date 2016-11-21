@@ -82,9 +82,9 @@ public class Utilities
      */
     public static Boolean canUseAdminCommand(IUser usr, IGuild server)
     {
-        IRole admin = server.getRoleByID(IDReference.RoleID.ADMIN.toString());
-        IRole dev = server.getRoleByID(IDReference.RoleID.DEV.toString());
-        IRole mod = server.getRoleByID(IDReference.RoleID.MODERATOR.toString());
+        IRole admin = server.getRoleByID(IDReference.ADMINROLE);
+        IRole dev = server.getRoleByID(IDReference.DEVROLE);
+        IRole mod = server.getRoleByID(IDReference.MODROLE);
 
         return userHasRole(server, usr, admin) || userHasRole(server, usr, dev) || userHasRole(server, usr, mod);
     }
