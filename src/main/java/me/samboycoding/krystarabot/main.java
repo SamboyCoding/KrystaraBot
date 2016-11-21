@@ -68,6 +68,7 @@ public class main
         log("Logged in and listener registered.");
         data.importData();
         codes.loadJSON();
+        new IDReference(); //Init
         messageCounter.loadJSON();
     }
     

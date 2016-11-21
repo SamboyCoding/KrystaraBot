@@ -100,6 +100,9 @@ public class Listener
     @EventSubscriber
     public void onCommand(MessageReceivedEvent e)
     {
+        IMessage msg = e.getMessage();
+        IUser sdr = msg.getAuthor();
+        IChannel chnl = msg.getChannel();
         try
         {
             if (e.getMessage().getChannel().isPrivate())
@@ -116,10 +119,7 @@ public class Listener
                 //Dev #bot-updates channel
                 return;
             }
-            IMessage msg = e.getMessage();
-            IUser sdr = msg.getAuthor();
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
-            IChannel chnl = msg.getChannel();
             String content = msg.getContent();
 
             //Message Counter
@@ -1032,7 +1032,21 @@ public class Listener
             }
         } catch (Exception ex)
         {
-            ex.printStackTrace();
+            try
+            {
+                chnl.sendMessage("Something went wrong! Please direct one of the bot devs to the logs channel!");
+                
+                String exceptionName = ex.getClass().getName();
+                String fileName = ex.getStackTrace()[0].toString();
+                
+                chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**Error Occurred**: ```\n" + exceptionName + " occurred at " + fileName + "\n```");
+            } catch (Exception doubleException)
+            {
+                main.log("Exception logging exception! Original exception: ");
+                ex.printStackTrace();
+                main.log("Exception logging: ");
+                doubleException.printStackTrace();
+            }
         }
     }
 
