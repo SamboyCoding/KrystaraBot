@@ -1,7 +1,5 @@
 package me.samboycoding.krystarabot.utilities;
 
-import sun.rmi.transport.LiveRef;
-
 /**
  * Class to contain references for various IDs
  *
