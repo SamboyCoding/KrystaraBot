@@ -141,7 +141,7 @@ public class MessageCounterHandler
         ArrayList<String> res = new ArrayList<>();
         for (String s : msgCounterJSON.getJSONObject(forServer.getID()).keySet())
         {
-            if(forServer.getUserById(s) == null)
+            if(forServer.getUserByID(s) == null)
             {
                 continue;   
             }
