@@ -141,6 +141,10 @@ public class MessageCounterHandler
         ArrayList<String> res = new ArrayList<>();
         for (String s : msgCounterJSON.getJSONObject(forServer.getID()).keySet())
         {
+            if(forServer.getUserById(s) == null)
+            {
+                continue;   
+            }
             res.add(s);
         }
 
@@ -158,6 +162,10 @@ public class MessageCounterHandler
      */
     public int getMessageCountForUser(IUser who, IGuild where)
     {
+        if(who == null || where == null)
+        {
+            return 0; //Null checking.   
+        }
         if (msgCounterJSON.isNull(where.getID()))
         {
             main.log("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
@@ -183,6 +191,11 @@ public class MessageCounterHandler
      */
     public int getCommandCountForUser(IUser who, IGuild where)
     {
+        if(who == null || where == null)
+        {
+            return 0; //Null checking.   
+        }
+        
         if (msgCounterJSON.isNull(where.getID()))
         {
             main.log("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
