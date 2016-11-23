@@ -1,4 +1,5 @@
 /target/
-token.txt
-dependency-reduced-pom.xml
-MessageCounter.json
+/logs/
+/token.txt
+/dependency-reduced-pom.xml
+/MessageCounter.json

@@ -22,21 +22,21 @@ public class CodesHandler
     {
         try
         {
-            main.log("Attempting to load codes.json...");
+            main.logToBoth("Attempting to load codes.json...");
             if (codes.exists())
             {
-                main.log("Existing codes found, loading...");
+                main.logToBoth("Existing codes found, loading...");
                 loadFromJSON();
             } else
             {
-                main.log("No codes file found, creating a new one...");
+                main.logToBoth("No codes file found, creating a new one...");
                 codes.createNewFile();
                 FileUtils.writeStringToFile(codes, "{}", Charset.defaultCharset());
             }
-            main.log("Success!");
+            main.logToBoth("Success!");
         } catch (IOException e)
         {
-            main.log("Error loading/creating codes file! Codes section will be broken!");
+            main.logToBoth("Error loading/creating codes file! Codes section will be broken!");
             e.printStackTrace();
         }
     }
@@ -47,10 +47,10 @@ public class CodesHandler
         {
             String jsonRaw = FileUtils.readFileToString(codes, Charset.defaultCharset());
             codesJSON = new JSONObject(jsonRaw);
-            main.log("Succesfully loaded " + codesJSON.length() + " codes from file!");
+            main.logToBoth("Succesfully loaded " + codesJSON.length() + " codes from file!");
         } catch (IOException ex)
         {
-            main.log("Error reading codes file!");
+            main.logToBoth("Error reading codes file!");
             ex.printStackTrace();
         }
     }

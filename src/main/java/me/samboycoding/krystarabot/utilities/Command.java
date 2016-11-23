@@ -47,6 +47,6 @@ public class Command {
             throw new IllegalStateException("Cannot register an already registered command!");
         }
         main.registerCommand(this);
-        main.log("Registed command " + name);
+        main.logToBoth("Registed command " + name);
     }
 }

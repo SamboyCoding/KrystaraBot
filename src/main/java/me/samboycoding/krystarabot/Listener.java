@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.NickNameChangeEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.UserLeaveEvent;
@@ -58,14 +59,14 @@ public class Listener
             cl.changeAvatar(Image.forUrl("png", "http://repo.samboycoding.me/static/krystarabot_icon.png"));
         } catch (DiscordException ex)
         {
-            main.log("Failed to change username. Rate limited most likely.");
+            main.logToBoth("Failed to change username. Rate limited most likely.");
         }
         try
         {
             cl.changeStatus(Status.game("?help"));
-            main.log("My ID: " + main.getClient(null).getApplicationClientID());
+            main.logToBoth("My ID: " + main.getClient(null).getApplicationClientID());
             IDReference.MYID = main.getClient(null).getApplicationClientID();
-            main.log("Registering commands...");
+            main.logToBoth("Registering commands...");
 
             new Command("?ping", "Check if the bot is able to respond to commands.", false)._register();
             new Command("?troop [name]", "Shows information for the specified troop.", false)._register();
@@ -82,7 +83,7 @@ public class Listener
             new Command("?dead [code]", "Report a code as dead in the #codes channel.", false)._register();
             new Command("?top10", "Shows the 10 most talkative (i.e. those that sent the most messages) on the server.", false)._register();
 
-            main.log("Registering Admin commands...");
+            main.logToBoth("Registering Admin commands...");
             new AdminCommand("?kick [@user]", "Kicks the specified user from the server.", true)._register();
             new AdminCommand("?ban [@user]", "Bans the specified user from the server.", true)._register();
             new AdminCommand("?clear [amount (1-100)]", "Deletes the specified amount of messages.", true)._register();
@@ -90,7 +91,7 @@ public class Listener
             new AdminCommand("?clearcache", "Clears cached scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
             new AdminCommand("?buildcache", "Builds a cache of scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
 
-            main.log("Finished processing readyEvent. Bot is 100% up now.\n\n");
+            main.logToBoth("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
         {
             ex.printStackTrace();
@@ -152,7 +153,7 @@ public class Listener
                 command = content.substring(1, content.length()).toLowerCase();
                 //Do not change arguments
             }
-            main.log("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
+            main.logToBoth("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
             switch (command)
             {
                 //<editor-fold defaultstate="collapsed" desc="Ping">
@@ -336,12 +337,12 @@ public class Listener
 
                             if (!left.exists())
                             {
-                                main.log("Unable to generate image for kingdom " + kingdom.getString("Name") + " because the file: " + left.getName() + " doesn't exist!");
+                                main.logToBoth("Unable to generate image for kingdom " + kingdom.getString("Name") + " because the file: " + left.getName() + " doesn't exist!");
                                 continue;
                             }
                             if (!right.exists())
                             {
-                                main.log("Unable to generate image for kingdom " + kingdom.getString("Name") + " because the file: " + left.getName() + " doesn't exist!");
+                                main.logToBoth("Unable to generate image for kingdom " + kingdom.getString("Name") + " because the file: " + left.getName() + " doesn't exist!");
                                 continue;
                             }
                             ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageUtils.joinHorizontal(left, right)), "png", stitched);
@@ -358,7 +359,7 @@ public class Listener
                         File original = new File("images/classes/" + thisId + ".png");
                         if (!original.exists())
                         {
-                            main.log("Unable to generate image for class " + thisId + ", becuase the file: " + original.getName() + " doesn't exist!");
+                            main.logToBoth("Unable to generate image for class " + thisId + ", becuase the file: " + original.getName() + " doesn't exist!");
                             continue;
                         }
 
@@ -966,9 +967,9 @@ public class Listener
 
                         unordered.put(current, messageCounter.getMessageCountForUser(current, chnl.getGuild()));
                     }
-                    main.log("Top10: Unordered: " + unordered);
+                    main.logToBoth("Top10: Unordered: " + unordered);
                     ordered.putAll(unordered); //Now it's sorted, by values
-                    main.log("Top10: Ordered: " + ordered);
+                    main.logToBoth("Top10: Ordered: " + ordered);
 
                     String toSend1 = "```\nTOP 10 USERS (BY MESSAGE COUNT) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Number of messages\n";
 
@@ -1023,11 +1024,11 @@ public class Listener
         {
             try
             {
-                main.log("Rate limited! Time until un-ratelimited: " + rle.getRetryDelay());
+                main.logToBoth("Rate limited! Time until un-ratelimited: " + rle.getRetryDelay());
                 main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[RATELIMIT]** - Bot needs to slow down! We're rate limited for another " + rle.getRetryDelay() + " milliseconds, please tell SamboyCoding or MrSnake that the following section is too fast: " + rle.getRoute());
             } catch (Exception e2)
             {
-                main.log("Exception sending ratelimit warning!");
+                main.logToBoth("Exception sending ratelimit warning!");
                 e2.printStackTrace();
             }
         } catch (Exception ex)
@@ -1035,16 +1036,16 @@ public class Listener
             try
             {
                 chnl.sendMessage("Something went wrong! Please direct one of the bot devs to the logs channel!");
-                
+
                 String exceptionName = ex.getClass().getName();
                 String fileName = ex.getStackTrace()[0].toString();
-                
+
                 chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**Error Occurred**: ```\n" + exceptionName + " occurred at " + fileName + "\n```");
             } catch (Exception doubleException)
             {
-                main.log("Exception logging exception! Original exception: ");
+                main.logToBoth("Exception logging exception! Original exception: ");
                 ex.printStackTrace();
-                main.log("Exception logging: ");
+                main.logToBoth("Exception logging: ");
                 doubleException.printStackTrace();
             }
         }
@@ -1065,13 +1066,26 @@ public class Listener
     }
 
     @EventSubscriber
-    public void onLeave(UserLeaveEvent e
-    )
+    public void onLeave(UserLeaveEvent e)
     {
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
             e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**<<<<<** User **" + nameOfUser + "** left the server!");
+        } catch (Exception ignored)
+        {
+            //Ignore.
+        }
+    }
+
+    @EventSubscriber
+    public void onChangeName(NickNameChangeEvent e)
+    {
+        try
+        {
+            String old = e.getOldNickname().isPresent() ? e.getOldNickname().get() : e.getUser().getName();
+            String newName = e.getNewNickname().isPresent() ? e.getNewNickname().get() : e.getUser().getName();
+            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[RENAME]** User **" + old + "** changed their name to **" + newName + "**");
         } catch (Exception ignored)
         {
             //Ignore.

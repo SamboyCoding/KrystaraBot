@@ -30,6 +30,7 @@ public class main
     public static GameData data = new GameData();
     public static CodesHandler codes = new CodesHandler();
     public static MessageCounterHandler messageCounter = new MessageCounterHandler();
+    public static File logFile;
 
     public static IDiscordClient getClient(String token)
     {
@@ -60,42 +61,71 @@ public class main
 
     public static void main(String[] args) throws DiscordException, RateLimitException, IOException
     {
-        log("Attempting to log in... please wait");
+        new File("logs/").mkdir();
+        logFile = new File("logs/output-" + getTimestamp("dd-MM-yyyy") + ".log");
+        logFile.createNewFile();
+        logToFile("\n\n\n*******NEW SESSION*******\n");
+        logToBoth("Attempting to log in... please wait");
         IDReference.MYTOKEN = FileUtils.readFileToString(new File("token.txt"), Charset.defaultCharset());
-        log("Logging in with token: \"" + IDReference.MYTOKEN + "\"");
+        logToBoth("Logging in with token: \"" + IDReference.MYTOKEN + "\"");
         cl = getClient(IDReference.MYTOKEN);
         cl.getDispatcher().registerListener(new Listener());
-        log("Logged in and listener registered.");
+        logToBoth("Logged in and listener registered.");
         data.importData();
         codes.loadJSON();
         new IDReference(); //Init
         messageCounter.loadJSON();
     }
-    
+
     public static void registerCommand(Command c)
     {
         registeredCommands.add(c);
     }
-    
+
     @SuppressWarnings("unchecked")
     public static ArrayList<Command> getRegisteredCommands()
     {
         return (ArrayList<Command>) registeredCommands.clone();
     }
 
-    public static void log(String msg)
+    public static void logToBoth(String msg)
     {
-        DateFormat df = new SimpleDateFormat("[dd/MM/yy | HH:mm:ss] ");
+        String logEntry = "****" + getTimestamp("[dd/MM/yy | HH:mm:ss] ") + " [BOT MAIN]          " + msg;
+        System.out.println(logEntry);
+        try
+        {
+            FileUtils.writeStringToFile(logFile, logEntry + "\n", Charset.defaultCharset(), true);
+        } catch (Exception ex)
+        {
+            //Ignore - cannot write to file.
+        }
+    }
+    
+    public static void logToFile(String msg)
+    {
+        String logEntry = "****" + getTimestamp("[dd/MM/yy | HH:mm:ss] ") + " [BOT MAIN]          " + msg;
+        try
+        {
+            FileUtils.writeStringToFile(logFile, logEntry + "\n", Charset.defaultCharset(), true);
+        } catch (Exception ex)
+        {
+            //Ignore - cannot write to file.
+        }
+    }
+
+    public static String getTimestamp(String format)
+    {
+        DateFormat df = new SimpleDateFormat(format);
         Date dateobj = new Date();
         String timestamp = df.format(dateobj);
-        System.out.println("****" + timestamp + " [BOT MAIN]          " + msg);
+        return timestamp;
     }
 
     public static void registerAdminCommand(AdminCommand c)
     {
         registeredAdminCommands.add(c);
     }
-    
+
     @SuppressWarnings("unchecked")
     public static ArrayList<AdminCommand> getRegisteredAdminCommands()
     {

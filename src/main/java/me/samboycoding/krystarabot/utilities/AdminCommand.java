@@ -26,6 +26,6 @@ public class AdminCommand extends Command
             throw new IllegalStateException("Cannot register an already registered command!");
         }
         main.registerAdminCommand(this);
-        main.log("Registed ADMIN command " + name);
+        main.logToBoth("Registed ADMIN command " + name);
     }
 }

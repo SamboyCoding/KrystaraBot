@@ -25,22 +25,22 @@ public class MessageCounterHandler
     {
         try
         {
-            main.log("Attempting to load message counter...");
+            main.logToBoth("Attempting to load message counter...");
             if (messageCounter.exists())
             { //file existent -> load
-                main.log("Existing message counter found, loading...");
+                main.logToBoth("Existing message counter found, loading...");
                 loadFromJSON();
             } else
             { // file not existent -> create 
-                main.log("No message counter file found, creating a new one...");
+                main.logToBoth("No message counter file found, creating a new one...");
                 messageCounter.createNewFile();
                 FileUtils.writeStringToFile(messageCounter, "{}", Charset.defaultCharset());
                 msgCounterJSON = new JSONObject();
             }
-            main.log("Success!");
+            main.logToBoth("Success!");
         } catch (IOException e)
         {
-            main.log("Error loading/creating message counter file! Messages will NOT be counted...!");
+            main.logToBoth("Error loading/creating message counter file! Messages will NOT be counted...!");
             e.printStackTrace();
         }
     }
@@ -52,10 +52,10 @@ public class MessageCounterHandler
         {
             String jsonRaw = FileUtils.readFileToString(messageCounter, Charset.defaultCharset());
             msgCounterJSON = new JSONObject(jsonRaw);
-            main.log("Succesfully loaded message counter from file!");
+            main.logToBoth("Succesfully loaded message counter from file!");
         } catch (IOException ex)
         {
-            main.log("Error reading codes file!");
+            main.logToBoth("Error reading codes file!");
             ex.printStackTrace();
         }
     }
@@ -168,7 +168,7 @@ public class MessageCounterHandler
         }
         if (msgCounterJSON.isNull(where.getID()))
         {
-            main.log("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
+            main.logToBoth("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
             return -1; //No server data. (Almost) impossible since the countXxx function is should be called before this, so the server data should be created.
         }
 
@@ -198,7 +198,7 @@ public class MessageCounterHandler
         
         if (msgCounterJSON.isNull(where.getID()))
         {
-            main.log("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
+            main.logToBoth("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
             return -1; //No server data. (Almost) impossible since the countXxx function is should be called before this, so the server data should be created.
         }
 

@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static java.nio.charset.Charset.defaultCharset;
 
 /**
  * Class that collects and provides data from JSON-Source File
@@ -26,12 +27,12 @@ public class GameData
     {
         if (sourceJSON.exists())
         {
-            main.log("Source-File 'Data.json' is available - starting data import.");
+            main.logToBoth("Source-File 'Data.json' is available - starting data import.");
             readJSON();
-            main.log("Data import done.");
+            main.logToBoth("Data import done.");
         } else
         {
-            main.log("Error: Source-File 'Data.json' is NOT available.");
+            main.logToBoth("Error: Source-File 'Data.json' is NOT available.");
         }
     }
 
@@ -47,10 +48,10 @@ public class GameData
             arrayKingdoms = jsonFull.getJSONArray("Kingdoms");
         } catch (FileNotFoundException e)
         {
-            main.log("Error: " + e.getMessage());
+            main.logToBoth("Error: " + e.getMessage());
         } catch (JSONException e2)
         {
-            main.log("JSON file is corrupt! The GameData class will be broken for the entire session. Details: " + e2.getMessage());
+            main.logToBoth("JSON file is corrupt! The GameData class will be broken for the entire session. Details: " + e2.getMessage());
         }
     }
 
