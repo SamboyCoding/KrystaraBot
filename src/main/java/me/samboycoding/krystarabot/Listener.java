@@ -1058,7 +1058,7 @@ public class Listener
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
-            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**>>>>>** User **" + nameOfUser + "** joined the server!");
+            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**--->>>** User **" + nameOfUser + "** joined the server!");
         } catch (Exception ignored)
         {
             //Ignore.
@@ -1071,7 +1071,7 @@ public class Listener
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
-            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**<<<<<** User **" + nameOfUser + "** left the server!");
+            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**<<<---** User **" + nameOfUser + "** left the server!");
         } catch (Exception ignored)
         {
             //Ignore.
