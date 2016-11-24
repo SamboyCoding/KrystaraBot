@@ -1052,13 +1052,16 @@ public class Listener
     }
 
     @EventSubscriber
-    public void onJoin(UserJoinEvent e
-    )
+    public void onJoin(UserJoinEvent e)
     {
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
             e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**--->>>** User **" + nameOfUser + "** joined the server!");
+            //log message every 100 member joins
+            if(e.getGuild().getUsers().size()%100 == 0){
+                e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[MILESTONE]** The server has now "+ e.getGuild().getUsers().size() +" users!");
+            }
         } catch (Exception ignored)
         {
             //Ignore.
