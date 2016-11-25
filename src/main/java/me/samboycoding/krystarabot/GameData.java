@@ -3,7 +3,6 @@ package me.samboycoding.krystarabot;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import static java.nio.charset.Charset.defaultCharset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.apache.commons.io.FileUtils;
@@ -33,6 +32,22 @@ public class GameData
         } else
         {
             main.logToBoth("Error: Source-File 'Data.json' is NOT available.");
+        }
+    }
+    
+    public void readJSONFromString(String raw) throws IOException
+    {
+        try
+        {
+            JSONObject jsonFull = new JSONObject(raw);
+            arrayTroops = jsonFull.getJSONArray("Troops");
+            arrayTraits = jsonFull.getJSONArray("Traits");
+            arraySpells = jsonFull.getJSONArray("Spells");
+            arrayClasses = jsonFull.getJSONArray("HeroClasses");
+            arrayKingdoms = jsonFull.getJSONArray("Kingdoms");
+        } catch (JSONException ex)
+        {
+            main.logToBoth("JSON file is corrupt! The GameData class will be broken for the entire session. Details: " + ex.getMessage());
         }
     }
 
