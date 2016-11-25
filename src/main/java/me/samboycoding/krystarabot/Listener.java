@@ -964,10 +964,10 @@ public class Listener
                             continue; //Skip the bot.
                         }
                         if (id.equals("190663943260340224")) {
-                            continue;  //Skip MrSnake
+                            continue;  //Skip MrSnake                        
                         }
                         if (id.equals("102450956045668352")) {
-                            continue;  //Skip Sam
+                            continue;  //Skip Samboy
                         }
                         IUser current = chnl.getGuild().getUserByID(id);
 
