@@ -963,6 +963,12 @@ public class Listener
                         {
                             continue; //Skip the bot.
                         }
+                        if (id.equals("190663943260340224")) {
+                            continue;  //Skip MrSnake
+                        }
+                        if (id.equals("102450956045668352")) {
+                            continue;  //Skip Sam
+                        }
                         IUser current = chnl.getGuild().getUserByID(id);
 
                         unordered.put(current, messageCounter.getMessageCountForUser(current, chnl.getGuild()));
