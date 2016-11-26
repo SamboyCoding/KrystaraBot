@@ -34,7 +34,7 @@ public class GameData
             main.logToBoth("Error: Source-File 'Data.json' is NOT available.");
         }
     }
-    
+
     public void readJSONFromString(String raw) throws IOException
     {
         try
@@ -49,6 +49,40 @@ public class GameData
         {
             main.logToBoth("JSON file is corrupt! The GameData class will be broken for the entire session. Details: " + ex.getMessage());
         }
+    }
+
+    /**
+     * Gets the value for whatever property passed at level 20, using the original value specified, plus the increases + any acensions
+     * @param original The original value for the property (at level 1)
+     * @param increases The increases array for the property
+     * @param ascensions The ascensions array for the property
+     * @return The value for the property at level 20.
+     */
+    public int getLevel20ForProperty(int original, JSONArray increases, JSONArray ascensions)
+    {
+        int res = 0;
+        int j = 0;
+
+        for (int i = 0; i < increases.length(); i++)
+        {
+            if (i == 0)
+            {
+                //Set original value
+                res += original + increases.getInt(i);
+            } else if (i < 15)
+            {
+                res += increases.getInt(i);
+            } else if (ascensions != null)
+            {
+                res += increases.getInt(i) + ascensions.getInt(j);
+                j++;
+            } else
+            {
+                res += increases.getInt(i);
+            }
+
+        }
+        return res;
     }
 
     private void readJSON() throws IOException
@@ -111,7 +145,7 @@ public class GameData
         }
         return spell;
     }
-    
+
     public JSONObject getClassInfo(String className)
     {
         JSONObject hClass = null;
@@ -125,7 +159,7 @@ public class GameData
         }
         return hClass;
     }
-    
+
     public JSONObject getKingdomInfo(String kingdomName)
     {
         JSONObject kingdom = null;
@@ -139,84 +173,84 @@ public class GameData
         }
         return kingdom;
     }
-    
+
     public ArrayList<String> searchForTroop(String searchTerm)
     {
         ArrayList<String> res = new ArrayList<>();
-        
+
         for (Iterator<Object> it = arrayTroops.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
-            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
+            if (name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
             }
         }
-        
+
         return res;
     }
-    
+
     public ArrayList<String> searchForTrait(String searchTerm)
     {
         ArrayList<String> res = new ArrayList<>();
-        
+
         for (Iterator<Object> it = arrayTraits.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
-            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
+            if (name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
             }
         }
-        
+
         return res;
     }
-    
+
     public ArrayList<String> searchForSpell(String searchTerm)
     {
         ArrayList<String> res = new ArrayList<>();
-        
+
         for (Iterator<Object> it = arraySpells.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
-            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
+            if (name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
             }
         }
-        
+
         return res;
     }
-    
+
     public ArrayList<String> searchForClass(String searchTerm)
     {
         ArrayList<String> res = new ArrayList<>();
-        
+
         for (Iterator<Object> it = arrayClasses.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
-            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
+            if (name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
             }
         }
-        
+
         return res;
     }
-    
+
     public ArrayList<String> searchForKingdom(String searchTerm)
     {
         ArrayList<String> res = new ArrayList<>();
-        
+
         for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
-            if(name.toLowerCase().contains(searchTerm.toLowerCase()))
+            if (name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
             }
         }
-        
+
         return res;
     }
 }
