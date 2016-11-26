@@ -544,7 +544,10 @@ public class Listener
                     if (classIcon.exists())
                     {
                         File classIconShrunk = new File("images/classes/" + className.toLowerCase() + "_scaled.png");
-                        ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(classIcon)), "png", classIconShrunk);
+                        if (!classIconShrunk.exists())
+                        {
+                            ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(classIcon)), "png", classIconShrunk);
+                        }
                         chnl.sendFile(classIconShrunk);
                     }
                     chnl.sendMessage("**" + className + "** (" + classKingdom + ")\nTraits: " + classTrait1 + ", " + classTrait2 + ", " + classTrait3 + "\nAugments: " + classAugment1 + ", " + classAugment2 + ", " + classAugment3);
@@ -1065,8 +1068,9 @@ public class Listener
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
             e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**--->>>** User **" + nameOfUser + "** joined the server!");
             //log message every 100 member joins
-            if(e.getGuild().getUsers().size()%100 == 0){
-                e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[MILESTONE]** The server has now "+ e.getGuild().getUsers().size() +" users!");
+            if (e.getGuild().getUsers().size() % 100 == 0)
+            {
+                e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[MILESTONE]** The server has now " + e.getGuild().getUsers().size() + " users!");
             }
         } catch (Exception ignored)
         {
