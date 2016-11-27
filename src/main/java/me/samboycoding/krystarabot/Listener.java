@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
 import me.samboycoding.krystarabot.utilities.ImageUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sx.blah.discord.api.IDiscordClient;
@@ -402,19 +403,19 @@ public class Listener
                     String desc = troopInfo.getString("Description").replace("\n", "");
                     troopName = troopInfo.getString("Name");
                     String kingdom = troopInfo.getString("Kingdom");
-                    String rarity = troopInfo.getString("Rarity");
+                    String rarity = troopInfo.getString("TroopRarity");
                     String troopType;
-                    String type1 = troopInfo.getString("Type_1");
-                    String type2 = troopInfo.getString("Type_2");
-                    String spell = troopInfo.getString("Spell");
-                    int summonCost = troopInfo.getInt("Cost");
-                    String trait1 = troopInfo.getString("Trait_1");
-                    String trait2 = troopInfo.getString("Trait_2");
-                    String trait3 = troopInfo.getString("Trait_3");
-                    int armor = troopInfo.getJSONArray("ArmorPerLevel").getInt(19);
-                    int life = troopInfo.getJSONArray("HealthPerLevel").getInt(19);
-                    int attack = troopInfo.getJSONArray("AttackPerLevel").getInt(19);
-                    int magic = troopInfo.getJSONArray("MagicPerLevel").getInt(19);
+                    String type1 = troopInfo.getString("TroopType");
+                    String type2 = troopInfo.getString("TroopType2");
+                    String spell = troopInfo.getJSONObject("Spell").getString("Name");
+                    int summonCost = troopInfo.getJSONObject("Spell").getInt("Cost");
+                    String trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
+                    String trait2 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
+                    String trait3 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
+                    int armor = main.data.getLevel20ForProperty(troopInfo.getInt("Armor_Base"), troopInfo.getJSONArray("ArmorIncrease"), troopInfo.getJSONArray("Ascension_Armor"));
+                    int life = main.data.getLevel20ForProperty(troopInfo.getInt("Health_Base"), troopInfo.getJSONArray("HealthIncrease"), troopInfo.getJSONArray("Ascension_Health"));
+                    int attack = main.data.getLevel20ForProperty(troopInfo.getInt("Attack_Base"), troopInfo.getJSONArray("AttackIncrease"), troopInfo.getJSONArray("Ascension_Attack"));
+                    int magic = main.data.getLevel20ForProperty(troopInfo.getInt("SpellPower_Base"), troopInfo.getJSONArray("SpellPowerIncrease"), null);
                     String troopId = troopInfo.getString("FileBase");
                     URL URL = new URL("http://ashtender.com/gems/assets/cards/" + troopId + ".jpg");
                     //get spell description
@@ -1050,6 +1051,7 @@ public class Listener
                 String fileName = ex.getStackTrace()[0].toString();
 
                 chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**Error Occurred**: ```\n" + exceptionName + " occurred at " + fileName + "\n```");
+                ex.printStackTrace();
             } catch (Exception doubleException)
             {
                 main.logToBoth("Exception logging exception! Original exception: ");

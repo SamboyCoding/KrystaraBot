@@ -72,7 +72,7 @@ public class main
         cl.getDispatcher().registerListener(new Listener());
         logToBoth("Logged in and listener registered.");
         //data.importData();
-        new Thread(new GameDataLoaderThread()).start();
+        new Thread(new GameDataLoaderThread(), "GameData Loading Thread").start();
         codes.loadJSON();
         new IDReference(); //Init
         messageCounter.loadJSON();
