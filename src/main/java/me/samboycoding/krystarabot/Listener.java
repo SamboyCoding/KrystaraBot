@@ -388,6 +388,11 @@ public class Listener
                 //?troop [string]
 
                 case "troop":
+                    if(!GameData.dataLoaded)
+                    {
+                        chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
+                        break;
+                    }
                     if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need to specify a name to search for!");
@@ -474,6 +479,11 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Trait">
                 //?trait [string]    
                 case "trait":
+                    if(!GameData.dataLoaded)
+                    {
+                        chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
+                        break;
+                    }
                     if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need to specify a name to search for!");
@@ -495,6 +505,11 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Spell">
                 //?spell [string]
                 case "spell":
+                    if(!GameData.dataLoaded)
+                    {
+                        chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
+                        break;
+                    }
                     if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need to specify a name to search for!");
@@ -518,6 +533,11 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Class">
                 //?class [string]
                 case "class":
+                    if(!GameData.dataLoaded)
+                    {
+                        chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
+                        break;
+                    }
                     if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need to specify a name to search for!");
@@ -534,12 +554,12 @@ public class Listener
 
                     className = classInfo.getString("Name");
                     String classKingdom = classInfo.getString("Kingdom");
-                    String classTrait1 = classInfo.getString("Trait_1");
-                    String classTrait2 = classInfo.getString("Trait_2");
-                    String classTrait3 = classInfo.getString("Trait_3");
-                    String classAugment1 = classInfo.getString("Augment_1");
-                    String classAugment2 = classInfo.getString("Augment_2");
-                    String classAugment3 = classInfo.getString("Augment_3");
+                    String classTrait1 = classInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
+                    String classTrait2 = classInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
+                    String classTrait3 = classInfo.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
+                    String classAugment1 = classInfo.getJSONArray("Augment").getString(0);
+                    String classAugment2 = classInfo.getJSONArray("Augment").getString(1);
+                    String classAugment3 = classInfo.getJSONArray("Augment").getString(2);
 
                     File classIcon = new File("images/classes/" + className.toLowerCase() + ".png");
                     if (classIcon.exists())
@@ -557,6 +577,11 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Kingdom">
                 //?kindom [string]
                 case "kingdom":
+                    if(!GameData.dataLoaded)
+                    {
+                        chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
+                        break;
+                    }
                     if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need to specify a name to search for!");
@@ -609,6 +634,11 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Search">
                 //?search [kingdoms|troops|traits|spells] [string]
                 case "search":
+                    if(!GameData.dataLoaded)
+                    {
+                        chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
+                        break;
+                    }
                     if (arguments.size() < 1)
                     {
                         chnl.sendMessage("You need to specify a search term!");
@@ -1050,7 +1080,7 @@ public class Listener
                 String exceptionName = ex.getClass().getName();
                 String fileName = ex.getStackTrace()[0].toString();
 
-                chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**Error Occurred**: ```\n" + exceptionName + " occurred at " + fileName + "\n```");
+                chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**Error Occurred** (" + (ex.getMessage() == null ? "No further information" : ex.getMessage()) + "): ```\n" + exceptionName + " occurred at " + fileName + "\n```");
                 ex.printStackTrace();
             } catch (Exception doubleException)
             {

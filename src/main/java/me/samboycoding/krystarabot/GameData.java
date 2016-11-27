@@ -21,6 +21,7 @@ public class GameData
 
     private final File sourceJSON = new File("Data.json"); //Source File
     public static JSONArray arrayTroops, arrayTraits, arraySpells, arrayClasses, arrayKingdoms; //JSON arrays for original data
+    public static boolean dataLoaded = false; //If the data has been loaded
 
     public void importData() throws IOException
     {
@@ -244,7 +245,13 @@ public class GameData
 
         for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
         {
-            String name = ((JSONObject) it.next()).getString("Name");
+            JSONObject obj = (JSONObject) it.next();
+            if(obj.isNull("Name"))
+            {
+                main.logToBoth("[Warning] Ignoring kingdom with null name; it's reference name is " + obj.getString("ReferenceName"));
+                continue;
+            }
+            String name = obj.getString("Name");
             if (name.toLowerCase().contains(searchTerm.toLowerCase()))
             {
                 res.add(name);
