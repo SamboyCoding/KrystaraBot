@@ -27,6 +27,7 @@ public class GameDataLoaderThread implements Runnable
     {
         try
         {
+            GameData.dataLoaded = false;
             long startConnectionTime = System.currentTimeMillis();
 
             //Initial setup
