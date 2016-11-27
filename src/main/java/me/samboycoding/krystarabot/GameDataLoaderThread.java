@@ -38,7 +38,7 @@ public class GameDataLoaderThread implements Runnable
             URLConnection con = url.openConnection();
 
             //Open stream to read data
-            main.logToBoth("[Game Data Loader] Reading data...");
+            main.logToBoth("[Game Data Loader] Opening stream...");
             InputStream in = con.getInputStream();
             String encoding = con.getContentEncoding();
             encoding = encoding == null ? "UTF-8" : encoding;
