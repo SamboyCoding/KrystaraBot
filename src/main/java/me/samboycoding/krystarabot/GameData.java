@@ -173,6 +173,11 @@ public class GameData
         for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
         {
             JSONObject checkKingdom = (JSONObject) it.next();
+            if(checkKingdom.isNull("Name"))
+            {
+                main.logToBoth("[Warning] Ignoring kingdom with null name; it's reference name is " + checkKingdom.getString("ReferenceName"));
+                continue;
+            }
             if (checkKingdom.getString("Name").toLowerCase().replace("'", "").equals(kingdomName.replace("'", "").toLowerCase()))
             {
                 return checkKingdom;
