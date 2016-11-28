@@ -473,7 +473,7 @@ public class Listener
                     info += "\nSpell: " + spell + " (" + summonCost + ")\n" + troopSpellDesc + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
 
                     chnl.sendMessage(info);
-                    chnl.sendFile(URL, troopId + ".jpg");
+                    chnl.sendFile("", false, URL.openStream(), troopId + ".jpg");
                     break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Trait">
@@ -1065,7 +1065,7 @@ public class Listener
             try
             {
                 main.logToBoth("Rate limited! Time until un-ratelimited: " + rle.getRetryDelay());
-                main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[RATELIMIT]** - Bot needs to slow down! We're rate limited for another " + rle.getRetryDelay() + " milliseconds, please tell SamboyCoding or MrSnake that the following section is too fast: " + rle.getRoute());
+                main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[RATELIMIT]** - Bot needs to slow down! We're rate limited for another " + rle.getRetryDelay() + " milliseconds, please tell SamboyCoding or MrSnake that the following section is too fast: " + rle.getMethod());
             } catch (Exception e2)
             {
                 main.logToBoth("Exception sending ratelimit warning!");

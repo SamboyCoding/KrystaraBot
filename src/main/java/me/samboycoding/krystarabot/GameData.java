@@ -23,6 +23,12 @@ public class GameData
     public static JSONArray arrayTroops, arrayTraits, arraySpells, arrayClasses, arrayKingdoms; //JSON arrays for original data
     public static boolean dataLoaded = false; //If the data has been loaded
 
+    /**
+     * Entry point for data importing by other classes.
+     * @throws IOException If the file could not be read.
+     * @deprecated Should be handled by {@link me.samboycoding.krystarabot.GameDataLoaderThread} instead.
+     */
+    @Deprecated
     public void importData() throws IOException
     {
         if (sourceJSON.exists())
