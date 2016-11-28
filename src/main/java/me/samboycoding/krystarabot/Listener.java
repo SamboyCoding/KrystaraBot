@@ -697,6 +697,12 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Reload-Data">
                 //?reload-data    
                 case "reload-data":
+                    if(!Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+                    {
+                        chnl.sendMessage("You cannot do that!");
+                        break;
+                    }
+                        
                     new Thread(new GameDataLoaderThread(chnl), "Game Data Reloader").start();
                     break;
                 //</editor-fold>
