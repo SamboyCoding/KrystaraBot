@@ -247,7 +247,7 @@ public class GameDataLoaderThread implements Runnable
                 //Format spell description
                 String desc = spellInfo.getString("Description");
                 JSONObject firstSpellStep = spellInfo.getJSONArray("SpellSteps").getJSONObject(0);
-                desc = getMagicValue(trp, null, "Magic");
+                desc = getMagicValue(trp, "Magic");
 
                 //Only copy over what's needed
                 spell.put("Name", spellInfo.getString("Name"));
@@ -278,13 +278,12 @@ public class GameDataLoaderThread implements Runnable
      * 100% Credit to Lyya (she wrote this - I just ported it -> Java)
      *
      * @param troop A JSONObject containing all the data for the troop.
-     * @param magicAmount Not sure what this does? Leave it at null.
      * @param magicText The string "Magic". Or whatever you want it to be
      * represented by in the formula (e.g. [Story points + 4 / 2] or whatever)
      * 
      * @return A formatted description string for the troop.
      */
-    public String getMagicValue(JSONObject troop, Integer magicAmount, String magicText)
+    public String getMagicValue(JSONObject troop, String magicText)
     {
         String spellDesc = troop.getJSONObject("Spell").getString("Description");
         String boostDesc = "";
@@ -346,11 +345,6 @@ public class GameDataLoaderThread implements Runnable
                                 //SpellPowerMultiplier > 1
                                 magicDesc = magicDesc + " x " + spellStep.getDouble("SpellPowerMultiplier");
                             }
-
-                            if (magicAmount != null)
-                            {
-                                magicAmount = (int) Math.floor(magicAmount * spellStep.getDouble("SpellPowerMultiplier"));
-                            }
                         }
 
                         if (spellStep.getInt("Amount") != 0)
@@ -361,11 +355,6 @@ public class GameDataLoaderThread implements Runnable
                             }
 
                             magicDesc = magicDesc + " + " + spellStep.getInt("Amount");
-
-                            if (magicAmount != null)
-                            {
-                                magicAmount += spellStep.getInt("Amount");
-                            }
                         }
 
                         magicDesc = "[" + magicDesc + "]";
@@ -377,11 +366,6 @@ public class GameDataLoaderThread implements Runnable
         if (magicDesc.equals(""))
         {
             magicDesc = "[" + magicText + "]";
-        }
-
-        if (magicAmount != null)
-        {
-            magicDesc = magicAmount + " " + magicDesc;
         }
 
         if (!spellDesc.contains("{2}"))
