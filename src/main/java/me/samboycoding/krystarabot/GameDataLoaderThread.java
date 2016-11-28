@@ -5,9 +5,15 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 /**
  * Thread to load game data from http://ashtender.com/gems/tools/world.php.
@@ -17,12 +23,31 @@ import org.json.JSONObject;
 public class GameDataLoaderThread implements Runnable
 {
 
+    private final boolean notify;
+    private final IChannel chnl;
+
+    public GameDataLoaderThread(IChannel chnl)
+    {
+        this.notify = true;
+        this.chnl = chnl;
+    }
+
+    public GameDataLoaderThread()
+    {
+        notify = false;
+        chnl = null;
+    }
+
     @Override
     public void run()
     {
         try
         {
             GameData.dataLoaded = false;
+            if (notify)
+            {
+                chnl.sendMessage("Beginning data reload...");
+            }
             long startConnectionTime = System.currentTimeMillis();
 
             //Initial setup
@@ -264,11 +289,24 @@ public class GameDataLoaderThread implements Runnable
 
             //Logging.
             long finishParseTime = System.currentTimeMillis();
+            if (notify)
+            {
+                chnl.sendMessage("Finished data load in " + (finishParseTime - startConnectionTime) + " milliseconds.");
+            }
             main.logToBoth("[Game Data Loader] Finished loading game data (in " + (finishParseTime - startConnectionTime) + " milliseconds - " + (finishParseTime - finishDownloadTime) + " milliseconds since download finished).");
             GameData.dataLoaded = true;
         } catch (IOException ex)
         {
             main.logToBoth("Unable to load Game Data: " + ex.getMessage());
+        } catch (MissingPermissionsException ex)
+        {
+            //Ignore
+        } catch (RateLimitException ex)
+        {
+            //Ignore
+        } catch (DiscordException ex)
+        {
+            Logger.getLogger(GameDataLoaderThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -280,7 +318,7 @@ public class GameDataLoaderThread implements Runnable
      * @param troop A JSONObject containing all the data for the troop.
      * @param magicText The string "Magic". Or whatever you want it to be
      * represented by in the formula (e.g. [Story points + 4 / 2] or whatever)
-     * 
+     *
      * @return A formatted description string for the troop.
      */
     public String getMagicValue(JSONObject troop, String magicText)

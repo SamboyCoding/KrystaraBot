@@ -18,7 +18,6 @@ import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
 import me.samboycoding.krystarabot.utilities.ImageUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sx.blah.discord.api.IDiscordClient;
@@ -91,6 +90,7 @@ public class Listener
             new AdminCommand("?warn [@user] [message]", "Sends a PM warning to the specified user.", true)._register();
             new AdminCommand("?clearcache", "Clears cached scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
             new AdminCommand("?buildcache", "Builds a cache of scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
+            new AdminCommand("?reload-data", "Reloads the internal data source for the lookup commands. NOT FOR USE BY NON-DEVS!", true)._register();
 
             main.logToBoth("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
@@ -147,7 +147,7 @@ public class Listener
             ArrayList<String> arguments = new ArrayList<>();
             if (content.contains(" "))
             {
-                command = content.substring(1, content.indexOf(" ")); //From the character after the '?' to the character before the first space.
+                command = content.substring(1, content.indexOf(" ")).toLowerCase(); //From the character after the '?' to the character before the first space.
                 arguments.addAll(Arrays.asList(content.trim().substring(content.indexOf(" ") + 1, content.length()).split(" "))); //From the character after the first space, to the end.
             } else
             {
@@ -692,6 +692,12 @@ public class Listener
                     }
 
                     chnl.sendMessage(searchOutput);
+                    break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Reload-Data">
+                //?reload-data    
+                case "reload-data":
+                    new Thread(new GameDataLoaderThread(chnl), "Game Data Reloader").start();
                     break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Platform">
