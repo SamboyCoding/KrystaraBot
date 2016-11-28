@@ -405,6 +405,11 @@ public class Listener
                         chnl.sendMessage("No troop `" + troopName + "` found, " + sdr.mention());
                         break;
                     }
+                    if(!troopInfo.getBoolean("IsVisible"))
+                    {
+                        chnl.sendMessage("That troop isn't yet released! Check back at a later date (try next monday) to see its stats!");
+                        break;
+                    }
                     String desc = troopInfo.getString("Description").replace("\n", "");
                     troopName = troopInfo.getString("Name");
                     String kingdom = troopInfo.getString("Kingdom");
