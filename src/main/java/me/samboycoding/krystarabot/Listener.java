@@ -414,9 +414,41 @@ public class Listener
                     String type2 = troopInfo.getString("TroopType2");
                     String spell = troopInfo.getJSONObject("Spell").getString("Name");
                     int summonCost = troopInfo.getJSONObject("Spell").getInt("Cost");
-                    String trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
-                    String trait2 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
-                    String trait3 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
+                    
+                    String trait1;
+                    String trait2;
+                    String trait3;
+                    
+                    switch(troopInfo.getJSONArray("ParsedTraits").length())
+                    {
+                        case 0:
+                            trait1 = "None";
+                            trait2 = "None";
+                            trait3 = "None";
+                            break;
+                        case 1:
+                            trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
+                            trait2 = "None";
+                            trait3 = "None";
+                            break;
+                        case 2:
+                            trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
+                            trait2 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
+                            trait3 = "None";
+                            break;
+                        case 3:
+                            trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
+                            trait2 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
+                            trait3 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
+                            break;
+                        default:
+                            //4+ - only take first 3
+                            trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
+                            trait2 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
+                            trait3 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
+                            break;
+                    }
+                    
                     int armor = main.data.getLevel20ForProperty(troopInfo.getInt("Armor_Base"), troopInfo.getJSONArray("ArmorIncrease"), troopInfo.getJSONArray("Ascension_Armor"));
                     int life = main.data.getLevel20ForProperty(troopInfo.getInt("Health_Base"), troopInfo.getJSONArray("HealthIncrease"), troopInfo.getJSONArray("Ascension_Health"));
                     int attack = main.data.getLevel20ForProperty(troopInfo.getInt("Attack_Base"), troopInfo.getJSONArray("AttackIncrease"), troopInfo.getJSONArray("Ascension_Attack"));
