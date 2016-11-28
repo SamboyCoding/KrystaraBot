@@ -143,6 +143,17 @@ public class GameDataLoaderThread implements Runnable
                         {
                             found = true;
                             trp2.put("Kingdom", kngdom.getString("Name"));
+                            
+                            //Add the troop to the kingdom
+                            if (!kngdom.has("Troops"))
+                            {
+                                JSONArray newTroops = new JSONArray();
+                                newTroops.put(trp2);
+                                kngdom.put("Troops", newTroops);
+                            } else
+                            {
+                                kngdom.getJSONArray("Troops").put(trp2);
+                            }
                             break;
                         }
                     }
