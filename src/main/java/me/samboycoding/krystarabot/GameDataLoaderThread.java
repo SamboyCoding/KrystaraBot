@@ -275,43 +275,15 @@ public class GameDataLoaderThread implements Runnable
     /**
      * Gets the filled-in string for the {1} placeholder in spell descriptions.
      *
-     * @param firstStep The first item in the Troop.Spell.SpellSteps array for
-     * the troop.
-     * @return A formatted string containing the text the {1} placeholder should
-     * hold.
+     * 100% Credit to Lyya (she wrote this - I just ported it -> Java)
+     *
+     * @param troop A JSONObject containing all the data for the troop.
+     * @param magicAmount Not sure what this does? Leave it at null.
+     * @param magicText The string "Magic". Or whatever you want it to be
+     * represented by in the formula (e.g. [Story points + 4 / 2] or whatever)
+     * 
+     * @return A formatted description string for the troop.
      */
-    /*private String getMagicValue(JSONObject firstStep)
-    {
-        //get the magic value for spell descriptions
-        String magicDesc = "Magic";
-        if (firstStep.getBoolean("Primarypower"))
-        {
-            if (firstStep.getInt("SpellPowerMultiplier") == 0)
-            {
-                return "" + firstStep.getInt("Amount");
-            }
-            if (firstStep.getInt("Amount") != 0)
-            {
-                magicDesc = magicDesc + "+" + firstStep.getInt("Amount");
-            }
-            if (firstStep.getInt("SpellPowerMultiplier") != 1)
-            {
-                if (!magicDesc.equals("Magic"))
-                {
-                    magicDesc = "(" + magicDesc + ")";
-                }
-                if (firstStep.getInt("SpellPowerMultiplier") < 1)
-                {
-                    magicDesc = magicDesc + " / " + (1 / firstStep.getInt("SpellPowerMultiplier"));
-                } else
-                {
-                    magicDesc = magicDesc + " x " + firstStep.getInt("SpellPowerMultiplier");
-                }
-            }
-        }
-        magicDesc = "[" + magicDesc + "]";
-        return magicDesc;
-    }*/
     public String getMagicValue(JSONObject troop, Integer magicAmount, String magicText)
     {
         String spellDesc = troop.getJSONObject("Spell").getString("Description");
@@ -354,25 +326,25 @@ public class GameDataLoaderThread implements Runnable
 
                 if (spellStep.getBoolean("Primarypower"))
                 {
-                    if (spellStep.getInt("SpellPowerMultiplier") == 0)
+                    if (spellStep.getDouble("SpellPowerMultiplier") == 0)
                     {
                         magicDesc = "" + spellStep.getInt("Amount");
                     } else
                     {
                         magicDesc = magicText;
-                        if (spellStep.getInt("SpellPowerMultiplier") != 1)
+                        if (spellStep.getDouble("SpellPowerMultiplier") != 1)
                         {
                             if (!magicDesc.equals(magicText))
                             {
                                 magicDesc = "(" + magicDesc + ")";
                             }
-                            if (spellStep.getInt("SpellPowerMultiplier") < 1)
+                            if (spellStep.getDouble("SpellPowerMultiplier") < 1)
                             {
-                                magicDesc = magicDesc + " / " + (1 / spellStep.getInt("SpellPowerMultiplier"));
+                                magicDesc = magicDesc + " / " + ((int) (1 / spellStep.getDouble("SpellPowerMultiplier")));
                             } else
                             {
                                 //SpellPowerMultiplier > 1
-                                magicDesc = magicDesc + " x " + spellStep.getInt("SpellPowerMultiplier");
+                                magicDesc = magicDesc + " x " + spellStep.getDouble("SpellPowerMultiplier");
                             }
 
                             if (magicAmount != null)
