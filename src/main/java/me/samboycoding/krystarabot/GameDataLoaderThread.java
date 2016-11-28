@@ -247,10 +247,7 @@ public class GameDataLoaderThread implements Runnable
                 //Format spell description
                 String desc = spellInfo.getString("Description");
                 JSONObject firstSpellStep = spellInfo.getJSONArray("SpellSteps").getJSONObject(0);
-                if (spellInfo.getString("Name").equals("Kaboom!"))
-                {
-                    desc = getMagicValue(trp, 1, desc);
-                }
+                desc = getMagicValue(trp, null, "Magic");
 
                 //Only copy over what's needed
                 spell.put("Name", spellInfo.getString("Name"));
@@ -315,7 +312,7 @@ public class GameDataLoaderThread implements Runnable
         magicDesc = "[" + magicDesc + "]";
         return magicDesc;
     }*/
-    public String getMagicValue(JSONObject troop, int magicAmount, String magicText)
+    public String getMagicValue(JSONObject troop, Integer magicAmount, String magicText)
     {
         String spellDesc = troop.getJSONObject("Spell").getString("Description");
         String boostDesc = "";
@@ -327,7 +324,7 @@ public class GameDataLoaderThread implements Runnable
             for (Object s : spell.getJSONArray("SpellSteps"))
             {
                 JSONObject spellStep = (JSONObject) s;
-                if (spellStep.getString("Type").equals("Count"))
+                if (spellStep.getString("Type").contains("Count"))
                 {
                     switch (spellStep.getInt("Amount"))
                     {
@@ -377,8 +374,11 @@ public class GameDataLoaderThread implements Runnable
                                 //SpellPowerMultiplier > 1
                                 magicDesc = magicDesc + " x " + spellStep.getInt("SpellPowerMultiplier");
                             }
-                            //Do not check if magicAmount is null - ints cannot be null
-                            magicAmount = (int) Math.floor(magicAmount * spellStep.getDouble("SpellPowerMultiplier"));
+
+                            if (magicAmount != null)
+                            {
+                                magicAmount = (int) Math.floor(magicAmount * spellStep.getDouble("SpellPowerMultiplier"));
+                            }
                         }
 
                         if (spellStep.getInt("Amount") != 0)
@@ -390,8 +390,10 @@ public class GameDataLoaderThread implements Runnable
 
                             magicDesc = magicDesc + " + " + spellStep.getInt("Amount");
 
-                            //Again, do not check if magicAmount is null
-                            magicAmount += spellStep.getInt("Amount");
+                            if (magicAmount != null)
+                            {
+                                magicAmount += spellStep.getInt("Amount");
+                            }
                         }
 
                         magicDesc = "[" + magicDesc + "]";
@@ -405,8 +407,10 @@ public class GameDataLoaderThread implements Runnable
             magicDesc = "[" + magicText + "]";
         }
 
-        //Another magicAmount null check gone
-        magicDesc = magicAmount + " " + magicDesc;
+        if (magicAmount != null)
+        {
+            magicDesc = magicAmount + " " + magicDesc;
+        }
 
         if (!spellDesc.contains("{2}"))
         {
