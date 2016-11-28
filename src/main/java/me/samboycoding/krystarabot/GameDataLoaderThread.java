@@ -19,11 +19,14 @@ import org.json.JSONObject;
  *
  * @author Sam
  */
-public class GameDataLoaderThread implements Runnable {
+public class GameDataLoaderThread implements Runnable
+{
 
     @Override
-    public void run() {
-        try {
+    public void run()
+    {
+        try
+        {
             GameData.dataLoaded = false;
             long startConnectionTime = System.currentTimeMillis();
 
@@ -62,23 +65,27 @@ public class GameDataLoaderThread implements Runnable {
             JSONArray newClasses = new JSONArray();
 
             //Modify all hero classes, and add the kingdom name object.
-            for (Object c : GameData.arrayClasses) {
+            for (Object c : GameData.arrayClasses)
+            {
                 JSONObject hClass = (JSONObject) c;
                 int kingdomId = hClass.getInt("KingdomId");
                 boolean found = false;
 
                 //Loop through all kingdoms until we find one with the correct id.
-                for (Object k : GameData.arrayKingdoms) {
+                for (Object k : GameData.arrayKingdoms)
+                {
                     JSONObject kingdom = (JSONObject) k;
                     int id = kingdom.getInt("Id");
-                    if (kingdomId == id) {
+                    if (kingdomId == id)
+                    {
                         found = true;
                         hClass.put("Kingdom", kingdom.get("Name").toString());
                         break;
                     }
                 }
 
-                if (!found) {
+                if (!found)
+                {
                     main.logToBoth("[Game Data Loader] Could not load kingdom info for Hero Class \"" + hClass.getString("Name") + "\"! It will not be available!");
                     continue;
                 }
@@ -97,31 +104,37 @@ public class GameDataLoaderThread implements Runnable {
             JSONArray modifiedTroops = new JSONArray();
 
             //Fill in kingdom of origin for each troop
-            for (Object trp : GameData.arrayTroops) {
+            for (Object trp : GameData.arrayTroops)
+            {
                 JSONObject trp2 = (JSONObject) trp;
                 int id = trp2.getInt("Id");
                 boolean found = false;
 
                 //Loop through all kingdoms until we find the one containing our troop.
-                for (Object kng : GameData.arrayKingdoms) {
+                for (Object kng : GameData.arrayKingdoms)
+                {
                     JSONObject kngdom = (JSONObject) kng;
 
                     //Loop through all troops - check if the one we want is in there.
-                    for (Iterator<Object> it = kngdom.getJSONArray("TroopIds").iterator(); it.hasNext();) {
+                    for (Iterator<Object> it = kngdom.getJSONArray("TroopIds").iterator(); it.hasNext();)
+                    {
                         int troopId = (int) it.next();
-                        if (troopId == id) {
+                        if (troopId == id)
+                        {
                             found = true;
                             trp2.put("Kingdom", kngdom.getString("Name"));
                             break;
                         }
                     }
 
-                    if (found) {
+                    if (found)
+                    {
                         break; //We've found the troop - don't continue to loop through the kingdoms
                     }
                 }
 
-                if (!trp2.has("Kingdom")) {
+                if (!trp2.has("Kingdom"))
+                {
                     main.logToBoth("[Game Data Loader] ERROR! Could not find kingdom for troop \"" + trp2.getString("Name") + "\" (with reference name \"" + trp2.getString("ReferenceName") + "\")! It will not be available!");
                     continue; //Do not add
                 }
@@ -139,12 +152,14 @@ public class GameDataLoaderThread implements Runnable {
 
             //For each troop, save any traits not yet known.
             //Loop through all troops
-            for (Iterator<Object> it = GameData.arrayTroops.iterator(); it.hasNext();) {
+            for (Iterator<Object> it = GameData.arrayTroops.iterator(); it.hasNext();)
+            {
                 JSONObject troop = (JSONObject) it.next();
                 JSONArray traitsForTroop = troop.getJSONArray("ParsedTraits");
 
                 //Loop through its traits
-                for (Iterator<Object> it2 = traitsForTroop.iterator(); it2.hasNext();) {
+                for (Iterator<Object> it2 = traitsForTroop.iterator(); it2.hasNext();)
+                {
                     JSONObject trait = (JSONObject) it2.next();
                     JSONObject newTrait = new JSONObject();
 
@@ -152,16 +167,19 @@ public class GameDataLoaderThread implements Runnable {
                     boolean known = false;
 
                     //Loop through all known traits
-                    for (Object knownTrait : traits) {
+                    for (Object knownTrait : traits)
+                    {
                         JSONObject obj = (JSONObject) knownTrait;
-                        if (obj.getString("Name").equals(trait.getString("Name"))) {
+                        if (obj.getString("Name").equals(trait.getString("Name")))
+                        {
                             known = true;
                             break;
                         }
                     }
 
                     //Move on if known
-                    if (known) {
+                    if (known)
+                    {
                         continue;
                     }
 
@@ -175,12 +193,14 @@ public class GameDataLoaderThread implements Runnable {
             }
 
             //Do the same again, for the hero class traits.
-            for (Iterator<Object> it = GameData.arrayClasses.iterator(); it.hasNext();) {
+            for (Iterator<Object> it = GameData.arrayClasses.iterator(); it.hasNext();)
+            {
                 JSONObject hClass = (JSONObject) it.next();
                 JSONArray traitsForClass = hClass.getJSONArray("ParsedTraits");
 
                 //Loop through all class traits
-                for (Iterator<Object> it2 = traitsForClass.iterator(); it2.hasNext();) {
+                for (Iterator<Object> it2 = traitsForClass.iterator(); it2.hasNext();)
+                {
                     JSONObject trait = (JSONObject) it2.next();
                     JSONObject newTrait = new JSONObject();
 
@@ -188,16 +208,19 @@ public class GameDataLoaderThread implements Runnable {
                     boolean known = false;
 
                     //Loop through all known traits
-                    for (Object knownTrait : traits) {
+                    for (Object knownTrait : traits)
+                    {
                         JSONObject obj = (JSONObject) knownTrait;
-                        if (obj.getString("Name").equals(trait.getString("Name"))) {
+                        if (obj.getString("Name").equals(trait.getString("Name")))
+                        {
                             known = true;
                             break;
                         }
                     }
 
                     //Move on if known
-                    if (known) {
+                    if (known)
+                    {
                         continue;
                     }
 
@@ -219,7 +242,8 @@ public class GameDataLoaderThread implements Runnable {
             JSONArray newSpells = new JSONArray();
 
             //Go through all troops, and add spells.
-            for (Object t : GameData.arrayTroops) {
+            for (Object t : GameData.arrayTroops)
+            {
                 //Gather raw data
                 JSONObject trp = (JSONObject) t;
                 JSONObject spellInfo = trp.getJSONObject("Spell");
@@ -247,7 +271,8 @@ public class GameDataLoaderThread implements Runnable {
             long finishParseTime = System.currentTimeMillis();
             main.logToBoth("[Game Data Loader] Finished loading game data (in " + (finishParseTime - startConnectionTime) + " milliseconds - " + (finishParseTime - finishDownloadTime) + " milliseconds since download finished).");
             GameData.dataLoaded = true;
-        } catch (IOException ex) {
+        } catch (IOException ex)
+        {
             main.logToBoth("Unable to load Game Data: " + ex.getMessage());
         }
     }
@@ -292,17 +317,22 @@ public class GameDataLoaderThread implements Runnable {
         magicDesc = "[" + magicDesc + "]";
         return magicDesc;
     }*/
-    public String getMagicValue(JSONObject troop, int magicAmount, String magicText) {
+    public String getMagicValue(JSONObject troop, int magicAmount, String magicText)
+    {
         String spellDesc = troop.getJSONObject("Spell").getString("Description");
         String boostDesc = "";
         String magicDesc = "";
         JSONObject spell = troop.getJSONObject("Spell");
 
-        if (spell.has("SpellSteps")) {
-            for (Object s : spell.getJSONArray("SpellSteps")) {
+        if (spell.has("SpellSteps"))
+        {
+            for (Object s : spell.getJSONArray("SpellSteps"))
+            {
                 JSONObject spellStep = (JSONObject) s;
-                if (spellStep.getString("Type").equals("Count")) {
-                    switch (spellStep.getInt("Amount")) {
+                if (spellStep.getString("Type").equals("Count"))
+                {
+                    switch (spellStep.getInt("Amount"))
+                    {
                         case 20:
                             boostDesc = " [5:1]";
                             break;
@@ -319,28 +349,32 @@ public class GameDataLoaderThread implements Runnable {
                             boostDesc = " [1:1]";
                             break;
                         default:
-                            if (spellStep.getInt("Amount") > 100 && spellStep.getInt("Amount") < 10000) {
+                            if (spellStep.getInt("Amount") > 100 && spellStep.getInt("Amount") < 10000)
+                            {
                                 boostDesc = " [" + (spellStep.getInt("Amount") / 100) + "x]";
                             }
                             break;
                     }
                 }
 
-                if (spellStep.getBoolean("Primarypower")) {
-                    if (spellStep.getInt("SpellPowerMultiplier") == 0) {
+                if (spellStep.getBoolean("Primarypower"))
+                {
+                    if (spellStep.getInt("SpellPowerMultiplier") == 0)
+                    {
                         magicDesc = "" + spellStep.getInt("Amount");
-                    } else {
+                    } else
+                    {
                         magicDesc = magicText;
-                        if (spellStep.getInt("SpellPowerMultiplier") != 1) {
-                            if(!magicDesc.equals(magicText))
+                        if (spellStep.getInt("SpellPowerMultiplier") != 1)
+                        {
+                            if (!magicDesc.equals(magicText))
                             {
                                 magicDesc = "(" + magicDesc + ")";
                             }
-                            if(spellStep.getInt("SpellPowerMultiplier") < 1)
+                            if (spellStep.getInt("SpellPowerMultiplier") < 1)
                             {
                                 magicDesc = magicDesc + " / " + (1 / spellStep.getInt("SpellPowerMultiplier"));
-                            }
-                            else
+                            } else
                             {
                                 //SpellPowerMultiplier > 1
                                 magicDesc = magicDesc + " x " + spellStep.getInt("SpellPowerMultiplier");
@@ -348,42 +382,42 @@ public class GameDataLoaderThread implements Runnable {
                             //Do not check if magicAmount is null - ints cannot be null
                             magicAmount = (int) Math.floor(magicAmount * spellStep.getDouble("SpellPowerMultiplier"));
                         }
-                        
-                        if(spellStep.getInt("Amount") != 0)
+
+                        if (spellStep.getInt("Amount") != 0)
                         {
-                            if(!magicDesc.equals(magicText))
+                            if (!magicDesc.equals(magicText))
                             {
                                 magicDesc = "(" + magicDesc + ")";
                             }
-                            
+
                             magicDesc = magicDesc + " + " + spellStep.getInt("Amount");
-                            
+
                             //Again, do not check if magicAmount is null
                             magicAmount += spellStep.getInt("Amount");
                         }
-                        
+
                         magicDesc = "[" + magicDesc + "]";
                     }
                 }
             }
         }
-        
-        if(magicDesc.equals(""))
+
+        if (magicDesc.equals(""))
         {
             magicDesc = "[" + magicText + "]";
         }
 
         //Another magicAmount null check gone
         magicDesc = magicAmount + " " + magicDesc;
-        
-        if(!spellDesc.contains("{2}"))
+
+        if (!spellDesc.contains("{2}"))
         {
             spellDesc = spellDesc.replace("{1}", magicDesc);
         } else
         {
             spellDesc = spellDesc.replace("{1}", "(half)").replace("{2}", magicDesc);
         }
-        
+
         return spellDesc + boostDesc;
     }
 }
