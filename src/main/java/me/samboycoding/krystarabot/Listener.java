@@ -636,12 +636,12 @@ public class Listener
                     int numTroops = kingdomInfo.getJSONArray("Troops").length();
                     String bannerName = kingdomInfo.getString("BannerName");
                     String bannerDesc = kingdomInfo.getString("BannerManaDescription");
-                    //String bonus2 = kingdomInfo.getString("Bonus_2");
-                    //String bonus3 = kingdomInfo.getString("Bonus_3");
-                    //String bonus4 = kingdomInfo.getString("Bonus_4");
-                    //String bonus2Desc = kingdomInfo.getString("Bonus_2_Description");
-                    //String bonus3Desc = kingdomInfo.getString("Bonus_3_Description");
-                    //String bonus4Desc = kingdomInfo.getString("Bonus_4_Description");
+                    String bonus2 = kingdomInfo.getJSONObject("Bonus2").getString("Name");
+                    String bonus3 = kingdomInfo.getJSONObject("Bonus3").getString("Name");
+                    String bonus4 = kingdomInfo.getJSONObject("Bonus4").getString("Name");
+                    String bonus2Desc = kingdomInfo.getJSONObject("Bonus2").getString("Description");
+                    String bonus3Desc = kingdomInfo.getJSONObject("Bonus3").getString("Description");
+                    String bonus4Desc = kingdomInfo.getJSONObject("Bonus4").getString("Description");
                     
                     int gloryAmount = kingdomInfo.getJSONObject("TributeData").getInt("Glory");
                     int goldAmount = kingdomInfo.getJSONObject("TributeData").getInt("Gold");
@@ -659,7 +659,7 @@ public class Listener
                         BufferedImage kingdomIcon = ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(logo));
                         ImageUtils.writeImageToFile(kingdomIcon, "png", scaled);
                         chnl.sendFile(scaled);
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\n**Tribute Data**\n" + tributeText);
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\n**Bonus Information:**\n**Bonus x2:** " +bonus2 + " - " + bonus2Desc + "\n**Bonus x3:** " + bonus3 + " - " + bonus3Desc + "\n**Bonus x4:** " + bonus4 + " - " + bonus4Desc + "\n\n**Tribute Data**\n" + tributeText);
                     } else
                     {
                         File stitched = new File("images/kingdoms/" + kingdomId + "_stitched.png");
@@ -670,7 +670,7 @@ public class Listener
                             ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageUtils.joinHorizontal(left, right)), "png", stitched);
                         }
                         chnl.sendFile(stitched);
-                        String toSend = "**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\n**Tribute Data**\n" + tributeText;
+                        String toSend = "**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\n**Bonus Information:**\n**Bonus x2:** " +bonus2 + " - " + bonus2Desc + "\n**Bonus x3:** " + bonus3 + " - " + bonus3Desc + "\n**Bonus x4:** " + bonus4 + " - " + bonus4Desc + "\n\n**Tribute Data**\n" + tributeText;
                         
                         chnl.sendMessage(toSend);
                     }
