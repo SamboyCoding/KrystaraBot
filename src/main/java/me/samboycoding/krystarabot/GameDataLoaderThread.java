@@ -148,11 +148,11 @@ public class GameDataLoaderThread implements Runnable
                             if (!kngdom.has("Troops"))
                             {
                                 JSONArray newTroops = new JSONArray();
-                                newTroops.put(trp2);
+                                newTroops.put(trp2.getString("Name"));
                                 kngdom.put("Troops", newTroops);
                             } else
                             {
-                                kngdom.getJSONArray("Troops").put(trp2);
+                                kngdom.getJSONArray("Troops").put(trp2.getString("Name"));
                             }
                             break;
                         }

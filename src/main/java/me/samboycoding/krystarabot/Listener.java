@@ -635,13 +635,19 @@ public class Listener
                     kingdomName = kingdomInfo.getString("Name");
                     int numTroops = kingdomInfo.getJSONArray("Troops").length();
                     String bannerName = kingdomInfo.getString("BannerName");
-                    String bannerDesc = kingdomInfo.getString("BannerDescription");
-                    String bonus2 = kingdomInfo.getString("Bonus_2");
-                    String bonus3 = kingdomInfo.getString("Bonus_3");
-                    String bonus4 = kingdomInfo.getString("Bonus_4");
-                    String bonus2Desc = kingdomInfo.getString("Bonus_2_Description");
-                    String bonus3Desc = kingdomInfo.getString("Bonus_3_Description");
-                    String bonus4Desc = kingdomInfo.getString("Bonus_4_Description");
+                    String bannerDesc = kingdomInfo.getString("BannerManaDescription");
+                    //String bonus2 = kingdomInfo.getString("Bonus_2");
+                    //String bonus3 = kingdomInfo.getString("Bonus_3");
+                    //String bonus4 = kingdomInfo.getString("Bonus_4");
+                    //String bonus2Desc = kingdomInfo.getString("Bonus_2_Description");
+                    //String bonus3Desc = kingdomInfo.getString("Bonus_3_Description");
+                    //String bonus4Desc = kingdomInfo.getString("Bonus_4_Description");
+                    
+                    int gloryAmount = kingdomInfo.getJSONObject("TributeData").getInt("Glory");
+                    int goldAmount = kingdomInfo.getJSONObject("TributeData").getInt("Gold");
+                    int soulsAmount = kingdomInfo.getJSONObject("TributeData").getInt("Souls");
+                    
+                    String tributeText = (gloryAmount == 0 ? "" : gloryAmount + " glory\n") + (goldAmount == 0 ? "" : goldAmount + " gold\n") + (soulsAmount == 0 ? "" : soulsAmount + " souls.");
                     String kingdomId = kingdomInfo.getString("FileBase");
                     String troops = kingdomInfo.getJSONArray("Troops").toString().replace("[", "").replace("]", "").replace(",", ", ").replace("\"", "");
 
@@ -653,7 +659,7 @@ public class Listener
                         BufferedImage kingdomIcon = ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(logo));
                         ImageUtils.writeImageToFile(kingdomIcon, "png", scaled);
                         chnl.sendFile(scaled);
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\n**Kingdom Bonus**\n" + bonus2 + " - " + bonus2Desc + "\n" + bonus3 + " - " + bonus3Desc + "\n" + bonus4 + " - " + bonus4Desc);
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\n**Tribute Data**\n" + tributeText);
                     } else
                     {
                         File stitched = new File("images/kingdoms/" + kingdomId + "_stitched.png");
@@ -664,7 +670,9 @@ public class Listener
                             ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageUtils.joinHorizontal(left, right)), "png", stitched);
                         }
                         chnl.sendFile(stitched);
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\n**Kingdom Bonus**\n" + bonus2 + " - " + bonus2Desc + "\n" + bonus3 + " - " + bonus3Desc + "\n" + bonus4 + " - " + bonus4Desc);
+                        String toSend = "**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\n**Tribute Data**\n" + tributeText;
+                        
+                        chnl.sendMessage(toSend);
                     }
                     break;
                 //</editor-fold>
@@ -1056,9 +1064,7 @@ public class Listener
 
                         unordered.put(current, messageCounter.getMessageCountForUser(current, chnl.getGuild()));
                     }
-                    main.logToBoth("Top10: Unordered: " + unordered);
                     ordered.putAll(unordered); //Now it's sorted, by values
-                    main.logToBoth("Top10: Ordered: " + ordered);
 
                     String toSend1 = "```\nTOP 10 USERS (BY MESSAGE COUNT) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Number of messages\n";
 
