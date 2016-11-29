@@ -27,20 +27,25 @@ public class ImageUtils
      */
     public static BufferedImage joinHorizontal(File left, File right) throws IOException
     {
-        final BufferedImage leftImage = ImageIO.read(left);
-        final BufferedImage rightImage = ImageIO.read(right);
+        final BufferedImage leftImage = ImageIO.read(left); //Read in the left image
+        final BufferedImage rightImage = ImageIO.read(right); //And the right
 
+        //Get properties
         final int width = leftImage.getWidth();
         final int height = leftImage.getHeight();
 
+        //New image twice as wide as the left hand (note: not left width + right width, but 2 x left width)
         final BufferedImage result = new BufferedImage(2 * width, height, BufferedImage.TYPE_INT_ARGB);
 
+        //Create a drawer
         Graphics2D drawer = result.createGraphics();
+        //Fill everything in transparent.
         drawer.setComposite(AlphaComposite.Clear);
         drawer.fillRect(0, 0, 2 * width, height);
+        
         drawer.setComposite(AlphaComposite.Src);
-        drawer.drawImage(leftImage, 0, 0, null);
-        drawer.drawImage(rightImage, width, 0, null);
+        drawer.drawImage(leftImage, 0, 0, null); //Draw the left image
+        drawer.drawImage(rightImage, width, 0, null); //Draw the right image
 
         return result;
     }
@@ -84,11 +89,12 @@ public class ImageUtils
      */
     public static BufferedImage scaleImage(float scaleX, float scaleY, BufferedImage before)
     {
+        //New, blank image, of the new dimensions
         BufferedImage after = new BufferedImage(Math.round(before.getWidth() * scaleX), Math.round(before.getHeight() * scaleY), BufferedImage.TYPE_INT_ARGB);
         AffineTransform at = new AffineTransform();
-        at.scale(scaleX, scaleY);
-        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-        after = scaleOp.filter(before, after);
+        at.scale(scaleX, scaleY); //Scale it by the scale parameters
+        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR); //Set bilinear mode
+        after = scaleOp.filter(before, after); //Scale from old -> new
 
         return after;
     }
@@ -106,6 +112,6 @@ public class ImageUtils
      */
     public static void writeImageToFile(BufferedImage image, String imageType, File where) throws IOException
     {
-        ImageIO.write(image, imageType, where);
+        ImageIO.write(image, imageType, where); //Yup.
     }
 }
