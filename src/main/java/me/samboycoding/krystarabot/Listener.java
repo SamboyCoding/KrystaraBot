@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
@@ -145,10 +146,12 @@ public class Listener
 
             String command;
             ArrayList<String> arguments = new ArrayList<>();
+            String argumentsFull = "";
             if (content.contains(" "))
             {
                 command = content.substring(1, content.indexOf(" ")).toLowerCase(); //From the character after the '?' to the character before the first space.
                 arguments.addAll(Arrays.asList(content.trim().substring(content.indexOf(" ") + 1, content.length()).split(" "))); //From the character after the first space, to the end.
+                argumentsFull = content.trim().substring(content.indexOf(" ") + 1, content.length());
             } else
             {
                 command = content.substring(1, content.length()).toLowerCase();
@@ -163,7 +166,7 @@ public class Listener
                     long lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
                     if (lagTime < 0)
                     {
-                        lagTime += lagTime + lagTime; //Makes it positive.
+                        lagTime = (long) Math.sqrt(lagTime * lagTime); //Makes it positive.
                     }
                     chnl.sendMessage("Pong! `" + lagTime + "ms lag`.");
                     break;
@@ -650,15 +653,14 @@ public class Listener
                         int gloryAmount = kingdomInfo.getJSONObject("TributeData").getInt("Glory");
                         int goldAmount = kingdomInfo.getJSONObject("TributeData").getInt("Gold");
                         int soulsAmount = kingdomInfo.getJSONObject("TributeData").getInt("Souls");
-                        
+
                         String goldEmoji = chnl.getGuild().getEmojiByName("gow_gold").toString();
                         String soulsEmoji = chnl.getGuild().getEmojiByName("gow_soul").toString();
                         String gloryEmoji = chnl.getGuild().getEmojiByName("gow_glory").toString();
-                        
 
                         tributeText = "**Tribute**\n" + goldEmoji + " " + goldAmount + " " + soulsEmoji + " " + soulsAmount + " " + gloryEmoji + " " + gloryAmount;
                     }
-                    
+
                     String kingdomId = kingdomInfo.getString("FileBase");
                     String troops = kingdomInfo.getJSONArray("Troops").toString().replace("[", "").replace("]", "").replace(",", ", ").replace("\"", "");
 
@@ -748,6 +750,101 @@ public class Listener
                     }
 
                     chnl.sendMessage(searchOutput);
+                    break;
+                //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc="Team">
+                //?team [troop1],[troop2],[troop3],[troop4],[banner]
+                case "team":
+                    ArrayList<String> things = new ArrayList<>();
+                    Arrays.asList(argumentsFull.split(",")).forEach(new Consumer<String>()
+                    {
+                        @Override
+                        public void accept(String t)
+                        {
+                            things.add(t.trim());
+                        }
+                    });
+
+                    if (things.size() < 4)
+                    {
+                        chnl.sendMessage("Usage: `?team [troop1],[troop2],[troop3],[troop4],[banner (optional)]`");
+                        break;
+                    }
+
+                    ArrayList<String> teamTroops = new ArrayList<>();
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        String troop = things.get(i);
+                        ArrayList<String> results = main.data.searchForTroop(troop);
+
+                        if (results.size() > 5)
+                        {
+                            chnl.sendMessage("Search term: \"" + troop + "\" is too broad (" + results.size() + " results). Please refine.");
+                            return;
+                        }
+                        if (results.size() > 1)
+                        {
+                            chnl.sendMessage("Ambigous troop name \"" + troop + "\". Possible results:\n" + results.toString().replace("[", "").replace("]", "").replace(", ", ",\n") + "\nPlease refine the search term.");
+                            return;
+                        }
+                        if (results.isEmpty())
+                        {
+                            chnl.sendMessage("Unknown troop \"" + troop + "\". Please correct it.");
+                            return;
+                        }
+                        teamTroops.add(results.get(0));
+                    }
+
+                    String teamString;
+                    String url;
+                    if (things.size() == 5)
+                    {
+                        String bannerName2 = things.get(4);
+                        ArrayList<String> banners = main.data.searchForBanner(things.get(4));
+                        if (banners.size() > 5)
+                        {
+                            chnl.sendMessage("Search term: \"" + bannerName2 + "\" is too broad (" + banners.size() + " results). Please refine.");
+                            return;
+                        }
+                        if (banners.size() > 1)
+                        {
+                            chnl.sendMessage("Ambigous banner/kingdom name \"" + bannerName2 + "\". Possible results:\n" + banners.toString().replace("[", "").replace("]", "").replace(", ", ",\n") + "\nPlease refine the search term.");
+                            return;
+                        }
+                        if (banners.isEmpty())
+                        {
+                            chnl.sendMessage("Unknown banner/kingdom name \"" + bannerName2 + "\". Please correct it.");
+                            return;
+                        }
+
+                        String banner = banners.get(0);
+
+                        int troopId1 = main.data.getTroopInfo(teamTroops.get(0)).getInt("Id");
+                        int troopId2 = main.data.getTroopInfo(teamTroops.get(1)).getInt("Id");
+                        int troopId3 = main.data.getTroopInfo(teamTroops.get(2)).getInt("Id");
+                        int troopId4 = main.data.getTroopInfo(teamTroops.get(3)).getInt("Id");
+                        int bannerId = main.data.getKingdomFromBanner(banner).getInt("Id");
+                        String bannerDsc = main.data.getKingdomFromBanner(banner).getString("BannerManaDescription");
+                        String kingdomNme = main.data.getKingdomFromBanner(banner).getString("Name");
+                        
+                        url = "http://ashtender.com/gems/teams/" + troopId1 + "," + troopId2 + "," + troopId3 + "," + troopId4 + "?banner=" + bannerId;
+                        teamString = sdr.mention() + " created team: \n\n**" + banner + "** (" + kingdomNme + ") - " + bannerDsc + "\n\n";
+                    } else
+                    {
+                        int troopId1 = main.data.getTroopInfo(teamTroops.get(0)).getInt("Id");
+                        int troopId2 = main.data.getTroopInfo(teamTroops.get(1)).getInt("Id");
+                        int troopId3 = main.data.getTroopInfo(teamTroops.get(2)).getInt("Id");
+                        int troopId4 = main.data.getTroopInfo(teamTroops.get(3)).getInt("Id");
+                        url = "http://ashtender.com/gems/teams/" + troopId1 + "," + troopId2 + "," + troopId3 + "," + troopId4;
+                        teamString = sdr.mention() + " created team: \n\n";
+                    }
+                    
+                    teamString += "**Troops:**\n\t-" + teamTroops.get(0) + "\n\t-" + teamTroops.get(1) + "\n\t-" + teamTroops.get(2) + "\n\t-" + teamTroops.get(3);
+                    teamString += "\n\n" + url;
+                    
+                    chnl.sendMessage("Team posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
+                    chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage(teamString);
                     break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Reload-Data">

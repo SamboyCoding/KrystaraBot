@@ -201,6 +201,22 @@ public class GameData
 
         return res;
     }
+    
+    public JSONObject getKingdomFromBanner(String searchTerm)
+    {
+        for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
+        {
+            JSONObject kingdom = (JSONObject) it.next();
+            String bannerName = kingdom.getString("BannerName");
+            
+            if (bannerName.toLowerCase().equals(searchTerm.toLowerCase()))
+            {
+                return kingdom;
+            }
+        }
+        
+        return null;
+    }
 
     public ArrayList<String> searchForTrait(String searchTerm)
     {
@@ -215,6 +231,35 @@ public class GameData
             }
         }
 
+        return res;
+    }
+    
+    /**
+     * Searches for a banner, EITHER BY BANNER NAME OR KINGDOM NAME.
+     * @param searchTerm The banner/kingdom name to search for.
+     * @return An arraylist containing all results.
+     */
+    public ArrayList<String> searchForBanner(String searchTerm)
+    {
+        ArrayList<String> res = new ArrayList<>();
+        
+        for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
+        {
+            JSONObject kingdom = (JSONObject) it.next();
+            if(kingdom.isNull("BannerName") || kingdom.isNull("Name"))
+            {
+                main.logToBoth("[Warning] Ignoring kingdom with null name; it's reference name is " + kingdom.getString("ReferenceName"));
+                continue;
+            }
+            
+            String bannerName = kingdom.getString("BannerName");
+            String kingdomName = kingdom.getString("Name");
+            if(bannerName.toLowerCase().contains(searchTerm.toLowerCase()) || kingdomName.toLowerCase().replace("'", "").contains(searchTerm.toLowerCase().replace("'", "")))
+            {
+                res.add(bannerName);
+            }
+        }
+        
         return res;
     }
 
