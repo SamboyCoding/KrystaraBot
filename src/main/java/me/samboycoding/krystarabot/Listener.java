@@ -388,7 +388,7 @@ public class Listener
                 //?troop [string]
 
                 case "troop":
-                    if(!GameData.dataLoaded)
+                    if (!GameData.dataLoaded)
                     {
                         chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
                         break;
@@ -405,7 +405,7 @@ public class Listener
                         chnl.sendMessage("No troop `" + troopName + "` found, " + sdr.mention());
                         break;
                     }
-                    if(!troopInfo.getBoolean("IsVisible"))
+                    if (!troopInfo.getBoolean("IsVisible"))
                     {
                         chnl.sendMessage("That troop isn't yet released! Check back at a later date (try next monday) to see its stats!");
                         break;
@@ -419,12 +419,12 @@ public class Listener
                     String type2 = troopInfo.getString("TroopType2");
                     String spell = troopInfo.getJSONObject("Spell").getString("Name");
                     int summonCost = troopInfo.getJSONObject("Spell").getInt("Cost");
-                    
+
                     String trait1;
                     String trait2;
                     String trait3;
-                    
-                    switch(troopInfo.getJSONArray("ParsedTraits").length())
+
+                    switch (troopInfo.getJSONArray("ParsedTraits").length())
                     {
                         case 0:
                             trait1 = "None";
@@ -453,7 +453,7 @@ public class Listener
                             trait3 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
                             break;
                     }
-                    
+
                     int armor = main.data.getLevel20ForProperty(troopInfo.getInt("Armor_Base"), troopInfo.getJSONArray("ArmorIncrease"), troopInfo.getJSONArray("Ascension_Armor"));
                     int life = main.data.getLevel20ForProperty(troopInfo.getInt("Health_Base"), troopInfo.getJSONArray("HealthIncrease"), troopInfo.getJSONArray("Ascension_Health"));
                     int attack = main.data.getLevel20ForProperty(troopInfo.getInt("Attack_Base"), troopInfo.getJSONArray("AttackIncrease"), troopInfo.getJSONArray("Ascension_Attack"));
@@ -516,7 +516,7 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Trait">
                 //?trait [string]    
                 case "trait":
-                    if(!GameData.dataLoaded)
+                    if (!GameData.dataLoaded)
                     {
                         chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
                         break;
@@ -542,7 +542,7 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Spell">
                 //?spell [string]
                 case "spell":
-                    if(!GameData.dataLoaded)
+                    if (!GameData.dataLoaded)
                     {
                         chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
                         break;
@@ -570,7 +570,7 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Class">
                 //?class [string]
                 case "class":
-                    if(!GameData.dataLoaded)
+                    if (!GameData.dataLoaded)
                     {
                         chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
                         break;
@@ -614,7 +614,7 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Kingdom">
                 //?kindom [string]
                 case "kingdom":
-                    if(!GameData.dataLoaded)
+                    if (!GameData.dataLoaded)
                     {
                         chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
                         break;
@@ -642,12 +642,23 @@ public class Listener
                     String bonus2Desc = kingdomInfo.getJSONObject("Bonus2").getString("Description");
                     String bonus3Desc = kingdomInfo.getJSONObject("Bonus3").getString("Description");
                     String bonus4Desc = kingdomInfo.getJSONObject("Bonus4").getString("Description");
+
+                    String tributeText = "";
+
+                    if (!kingdomInfo.isNull("TributeData"))
+                    {
+                        int gloryAmount = kingdomInfo.getJSONObject("TributeData").getInt("Glory");
+                        int goldAmount = kingdomInfo.getJSONObject("TributeData").getInt("Gold");
+                        int soulsAmount = kingdomInfo.getJSONObject("TributeData").getInt("Souls");
+                        
+                        String goldEmoji = chnl.getGuild().getEmojiByName("gow_gold").toString();
+                        String soulsEmoji = chnl.getGuild().getEmojiByName("gow_soul").toString();
+                        String gloryEmoji = chnl.getGuild().getEmojiByName("gow_glory").toString();
+                        
+
+                        tributeText = "**Tribute**\n" + goldEmoji + " " + goldAmount + " " + soulsEmoji + " " + soulsAmount + " " + gloryEmoji + " " + gloryAmount;
+                    }
                     
-                    int gloryAmount = kingdomInfo.getJSONObject("TributeData").getInt("Glory");
-                    int goldAmount = kingdomInfo.getJSONObject("TributeData").getInt("Gold");
-                    int soulsAmount = kingdomInfo.getJSONObject("TributeData").getInt("Souls");
-                    
-                    String tributeText = (gloryAmount == 0 ? "" : "Glory: " + gloryAmount + "\n") + (goldAmount == 0 ? "" : "Gold: " + goldAmount + "\n") + (soulsAmount == 0 ? "" : "Souls: " + soulsAmount);
                     String kingdomId = kingdomInfo.getString("FileBase");
                     String troops = kingdomInfo.getJSONArray("Troops").toString().replace("[", "").replace("]", "").replace(",", ", ").replace("\"", "");
 
@@ -659,7 +670,7 @@ public class Listener
                         BufferedImage kingdomIcon = ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(logo));
                         ImageUtils.writeImageToFile(kingdomIcon, "png", scaled);
                         chnl.sendFile(scaled);
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\n**Bonuses:**\n**x2:** " +bonus2 + " - " + bonus2Desc + "\n**x3:** " + bonus3 + " - " + bonus3Desc + "\n**x4:** " + bonus4 + " - " + bonus4Desc + "\n\n**Tribute Data**\n" + tributeText);
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\n**Bonuses:**\n**x2:** " + bonus2 + " - " + bonus2Desc + "\n**x3:** " + bonus3 + " - " + bonus3Desc + "\n**x4:** " + bonus4 + " - " + bonus4Desc + "\n\n" + tributeText);
                     } else
                     {
                         File stitched = new File("images/kingdoms/" + kingdomId + "_stitched.png");
@@ -670,8 +681,8 @@ public class Listener
                             ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageUtils.joinHorizontal(left, right)), "png", stitched);
                         }
                         chnl.sendFile(stitched);
-                        String toSend = "**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\n**Bonuses**\n**x2:** " +bonus2 + " - " + bonus2Desc + "\n**x3:** " + bonus3 + " - " + bonus3Desc + "\n**x4:** " + bonus4 + " - " + bonus4Desc + "\n\n**Tribute Data**\n" + tributeText;
-                        
+                        String toSend = "**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\n**Bonuses**\n**x2:** " + bonus2 + " - " + bonus2Desc + "\n**x3:** " + bonus3 + " - " + bonus3Desc + "\n**x4:** " + bonus4 + " - " + bonus4Desc + "\n\n" + tributeText;
+
                         chnl.sendMessage(toSend);
                     }
                     break;
@@ -679,7 +690,7 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Search">
                 //?search [kingdoms|troops|traits|spells] [string]
                 case "search":
-                    if(!GameData.dataLoaded)
+                    if (!GameData.dataLoaded)
                     {
                         chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
                         break;
@@ -742,12 +753,12 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Reload-Data">
                 //?reload-data    
                 case "reload-data":
-                    if(!Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+                    if (!Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
                     {
                         chnl.sendMessage("You cannot do that!");
                         break;
                     }
-                        
+
                     new Thread(new GameDataLoaderThread(chnl), "Game Data Reloader").start();
                     break;
                 //</editor-fold>
@@ -1054,10 +1065,12 @@ public class Listener
                         {
                             continue; //Skip the bot.
                         }
-                        if (id.equals("190663943260340224")) {
+                        if (id.equals("190663943260340224"))
+                        {
                             continue;  //Skip MrSnake                        
                         }
-                        if (id.equals("102450956045668352")) {
+                        if (id.equals("102450956045668352"))
+                        {
                             continue;  //Skip Samboy
                         }
                         IUser current = chnl.getGuild().getUserByID(id);
