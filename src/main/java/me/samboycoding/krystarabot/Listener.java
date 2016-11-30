@@ -645,6 +645,14 @@ public class Listener
                     String bonus2Desc = kingdomInfo.getJSONObject("Bonus2").getString("Description");
                     String bonus3Desc = kingdomInfo.getJSONObject("Bonus3").getString("Description");
                     String bonus4Desc = kingdomInfo.getJSONObject("Bonus4").getString("Description");
+                    String level10Emoji = null;
+                    String traitstone = null;
+                    
+                    if(!kingdomInfo.isNull("LevelData"))
+                    {
+                        level10Emoji = chnl.getGuild().getEmojiByName("gow_" + kingdomInfo.getJSONObject("LevelData").getString("Stat")).toString();
+                        traitstone = kingdomInfo.getString("ExploreRuneName").replace("Traitstone", "");
+                    }
 
                     String tributeText = "";
 
@@ -672,7 +680,7 @@ public class Listener
                         BufferedImage kingdomIcon = ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(logo));
                         ImageUtils.writeImageToFile(kingdomIcon, "png", scaled);
                         chnl.sendFile(scaled);
-                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\nNo Banner\n\n**Bonuses:**\n**x2:** " + bonus2 + " - " + bonus2Desc + "\n**x3:** " + bonus3 + " - " + bonus3Desc + "\n**x4:** " + bonus4 + " - " + bonus4Desc + "\n\n" + tributeText);
+                        chnl.sendMessage("**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n\n**Bonuses:**\n**x2:** " + bonus2 + " - " + bonus2Desc + "\n**x3:** " + bonus3 + " - " + bonus3Desc + "\n**x4:** " + bonus4 + " - " + bonus4Desc + "\n\n" + tributeText + (level10Emoji != null ? "\n\nKingdom level 10 grants +1 " + level10Emoji + " to all troops.\nExploration Traitstone: " + traitstone : ""));
                     } else
                     {
                         File stitched = new File("images/kingdoms/" + kingdomId + "_stitched.png");
@@ -683,7 +691,7 @@ public class Listener
                             ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageUtils.joinHorizontal(left, right)), "png", stitched);
                         }
                         chnl.sendFile(stitched);
-                        String toSend = "**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\n**Bonuses**\n**x2:** " + bonus2 + " - " + bonus2Desc + "\n**x3:** " + bonus3 + " - " + bonus3Desc + "\n**x4:** " + bonus4 + " - " + bonus4Desc + "\n\n" + tributeText;
+                        String toSend = "**" + kingdomName + "**\nTroops (" + numTroops + "): " + troops + "\n" + bannerName + " - " + bannerDesc + "\n\n**Bonuses**\n**x2:** " + bonus2 + " - " + bonus2Desc + "\n**x3:** " + bonus3 + " - " + bonus3Desc + "\n**x4:** " + bonus4 + " - " + bonus4Desc + "\n\n" + tributeText + (level10Emoji != null ? "\n\nKingdom level 10 grants +1 " + level10Emoji + " to all troops.\nExploration Traitstone: " + traitstone : "");
 
                         chnl.sendMessage(toSend);
                     }
@@ -755,6 +763,11 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Team">
                 //?team [troop1],[troop2],[troop3],[troop4],[banner]
                 case "team":
+                    if (!GameData.dataLoaded)
+                    {
+                        chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
+                        break;
+                    }
                     ArrayList<String> things = new ArrayList<>();
                     Arrays.asList(argumentsFull.split(",")).forEach(new Consumer<String>()
                     {
@@ -773,10 +786,46 @@ public class Listener
 
                     ArrayList<String> teamTroops = new ArrayList<>();
 
-                    Boolean manaRed, manaBlue, manaBrown, manaYellow, manaGreen = false;
+                    Boolean manaRed = false,
+                     manaBlue = false,
+                     manaBrown = false,
+                     manaYellow = false,
+                     manaGreen = false,
+                     manaPurple = false;
                     for (int i = 0; i < 4; i++)
                     {
                         String troop = things.get(i);
+
+                        JSONObject exact = main.data.getTroopInfo(troop);
+                        if (exact != null)
+                        {
+                            if (exact.getJSONObject("ManaColors").getBoolean("ColorBlue"))
+                            {
+                                manaBlue = true;
+                            }
+                            if (exact.getJSONObject("ManaColors").getBoolean("ColorRed"))
+                            {
+                                manaRed = true;
+                            }
+                            if (exact.getJSONObject("ManaColors").getBoolean("ColorBrown"))
+                            {
+                                manaBrown = true;
+                            }
+                            if (exact.getJSONObject("ManaColors").getBoolean("ColorYellow"))
+                            {
+                                manaYellow = true;
+                            }
+                            if (exact.getJSONObject("ManaColors").getBoolean("ColorGreen"))
+                            {
+                                manaGreen = true;
+                            }
+                            if (exact.getJSONObject("ManaColors").getBoolean("ColorPurple"))
+                            {
+                                manaPurple = true;
+                            }
+                            teamTroops.add(exact.getString("Name"));
+                            continue;
+                        }
                         ArrayList<String> results = main.data.searchForTroop(troop);
 
                         if (results.size() > 5)
@@ -786,7 +835,7 @@ public class Listener
                         }
                         if (results.size() > 1)
                         {
-                            chnl.sendMessage("Ambigous troop name \"" + troop + "\". Possible results:\n" + results.toString().replace("[", "").replace("]", "").replace(", ", ",\n") + "\nPlease refine the search term.");
+                            chnl.sendMessage("Ambigous troop name \"" + troop + "\". Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
                             return;
                         }
                         if (results.isEmpty())
@@ -794,34 +843,44 @@ public class Listener
                             chnl.sendMessage("Unknown troop \"" + troop + "\". Please correct it.");
                             return;
                         }
-                        
-                        for(String troopN : results)
+
+                        for (String troopN : results)
                         {
                             JSONObject trp = main.data.getTroopInfo(troopN);
-                            if(trp.getJSONObject("ManaColors").getBoolean("ColorBlue"))
+                            if (trp.getJSONObject("ManaColors").getBoolean("ColorBlue"))
                             {
                                 manaBlue = true;
                             }
-                            if(trp.getJSONObject("ManaColors").getBoolean("ColorRed"))
+                            if (trp.getJSONObject("ManaColors").getBoolean("ColorRed"))
                             {
                                 manaRed = true;
                             }
-                            if(trp.getJSONObject("ManaColors").getBoolean("ColorBrown"))
+                            if (trp.getJSONObject("ManaColors").getBoolean("ColorBrown"))
                             {
                                 manaBrown = true;
                             }
-                            if(trp.getJSONObject("ManaColors").getBoolean("ColorYellow"))
+                            if (trp.getJSONObject("ManaColors").getBoolean("ColorYellow"))
                             {
                                 manaYellow = true;
                             }
-                            if(trp.getJSONObject("ManaColors").getBoolean("ColorGreen"))
+                            if (trp.getJSONObject("ManaColors").getBoolean("ColorGreen"))
                             {
                                 manaGreen = true;
+                            }
+                            if (trp.getJSONObject("ManaColors").getBoolean("ColorPurple"))
+                            {
+                                manaPurple = true;
                             }
                         }
                         teamTroops.add(results.get(0));
                     }
-                    //TODO: Mana colors -> a string showing what colors the team uses.
+
+                    String manaColors = "This team uses the following colors: " + (manaBlue ? chnl.getGuild().getEmojiByName("mana_blue").toString() + " " : "");
+                    manaColors += (manaGreen ? chnl.getGuild().getEmojiByName("mana_green").toString() + " " : "");
+                    manaColors += (manaRed ? chnl.getGuild().getEmojiByName("mana_red").toString() + " " : "");
+                    manaColors += (manaYellow ? chnl.getGuild().getEmojiByName("mana_yellow").toString() + " " : "");
+                    manaColors += (manaPurple ? chnl.getGuild().getEmojiByName("mana_purple").toString() + " " : "");
+                    manaColors += (manaBrown ? chnl.getGuild().getEmojiByName("mana_brown").toString() : "");
                     String teamString;
                     String url;
                     String bannerString = null;
@@ -854,7 +913,7 @@ public class Listener
                         int bannerId = main.data.getKingdomFromBanner(banner).getInt("Id");
                         String bannerDsc = main.data.getKingdomFromBanner(banner).getString("BannerManaDescription");
                         String kingdomNme = main.data.getKingdomFromBanner(banner).getString("Name");
-                        
+
                         url = "http://ashtender.com/gems/teams/" + troopId1 + "," + troopId2 + "," + troopId3 + "," + troopId4 + "?banner=" + bannerId;
                         teamString = sdr.mention() + " created team: \n\n";
                         bannerString = "**" + banner + "** (" + kingdomNme + ") - " + bannerDsc + "\n\n";
@@ -867,10 +926,10 @@ public class Listener
                         url = "http://ashtender.com/gems/teams/" + troopId1 + "," + troopId2 + "," + troopId3 + "," + troopId4;
                         teamString = sdr.mention() + " created team: \n\n";
                     }
-                    
+
                     teamString += "**Troops:**\n\t-" + teamTroops.get(0) + "\n\t-" + teamTroops.get(1) + "\n\t-" + teamTroops.get(2) + "\n\t-" + teamTroops.get(3);
-                    teamString += "\n\n" + (bannerString == null ? bannerString : "") + url;
-                    
+                    teamString += "\n\n" + (bannerString != null ? bannerString : "") + manaColors + "\n\n" + url;
+
                     chnl.sendMessage("Team posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
                     chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage(teamString);
                     break;
