@@ -163,12 +163,7 @@ public class Listener
                 //<editor-fold defaultstate="collapsed" desc="Ping">
                 //?ping
                 case "ping":
-                    long lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-                    if (lagTime < 0)
-                    {
-                        lagTime = (long) Math.sqrt(lagTime * lagTime); //Makes it positive.
-                    }
-                    chnl.sendMessage("Pong! `" + lagTime + "ms lag`.");
+                    
                     break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Clear">

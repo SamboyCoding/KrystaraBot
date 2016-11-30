@@ -1,0 +1,71 @@
+package me.samboycoding.krystarabot.command;
+
+import java.util.ArrayList;
+import me.samboycoding.krystarabot.GameData;
+import me.samboycoding.krystarabot.main;
+import org.json.JSONObject;
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
+
+/**
+ * Represents the ?spell command
+ *
+ * @author Sam
+ */
+public class SpellCommand implements IKrystaraCommand
+{
+
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        if (!GameData.dataLoaded)
+        {
+            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
+            return;
+        }
+        if (arguments.size() < 1)
+        {
+            chnl.sendMessage("You need to specify a name to search for!");
+            return;
+        }
+        String spellName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
+        JSONObject spellInfo = main.data.getSpellInfo(spellName);
+        if (spellInfo == null)
+        {
+            chnl.sendMessage("No spell `" + spellName + "` found, " + sdr.mention());
+            return;
+        }
+
+        spellName = spellInfo.getString("Name");
+        String spellDesc = spellInfo.getString("Description");
+        int spellCost = spellInfo.getInt("Cost");
+
+        chnl.sendMessage("**" + spellName + " (" + spellCost + "):** " + spellDesc);
+    }
+
+    @Override
+    public String getHelpText()
+    {
+        return "Shows information for the specified spell.";
+    }
+
+    @Override
+    public Boolean requiresAdmin()
+    {
+        return false;
+    }
+
+    @Override
+    public String getUsage()
+    {
+        return "?spell [name]";
+    }
+
+    @Override
+    public String getCommand()
+    {
+        return "spell";
+    }
+
+}
