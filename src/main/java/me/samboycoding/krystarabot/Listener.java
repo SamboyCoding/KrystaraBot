@@ -773,6 +773,7 @@ public class Listener
 
                     ArrayList<String> teamTroops = new ArrayList<>();
 
+                    Boolean manaRed, manaBlue, manaBrown, manaYellow, manaGreen = false;
                     for (int i = 0; i < 4; i++)
                     {
                         String troop = things.get(i);
@@ -793,11 +794,37 @@ public class Listener
                             chnl.sendMessage("Unknown troop \"" + troop + "\". Please correct it.");
                             return;
                         }
+                        
+                        for(String troopN : results)
+                        {
+                            JSONObject trp = main.data.getTroopInfo(troopN);
+                            if(trp.getJSONObject("ManaColors").getBoolean("ColorBlue"))
+                            {
+                                manaBlue = true;
+                            }
+                            if(trp.getJSONObject("ManaColors").getBoolean("ColorRed"))
+                            {
+                                manaRed = true;
+                            }
+                            if(trp.getJSONObject("ManaColors").getBoolean("ColorBrown"))
+                            {
+                                manaBrown = true;
+                            }
+                            if(trp.getJSONObject("ManaColors").getBoolean("ColorYellow"))
+                            {
+                                manaYellow = true;
+                            }
+                            if(trp.getJSONObject("ManaColors").getBoolean("ColorGreen"))
+                            {
+                                manaGreen = true;
+                            }
+                        }
                         teamTroops.add(results.get(0));
                     }
-
+                    //TODO: Mana colors -> a string showing what colors the team uses.
                     String teamString;
                     String url;
+                    String bannerString = null;
                     if (things.size() == 5)
                     {
                         String bannerName2 = things.get(4);
@@ -829,7 +856,8 @@ public class Listener
                         String kingdomNme = main.data.getKingdomFromBanner(banner).getString("Name");
                         
                         url = "http://ashtender.com/gems/teams/" + troopId1 + "," + troopId2 + "," + troopId3 + "," + troopId4 + "?banner=" + bannerId;
-                        teamString = sdr.mention() + " created team: \n\n**" + banner + "** (" + kingdomNme + ") - " + bannerDsc + "\n\n";
+                        teamString = sdr.mention() + " created team: \n\n";
+                        bannerString = "**" + banner + "** (" + kingdomNme + ") - " + bannerDsc + "\n\n";
                     } else
                     {
                         int troopId1 = main.data.getTroopInfo(teamTroops.get(0)).getInt("Id");
@@ -841,7 +869,7 @@ public class Listener
                     }
                     
                     teamString += "**Troops:**\n\t-" + teamTroops.get(0) + "\n\t-" + teamTroops.get(1) + "\n\t-" + teamTroops.get(2) + "\n\t-" + teamTroops.get(3);
-                    teamString += "\n\n" + url;
+                    teamString += "\n\n" + (bannerString == null ? bannerString : "") + url;
                     
                     chnl.sendMessage("Team posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
                     chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage(teamString);
