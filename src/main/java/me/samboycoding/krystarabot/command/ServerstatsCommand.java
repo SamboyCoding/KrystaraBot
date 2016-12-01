@@ -3,6 +3,8 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import java.util.List;
 import static me.samboycoding.krystarabot.Listener.messageCounter;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
+import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
@@ -100,4 +102,9 @@ public class ServerstatsCommand extends KrystaraCommand
         return "serverstats";
     }
 
+    @Override
+    public CommandType getCommandType()
+    {
+        return SERVER;
+    }
 }

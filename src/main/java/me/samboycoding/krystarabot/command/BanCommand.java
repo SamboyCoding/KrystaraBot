@@ -6,6 +6,7 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
@@ -78,6 +79,12 @@ public class BanCommand extends KrystaraCommand
     public String getCommand()
     {
         return "ban";
+    }
+
+    @Override
+    public CommandType getCommandType()
+    {
+        return MOD;
     }
 
 }

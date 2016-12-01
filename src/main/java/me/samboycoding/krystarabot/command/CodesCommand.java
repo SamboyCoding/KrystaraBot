@@ -1,6 +1,8 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -56,4 +58,9 @@ public class CodesCommand extends KrystaraCommand
         return "codes";
     }
 
+    @Override
+    public CommandType getCommandType()
+    {
+        return GOW;
+    }
 }

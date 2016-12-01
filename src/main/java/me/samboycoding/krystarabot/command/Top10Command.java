@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import static me.samboycoding.krystarabot.Listener.messageCounter;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
+import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
@@ -84,6 +86,12 @@ public class Top10Command extends KrystaraCommand
     public String getCommand()
     {
         return "top10";
+    }
+    
+    @Override
+    public CommandType getCommandType()
+    {
+        return SERVER;
     }
 
     class ValueComparator implements Comparator<IUser>

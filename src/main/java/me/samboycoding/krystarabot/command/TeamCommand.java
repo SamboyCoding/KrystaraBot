@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import me.samboycoding.krystarabot.GameData;
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import org.json.JSONObject;
@@ -221,6 +223,12 @@ public class TeamCommand extends KrystaraCommand
     public String getCommand()
     {
         return "team";
+    }
+    
+    @Override
+    public CommandType getCommandType()
+    {
+        return GOW;
     }
 
 }

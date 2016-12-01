@@ -92,30 +92,6 @@ public class Listener
             IDReference.MYID = main.getClient(null).getApplicationClientID();
             main.logToBoth("Registering commands...");
 
-            /*new Command("?ping", "Check if the bot is able to respond to commands.", false)._register();
-            new Command("?troop [name]", "Shows information for the specified troop.", false)._register();
-            new Command("?trait [name]", "Shows information for the specified trait.", false)._register();
-            new Command("?spell [name]", "Shows information for the specified spell.", false)._register();
-            new Command("?class [name]", "Shows information for the specified hero class.", false)._register();
-            new Command("?kingdom [name]", "Shows information for the specified kingdom.", false)._register();
-            new Command("?search [text]", "Search for troops, traits, spells, hero classes or kingdoms containing the specified text.", false)._register();
-            new Command("?platform [pc|mobile|console]", "Assigns you to a platform. You can be on none, one, or both of the platforms at any time.", false)._register();
-            new Command("?userstats [optional @mention]", "Shows information on you, or the specified user", false)._register();
-            new Command("?serverstats", "Shows information on the server.", false)._register();
-            new Command("?newcode [code]", "Post a new code into the #codes channel.", false)._register();
-            new Command("?codes", "Lists the currently \"Alive\" codes.", false)._register();
-            new Command("?dead [code]", "Report a code as dead in the #codes channel.", false)._register();
-            new Command("?top10", "Shows the 10 most talkative (i.e. those that sent the most messages) on the server.", false)._register();
-
-            main.logToBoth("Registering Admin commands...");
-            new AdminCommand("?kick [@user]", "Kicks the specified user from the server.", true)._register();
-            new AdminCommand("?ban [@user]", "Bans the specified user from the server.", true)._register();
-            new AdminCommand("?clear [amount (1-100)]", "Deletes the specified amount of messages.", true)._register();
-            new AdminCommand("?warn [@user] [message]", "Sends a PM warning to the specified user.", true)._register();
-            new AdminCommand("?clearcache", "Clears cached scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
-            new AdminCommand("?buildcache", "Builds a cache of scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
-            new AdminCommand("?reload-data", "Reloads the internal data source for the lookup commands. NOT FOR USE BY NON-DEVS!", true)._register();*/
-            
             main.registerCommand(new BanCommand());
             main.registerCommand(new BuildcacheCommand());
             main.registerCommand(new ClassCommand());

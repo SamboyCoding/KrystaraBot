@@ -1,6 +1,7 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import sx.blah.discord.handle.obj.IChannel;
@@ -78,4 +79,9 @@ public class DeadCommand extends KrystaraCommand
         return "dead";
     }
 
+    @Override
+    public CommandType getCommandType()
+    {
+        return GOW;
+    }
 }

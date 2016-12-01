@@ -2,6 +2,8 @@ package me.samboycoding.krystarabot.command;
 
 import java.io.File;
 import java.util.ArrayList;
+import static me.samboycoding.krystarabot.command.CommandType.BOTDEV;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -97,4 +99,9 @@ public class ClearcacheCommand extends KrystaraCommand
         return "clearcache";
     }
 
+    @Override
+    public CommandType getCommandType()
+    {
+        return BOTDEV;
+    }
 }

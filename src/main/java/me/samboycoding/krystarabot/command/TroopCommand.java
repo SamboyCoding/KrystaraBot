@@ -3,6 +3,8 @@ package me.samboycoding.krystarabot.command;
 import java.net.URL;
 import java.util.ArrayList;
 import me.samboycoding.krystarabot.GameData;
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
@@ -174,4 +176,9 @@ public class TroopCommand extends KrystaraCommand
         return "troop";
     }
 
+    @Override
+    public CommandType getCommandType()
+    {
+        return GOW;
+    }
 }

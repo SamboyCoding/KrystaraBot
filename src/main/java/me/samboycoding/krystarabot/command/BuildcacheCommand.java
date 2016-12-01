@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.GameData;
+import static me.samboycoding.krystarabot.command.CommandType.BOTDEV;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.ImageUtils;
 import me.samboycoding.krystarabot.utilities.Utilities;
@@ -156,4 +157,10 @@ public class BuildcacheCommand extends KrystaraCommand
         return "buildcache";
     }
 
+    
+    @Override
+    public CommandType getCommandType()
+    {
+        return BOTDEV;
+    }
 }

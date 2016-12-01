@@ -2,6 +2,8 @@ package me.samboycoding.krystarabot.command;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
+import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -54,4 +56,9 @@ public class PingCommand extends KrystaraCommand
         return "ping";
     }
 
+    @Override
+    public CommandType getCommandType()
+    {
+        return SERVER;
+    }
 }

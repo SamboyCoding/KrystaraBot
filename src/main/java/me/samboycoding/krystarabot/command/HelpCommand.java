@@ -1,11 +1,12 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.EmbedBuilder;
 
 /**
  * Represents the ?help command
@@ -26,30 +27,44 @@ public class HelpCommand extends KrystaraCommand
         ArrayList<KrystaraCommand> cmdList = main.getCommands();
 
         String helpText = "I recognize the following commands:\n\n";
-        
-        for (KrystaraCommand normalCmd : cmdList)
+
+        for (CommandType c : CommandType.values())
         {
-            if (normalCmd.requiresAdmin())
+            helpText += c.toString() + "\n" + Utilities.repeatString("-", 30) + "\n";
+            for (KrystaraCommand cmd : main.getCommands())
             {
-                continue;
+                if (cmd.getCommandType() != c)
+                {
+                    continue;
+                }
+                helpText += "**" + cmd.getUsage() + "**: " + cmd.getHelpText() + "\n";
             }
-            
-            helpText += "**" + normalCmd.getUsage() + "**: " + normalCmd.getHelpText() + "\n";
+            helpText += "\n";
         }
-        
-        helpText += "\nAdmin Commands (These WILL be logged):\n\n";
-        
-        for (KrystaraCommand adminCommand : cmdList)
+
+        msg.delete();
+        int charsSent = 0;
+        if (helpText.length() > 2000)
         {
-            if (!adminCommand.requiresAdmin())
+            while (charsSent < helpText.length())
             {
-                continue;
+                if (helpText.length() > 2000)
+                {
+                    String temp = helpText.substring(0, 1999);
+                    int lastNewline = temp.lastIndexOf("\n");
+                    String toSend = helpText.substring(0, lastNewline + 1); //+1 to include \n char
+                    sdr.getOrCreatePMChannel().sendMessage(toSend);
+                    charsSent += toSend.length();
+                    helpText = helpText.substring(lastNewline + 1);
+                } else
+                {
+                    sdr.getOrCreatePMChannel().sendMessage(helpText);
+                    charsSent += helpText.length();
+                }
             }
-            
-            helpText += "**" + adminCommand.getUsage() + "**: " + adminCommand.getHelpText() + "\n";
         }
-        
         sdr.getOrCreatePMChannel().sendMessage(helpText);
+        chnl.sendMessage(sdr.mention() + ", check your PMs for a command list.");
     }
 
     @Override
@@ -76,4 +91,9 @@ public class HelpCommand extends KrystaraCommand
         return "help";
     }
 
+    @Override
+    public CommandType getCommandType()
+    {
+        return SERVER;
+    }
 }

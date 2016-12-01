@@ -1,6 +1,8 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -71,4 +73,9 @@ public class PlatformCommand extends KrystaraCommand
         return "platform";
     }
 
+    @Override
+    public CommandType getCommandType()
+    {
+        return GOW;
+    }
 }

@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.GameData;
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.ImageUtils;
 import org.json.JSONObject;
@@ -132,4 +134,9 @@ public class KingdomCommand extends KrystaraCommand
         return "kingdom";
     }
 
+    @Override
+    public CommandType getCommandType()
+    {
+        return GOW;
+    }
 }

@@ -12,8 +12,9 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public abstract class KrystaraCommand implements Comparable<KrystaraCommand>
 {
+
     protected String commandName;
-    
+
     /**
      * Handles this command.
      *
@@ -33,25 +34,36 @@ public abstract class KrystaraCommand implements Comparable<KrystaraCommand>
      * @return The help text
      */
     public abstract String getHelpText();
-    
+
     /**
      * Gets whether or not this command requires admin
+     *
      * @return True/false, representing yes/no
      */
     public abstract Boolean requiresAdmin();
-    
+
+    /**
+     * Shows what type of command this is
+     *
+     * @return A command type
+     */
+    public abstract CommandType getCommandType();
+
     /**
      * Gets the usage string for the bot (eg "?troop [name]")
+     *
      * @return The usage string
      */
     public abstract String getUsage();
-    
+
     /**
-     * Gets the raw command used (eg for ?troop it would be "troop" to allow handling in the listener)
+     * Gets the raw command used (eg for ?troop it would be "troop" to allow
+     * handling in the listener)
+     *
      * @return The raw command text
      */
     public abstract String getCommand();
-    
+
     @Override
     public int compareTo(KrystaraCommand o)
     {
