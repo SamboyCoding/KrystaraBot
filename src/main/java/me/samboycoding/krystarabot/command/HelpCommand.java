@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -30,6 +31,16 @@ public class HelpCommand extends KrystaraCommand
 
         for (CommandType c : CommandType.values())
         {
+            if(c == CommandType.BOTDEV && !Utilities.userHasRole(chnl.getGuild(), sdr, chnl.getGuild().getRolesByName("Bot-Dev").get(0)))
+            {
+                //Botdev commands, but not botdev
+                continue;
+            }
+            if(c == CommandType.MOD && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+            {
+                //Mod commands, but cannot use
+                continue;
+            }
             helpText += c.toString() + "\n" + Utilities.repeatString("-", 60) + "\n";
             for (KrystaraCommand cmd : main.getCommands())
             {
