@@ -12,8 +12,12 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author r3byass
  */
-public class NewcodeCommand implements IKrystaraCommand
+public class NewcodeCommand extends KrystaraCommand
 {
+    public NewcodeCommand()
+    {
+        commandName = "newcode";
+    }
 
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception

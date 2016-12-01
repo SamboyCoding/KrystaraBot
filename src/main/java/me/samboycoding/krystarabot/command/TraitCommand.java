@@ -13,9 +13,14 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author Sam
  */
-public class TraitCommand implements IKrystaraCommand
+public class TraitCommand extends KrystaraCommand
 {
 
+    public TraitCommand()
+    {
+        commandName = "trait";
+    }
+        
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {

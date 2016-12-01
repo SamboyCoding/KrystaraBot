@@ -11,8 +11,13 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author r3byass
  */
-public class WarnCommand implements IKrystaraCommand
+public class WarnCommand extends KrystaraCommand
 {
+    
+    public WarnCommand()
+    {
+        commandName = "warn";
+    }
 
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception

@@ -14,9 +14,14 @@ import sx.blah.discord.handle.obj.Status;
  *
  * @author r3byass
  */
-public class UserstatsCommand implements IKrystaraCommand
+public class UserstatsCommand extends KrystaraCommand
 {
 
+    public UserstatsCommand()
+    {
+        commandName = "userstats";
+    }
+        
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {

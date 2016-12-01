@@ -7,7 +7,9 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import me.samboycoding.krystarabot.command.KrystaraCommand;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
 import org.apache.commons.io.FileUtils;
@@ -26,6 +28,9 @@ public class main
 
     private static final ArrayList<Command> registeredCommands = new ArrayList<>();
     private static final ArrayList<AdminCommand> registeredAdminCommands = new ArrayList<>();
+    
+    private static final ArrayList<KrystaraCommand> commands = new ArrayList<>();
+    
     private static IDiscordClient cl;
     public static GameData data = new GameData();
     public static CodesHandler codes = new CodesHandler();
@@ -59,6 +64,7 @@ public class main
         }
     }
 
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public static void main(String[] args) throws DiscordException, RateLimitException, IOException
     {
         new File("logs/").mkdir();
@@ -82,12 +88,25 @@ public class main
     {
         registeredCommands.add(c);
     }
+    
+    public static void registerCommand(KrystaraCommand c)
+    {
+        commands.add(c);
+        
+        Collections.sort(commands);
+    }
 
     @SuppressWarnings("unchecked")
     public static ArrayList<Command> getRegisteredCommands()
     {
         return (ArrayList<Command>) registeredCommands.clone();
     }
+    
+    @SuppressWarnings("unchecked")
+    public static ArrayList<KrystaraCommand> getCommands()
+    {
+        return (ArrayList<KrystaraCommand>) commands.clone();
+    }    
 
     public static void logToBoth(String msg)
     {

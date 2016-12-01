@@ -11,8 +11,12 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author r3byass
  */
-public class SearchCommand implements IKrystaraCommand
+public class SearchCommand extends KrystaraCommand
 {
+    public SearchCommand()
+    {
+        commandName = "search";
+    }
 
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception

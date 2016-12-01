@@ -17,9 +17,14 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author r3byass
  */
-public class Top10Command implements IKrystaraCommand
+public class Top10Command extends KrystaraCommand
 {
 
+    public Top10Command()
+    {
+        commandName = "top10";
+    }
+    
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {

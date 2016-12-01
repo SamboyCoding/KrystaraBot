@@ -10,8 +10,12 @@ import sx.blah.discord.handle.obj.IUser;
  * Represents the ?platform command
  * @author r3byass
  */
-public class PlatformCommand implements IKrystaraCommand
+public class PlatformCommand extends KrystaraCommand
 {
+    public PlatformCommand()
+    {
+        commandName = "platform";
+    }
 
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception

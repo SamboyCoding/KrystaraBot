@@ -12,9 +12,14 @@ import sx.blah.discord.util.MessageList;
  *
  * @author r3byass
  */
-public class ClearCommand implements IKrystaraCommand
+public class ClearCommand extends KrystaraCommand
 {
 
+    public ClearCommand()
+    {
+        commandName = "clear";
+    }
+    
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {

@@ -13,9 +13,14 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author Sam
  */
-public class SpellCommand implements IKrystaraCommand
+public class SpellCommand extends KrystaraCommand
 {
 
+    public SpellCommand()
+    {
+        commandName = "spell";
+    }
+    
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {

@@ -11,9 +11,14 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author r3byass
  */
-public class KickCommand implements IKrystaraCommand
+public class KickCommand extends KrystaraCommand
 {
 
+    public KickCommand()
+    {
+        commandName = "kick";
+    }
+    
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {

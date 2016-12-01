@@ -10,8 +10,10 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author Sam
  */
-public interface IKrystaraCommand
+public abstract class KrystaraCommand implements Comparable<KrystaraCommand>
 {
+    protected String commandName;
+    
     /**
      * Handles this command.
      *
@@ -49,4 +51,11 @@ public interface IKrystaraCommand
      * @return The raw command text
      */
     public abstract String getCommand();
+    
+    @Override
+    public int compareTo(KrystaraCommand o)
+    {
+        String otherName = o.commandName;
+        return commandName.compareTo(otherName);
+    }
 }

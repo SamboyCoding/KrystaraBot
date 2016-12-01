@@ -12,9 +12,14 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author r3byass
  */
-public class DeadCommand implements IKrystaraCommand
+public class DeadCommand extends KrystaraCommand
 {
 
+    public DeadCommand()
+    {
+        commandName = "dead";
+    }
+    
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
