@@ -5,7 +5,6 @@ import java.io.File;
 import java.net.URL;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import me.samboycoding.krystarabot.utilities.IDReference;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -1234,47 +1233,7 @@ public class Listener
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Top10">
                 case "top10":
-                    LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
-                    ValueComparator comp = new ValueComparator((Map<IUser, Integer>) unordered);
-                    TreeMap<IUser, Integer> ordered = new TreeMap<>(comp);
-
-                    for (String id : messageCounter.getUserIDList(chnl.getGuild()))
-                    {
-                        if (id.equals(IDReference.MYID))
-                        {
-                            continue; //Skip the bot.
-                        }
-                        if (id.equals("190663943260340224"))
-                        {
-                            continue;  //Skip MrSnake                        
-                        }
-                        if (id.equals("102450956045668352"))
-                        {
-                            continue;  //Skip Samboy
-                        }
-                        IUser current = chnl.getGuild().getUserByID(id);
-
-                        unordered.put(current, messageCounter.getMessageCountForUser(current, chnl.getGuild()));
-                    }
-                    ordered.putAll(unordered); //Now it's sorted, by values
-
-                    String toSend1 = "```\nTOP 10 USERS (BY MESSAGE COUNT) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Number of messages\n";
-
-                    int count1 = 0;
-                    int numSpaces = 60;
-                    for (IUser u : ordered.descendingKeySet())
-                    {
-                        count1++;
-                        toSend1 += "\n" + u.getName() + Utilities.repeatString(" ", numSpaces - u.getName().length()) + unordered.get(u);
-                        if (count1 > 10)
-                        {
-                            break;
-                        }
-                    }
-
-                    toSend1 += "\n```";
-
-                    chnl.sendMessage(toSend1);
+                    //Removed.
                     break;
                 //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc="Help">
@@ -1382,29 +1341,5 @@ public class Listener
         {
             //Ignore.
         }
-    }
-}
-
-class ValueComparator implements Comparator<IUser>
-{
-
-    Map<IUser, Integer> base;
-
-    public ValueComparator(Map<IUser, Integer> base)
-    {
-        this.base = base;
-    }
-
-    // Note: this comparator imposes orderings that are inconsistent with equals.    
-    @Override
-    public int compare(IUser a, IUser b)
-    {
-        if (base.get(a) >= base.get(b))
-        {
-            return 1;
-        } else
-        {
-            return -1;
-        } // returning 0 would merge keys
     }
 }
