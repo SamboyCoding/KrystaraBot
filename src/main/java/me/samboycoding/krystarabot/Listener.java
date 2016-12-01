@@ -15,7 +15,29 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import javax.imageio.ImageIO;
+import me.samboycoding.krystarabot.command.BanCommand;
+import me.samboycoding.krystarabot.command.BuildcacheCommand;
+import me.samboycoding.krystarabot.command.ClassCommand;
+import me.samboycoding.krystarabot.command.ClearCommand;
+import me.samboycoding.krystarabot.command.ClearcacheCommand;
+import me.samboycoding.krystarabot.command.CodesCommand;
+import me.samboycoding.krystarabot.command.DeadCommand;
+import me.samboycoding.krystarabot.command.KickCommand;
+import me.samboycoding.krystarabot.command.KingdomCommand;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
+import me.samboycoding.krystarabot.command.NewcodeCommand;
+import me.samboycoding.krystarabot.command.PingCommand;
+import me.samboycoding.krystarabot.command.PlatformCommand;
+import me.samboycoding.krystarabot.command.ReloadDataCommand;
+import me.samboycoding.krystarabot.command.SearchCommand;
+import me.samboycoding.krystarabot.command.ServerstatsCommand;
+import me.samboycoding.krystarabot.command.SpellCommand;
+import me.samboycoding.krystarabot.command.TeamCommand;
+import me.samboycoding.krystarabot.command.Top10Command;
+import me.samboycoding.krystarabot.command.TraitCommand;
+import me.samboycoding.krystarabot.command.TroopCommand;
+import me.samboycoding.krystarabot.command.UserstatsCommand;
+import me.samboycoding.krystarabot.command.WarnCommand;
 import me.samboycoding.krystarabot.utilities.AdminCommand;
 import me.samboycoding.krystarabot.utilities.Command;
 import me.samboycoding.krystarabot.utilities.ImageUtils;
@@ -69,7 +91,7 @@ public class Listener
             IDReference.MYID = main.getClient(null).getApplicationClientID();
             main.logToBoth("Registering commands...");
 
-            new Command("?ping", "Check if the bot is able to respond to commands.", false)._register();
+            /*new Command("?ping", "Check if the bot is able to respond to commands.", false)._register();
             new Command("?troop [name]", "Shows information for the specified troop.", false)._register();
             new Command("?trait [name]", "Shows information for the specified trait.", false)._register();
             new Command("?spell [name]", "Shows information for the specified spell.", false)._register();
@@ -91,8 +113,32 @@ public class Listener
             new AdminCommand("?warn [@user] [message]", "Sends a PM warning to the specified user.", true)._register();
             new AdminCommand("?clearcache", "Clears cached scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
             new AdminCommand("?buildcache", "Builds a cache of scaled/stitched images. NOT FOR USE BY NON-DEVS!", true)._register();
-            new AdminCommand("?reload-data", "Reloads the internal data source for the lookup commands. NOT FOR USE BY NON-DEVS!", true)._register();
-
+            new AdminCommand("?reload-data", "Reloads the internal data source for the lookup commands. NOT FOR USE BY NON-DEVS!", true)._register();*/
+            
+            main.registerCommand(new BanCommand());
+            main.registerCommand(new BuildcacheCommand());
+            main.registerCommand(new ClassCommand());
+            main.registerCommand(new ClearCommand());
+            main.registerCommand(new ClearcacheCommand());
+            main.registerCommand(new CodesCommand());
+            main.registerCommand(new DeadCommand());
+            main.registerCommand(new KickCommand());
+            main.registerCommand(new KingdomCommand());
+            main.registerCommand(new NewcodeCommand());
+            main.registerCommand(new PingCommand());
+            main.registerCommand(new PlatformCommand());
+            main.registerCommand(new ReloadDataCommand());
+            main.registerCommand(new SearchCommand());
+            main.registerCommand(new ServerstatsCommand());
+            main.registerCommand(new SpellCommand());
+            main.registerCommand(new TeamCommand());
+            main.registerCommand(new Top10Command());
+            main.registerCommand(new TraitCommand());
+            main.registerCommand(new TroopCommand());
+            main.registerCommand(new UserstatsCommand());
+            main.registerCommand(new WarnCommand());
+            
+            
             main.logToBoth("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
         {
@@ -156,26 +202,26 @@ public class Listener
             {
                 command = content.substring(1, content.length()).toLowerCase();
             }
-            
+
             main.logToBoth("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
-            
+
             ArrayList<KrystaraCommand> commands = main.getCommands();
-            
+
             boolean validCommand = false;
-            for(KrystaraCommand c : commands)
+            for (KrystaraCommand c : commands)
             {
-                if(c.getCommand().equals(command))
+                if (c.getCommand().equals(command))
                 {
                     validCommand = true;
                     c.handleCommand(sdr, chnl, msg, arguments, argumentsFull);
                 }
             }
-            
-            if(!validCommand)
+
+            if (!validCommand)
             {
                 chnl.sendMessage("Invalid command \"" + command + "\"");
             }
-            
+
         } catch (RateLimitException rle)
         {
             try

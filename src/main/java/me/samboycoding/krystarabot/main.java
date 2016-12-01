@@ -91,6 +91,7 @@ public class main
     
     public static void registerCommand(KrystaraCommand c)
     {
+        logToBoth("Registering" + (c.requiresAdmin() ? " ADMIN" : "") + " command ?" + c.getCommand());
         commands.add(c);
         
         Collections.sort(commands);
