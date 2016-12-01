@@ -22,6 +22,7 @@ import me.samboycoding.krystarabot.command.ClearCommand;
 import me.samboycoding.krystarabot.command.ClearcacheCommand;
 import me.samboycoding.krystarabot.command.CodesCommand;
 import me.samboycoding.krystarabot.command.DeadCommand;
+import me.samboycoding.krystarabot.command.HelpCommand;
 import me.samboycoding.krystarabot.command.KickCommand;
 import me.samboycoding.krystarabot.command.KingdomCommand;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
@@ -122,6 +123,7 @@ public class Listener
             main.registerCommand(new ClearcacheCommand());
             main.registerCommand(new CodesCommand());
             main.registerCommand(new DeadCommand());
+            main.registerCommand(new HelpCommand());
             main.registerCommand(new KickCommand());
             main.registerCommand(new KingdomCommand());
             main.registerCommand(new NewcodeCommand());
