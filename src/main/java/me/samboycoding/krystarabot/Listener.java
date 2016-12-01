@@ -1,20 +1,9 @@
 package me.samboycoding.krystarabot;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.net.URL;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.Consumer;
-import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.command.BanCommand;
 import me.samboycoding.krystarabot.command.BuildcacheCommand;
 import me.samboycoding.krystarabot.command.ClassCommand;
@@ -39,11 +28,6 @@ import me.samboycoding.krystarabot.command.TraitCommand;
 import me.samboycoding.krystarabot.command.TroopCommand;
 import me.samboycoding.krystarabot.command.UserstatsCommand;
 import me.samboycoding.krystarabot.command.WarnCommand;
-import me.samboycoding.krystarabot.utilities.AdminCommand;
-import me.samboycoding.krystarabot.utilities.Command;
-import me.samboycoding.krystarabot.utilities.ImageUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
@@ -53,13 +37,10 @@ import sx.blah.discord.handle.impl.events.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.UserLeaveEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Status;
-import sx.blah.discord.handle.obj.Status.StatusType;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.Image;
-import sx.blah.discord.util.MessageList;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
@@ -77,13 +58,20 @@ public class Listener
     public void onReady(ReadyEvent e) throws DiscordException, RateLimitException, MissingPermissionsException
     {
         IDiscordClient cl = main.getClient(null);
+        main.logToBoth("Beginning ReadyEvent Init...");
         try
         {
-            cl.changeUsername("Krystara");
+            if(IDReference.LIVE)
+            {
+                cl.changeUsername("Krystara");
+            } else
+            {
+                cl.changeUsername("Krystara *Testing*");
+            }
             cl.changeAvatar(Image.forUrl("png", "http://repo.samboycoding.me/static/krystarabot_icon.png"));
         } catch (DiscordException ex)
         {
-            main.logToBoth("Failed to change username. Rate limited most likely.");
+            main.logToBoth("Failed to change username. Rate limited most likely. Message: " + ex.getMessage());
         }
         try
         {
@@ -115,7 +103,6 @@ public class Listener
             main.registerCommand(new TroopCommand());
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
-            
             
             main.logToBoth("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)

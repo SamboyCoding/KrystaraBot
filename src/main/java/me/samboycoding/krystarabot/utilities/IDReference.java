@@ -8,7 +8,7 @@ package me.samboycoding.krystarabot.utilities;
 public class IDReference
 {
 
-    private static final boolean LIVE = false;
+    public static final boolean LIVE = false;
     
     public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL;
     public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, MUTEDROLE, PCMOBILEROLE, CONSOLEROLE;

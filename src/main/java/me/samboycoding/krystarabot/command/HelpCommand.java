@@ -30,7 +30,7 @@ public class HelpCommand extends KrystaraCommand
 
         for (CommandType c : CommandType.values())
         {
-            helpText += c.toString() + "\n" + Utilities.repeatString("-", 30) + "\n";
+            helpText += c.toString() + "\n" + Utilities.repeatString("-", 60) + "\n";
             for (KrystaraCommand cmd : main.getCommands())
             {
                 if (cmd.getCommandType() != c)
@@ -41,6 +41,8 @@ public class HelpCommand extends KrystaraCommand
             }
             helpText += "\n";
         }
+        
+        helpText += Utilities.repeatString("-", 60);
 
         msg.delete();
         int charsSent = 0;
