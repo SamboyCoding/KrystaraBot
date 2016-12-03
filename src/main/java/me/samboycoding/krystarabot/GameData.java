@@ -91,6 +91,32 @@ public class GameData
         }
         return res;
     }
+    
+    /**
+     * Gets the value for whatever property passed at level 10, using the original value specified, plus the increases up to level 10
+     * @param original The original value for the property (at level 1)
+     * @param increases The increases array for the property
+     * @return The value for the property at level 20.
+     */
+    public int getLevel10ForProperty(int original, JSONArray increases)
+    {
+        int res = 0;
+        int j = 0;
+
+        for (int i = 0; i < 10; i++)
+        {
+            if (i == 0)
+            {
+                //Set original value
+                res += original + increases.getInt(i);
+            } else
+            {
+                res += increases.getInt(i);
+            }
+
+        }
+        return res;
+    }
 
     private void readJSON() throws IOException
     {

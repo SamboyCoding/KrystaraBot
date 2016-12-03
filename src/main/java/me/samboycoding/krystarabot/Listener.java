@@ -54,6 +54,7 @@ public class Listener
 
     public static MessageCounterHandler messageCounter = main.messageCounter;
 
+    //<editor-fold defaultstate="collapsed" desc="ReadyEvent handler">
     @EventSubscriber
     public void onReady(ReadyEvent e) throws DiscordException, RateLimitException, MissingPermissionsException
     {
@@ -112,6 +113,7 @@ public class Listener
             ex.printStackTrace();
         }
     }
+    //</editor-fold>
 
     @EventSubscriber
     public void onCommand(MessageReceivedEvent e)
@@ -162,11 +164,13 @@ public class Listener
             String argumentsFull = "";
             if (content.contains(" "))
             {
+                //If it contains a space, process all the arguments.
                 command = content.substring(1, content.indexOf(" ")).toLowerCase(); //From the character after the '?' to the character before the first space.
                 arguments.addAll(Arrays.asList(content.trim().substring(content.indexOf(" ") + 1, content.length()).split(" "))); //From the character after the first space, to the end.
                 argumentsFull = content.trim().substring(content.indexOf(" ") + 1, content.length());
             } else
             {
+                //Otherwise, leave them blank.
                 command = content.substring(1, content.length()).toLowerCase();
             }
 
@@ -175,6 +179,7 @@ public class Listener
             ArrayList<KrystaraCommand> commands = main.getCommands();
 
             boolean validCommand = false;
+            //Loop through all the defined commands, and if there is one, process it.
             for (KrystaraCommand c : commands)
             {
                 if (c.getCommand().equals(command))
@@ -184,6 +189,7 @@ public class Listener
                 }
             }
 
+            //No command found
             if (!validCommand)
             {
                 chnl.sendMessage("Invalid command \"" + command + "\"");
@@ -215,7 +221,7 @@ public class Listener
             {
                 main.logToBoth("Exception logging exception! Original exception: ");
                 ex.printStackTrace();
-                main.logToBoth("Exception logging: ");
+                main.logToBoth("Exception while logging: ");
                 doubleException.printStackTrace();
             }
         }

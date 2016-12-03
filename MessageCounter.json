@@ -1,12 +1,12 @@
 {"247393304151326721": {
     "102450956045668352": {
         "name": "SamboyGaming",
-        "messages": 953,
-        "commands": 162
+        "messages": 1039,
+        "commands": 177
     },
     "234202516676542464": {
         "name": "Naga",
-        "messages": 359,
+        "messages": 383,
         "commands": 83
     },
     "127413489051369472": {
@@ -16,7 +16,7 @@
     },
     "190663943260340224": {
         "name": "MrSnake",
-        "messages": 225,
+        "messages": 266,
         "commands": 33
     }
 }}

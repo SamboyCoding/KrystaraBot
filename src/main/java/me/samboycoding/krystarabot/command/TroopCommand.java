@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
@@ -18,7 +17,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class TroopCommand extends KrystaraCommand
 {
-    
+
     public TroopCommand()
     {
         commandName = "troop";
@@ -49,13 +48,14 @@ public class TroopCommand extends KrystaraCommand
             chnl.sendMessage("That troop isn't yet released! Check back at a later date (try next monday) to see its stats!");
             return;
         }
+        
         String desc = troopInfo.getString("Description").replace("\n", "");
         troopName = troopInfo.getString("Name");
         String kingdom = troopInfo.getString("Kingdom");
         String rarity = troopInfo.getString("TroopRarity");
-        String troopType;
-        String type1 = troopInfo.getString("TroopType");
-        String type2 = troopInfo.getString("TroopType2");
+        String troopType = troopInfo.getString("Type").replace("-", "/");
+        //String type1 = troopInfo.getString("TroopType");
+        //String type2 = troopInfo.getString("TroopType2");
         String spell = troopInfo.getJSONObject("Spell").getString("Name");
         int summonCost = troopInfo.getJSONObject("Spell").getInt("Cost");
 
@@ -93,10 +93,22 @@ public class TroopCommand extends KrystaraCommand
                 break;
         }
 
-        int armor = main.data.getLevel20ForProperty(troopInfo.getInt("Armor_Base"), troopInfo.getJSONArray("ArmorIncrease"), troopInfo.getJSONArray("Ascension_Armor"));
-        int life = main.data.getLevel20ForProperty(troopInfo.getInt("Health_Base"), troopInfo.getJSONArray("HealthIncrease"), troopInfo.getJSONArray("Ascension_Health"));
-        int attack = main.data.getLevel20ForProperty(troopInfo.getInt("Attack_Base"), troopInfo.getJSONArray("AttackIncrease"), troopInfo.getJSONArray("Ascension_Attack"));
-        int magic = main.data.getLevel20ForProperty(troopInfo.getInt("SpellPower_Base"), troopInfo.getJSONArray("SpellPowerIncrease"), null);
+        int armorLvl20 = main.data.getLevel20ForProperty(troopInfo.getInt("Armor_Base"), troopInfo.getJSONArray("ArmorIncrease"), troopInfo.getJSONArray("Ascension_Armor"));
+        int lifeLvl20 = main.data.getLevel20ForProperty(troopInfo.getInt("Health_Base"), troopInfo.getJSONArray("HealthIncrease"), troopInfo.getJSONArray("Ascension_Health"));
+        int attackLvl20 = main.data.getLevel20ForProperty(troopInfo.getInt("Attack_Base"), troopInfo.getJSONArray("AttackIncrease"), troopInfo.getJSONArray("Ascension_Attack"));
+        int magicLvl20 = main.data.getLevel20ForProperty(troopInfo.getInt("SpellPower_Base"), troopInfo.getJSONArray("SpellPowerIncrease"), null);
+
+        /*int armorLvl10 = main.data.getLevel10ForProperty(troopInfo.getInt("Armor_Base"), troopInfo.getJSONArray("ArmorIncrease"));
+        int lifeLvl10 = main.data.getLevel10ForProperty(troopInfo.getInt("Health_Base"), troopInfo.getJSONArray("HealthIncrease"));
+        int attackLvl10 = main.data.getLevel10ForProperty(troopInfo.getInt("Attack_Base"), troopInfo.getJSONArray("AttackIncrease"));
+        int magicLvl10 = main.data.getLevel10ForProperty(troopInfo.getInt("SpellPower_Base"), troopInfo.getJSONArray("SpellPowerIncrease"));
+
+        int armorLvl1 = troopInfo.getInt("Armor_Base");
+        int lifeLvl1 = troopInfo.getInt("Health_Base");
+        int attackLvl1 = troopInfo.getInt("Attack_Base");
+        int magicLvl1 = troopInfo.getInt("SpellPower_Base");
+        */
+        
         String troopId = troopInfo.getString("FileBase");
         URL URL = new URL("http://ashtender.com/gems/assets/cards/" + troopId + ".jpg");
         //get spell description
@@ -136,17 +148,14 @@ public class TroopCommand extends KrystaraCommand
             manaTypes.add(chnl.getGuild().getEmojiByName("mana_green").toString());
         }
 
-        if (type2.equals("None"))
-        {
-            troopType = type1;
-        } else
-        {
-            troopType = type1 + "/" + type2;
-        }
-
-        String info = "**" + troopName + "** (" + desc + ")\n" + rarity + " from " + kingdom + ", Type: " + troopType + "\nMana: ";
-        info += manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
-        info += "\nSpell: " + spell + " (" + summonCost + ")\n" + troopSpellDesc + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\nLevel 20: " + emojiArmor + " " + armor + "    " + emojiLife + " " + life + "    " + emojiAttack + " " + attack + "    " + emojiMagic + " " + magic;
+        String info = "**" + troopName + "** (" + desc + ")\n" + rarity + " from " + kingdom + ", Type: " + troopType + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\n\n**Spell**";
+        info += "\n" + spell + " (" + summonCost + ")\n" + troopSpellDesc;
+        info += "\n" + manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
+        
+        info += "\n\n**Stats**";
+        //info += "\nLevel 1:   " + emojiArmor + " " + armorLvl1 + "    " + emojiLife + " " + lifeLvl1 + "    " + emojiAttack + " " + attackLvl1 + "    " + emojiMagic + " " + magicLvl1;
+        //info += "\nLevel 10:  " + emojiArmor + " " + armorLvl10 + "    " + emojiLife + " " + lifeLvl10 + "    " + emojiAttack + " " + attackLvl10 + "    " + emojiMagic + " " + magicLvl10;
+        info += "\nLevel 20: " + emojiArmor + " " + armorLvl20 + "    " + emojiLife + " " + lifeLvl20 + "    " + emojiAttack + " " + attackLvl20 + "    " + emojiMagic + " " + magicLvl20;
 
         chnl.sendMessage(info);
         chnl.sendFile("", false, URL.openStream(), troopId + ".jpg");
