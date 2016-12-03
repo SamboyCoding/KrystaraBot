@@ -51,8 +51,10 @@ public class Top10Command extends KrystaraCommand
         int numSpaces = 60;
         for (IUser u : ordered.descendingKeySet())
         {
+            String usrName = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
             count1++;
-            toSend1 += "\n" + u.getName() + Utilities.repeatString(" ", numSpaces - u.getName().length()) + unordered.get(u);
+            
+            toSend1 += "\n" + usrName + Utilities.repeatString(" ", numSpaces - usrName.length()) + unordered.get(u);
             if (count1 > 10)
             {
                 break;

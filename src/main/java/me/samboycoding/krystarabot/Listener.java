@@ -63,9 +63,11 @@ public class Listener
         {
             if(IDReference.LIVE)
             {
+                main.logToBoth("Logging in to LIVE server.");
                 cl.changeUsername("Krystara");
             } else
             {
+                main.logToBoth("Logging in to TESTING server.");
                 cl.changeUsername("Krystara *Testing*");
             }
             cl.changeAvatar(Image.forUrl("png", "http://repo.samboycoding.me/static/krystarabot_icon.png"));
