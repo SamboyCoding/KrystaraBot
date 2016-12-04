@@ -27,7 +27,8 @@ public class HelpCommand extends KrystaraCommand
     {
         ArrayList<KrystaraCommand> cmdList = main.getCommands();
 
-        String helpText = "I recognize the following commands:\n\n";
+        String helpText = "Every command must start with '**?**' followed by the command name. Some commands have required or optional parameters shown in square brackets.\n\n"
+                + "Here is a list of all commands you can use:\n\n```";
 
         for (CommandType c : CommandType.values())
         {
@@ -41,19 +42,19 @@ public class HelpCommand extends KrystaraCommand
                 //Mod commands, but cannot use
                 continue;
             }
-            helpText += c.toString() + "\n" + Utilities.repeatString("-", 60) + "\n";
+            helpText += c.toString() + "\n" + Utilities.repeatString("-", 60) + "\n"; //command category header
             for (KrystaraCommand cmd : main.getCommands())
             {
                 if (cmd.getCommandType() != c)
                 {
                     continue;
                 }
-                helpText += "**" + cmd.getUsage() + "**: " + cmd.getHelpText() + "\n";
+                helpText += cmd.getUsage() + ": " + cmd.getHelpText() + "\n"; //command + helptext
             }
-            helpText += "\n";
+            helpText += "```\n```";
         }
         
-        helpText += Utilities.repeatString("-", 60);
+        helpText += Utilities.repeatString("-", 60) + "```";
 
         msg.delete();
         int charsSent = 0;
