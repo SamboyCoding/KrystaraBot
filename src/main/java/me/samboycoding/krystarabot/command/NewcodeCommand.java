@@ -5,6 +5,7 @@ import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
+import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -24,6 +25,12 @@ public class NewcodeCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
+        if(chnl.getID() != IDReference.BOTCOMMANDSCHANNEL && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        {
+            sdr.getOrCreatePMChannel().sendMessage("To reduce spam, newcode can only be used in the #bot-commands channel. Thanks!");
+            return;
+        }
+        
         String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
         String newEmoji = ":new:";
         if (arguments.size() < 1)

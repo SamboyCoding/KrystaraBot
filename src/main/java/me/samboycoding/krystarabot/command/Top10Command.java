@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import static me.samboycoding.krystarabot.Listener.messageCounter;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
@@ -30,6 +29,12 @@ public class Top10Command extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
+        if(chnl.getID() != IDReference.BOTCOMMANDSCHANNEL && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        {
+            sdr.getOrCreatePMChannel().sendMessage("To reduce spam, top10 can only be used in the #bot-commands channel. Thanks!");
+            return;
+        }
+        
         LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
         ValueComparator comp = new ValueComparator((Map<IUser, Integer>) unordered);
         TreeMap<IUser, Integer> ordered = new TreeMap<>(comp);

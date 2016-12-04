@@ -3,7 +3,6 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import java.util.List;
 import static me.samboycoding.krystarabot.Listener.messageCounter;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
@@ -28,6 +27,12 @@ public class ServerstatsCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
+        if(chnl.getID() != IDReference.BOTCOMMANDSCHANNEL && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        {
+            sdr.getOrCreatePMChannel().sendMessage("To reduce spam, serverstats can only be used in the #bot-commands channel. Thanks!");
+            return;
+        }
+        
         List<IRole> guildRoles = chnl.getGuild().getRoles();
         int numRolesGuild = guildRoles.size() - 1; //Again, -1 to remove @everyone
 

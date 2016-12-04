@@ -151,13 +151,13 @@ public class Listener
 
             messageCounter.countCommand(sdr, chnl.getGuild());
 
-            if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+            /*if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
             {
                 //Not admin, and not in #bot-commands
                 sdr.getOrCreatePMChannel().sendMessage("Please only use commands in #bot-commands. Thank you.");
                 msg.delete();
                 return;
-            }
+            }*/
 
             String command;
             ArrayList<String> arguments = new ArrayList<>();
