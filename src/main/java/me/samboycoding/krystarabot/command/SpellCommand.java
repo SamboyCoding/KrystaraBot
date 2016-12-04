@@ -3,7 +3,6 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
@@ -37,12 +36,25 @@ public class SpellCommand extends KrystaraCommand
             return;
         }
         String spellName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        JSONObject spellInfo = main.data.getSpellInfo(spellName);
-        if (spellInfo == null)
+        ArrayList<String> results = main.data.searchForSpell(spellName);
+        
+        if(results.isEmpty())
         {
             chnl.sendMessage("No spell `" + spellName + "` found, " + sdr.mention());
             return;
         }
+        if(results.size() > 5)
+        {
+            chnl.sendMessage("Search term is far too broad (" + results.size() + " results) - please refine it.");
+            return;
+        }
+        if(results.size() > 1)
+        {
+            chnl.sendMessage("Search term \"" + spellName + "\" is too ambiguous. Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
+            return;
+        }
+        
+        JSONObject spellInfo = main.data.getSpellInfo(results.get(0));
 
         spellName = spellInfo.getString("Name");
         String spellDesc = spellInfo.getString("Description");

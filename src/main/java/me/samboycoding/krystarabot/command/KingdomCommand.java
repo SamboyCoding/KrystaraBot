@@ -41,12 +41,25 @@ public class KingdomCommand extends KrystaraCommand
             return;
         }
         String kingdomName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        JSONObject kingdomInfo = main.data.getKingdomInfo(kingdomName);
-        if (kingdomInfo == null)
+        ArrayList<String> results = main.data.searchForKingdom(kingdomName);
+        
+        if(results.isEmpty())
         {
             chnl.sendMessage("No kingdom `" + kingdomName + "` found, " + sdr.mention());
             return;
         }
+        if(results.size() > 5)
+        {
+            chnl.sendMessage("Search term is far too broad (" + results.size() + " results) - please refine it.");
+            return;
+        }
+        if(results.size() > 1)
+        {
+            chnl.sendMessage("Search term \"" + kingdomName + "\" is too ambiguous. Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
+            return;
+        }
+        
+        JSONObject kingdomInfo = main.data.getKingdomInfo(results.get(0));
 
         kingdomName = kingdomInfo.getString("Name");
         int numTroops = kingdomInfo.getJSONArray("Troops").length();

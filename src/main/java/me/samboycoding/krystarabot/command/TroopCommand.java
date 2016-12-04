@@ -37,17 +37,25 @@ public class TroopCommand extends KrystaraCommand
             return;
         }
         String troopName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        JSONObject troopInfo = main.data.getTroopInfo(troopName);
-        if (troopInfo == null)
+        ArrayList<String> results = main.data.searchForTroop(troopName);
+        
+        if(results.isEmpty())
         {
             chnl.sendMessage("No troop `" + troopName + "` found, " + sdr.mention());
             return;
         }
-        if (!troopInfo.getBoolean("IsVisible"))
+        if(results.size() > 5)
         {
-            chnl.sendMessage("That troop isn't yet released! Check back at a later date (try next monday) to see its stats!");
+            chnl.sendMessage("Search term is far too broad (" + results.size() + " results) - please refine it.");
             return;
         }
+        if(results.size() > 1)
+        {
+            chnl.sendMessage("Search term \"" + troopName + "\" is too ambiguous. Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
+            return;
+        }
+        
+        JSONObject troopInfo = main.data.getTroopInfo(results.get(0));
         
         String desc = troopInfo.getString("Description").replace("\n", "");
         troopName = troopInfo.getString("Name");

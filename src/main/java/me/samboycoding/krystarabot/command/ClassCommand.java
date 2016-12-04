@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.ImageUtils;
 import org.json.JSONObject;
@@ -42,13 +41,25 @@ public class ClassCommand extends KrystaraCommand
         }
         
         String className = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        JSONObject classInfo = main.data.getClassInfo(className);
-
-        if (classInfo == null)
+        ArrayList<String> results = main.data.searchForClass(className);
+        
+        if(results.isEmpty())
         {
             chnl.sendMessage("No hero class `" + className + "` found, " + sdr.mention());
             return;
         }
+        if(results.size() > 5)
+        {
+            chnl.sendMessage("Search term is far too broad (" + results.size() + " results) - please refine it.");
+            return;
+        }
+        if(results.size() > 1)
+        {
+            chnl.sendMessage("Search term \"" + className + "\" is too ambiguous. Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
+            return;
+        }
+        
+        JSONObject classInfo = main.data.getClassInfo(results.get(0));
 
         className = classInfo.getString("Name");
         String classKingdom = classInfo.getString("Kingdom");
