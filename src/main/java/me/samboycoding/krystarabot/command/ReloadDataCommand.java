@@ -38,7 +38,7 @@ public class ReloadDataCommand extends KrystaraCommand
     @Override
     public String getHelpText()
     {
-        return "Reloads the internal data source for the lookup commands. NOT FOR USE BY NON-DEVS!";
+        return "Reloads the internal data source for the lookup commands.";
     }
 
     @Override

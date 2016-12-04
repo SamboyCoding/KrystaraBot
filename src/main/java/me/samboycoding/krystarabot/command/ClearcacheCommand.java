@@ -78,7 +78,7 @@ public class ClearcacheCommand extends KrystaraCommand
     @Override
     public String getHelpText()
     {
-        return "Clears cached scales/stitched images. NOT FOR USE BY NON-DEVS!";
+        return "Clears cached scales/stitched images.";
     }
 
     @Override

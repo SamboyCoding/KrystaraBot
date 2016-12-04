@@ -136,7 +136,7 @@ public class BuildcacheCommand extends KrystaraCommand
     @Override
     public String getHelpText()
     {
-        return "Builds a cache of scaled/stitched images. NOT FOR USE BY NON-DEVS!";
+        return "Builds a cache of scaled/stitched images.";
     }
 
     @Override
