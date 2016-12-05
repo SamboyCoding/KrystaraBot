@@ -22,7 +22,7 @@ public class PlatformCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if(chnl.getID() != IDReference.BOTCOMMANDSCHANNEL && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        if(!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             sdr.getOrCreatePMChannel().sendMessage("To reduce spam, platform can only be used in the #bot-commands channel. Thanks!");
             return;
