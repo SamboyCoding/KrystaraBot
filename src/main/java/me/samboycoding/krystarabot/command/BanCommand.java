@@ -5,13 +5,16 @@
  */
 package me.samboycoding.krystarabot.command;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  *

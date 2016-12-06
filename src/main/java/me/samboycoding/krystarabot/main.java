@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
@@ -140,6 +141,13 @@ public class main
         Date dateobj = new Date();
         String timestamp = df.format(dateobj);
         return timestamp;
+    }
+    
+    public static Calendar getNow()
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        return cal;
     }
 
     public static void registerAdminCommand(AdminCommand c)

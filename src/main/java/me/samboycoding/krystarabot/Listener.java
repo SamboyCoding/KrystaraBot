@@ -1,9 +1,11 @@
 package me.samboycoding.krystarabot;
 
-import me.samboycoding.krystarabot.utilities.Utilities;
+import java.awt.Color;
+import java.text.DateFormatSymbols;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import me.samboycoding.krystarabot.command.BanCommand;
 import me.samboycoding.krystarabot.command.BuildcacheCommand;
 import me.samboycoding.krystarabot.command.ClassCommand;
@@ -30,6 +32,7 @@ import me.samboycoding.krystarabot.command.UserstatsCommand;
 import me.samboycoding.krystarabot.command.WarnCommand;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.NickNameChangeEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -40,6 +43,7 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.Image;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
@@ -62,7 +66,7 @@ public class Listener
         main.logToBoth("Beginning ReadyEvent Init...");
         try
         {
-            if(IDReference.LIVE)
+            if (IDReference.LIVE)
             {
                 main.logToBoth("Logging in to LIVE server.");
                 cl.changeUsername("Krystara");
@@ -106,6 +110,23 @@ public class Listener
             main.registerCommand(new TroopCommand());
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
+
+            String timestamp = "";
+            Calendar now = main.getNow();
+            timestamp += now.get(Calendar.DATE) + " of ";
+            timestamp += new DateFormatSymbols().getMonths()[now.get(Calendar.MONTH)];
+            timestamp += " " + now.get(Calendar.YEAR) + " at ";
+            timestamp += main.getTimestamp("hh:mm:ss") + ".";
+
+            EmbedObject o = new EmbedBuilder()
+                    .withAuthorName("KrystaraBot")
+                    .withAuthorIcon("http://repo.samboycoding.me/static/krystarabot_icon.png")
+                    .withColor(Color.green)
+                    .withDesc("Bot started on " + timestamp)
+                    .withTitle("Hello, world!")
+                    .build();
+            
+            e.getClient().getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", o, false);
             
             main.logToBoth("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
@@ -115,6 +136,7 @@ public class Listener
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Command Handler">
     @EventSubscriber
     public void onCommand(MessageReceivedEvent e)
     {
@@ -158,7 +180,6 @@ public class Listener
                 msg.delete();
                 return;
             }*/
-
             String command;
             ArrayList<String> arguments = new ArrayList<>();
             String argumentsFull = "";
@@ -226,6 +247,7 @@ public class Listener
             }
         }
     }
+    //</editor-fold>
 
     @EventSubscriber
     public void onJoin(UserJoinEvent e)
