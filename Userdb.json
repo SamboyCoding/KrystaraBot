@@ -1,27 +1,32 @@
 {"247393304151326721": {
     "102450956045668352": {
         "name": "SamboyGaming",
-        "messages": 1069,
-        "commands": 196
+        "messages": 1076,
+        "ReceivesCodes": true,
+        "commands": 200
     },
     "234202516676542464": {
         "name": "Naga",
         "messages": 383,
+        "ReceivesCodes": false,
         "commands": 83
     },
     "127413489051369472": {
         "name": "? AshaSekayi",
         "messages": 2,
+        "ReceivesCodes": false,
         "commands": 2
     },
     "190663943260340224": {
         "name": "MrSnake",
         "messages": 268,
+        "ReceivesCodes": false,
         "commands": 33
     },
     "205948482194767873": {
         "name": "D.Va",
         "messages": 2,
+        "ReceivesCodes": false,
         "commands": 0
     }
 }}

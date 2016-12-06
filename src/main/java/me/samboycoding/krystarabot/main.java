@@ -11,8 +11,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
-import me.samboycoding.krystarabot.utilities.AdminCommand;
-import me.samboycoding.krystarabot.utilities.Command;
 import org.apache.commons.io.FileUtils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -25,17 +23,13 @@ import sx.blah.discord.util.RateLimitException;
  * @author Sam
  */
 public class main
-{
-
-    private static final ArrayList<Command> registeredCommands = new ArrayList<>();
-    private static final ArrayList<AdminCommand> registeredAdminCommands = new ArrayList<>();
-    
+{    
     private static final ArrayList<KrystaraCommand> commands = new ArrayList<>();
     
     private static IDiscordClient cl;
     public static GameData data = new GameData();
     public static CodesHandler codes = new CodesHandler();
-    public static MessageCounterHandler messageCounter = new MessageCounterHandler();
+    public static UserDatabaseHandler databaseHandler = new UserDatabaseHandler();
     public static File logFile;
 
     public static IDiscordClient getClient(String token)
@@ -82,12 +76,7 @@ public class main
         new Thread(new GameDataLoaderThread(), "GameData Loading Thread").start();
         codes.loadJSON();
         new IDReference(); //Init
-        messageCounter.loadJSON();
-    }
-
-    public static void registerCommand(Command c)
-    {
-        registeredCommands.add(c);
+        databaseHandler.loadJSON();
     }
     
     public static void registerCommand(KrystaraCommand c)
@@ -96,12 +85,6 @@ public class main
         commands.add(c);
         
         Collections.sort(commands);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static ArrayList<Command> getRegisteredCommands()
-    {
-        return (ArrayList<Command>) registeredCommands.clone();
     }
     
     @SuppressWarnings("unchecked")
@@ -148,16 +131,5 @@ public class main
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         return cal;
-    }
-
-    public static void registerAdminCommand(AdminCommand c)
-    {
-        registeredAdminCommands.add(c);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static ArrayList<AdminCommand> getRegisteredAdminCommands()
-    {
-        return (ArrayList<AdminCommand>) registeredAdminCommands.clone();
     }
 }

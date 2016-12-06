@@ -11,6 +11,7 @@ import me.samboycoding.krystarabot.command.BuildcacheCommand;
 import me.samboycoding.krystarabot.command.ClassCommand;
 import me.samboycoding.krystarabot.command.ClearCommand;
 import me.samboycoding.krystarabot.command.ClearcacheCommand;
+import me.samboycoding.krystarabot.command.CodeRegisterCommand;
 import me.samboycoding.krystarabot.command.CodesCommand;
 import me.samboycoding.krystarabot.command.DeadCommand;
 import me.samboycoding.krystarabot.command.HelpCommand;
@@ -37,7 +38,6 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.NickNameChangeEvent;
-import sx.blah.discord.handle.impl.events.ReactionAddEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.UserLeaveEvent;
@@ -59,7 +59,7 @@ import sx.blah.discord.util.RateLimitException;
 public class Listener
 {
 
-    public static MessageCounterHandler messageCounter = main.messageCounter;
+    public static UserDatabaseHandler messageCounter = main.databaseHandler;
 
     //<editor-fold defaultstate="collapsed" desc="ReadyEvent handler">
     @EventSubscriber
@@ -69,6 +69,7 @@ public class Listener
         main.logToBoth("Beginning ReadyEvent Init...");
         try
         {
+            main.logToBoth("Attempting to change username, please wait...");
             if (IDReference.LIVE)
             {
                 main.logToBoth("Logging in to LIVE server.");
@@ -78,6 +79,7 @@ public class Listener
                 main.logToBoth("Logging in to TESTING server.");
                 cl.changeUsername("Krystara *Testing*");
             }
+            main.logToBoth("Changing image...");
             cl.changeAvatar(Image.forUrl("png", "http://repo.samboycoding.me/static/krystarabot_icon.png"));
         } catch (DiscordException ex)
         {
@@ -85,6 +87,7 @@ public class Listener
         }
         try
         {
+            main.logToBoth("Setting status...");
             cl.changeStatus(Status.game("?help"));
             main.logToBoth("My ID: " + main.getClient(null).getApplicationClientID());
             IDReference.MYID = main.getClient(null).getApplicationClientID();
@@ -95,6 +98,7 @@ public class Listener
             main.registerCommand(new ClassCommand());
             main.registerCommand(new ClearCommand());
             main.registerCommand(new ClearcacheCommand());
+            main.registerCommand(new CodeRegisterCommand());
             main.registerCommand(new CodesCommand());
             main.registerCommand(new DeadCommand());
             main.registerCommand(new HelpCommand());

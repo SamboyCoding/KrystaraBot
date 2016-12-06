@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.utilities.IDReference;
+import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -40,14 +41,14 @@ public class PlatformCommand extends KrystaraCommand
         {
             sdr.addRole(chnl.getGuild().getRoleByID(IDReference.PCMOBILEROLE));
             chnl.sendMessage(sdr.mention() + ", you joined **PC/Mobile**");
-            chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[ROLE]** - **" + nameOfSender + "** assigned themselves to **PC/Mobile**");
+            Utilities.logEvent(LogType.PLATFORMASSIGN, "**" + nameOfSender + "** assigned themselves to **PC/Mobile**");
         } else
         {
             if (role.equals("console"))
             {
                 sdr.addRole(chnl.getGuild().getRoleByID(IDReference.CONSOLEROLE));
                 chnl.sendMessage(sdr.mention() + ", you joined **Console**");
-                chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[ROLE]** - **" + nameOfSender + "** assigned themselves to **Console**");
+                Utilities.logEvent(LogType.PLATFORMASSIGN, "**" + nameOfSender + "** assigned themselves to **Console**");
             } else
             {
                 chnl.sendMessage("Please enter a valid platform. Valid platforms are: \"Pc/Mobile\" or \"Console\".");

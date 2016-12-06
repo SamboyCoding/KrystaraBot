@@ -2,9 +2,9 @@ package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
+import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -43,12 +43,19 @@ public class NewcodeCommand extends KrystaraCommand
         {
             if (main.codes.isCodePresent(code))
             {
-                chnl.sendMessage("That code is already present! Did you mean `?dead [code]`?");
+                chnl.sendMessage("That code is already present!");
                 return;
             }
             main.codes.addCode(code);
-            chnl.getGuild().getChannelByID(IDReference.CODESCHANNEL).sendMessage(newEmoji + " Code: `" + arguments.get(0).toUpperCase() + "` " + newEmoji);
-            chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[NEW CODE]** - **" + nameOfSender + "** posted '" + code + "' as new code.");
+            Utilities.logEvent(LogType.NEWCODE, "**" + nameOfSender + "** posted '" + code + "' as new code.");
+            
+            for(IUser usr : chnl.getGuild().getUsers())
+            {
+                if(main.databaseHandler.getReceivesCodes(chnl.getGuild(), usr))
+                {
+                    usr.getOrCreatePMChannel().sendMessage("New code: `" + code + "`");
+                }
+            }
         } else
         {
             chnl.sendMessage("Please check your code - it has to be 10 characters long, and yours is " + code.length() + "!");

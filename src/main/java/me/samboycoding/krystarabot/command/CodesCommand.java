@@ -25,7 +25,7 @@ public class CodesCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if(!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        /*if(!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             sdr.getOrCreatePMChannel().sendMessage("To reduce spam, platform can only be used in the #bot-commands channel. Thanks!");
             return;
@@ -39,6 +39,10 @@ public class CodesCommand extends KrystaraCommand
         }
         msg.delete();
         sdr.getOrCreatePMChannel().sendMessage("Currently \"Alive\" codes: `" + codes.toString().replace("[", "").replace("]", "").replace("\"", "") + "`.");
+        */
+        
+        sdr.getOrCreatePMChannel().sendMessage("As part of a recent update, `?codes` and `?dead` have been removed. This was MrSnake's decision as admin of the server, and you must now register your interest in receiving codes by doing `?coderegister yes`. Dead code alerts have been removed - they felt too cheaty. Thanks!");
+        msg.delete();
     }
 
     @Override
