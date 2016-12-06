@@ -25,8 +25,8 @@ public class Utilities
     /**
      * Logs an event to the log channel, using an embed.
      *
-     * @param eventType The type of the event. Examples are "DELETE", and
-     * "USERJOIN"
+     * @param eventType The type of the event. See
+     * {@link me.samboycoding.krystarabot.utilities.LogType}
      * @param text
      * @throws sx.blah.discord.util.RateLimitException If the bot is ratelimited
      * @throws sx.blah.discord.util.DiscordException If a misc. error occurs

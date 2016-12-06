@@ -37,6 +37,7 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.NickNameChangeEvent;
+import sx.blah.discord.handle.impl.events.ReactionAddEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.UserLeaveEvent;
@@ -222,7 +223,7 @@ public class Listener
         {
             try
             {
-                main.logToBoth("Rate limited! Time until un-ratelimited: " + rle.getRetryDelay());
+                main.logToBoth("Rate limited! Time until un-ratelimited: " + rle.getRetryDelay() + "ms");
                 main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[RATELIMIT]** - Bot needs to slow down! We're rate limited for another " + rle.getRetryDelay() + " milliseconds, please tell SamboyCoding or MrSnake that the following section is too fast: " + rle.getMethod());
             } catch (Exception e2)
             {
@@ -282,7 +283,8 @@ public class Listener
             //Ignore.
         }
     }
-
+    
+    
     @EventSubscriber
     public void onChangeName(NickNameChangeEvent e)
     {
