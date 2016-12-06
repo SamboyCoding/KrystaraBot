@@ -32,7 +32,6 @@ public class NewcodeCommand extends KrystaraCommand
         }
         
         String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
-        String newEmoji = ":new:";
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You have to enter a code first!");

@@ -37,7 +37,8 @@ public class CodeRegisterCommand extends KrystaraCommand
         }
         
         main.databaseHandler.setReceivesCodes(chnl.getGuild(), sdr, arg.equals("yes"));
-        chnl.sendMessage("Successfully " + (arg.equals("yes") ? "registered" : "unregistered") + " for PM codes.");
+        sdr.getOrCreatePMChannel().sendMessage("Successfully " + (arg.equals("yes") ? "registered" : "unregistered") + " for PM codes.");
+        msg.delete();
     }
 
     @Override
