@@ -30,6 +30,8 @@ import me.samboycoding.krystarabot.command.TraitCommand;
 import me.samboycoding.krystarabot.command.TroopCommand;
 import me.samboycoding.krystarabot.command.UserstatsCommand;
 import me.samboycoding.krystarabot.command.WarnCommand;
+import me.samboycoding.krystarabot.utilities.LogType;
+import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
@@ -255,11 +257,11 @@ public class Listener
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
-            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**--->>>** User **" + nameOfUser + "** joined the server!");
-            //log message every 100 member joins
+            Utilities.logEvent(LogType.USERJOIN, "User **" + nameOfUser + "** has joined the server!");
+            
             if (e.getGuild().getUsers().size() % 100 == 0)
             {
-                e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[MILESTONE]** The server has now " + e.getGuild().getUsers().size() + " users!");
+                Utilities.logEvent(LogType.MILESTONE, "The server now has " + e.getGuild().getUsers().size() + " users!");
             }
         } catch (Exception ignored)
         {
@@ -273,7 +275,8 @@ public class Listener
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
-            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**<<<---** User **" + nameOfUser + "** left the server!");
+            
+            Utilities.logEvent(LogType.USERLEAVE, "User **" + nameOfUser + "** left the server!");
         } catch (Exception ignored)
         {
             //Ignore.
@@ -287,7 +290,8 @@ public class Listener
         {
             String old = e.getOldNickname().isPresent() ? e.getOldNickname().get() : e.getUser().getName();
             String newName = e.getNewNickname().isPresent() ? e.getNewNickname().get() : e.getUser().getName();
-            e.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[RENAME]** User **" + old + "** changed their name to **" + newName + "**");
+            
+            Utilities.logEvent(LogType.RENAME, "User **" + old + "** changed their name to **" + newName + "**");
         } catch (Exception ignored)
         {
             //Ignore.

@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.utilities.IDReference;
+import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -44,8 +45,9 @@ public class KickCommand extends KrystaraCommand
             String nameOfUser = usr.getNicknameForGuild(msg.getGuild()).isPresent() ? usr.getNicknameForGuild(msg.getGuild()).get() : usr.getName();
             
             chnl.getGuild().kickUser(usr);
-            chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[KICK]** - **" + nameOfSender + "** kicked user **" + nameOfUser + "**");
-            chnl.sendMessage("User kicked.");
+            
+            Utilities.logEvent(LogType.KICK, "**" + nameOfSender + "** kicked user **" + nameOfUser + "**");
+            chnl.sendMessage("User \"" + nameOfUser + "\" kicked.");
             msg.delete();
         } else
         {

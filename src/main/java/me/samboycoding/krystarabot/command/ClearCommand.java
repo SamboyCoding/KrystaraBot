@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.utilities.IDReference;
+import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -47,7 +48,8 @@ public class ClearCommand extends KrystaraCommand
                 //Cannot delete one with .bulkDelete()
                 msgs.get(0).delete(); //Again, ignore index 0, as it's the command
                 Utilities.cleanupMessage(chnl.sendMessage("1 message deleted. This message will self-destruct in 3 seconds..."), 3000);
-                chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[DELETE]** - **" + nameOfSender + "** cleared 1 message from channel **" + chnl.getName() + "**");
+                
+                Utilities.logEvent(LogType.MESSAGEDELETE, "**" + nameOfSender + "** cleared 1 message from channel **" + chnl.getName() + "**");
                 msg.delete();
                 return;
             }
@@ -68,7 +70,8 @@ public class ClearCommand extends KrystaraCommand
             {
                 msgs.bulkDelete(toDelete);
                 Utilities.cleanupMessage(chnl.sendMessage(toDelete.size() + " messages deleted (out of " + amount + " requested). This message will self-destruct in 10 seconds..."), 10000);
-                chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[DELETE]** - **" + nameOfSender + "** cleared " + toDelete.size() + " messages from channel **" + chnl.getName() + "**");
+                
+                Utilities.logEvent(LogType.MESSAGEDELETE, "**" + nameOfSender + "** cleared " + toDelete.size() + " messages from channel **" + chnl.getName() + "**");
             } else
             {
                 chnl.sendMessage("You cannot do that!");

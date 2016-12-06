@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.utilities.IDReference;
+import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -49,7 +50,8 @@ public class WarnCommand extends KrystaraCommand
             String message = messageArray.toString().replace("[", "").replace("]", "").replace(",", "");
 
             usr.getOrCreatePMChannel().sendMessage("Warning from user **" + nameOfSender + "** in channel **" + chnl.getName() + "**. Text:```\n" + message + "```");
-            chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[WARNING]** - **" + nameOfUser + "** was warned by **" + nameOfSender + "**. Message: ```\n" + message + "```");
+            
+            Utilities.logEvent(LogType.WARN, "**" + nameOfUser + "** was warned by **" + nameOfSender + "**. Message: ```\n" + message + "```");
             msg.delete();
         } else
         {

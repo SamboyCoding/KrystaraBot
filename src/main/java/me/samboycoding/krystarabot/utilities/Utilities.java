@@ -33,68 +33,25 @@ public class Utilities
      * @throws sx.blah.discord.util.MissingPermissionsException If the bot is
      * missing the SENDMESSAGES permission.
      */
-    public static void logEvent(String eventType, String text) throws RateLimitException, DiscordException, MissingPermissionsException
+    public static void logEvent(LogType eventType, String text) throws RateLimitException, DiscordException, MissingPermissionsException
     {
-        EmbedBuilder bldr = new EmbedBuilder()
-                .withAuthorName("KrystaraBot")
-                .withAuthorIcon("http://repo.samboycoding.me/static/krystarabot_icon.png");
-
-        switch (eventType.toLowerCase())
+        EmbedBuilder bldr;
+        if (eventType == null)
         {
-            case "delete":
-                bldr.withTitle("[Messages Deleted]")
-                        .withColor(Color.yellow)
-                        .withDesc(text);
-                break;
-            case "userjoin":
-                bldr.withTitle("[New User]")
-                        .withColor(Color.green)
-                        .withDesc(text);
-                break;
-            case "milestone":
-                    bldr.withTitle("[New milestone]")
-                        .withColor(Color.green)
-                        .withDesc(text);
-            case "userleave":
-                bldr.withTitle("[User left]")
-                        .withColor(Color.red)
-                        .withDesc(text);
-                break;
-            case "rename":
-                bldr.withTitle("[Nickname Changed]")
-                        .withColor(Color.cyan)
-                        .withDesc(text);
-                break;
-            case "newcode":
-                bldr.withTitle("[New Code]")
-                        .withColor(Color.green)
-                        .withDesc(text);
-                break;
-            case "deadcode":
-                bldr.withTitle("[Code Dead]")
-                        .withColor(Color.red)
-                        .withDesc(text);
-                break;
-            case "warn":
-                bldr.withTitle("[User warned]")
-                        .withColor(Color.yellow)
-                        .withDesc(text);
-                break;
-            case "kick":
-                bldr.withTitle("[User kicked]")
-                        .withColor(Color.red)
-                        .withDesc(text);
-                break;
-            case "ban":
-                bldr.withTitle("[User banned]")
-                        .withColor(Color.red)
-                        .withDesc(text);
-                break;
-            default:
-                bldr.withTitle("[Invalid message]")
-                        .withColor(Color.gray)
-                        .withDesc(eventType + " is not a valid event type!");
-                break;
+            bldr = new EmbedBuilder()
+                    .withAuthorName("KrystaraBot")
+                    .withAuthorIcon("http://repo.samboycoding.me/static/krystarabot_icon.png")
+                    .withTitle("")
+                    .withColor(Color.gray)
+                    .withDesc(text);
+        } else
+        {
+            bldr = new EmbedBuilder()
+                    .withAuthorName("KrystaraBot")
+                    .withAuthorIcon("http://repo.samboycoding.me/static/krystarabot_icon.png")
+                    .withTitle(eventType.logTitle)
+                    .withColor(eventType.color)
+                    .withDesc(text);
         }
 
         main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", bldr.build(), false);
