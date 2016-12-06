@@ -44,7 +44,7 @@ public class CodeRegisterCommand extends KrystaraCommand
     @Override
     public String getHelpText()
     {
-        return "Toggles interest in new GOW codes. If this is set to \"Yes\", then when a new code is posted you will get a PM.";
+        return "Toggles interest in new GOW codes. If this is set to \"Yes\", every new code will be delivered to you via PM.";
     }
 
     @Override

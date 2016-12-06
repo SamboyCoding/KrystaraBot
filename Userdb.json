@@ -1,7 +1,7 @@
 {"247393304151326721": {
     "102450956045668352": {
         "name": "SamboyGaming",
-        "messages": 1081,
+        "messages": 1085,
         "ReceivesCodes": true,
         "commands": 202
     },
@@ -19,9 +19,9 @@
     },
     "190663943260340224": {
         "name": "MrSnake",
-        "messages": 269,
-        "ReceivesCodes": false,
-        "commands": 33
+        "messages": 280,
+        "ReceivesCodes": true,
+        "commands": 39
     },
     "205948482194767873": {
         "name": "D.Va",
