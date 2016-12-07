@@ -216,6 +216,35 @@ public class UserDatabaseHandler
             return serverJSON.getJSONObject(usr.getID()).getBoolean("ReceivesCodes");
         }
     }
+    
+    /**
+     * Gets the number of users in the specified server that receive codes.
+     * 
+     * @param server The server to search
+     * @return The number of users with "ReceivesCodes" set to true.
+     */
+    public int getNumPeopleReceivingCodes(IGuild server)
+    {
+        if (!userDBJSON.has(server.getID()))
+        {
+            return 0;
+        }
+        
+        int count = 0;
+        
+        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
+        
+        for(String id : serverJSON.keySet())
+        {
+            JSONObject user = serverJSON.getJSONObject(id);
+            if(user.getBoolean("ReceivesCommands"))
+            {
+                count++;
+            }
+        }
+        
+        return count;
+    }
 
     /**
      * Gets a list of user IDs in the counter file.

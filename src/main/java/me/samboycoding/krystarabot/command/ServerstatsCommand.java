@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static me.samboycoding.krystarabot.Listener.messageCounter;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
+import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
@@ -40,6 +41,7 @@ public class ServerstatsCommand extends KrystaraCommand
         toSendServer += "\nRoles: " + numRolesGuild;
         toSendServer += "\nChannels: " + chnl.getGuild().getChannels().size();
         toSendServer += "\nMembers: " + chnl.getGuild().getUsers().size();
+        toSendServer += "\nMembers registered for codes: " + main.databaseHandler.getNumPeopleReceivingCodes(chnl.getGuild());
 
         int msgCount = 0;
         int cmdCount = 0;
@@ -70,13 +72,7 @@ public class ServerstatsCommand extends KrystaraCommand
             }
             toSendServer += "\n" + chnl.getGuild().getUsersByRole(r2).size() + "x " + r2.getName();
         }
-        for (IUser u : chnl.getGuild().getUsers())
-        {
-            if (Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.CONSOLEROLE)) || Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.PCMOBILEROLE)))
-            {
-                unassigned--;
-            }
-        }
+        unassigned = chnl.getGuild().getUsers().stream().filter((u) -> (Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.CONSOLEROLE)) || Utilities.userHasRole(chnl.getGuild(), u, chnl.getGuild().getRoleByID(IDReference.PCMOBILEROLE)))).map((_item) -> 1).reduce(unassigned, (accumulator, _item) -> accumulator - 1);
         toSendServer += "\n" + unassigned + "x Not Assigned";
         toSendServer += "\n```";
 
