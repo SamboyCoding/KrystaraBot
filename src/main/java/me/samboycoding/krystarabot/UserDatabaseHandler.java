@@ -237,7 +237,7 @@ public class UserDatabaseHandler
         for(String id : serverJSON.keySet())
         {
             JSONObject user = serverJSON.getJSONObject(id);
-            if(user.getBoolean("ReceivesCommands"))
+            if(user.getBoolean("ReceivesCodes"))
             {
                 count++;
             }
