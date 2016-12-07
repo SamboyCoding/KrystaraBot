@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
+import me.samboycoding.krystarabot.quiz.QuizHandler;
 import org.apache.commons.io.FileUtils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -31,6 +32,7 @@ public class main
     public static CodesHandler codes = new CodesHandler();
     public static UserDatabaseHandler databaseHandler = new UserDatabaseHandler();
     public static File logFile;
+    public static QuizHandler quizH = new QuizHandler();
 
     public static IDiscordClient getClient(String token)
     {

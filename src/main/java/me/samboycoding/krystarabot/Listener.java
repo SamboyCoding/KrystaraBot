@@ -83,6 +83,7 @@ public class Listener
             main.registerCommand(new NewcodeCommand());
             main.registerCommand(new PingCommand());
             main.registerCommand(new PlatformCommand());
+            main.registerCommand(new QuizCommand());
             main.registerCommand(new ReloadDataCommand());
             main.registerCommand(new SearchCommand());
             main.registerCommand(new ServerstatsCommand());
