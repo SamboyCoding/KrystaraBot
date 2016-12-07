@@ -1,11 +1,9 @@
 package me.samboycoding.krystarabot.quiz;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import me.samboycoding.krystarabot.main;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.RateLimitException;
 
 /**
@@ -16,7 +14,7 @@ import sx.blah.discord.util.RateLimitException;
 public class QuizStartTimer implements Runnable
 {
 
-    int time = 120;
+    int time = 20;
     IChannel c;
 
     public QuizStartTimer(IChannel channel)
@@ -42,7 +40,9 @@ public class QuizStartTimer implements Runnable
                 }
                 Thread.sleep(1000);
             }
+            Thread.sleep(1500);
             msg.edit("Quiz starting!");
+            new Thread(new QuizQuestionTimer(c), "Quiz question timer").start();
         } catch (Exception ex)
         {
             ex.printStackTrace();
