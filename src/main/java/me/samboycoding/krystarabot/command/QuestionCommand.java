@@ -56,7 +56,7 @@ public class QuestionCommand extends KrystaraCommand
                 difNum = 2;
                 break;
             case "hard":
-                difNum = 2;
+                difNum = 3;
                 break;
             default:
                 chnl.sendMessage("Invalid difficulty!");

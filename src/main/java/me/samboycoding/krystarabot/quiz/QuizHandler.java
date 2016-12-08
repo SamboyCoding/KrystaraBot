@@ -70,7 +70,7 @@ public class QuizHandler
         //Hard #2
         hardTemplates.add(new QuestionTemplate("What is the name of %%TROOP%%'s third trait?", "thirdtrait", "leg/mythic_troop"));
         //Hard #3
-        hardTemplates.add(new QuestionTemplate("Which of these troops uses %%MANACOLOR1%% / %%MANACOLOR2%%?", "manacolors", "troop")); //Again, "manacolors" plural
+        hardTemplates.add(new QuestionTemplate("Which of these troops uses colors %%MANACOLOR1%% / %%MANACOLOR2%%?", "manacolors", "troop")); //Again, "manacolors" plural
 
         //Arcane traitstone
         //Hard #4
@@ -144,34 +144,35 @@ public class QuizHandler
     public Question getSpecificQuestion(int difficulty, int index)
     {
         System.out.println("Getting Question! Diff: " + difficulty + " index: " + index);
-        
+
         QuestionTemplate templ;
         switch (difficulty)
         {
             case 1:
-                if(index >= easyTemplates.size())
+                if (index >= easyTemplates.size())
                 {
                     return null;
                 }
                 templ = easyTemplates.get(index);
                 break;
             case 2:
-                if(index >= normTemplates.size())
+                if (index >= normTemplates.size())
                 {
                     return null;
                 }
                 templ = normTemplates.get(index);
                 break;
             case 3:
-                if(index >= hardTemplates.size())
+                if (index >= hardTemplates.size())
                 {
                     return null;
                 }
                 templ = hardTemplates.get(index);
+                break;
             default:
                 return null;
         }
-        
+
         System.out.println(templ.templateText);
         return handleTemplate(templ, new Random());
     }
@@ -189,6 +190,7 @@ public class QuizHandler
         //TEMP: Continue looping until we get a troop question
         while (!type.equals("troop"))
         {
+            System.out.println("Loop.");
             templ = easyTemplates.get(r.nextInt(easyTemplates.size()));
             type = templ.searchIn;
         }
@@ -356,22 +358,29 @@ public class QuizHandler
                 //What mana colors does x use?
                 questionText = temp.templateText.replace("%%TROOP%%", randomTroop.getString("Name"));
                 String correctColors = "";
-                JSONObject manaColors = randomTroop.getJSONObject("ManaColors");
 
-                for (String color : manaColors.keySet())
+                while (!correctColors.contains("/"))
                 {
-                    if (color.equals("ColorOrange"))
+                    JSONObject manaColors = randomTroop.getJSONObject("ManaColors");
+                    for (String color : manaColors.keySet())
                     {
-                        continue; //Ignore orange - it's not in the game.
-                    }
+                        if (color.equals("ColorOrange"))
+                        {
+                            continue; //Ignore orange - it's not in the game.
+                        }
 
-                    if (manaColors.getBoolean(color))
+                        if (manaColors.getBoolean(color))
+                        {
+                            correctColors += color.replace("Color", "") + "/";
+                        }
+                    }
+                    correctColors = correctColors.substring(0, correctColors.length() - 1); //Remove trailing slash
+                    
+                    if(!correctColors.contains("/"))
                     {
-                        correctColors += color.replace("Color", "") + "/";
+                        randomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
                     }
                 }
-                correctColors = correctColors.substring(0, correctColors.length() - 1); //Remove trailing slash
-
                 answers = new ArrayList<>();
                 answers.add(correctColors);
 
@@ -380,7 +389,7 @@ public class QuizHandler
                     JSONObject anotherRandomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
 
                     String correctColors2 = "";
-                    JSONObject manaColors2 = randomTroop.getJSONObject("ManaColors");
+                    JSONObject manaColors2 = anotherRandomTroop.getJSONObject("ManaColors");
 
                     for (String color : manaColors2.keySet())
                     {
@@ -395,6 +404,11 @@ public class QuizHandler
                         }
                     }
                     correctColors2 = correctColors2.substring(0, correctColors2.length() - 1); //Remove trailing slash
+
+                    if (!correctColors2.contains("/"))
+                    {
+                        continue; //Ensure we get two colors.
+                    }
 
                     if (correctColors2.equals(correctColors))
                     {
@@ -412,7 +426,7 @@ public class QuizHandler
             case "traits":
                 //Which of these is one of x's traits?
                 questionText = temp.templateText.replace("%%TROOP%%", randomTroop.getString("Name"));
-                String correctTrait = randomTroop.getJSONArray("Traits").getString(r.nextInt(3)); //Get a random trait from the troop
+                String correctTrait = randomTroop.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name"); //Get a random trait from the troop
                 answers = new ArrayList<>();
                 answers.add(correctTrait);
 
@@ -420,7 +434,7 @@ public class QuizHandler
                 {
                     JSONObject anotherRandomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
 
-                    String trait2 = anotherRandomTroop.getJSONArray("Traits").getString(r.nextInt(3));
+                    String trait2 = anotherRandomTroop.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
                     if (correctTrait.equals(trait2)) //If the current trait is the same as the correct one
                     {
                         continue; //Get another
@@ -460,7 +474,7 @@ public class QuizHandler
                     }
                 }
 
-                questionText = temp.templateText.replace("%%MANACOLOR1%%", manaCols.get(0)).replace("%%MANACOLOR2", manaCols.get(1));
+                questionText = temp.templateText.replace("%%MANACOLOR1%%", manaCols.get(0)).replace("%%MANACOLOR2%%", manaCols.get(1));
                 String correctTroop3 = randomTroop.getString("Name");
                 answers = new ArrayList<>();
                 answers.add(correctTroop3);
