@@ -2,6 +2,7 @@ package me.samboycoding.krystarabot.quiz;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Random;
 import me.samboycoding.krystarabot.GameData;
@@ -42,9 +43,9 @@ public class QuizHandler
         //Easy #3
         easyTemplates.add(new QuestionTemplate("Which of these spells creates gems?", "creategems", "spell"));
         //Easy #4
-        easyTemplates.add(new QuestionTemplate("Which of these spells can be used to generate mana?", "generatemana", "spell")); //If any spellstep has "ConvertGems", "CreateGems", "GenerateMana", "ExplodeGem" or "DestroyGems". NOT "RemoveColor" - it doesn't give you mana
+        easyTemplates.add(new QuestionTemplate("Which of these spells can be used to generate mana (i.e. converts, creates, or destroys gems - and gives mana - or directly gives an ally mana)?", "generatemana", "spell")); //If any spellstep has "ConvertGems", "CreateGems", "GenerateMana", "ExplodeGem" or "DestroyGems". NOT "RemoveColor" - it doesn't give you mana
         //Easy #5
-        easyTemplates.add(new QuestionTemplate("Which of these spells destroys gems?", "destroygems", "spell")); //If any spellstep has "DestroyGems" or "ExplodeGem"
+        easyTemplates.add(new QuestionTemplate("Which of these spells destroys gems (and gives you the mana)?", "destroygems", "spell")); //If any spellstep has "DestroyGems" or "ExplodeGem"
 
         //Normal #0
         normTemplates.add(new QuestionTemplate("What is %%TROOP%%'s spell's name?", "spellname", "troop"));
@@ -182,33 +183,32 @@ public class QuizHandler
         String type = templ.searchIn;
         //Possible types: "troop", "spell", "leg/mythic_troop", "traitstone", "kingdom"
 
-        /*
-        switch (type)
-        {
-            case "troop":
-         */
-        //TEMP: Continue looping until we get a troop question
-        while (!type.equals("troop"))
+        //TEMP: Continue looping until we get a troop/spell question
+        while (!type.equals("troop") && !type.equals("spell"))
         {
             System.out.println("Loop.");
             templ = easyTemplates.get(r.nextInt(easyTemplates.size()));
             type = templ.searchIn;
         }
-        return handleTroopTemplate(templ, r);
-        /*
+        
+        switch (type)
+        {
+            case "troop":
+                return handleTroopTemplate(templ, r);
+
             case "spell":
                 return handleSpellTemplate(templ, r);
+            /*
             case "traitstone":
                 return handleTraitstoneTemplate(templ, r);
             case "kingdom":
                 return handleKingdomTemplate(templ, r);
+             */
         }
 
         //Leg/mythic troop
         //Only question is "Which of these troops uses %%MANACOLOR1%% / %%MANACOLOR2%%?"
         return null; //TODO
-                
-         */
     }
 
     private Question handleTroopTemplate(QuestionTemplate temp, Random r)
@@ -375,8 +375,8 @@ public class QuizHandler
                         }
                     }
                     correctColors = correctColors.substring(0, correctColors.length() - 1); //Remove trailing slash
-                    
-                    if(!correctColors.contains("/"))
+
+                    if (!correctColors.contains("/"))
                     {
                         randomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
                     }
@@ -502,14 +502,14 @@ public class QuizHandler
         //Possible values: "truedamge", "creategems", "generatemana", "destroygems", "debuff", "convertgems", "removecolor", "increasestat"
 
         Question result = null;
+        ArrayList<String> answers;
 
-        //TODO
         switch (temp.searchFor)
         {
             case "truedamge":
                 //Which of these spells does true damage?
                 boolean tdFound = false;
-                String correctSpell;
+                String correctSpell = null;
                 while (!tdFound)
                 {
                     JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
@@ -524,8 +524,354 @@ public class QuizHandler
                         }
                     }
                 }
-                break;
 
+                answers = new ArrayList<>();
+                answers.add(correctSpell);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    boolean hasTrueDamage = false;
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getBoolean("TrueDamage"))
+                        {
+                            hasTrueDamage = true;
+                            break;
+                        }
+                    }
+                    if (!hasTrueDamage)
+                    {
+                        answers.add(randomSpell.getString("Name"));
+                    }
+                }
+
+                result = new Question(temp.templateText, answers, 0); //No need to format text.
+                break;
+            case "creategems":
+                //Which of these spells creates gems?
+                //Spellstep.type = "CreateGems"
+
+                boolean cgFound = false;
+                correctSpell = null;
+                while (!cgFound)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getString("Type").equals("CreateGems"))
+                        {
+                            cgFound = true;
+                            correctSpell = randomSpell.getString("Name");
+                        }
+                    }
+                }
+
+                answers = new ArrayList<>();
+                answers.add(correctSpell);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    boolean createsGems = false;
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getString("Type").equals("CreateGems"))
+                        {
+                            createsGems = true;
+                            break;
+                        }
+                    }
+                    if (!createsGems)
+                    {
+                        answers.add(randomSpell.getString("Name"));
+                    }
+                }
+
+                result = new Question(temp.templateText, answers, 0); //No need to format text.
+                break;
+            case "generatemana":
+                //Which of these spells can be used to generate mana?
+                //If any spellstep has "ConvertGems", "CreateGems", "GenerateMana", "ExplodeGem" or "DestroyGems". NOT "RemoveColor" - it doesn't give you mana
+                boolean gmFound = false;
+                correctSpell = null;
+
+                ArrayList<String> acceptableSpellTypes = new ArrayList<>(Arrays.asList("ConvertGems", "CreateGems", "GenerateMana", "ExplodeGem", "DestroyGems"));
+                while (!gmFound)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (acceptableSpellTypes.contains(step.getString("Type")))
+                        {
+                            gmFound = true;
+                            correctSpell = randomSpell.getString("Name");
+                        }
+                    }
+                }
+
+                answers = new ArrayList<>();
+                answers.add(correctSpell);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    boolean generatesMana = false;
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (acceptableSpellTypes.contains(step.getString("Type")))
+                        {
+                            generatesMana = true;
+                            break;
+                        }
+                    }
+                    if (!generatesMana)
+                    {
+                        answers.add(randomSpell.getString("Name"));
+                    }
+                }
+
+                result = new Question(temp.templateText, answers, 0);
+                break;
+            case "destroygems":
+                //Which of these spells destroys gems (and gives you the mana)?
+                //If any spellstep has "DestroyGems" or "ExplodeGem", NOT "RemoveColor"
+                boolean dgFound = false;
+                correctSpell = null;
+
+                acceptableSpellTypes = new ArrayList<>(Arrays.asList("ExplodeGem", "DestroyGems"));
+                while (!dgFound)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (acceptableSpellTypes.contains(step.getString("Type")))
+                        {
+                            dgFound = true;
+                            correctSpell = randomSpell.getString("Name");
+                        }
+                    }
+                }
+
+                answers = new ArrayList<>();
+                answers.add(correctSpell);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    boolean destroysGems = false;
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (acceptableSpellTypes.contains(step.getString("Type")))
+                        {
+                            destroysGems = true;
+                            break;
+                        }
+                    }
+                    if (!destroysGems)
+                    {
+                        answers.add(randomSpell.getString("Name"));
+                    }
+                }
+
+                result = new Question(temp.templateText, answers, 0);
+                break;
+            case "debuff":
+                //Which of these spells causes debuffs?
+                boolean debuffFound = false;
+                correctSpell = null;
+
+                while (!debuffFound)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getString("Type").contains("Cause"))
+                        {
+                            debuffFound = true;
+                            correctSpell = randomSpell.getString("Name");
+                        }
+                    }
+                }
+
+                answers = new ArrayList<>();
+                answers.add(correctSpell);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    boolean causesDebuff = false;
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getString("Type").contains("Cause"))
+                        {
+                            causesDebuff = true;
+                            break;
+                        }
+                    }
+                    if (!causesDebuff)
+                    {
+                        answers.add(randomSpell.getString("Name"));
+                    }
+                }
+
+                result = new Question(temp.templateText, answers, 0);
+                break;
+            case "convertsgems":
+                //Which spell converts gems?
+                boolean convGFound = false;
+                correctSpell = null;
+
+                while (!convGFound)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getString("Type").equals("ConvertGems"))
+                        {
+                            convGFound = true;
+                            correctSpell = randomSpell.getString("Name");
+                        }
+                    }
+                }
+
+                answers = new ArrayList<>();
+                answers.add(correctSpell);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    boolean convertsGems = false;
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getString("Type").equals("ConvertGems"))
+                        {
+                            convertsGems = true;
+                            break;
+                        }
+                    }
+                    if (!convertsGems)
+                    {
+                        answers.add(randomSpell.getString("Name"));
+                    }
+                }
+
+                result = new Question(temp.templateText, answers, 0);
+                break;
+            case "removecolor":
+                //Which spell removes gems, without giving you the mana?
+                boolean rcFound = false;
+                correctSpell = null;
+
+                while (!rcFound)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getString("Type").equals("RemoveColor"))
+                        {
+                            rcFound = true;
+                            correctSpell = randomSpell.getString("Name");
+                        }
+                    }
+                }
+
+                answers = new ArrayList<>();
+                answers.add(correctSpell);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    boolean removesColor = false;
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getString("Type").equals("RemoveColor"))
+                        {
+                            removesColor = true;
+                            break;
+                        }
+                    }
+                    if (!removesColor)
+                    {
+                        answers.add(randomSpell.getString("Name"));
+                    }
+                }
+
+                result = new Question(temp.templateText, answers, 0);
+                break;
+            case "increasestat":
+                //Which spell gives stats?
+                //"IncreaseArmor", "IncreaseAttack", "IncreaseHealth" or "IncreaseSpellPower"
+                boolean increaseStatFound = false;
+                correctSpell = null;
+
+                acceptableSpellTypes = new ArrayList<>(Arrays.asList("IncreaseArmor", "IncreaseAttack", "IncreaseHealth", "IncreaseSpellPower"));
+                while (!increaseStatFound)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (acceptableSpellTypes.contains(step.getString("Type")))
+                        {
+                            increaseStatFound = true;
+                            correctSpell = randomSpell.getString("Name");
+                        }
+                    }
+                }
+
+                answers = new ArrayList<>();
+                answers.add(correctSpell);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    boolean increasesStat = false;
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (acceptableSpellTypes.contains(step.getString("Type")))
+                        {
+                            increasesStat = true;
+                            break;
+                        }
+                    }
+                    if (!increasesStat)
+                    {
+                        answers.add(randomSpell.getString("Name"));
+                    }
+                }
+
+                result = new Question(temp.templateText, answers, 0);
+                break;
         }
         return result;
     }
