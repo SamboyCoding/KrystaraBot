@@ -12,12 +12,12 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author Sam
  */
-public class CodeRegisterCommand extends KrystaraCommand
+public class ReigsterCodeCommand extends KrystaraCommand
 {
     
-    public CodeRegisterCommand()
+    public ReigsterCodeCommand()
     {
-        commandName = "coderegister";
+        commandName = "registercode";
     }
 
     @Override
@@ -62,13 +62,13 @@ public class CodeRegisterCommand extends KrystaraCommand
     @Override
     public String getUsage()
     {
-        return "?coderegister [yes|no]";
+        return "?registercode [yes|no]";
     }
 
     @Override
     public String getCommand()
     {
-        return "coderegister";
+        return "registercode";
     }
 
 }

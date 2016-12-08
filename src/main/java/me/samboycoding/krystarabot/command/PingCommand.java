@@ -2,7 +2,6 @@ package me.samboycoding.krystarabot.command;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -24,6 +23,7 @@ public class PingCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
+        msg.delete();
         long lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
         if (lagTime < 0)
         {

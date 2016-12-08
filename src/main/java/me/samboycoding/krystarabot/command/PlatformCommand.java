@@ -71,7 +71,7 @@ public class PlatformCommand extends KrystaraCommand
     @Override
     public String getUsage()
     {
-        return "?plaform [pc|mobile|console]";
+        return "?platform [pc|mobile|console]";
     }
 
     @Override

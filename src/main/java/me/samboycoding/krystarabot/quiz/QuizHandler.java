@@ -33,36 +33,61 @@ public class QuizHandler
     public QuizHandler()
     {
         //Troop
+        //Easy #0
         easyTemplates.add(new QuestionTemplate("What kingdom is %%TROOP%% found in?", "kingdom", "troop"));
+        //Easy #1
         easyTemplates.add(new QuestionTemplate("What is %%TROOP%%'s base rarity?", "rarity", "troop"));
+        //Easy #2
         easyTemplates.add(new QuestionTemplate("Which of these spells does true damage?", "truedamage", "spell"));
+        //Easy #3
         easyTemplates.add(new QuestionTemplate("Which of these spells creates gems?", "creategems", "spell"));
+        //Easy #4
         easyTemplates.add(new QuestionTemplate("Which of these spells can be used to generate mana?", "generatemana", "spell")); //If any spellstep has "ConvertGems", "CreateGems", "GenerateMana", "ExplodeGem" or "DestroyGems". NOT "RemoveColor" - it doesn't give you mana
+        //Easy #5
         easyTemplates.add(new QuestionTemplate("Which of these spells destroys gems?", "destroygems", "spell")); //If any spellstep has "DestroyGems" or "ExplodeGem"
 
-        normTemplates.add(new QuestionTemplate("What is %%TROOP%'s spell's name?", "spellname", "troop"));
+        //Normal #0
+        normTemplates.add(new QuestionTemplate("What is %%TROOP%%'s spell's name?", "spellname", "troop"));
+        //Normal #1
         normTemplates.add(new QuestionTemplate("What is/are %%TROOP%%'s types?", "type", "troop"));
+        //Normal #2
         normTemplates.add(new QuestionTemplate("Which troop has spell \"%%SPELL%%\"?", "spell", "troop"));
+        //Normal #3
         normTemplates.add(new QuestionTemplate("Which troop has trait \"%%TRAIT%%\"", "trait", "troop")); //"trait" singular
+        //Normal #4
         normTemplates.add(new QuestionTemplate("Which spell causes debuffs?", "debuff", "spell"));
+        //Normal #5
         normTemplates.add(new QuestionTemplate("Which spell converts gems?", "convertgems", "spell"));
+        //Normal #6
         normTemplates.add(new QuestionTemplate("Which spell deletes gems (without giving you mana)?", "removecolor", "spell"));
+        //Normal #7
         normTemplates.add(new QuestionTemplate("Which spell gives stats?", "increasestat", "spell")); //"IncreaseArmor", "IncreaseAttack", "IncreaseHealth" or "IncreaseSpellPower"
 
+        //Hard #0
         hardTemplates.add(new QuestionTemplate("What mana colors does %%TROOP%% use?", "manacolor", "troop")); //"manacolor" singular
+        //Hard #1
         hardTemplates.add(new QuestionTemplate("Which of these is one of %%TROOP%%'s traits?", "traits", "troop")); //Note "traits" plural
+        //Hard #2
         hardTemplates.add(new QuestionTemplate("What is the name of %%TROOP%%'s third trait?", "thirdtrait", "leg/mythic_troop"));
+        //Hard #3
         hardTemplates.add(new QuestionTemplate("Which of these troops uses %%MANACOLOR1%% / %%MANACOLOR2%%?", "manacolors", "troop")); //Again, "manacolors" plural
 
         //Arcane traitstone
+        //Hard #4
         hardTemplates.add(new QuestionTemplate("What is the name of the %%COL1%% / %%COL2%% traitstone?", "color", "traitstone")); //Singular
+        //Hard #5
         hardTemplates.add(new QuestionTemplate("What color are arcane %%NAME%% traitstones?", "colors", "traitstone")); //Plural
+        //Hard #6
         hardTemplates.add(new QuestionTemplate("Where are Arcane %%NAME%% traitstones be found?", "location", "traitstone"));
 
         //Kingdom
+        //Easy #6
         easyTemplates.add(new QuestionTemplate("Which kingdom have bonuses \"Lord, Duke and King of %%TYPE%%\"?", "bonuses", "kingdom"));
+        //Easy #7
         easyTemplates.add(new QuestionTemplate("Which of these troops is from %%NAME%%?", "troops", "kingdom"));
+        //Easy #8
         easyTemplates.add(new QuestionTemplate("Which kingdom has the banner %%BANNERNAME%%?", "banner", "kingdom"));
+        //Normal #8
         normTemplates.add(new QuestionTemplate("What stat bonus is unlocked from reaching level 10 in %%KINGDOMNAME%%?", "level10", "kingdom"));
     }
 
@@ -116,6 +141,41 @@ public class QuizHandler
         return null; //Invalid difficulty.
     }
 
+    public Question getSpecificQuestion(int difficulty, int index)
+    {
+        System.out.println("Getting Question! Diff: " + difficulty + " index: " + index);
+        
+        QuestionTemplate templ;
+        switch (difficulty)
+        {
+            case 1:
+                if(index >= easyTemplates.size())
+                {
+                    return null;
+                }
+                templ = easyTemplates.get(index);
+                break;
+            case 2:
+                if(index >= normTemplates.size())
+                {
+                    return null;
+                }
+                templ = normTemplates.get(index);
+                break;
+            case 3:
+                if(index >= hardTemplates.size())
+                {
+                    return null;
+                }
+                templ = hardTemplates.get(index);
+            default:
+                return null;
+        }
+        
+        System.out.println(templ.templateText);
+        return handleTemplate(templ, new Random());
+    }
+
     private Question handleTemplate(QuestionTemplate templ, Random r)
     {
         String type = templ.searchIn;
@@ -126,9 +186,8 @@ public class QuizHandler
         {
             case "troop":
          */
-        
         //TEMP: Continue looping until we get a troop question
-        while(!type.equals("troop"))
+        while (!type.equals("troop"))
         {
             templ = easyTemplates.get(r.nextInt(easyTemplates.size()));
             type = templ.searchIn;
@@ -417,6 +476,8 @@ public class QuizHandler
                         answers.add(nm);
                     }
                 }
+                result = new Question(questionText, answers, 0);
+                break;
         }
 
         return result;
@@ -424,7 +485,35 @@ public class QuizHandler
 
     private Question handleSpellTemplate(QuestionTemplate temp, Random r)
     {
-        return null; //TODO
+        //Possible values: "truedamge", "creategems", "generatemana", "destroygems", "debuff", "convertgems", "removecolor", "increasestat"
+
+        Question result = null;
+
+        //TODO
+        switch (temp.searchFor)
+        {
+            case "truedamge":
+                //Which of these spells does true damage?
+                boolean tdFound = false;
+                String correctSpell;
+                while (!tdFound)
+                {
+                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
+                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    for (Object o : spellSteps)
+                    {
+                        JSONObject step = (JSONObject) o;
+                        if (step.getBoolean("TrueDamage"))
+                        {
+                            tdFound = true;
+                            correctSpell = randomSpell.getString("Name");
+                        }
+                    }
+                }
+                break;
+
+        }
+        return result;
     }
 
     private Question handleTraitstoneTemplate(QuestionTemplate temp, Random r)

@@ -74,7 +74,7 @@ public class Listener
             main.registerCommand(new ClassCommand());
             main.registerCommand(new ClearCommand());
             main.registerCommand(new ClearcacheCommand());
-            main.registerCommand(new CodeRegisterCommand());
+            main.registerCommand(new ReigsterCodeCommand());
             main.registerCommand(new CodesCommand());
             main.registerCommand(new DeadCommand());
             main.registerCommand(new HelpCommand());
@@ -83,6 +83,7 @@ public class Listener
             main.registerCommand(new NewcodeCommand());
             main.registerCommand(new PingCommand());
             main.registerCommand(new PlatformCommand());
+            main.registerCommand(new QuestionCommand());
             main.registerCommand(new QuizCommand());
             main.registerCommand(new ReloadDataCommand());
             main.registerCommand(new SearchCommand());
@@ -157,13 +158,6 @@ public class Listener
 
             messageCounter.countCommand(sdr, chnl.getGuild());
 
-            /*if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
-            {
-                //Not admin, and not in #bot-commands
-                sdr.getOrCreatePMChannel().sendMessage("Please only use commands in #bot-commands. Thank you.");
-                msg.delete();
-                return;
-            }*/
             String command;
             ArrayList<String> arguments = new ArrayList<>();
             String argumentsFull = "";
@@ -197,7 +191,7 @@ public class Listener
             //No command found
             if (!validCommand)
             {
-                chnl.sendMessage("Invalid command \"" + command + "\"");
+                chnl.sendMessage("Invalid command \"" + command + "\". Do `?help` for a list of commands.");
             }
 
         } catch (RateLimitException rle)
