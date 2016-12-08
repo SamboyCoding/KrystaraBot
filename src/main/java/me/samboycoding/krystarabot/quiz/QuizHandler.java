@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Random;
 import me.samboycoding.krystarabot.GameData;
+import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,17 +74,20 @@ public class QuizHandler
         //Hard #3
         hardTemplates.add(new QuestionTemplate("Which of these troops uses colors %%MANACOLOR1%% / %%MANACOLOR2%%?", "manacolors", "troop")); //Again, "manacolors" plural
 
-        //Arcane traitstone
+        //Arcane traitstone - Cannot be done? No information on colors can be found.
+        
+        /*
         //Hard #4
-        hardTemplates.add(new QuestionTemplate("What is the name of the %%COL1%% / %%COL2%% traitstone?", "color", "traitstone")); //Singular
+        hardTemplates.add(new QuestionTemplate("What is the name of the %%COL1%% / %%COL2%% traitstone?", "colors", "traitstone")); //Singular
         //Hard #5
-        hardTemplates.add(new QuestionTemplate("What color are arcane %%NAME%% traitstones?", "colors", "traitstone")); //Plural
+        hardTemplates.add(new QuestionTemplate("What color are arcane %%NAME%% traitstones?", "color", "traitstone")); //Plural
         //Hard #6
         hardTemplates.add(new QuestionTemplate("Where are Arcane %%NAME%% traitstones be found?", "location", "traitstone"));
-
+        */
+        
         //Kingdom
         //Easy #6
-        easyTemplates.add(new QuestionTemplate("Which kingdom have bonuses \"Lord, Duke and King of %%TYPE%%\"?", "bonuses", "kingdom"));
+        easyTemplates.add(new QuestionTemplate("Which kingdom has bonuses \"Lord, Duke and King of %%TYPE%%\"?", "bonuses", "kingdom"));
         //Easy #7
         easyTemplates.add(new QuestionTemplate("Which of these troops is from %%NAME%%?", "troops", "kingdom"));
         //Easy #8
@@ -501,19 +505,21 @@ public class QuizHandler
     {
         //Possible values: "truedamge", "creategems", "generatemana", "destroygems", "debuff", "convertgems", "removecolor", "increasestat"
 
-        Question result = null;
-        ArrayList<String> answers;
+        Question result;
+        ArrayList<String> answers = null;
 
-        switch (temp.searchFor)
+        String sf = temp.searchFor;
+        
+        switch (sf)
         {
-            case "truedamge":
+            case "truedamage":
                 //Which of these spells does true damage?
                 boolean tdFound = false;
                 String correctSpell = null;
                 while (!tdFound)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
@@ -530,8 +536,8 @@ public class QuizHandler
 
                 while (answers.size() < 4)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     boolean hasTrueDamage = false;
                     for (Object o : spellSteps)
                     {
@@ -558,8 +564,8 @@ public class QuizHandler
                 correctSpell = null;
                 while (!cgFound)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
@@ -576,8 +582,8 @@ public class QuizHandler
 
                 while (answers.size() < 4)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     boolean createsGems = false;
                     for (Object o : spellSteps)
                     {
@@ -602,11 +608,11 @@ public class QuizHandler
                 boolean gmFound = false;
                 correctSpell = null;
 
-                ArrayList<String> acceptableSpellTypes = new ArrayList<>(Arrays.asList("ConvertGems", "CreateGems", "GenerateMana", "ExplodeGem", "DestroyGems"));
+                ArrayList<String> acceptableSpellTypes = new ArrayList<>(Arrays.asList("ConvertGems", "CreateGems", "GenerateMana", "ExplodeGem", "ExplodeGems", "DestroyGems"));
                 while (!gmFound)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
@@ -623,8 +629,8 @@ public class QuizHandler
 
                 while (answers.size() < 4)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     boolean generatesMana = false;
                     for (Object o : spellSteps)
                     {
@@ -649,11 +655,11 @@ public class QuizHandler
                 boolean dgFound = false;
                 correctSpell = null;
 
-                acceptableSpellTypes = new ArrayList<>(Arrays.asList("ExplodeGem", "DestroyGems"));
+                acceptableSpellTypes = new ArrayList<>(Arrays.asList("ExplodeGem", "DestroyGems", "ExplodeGems"));
                 while (!dgFound)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
@@ -670,8 +676,8 @@ public class QuizHandler
 
                 while (answers.size() < 4)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     boolean destroysGems = false;
                     for (Object o : spellSteps)
                     {
@@ -697,8 +703,8 @@ public class QuizHandler
 
                 while (!debuffFound)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
@@ -715,8 +721,8 @@ public class QuizHandler
 
                 while (answers.size() < 4)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     boolean causesDebuff = false;
                     for (Object o : spellSteps)
                     {
@@ -735,15 +741,15 @@ public class QuizHandler
 
                 result = new Question(temp.templateText, answers, 0);
                 break;
-            case "convertsgems":
+            case "convertgems":
                 //Which spell converts gems?
                 boolean convGFound = false;
                 correctSpell = null;
 
                 while (!convGFound)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
@@ -760,8 +766,8 @@ public class QuizHandler
 
                 while (answers.size() < 4)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     boolean convertsGems = false;
                     for (Object o : spellSteps)
                     {
@@ -787,8 +793,8 @@ public class QuizHandler
 
                 while (!rcFound)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
@@ -805,8 +811,8 @@ public class QuizHandler
 
                 while (answers.size() < 4)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     boolean removesColor = false;
                     for (Object o : spellSteps)
                     {
@@ -834,8 +840,8 @@ public class QuizHandler
                 acceptableSpellTypes = new ArrayList<>(Arrays.asList("IncreaseArmor", "IncreaseAttack", "IncreaseHealth", "IncreaseSpellPower"));
                 while (!increaseStatFound)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
@@ -852,8 +858,8 @@ public class QuizHandler
 
                 while (answers.size() < 4)
                 {
-                    JSONObject randomSpell = GameData.arraySpells.getJSONObject(r.nextInt(GameData.arraySpells.length()));
-                    JSONArray spellSteps = randomSpell.getJSONObject("Spell").getJSONArray("SpellSteps");
+                    JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
+                    JSONArray spellSteps = randomSpell.getJSONArray("SpellSteps");
                     boolean increasesStat = false;
                     for (Object o : spellSteps)
                     {
@@ -872,17 +878,100 @@ public class QuizHandler
 
                 result = new Question(temp.templateText, answers, 0);
                 break;
+            default:
+                main.logToBoth("Unknown question type " + temp.searchFor);
+                result = null;
+                break;
         }
         return result;
     }
 
     private Question handleTraitstoneTemplate(QuestionTemplate temp, Random r)
     {
-        return null; //TODO
+        //"color", "colors", or "location"
+        
+        //As far as i can see there is no way to find the colors of traitstones.
+        
+        /*JSONArray traitstones = new JSONArray();
+        for(Object k : GameData.arrayKingdoms)
+        {
+            JSONObject kingdom = (JSONObject) k;
+            
+            JSONObject traitstone = 
+        }*/
+        
+        //TODO: Investigate.
+        Question result = null;
+        ArrayList<String> answers;
+        
+        switch(temp.searchFor)
+        {
+            case "colors":
+                //What is the name of the %%COL1%% / %%COL2%% traitstone?
+                break;
+            case "color":
+                //What color are arcane %%NAME%% traitstones?
+                break;
+            case "location":
+                //Where are Arcane %%NAME%% traitstones be found?
+                break;
+            default:
+                main.logToBoth("Unknown question type " + temp.searchFor);
+                result = null;
+                break;
+        }
+        return result;
     }
 
     private Question handleKingdomTemplate(QuestionTemplate temp, Random r)
     {
-        return null; //TODO
+        Question result = null;
+        ArrayList<String> answers;
+        
+        JSONObject randomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
+        
+        switch(temp.searchFor)
+        {
+            case "bonuses":
+                //Which kingdom has bonuses "Lord, Duke and King of %%TYPE%%"?
+                String fullBonusString = randomKingdom.getJSONObject("Bonus_2").getString("Name");
+                String bonusType = fullBonusString.substring(fullBonusString.lastIndexOf(" ") + 1);
+                String questionText = temp.templateText.replace("%%TYPE%%", bonusType);
+                
+                answers = new ArrayList<>();
+                
+                String correctKingdom = randomKingdom.getString("Name");
+                answers.add(correctKingdom);
+                
+                while(answers.size() < 4)
+                {
+                    JSONObject anotherRandomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
+                    String bnsStringFull = anotherRandomKingdom.getJSONObject("Bonus_2").getString("Name");
+                    String bnsString = bnsStringFull.substring(bnsStringFull.lastIndexOf(" ") + 1);
+                    
+                    if(!bnsString.equals(questionText))
+                    {
+                        answers.add(anotherRandomKingdom.getString("Name"));
+                    }
+                }
+                
+                result = new Question(questionText, answers, 0);
+                break;
+            case "troops":
+                //Which of these troops is from %%NAME%%?
+                
+                break;
+            case "banner":
+                //Which kingdom has the banner %%BANNERNAME%%?
+                break;
+            case "level10":
+                //What stat bonus is unlocked from reaching level 10 in %%KINGDOMNAME%%
+                break;
+            default:
+                main.logToBoth("Unknown question type " + temp.searchFor);
+                result = null;
+                break;
+        }
+        return result; //TODO
     }
 }

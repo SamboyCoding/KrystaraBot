@@ -33,6 +33,7 @@ public class QuestionCommand extends KrystaraCommand
         if (arguments.size() < 2)
         {
             chnl.sendMessage("Insufficiant arguments! Check help.");
+            return;
         }
         String difficulty = arguments.get(0);
         int qNum;

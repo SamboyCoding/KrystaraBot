@@ -1,9 +1,7 @@
 package me.samboycoding.krystarabot.quiz;
 
-import me.samboycoding.krystarabot.main;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.RateLimitException;
 
 /**
