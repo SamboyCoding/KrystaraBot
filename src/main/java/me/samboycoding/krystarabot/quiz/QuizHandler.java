@@ -8,7 +8,6 @@ import java.util.Random;
 import me.samboycoding.krystarabot.GameData;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
-import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
@@ -41,16 +40,14 @@ public class QuizHandler
         //Easy #1
         easyTemplates.add(new QuestionTemplate("What is %%TROOP%%'s base rarity?", "rarity", "troop"));
         //Easy #2
-        easyTemplates.add(new QuestionTemplate("Which of these spells does true damage?", "truedamage", "spell"));
+        easyTemplates.add(new QuestionTemplate("Which of these troops does true damage as part of its spell?", "truedamage", "spell"));
         //Easy #3
-        easyTemplates.add(new QuestionTemplate("Which of these spells creates gems?", "creategems", "spell"));
+        easyTemplates.add(new QuestionTemplate("Which of these troops creates (not converts) gems as part of its spell?", "creategems", "spell"));
         //Easy #4
-        easyTemplates.add(new QuestionTemplate("Which of these spells can be used to generate mana (i.e. converts, creates, or destroys gems - and gives mana - or directly gives an ally mana)?", "generatemana", "spell")); //If any spellstep has "ConvertGems", "CreateGems", "GenerateMana", "ExplodeGem" or "DestroyGems". NOT "RemoveColor" - it doesn't give you mana
-        //Easy #5
-        easyTemplates.add(new QuestionTemplate("Which of these spells destroys gems (and gives you the mana)?", "destroygems", "spell")); //If any spellstep has "DestroyGems" or "ExplodeGem"
+        easyTemplates.add(new QuestionTemplate("Which of these troops destroys/explodes gems as part of its spell (and gives you the mana)?", "destroygems", "spell")); //If any spellstep has "DestroyGems" or "ExplodeGem"
 
         //Normal #0
-        normTemplates.add(new QuestionTemplate("What is %%TROOP%%'s spell's name?", "spellname", "troop"));
+        normTemplates.add(new QuestionTemplate("What is the name of %%TROOP%%'s spell?", "spellname", "troop"));
         //Normal #1
         normTemplates.add(new QuestionTemplate("What is/are %%TROOP%%'s types?", "type", "troop"));
         //Normal #2
@@ -85,11 +82,11 @@ public class QuizHandler
         hardTemplates.add(new QuestionTemplate("Where are Arcane %%NAME%% traitstones be found?", "location", "traitstone"));
          */
         //Kingdom
+        //Easy #5
+        easyTemplates.add(new QuestionTemplate("Which kingdom gives team bonuses \"Lord, Duke and King of %%TYPE%%\"?", "bonuses", "kingdom"));
         //Easy #6
-        easyTemplates.add(new QuestionTemplate("Which kingdom has bonuses \"Lord, Duke and King of %%TYPE%%\"?", "bonuses", "kingdom"));
-        //Easy #7
         easyTemplates.add(new QuestionTemplate("Which of these troops is from %%NAME%%?", "troops", "kingdom"));
-        //Easy #8
+        //Easy #7
         easyTemplates.add(new QuestionTemplate("Which kingdom has the banner %%BANNERNAME%%?", "banner", "kingdom"));
         //Normal #8
         normTemplates.add(new QuestionTemplate("What stat bonus is unlocked from reaching level 10 in %%KINGDOMNAME%%?", "level10", "kingdom"));
@@ -203,23 +200,22 @@ public class QuizHandler
 
         //Leg/mythic troop
         //Only question is What is the name of %%TROOP%%'s third trait?
-        
         JSONObject randomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
         String qText = templ.templateText.replace("%%TROOP%%", randomTroop.getString("Name"));
-        
+
         ArrayList<String> answers = new ArrayList<>();
         answers.add(randomTroop.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name"));
-        
-        while(answers.size() < 4)
+
+        while (answers.size() < 4)
         {
             JSONObject anotherRandomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
             String trait = anotherRandomTroop.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
-            if(!answers.contains(trait))
+            if (!answers.contains(trait))
             {
                 answers.add(trait);
             }
         }
-        
+
         return new Question(qText, answers, 0);
     }
 
@@ -342,7 +338,7 @@ public class QuizHandler
                 break;
             case "trait":
                 //Which troop has trait x?
-                String trait = randomTroop.getJSONArray("Traits").getString(r.nextInt(3));
+                String trait = randomTroop.getJSONArray("ParsedTraits").getJSONObject(r.nextInt(3)).getString("Name");
                 questionText = temp.templateText.replace("%%TRAIT%%", trait);
                 String correctTroop2 = randomTroop.getString("Name");
                 answers = new ArrayList<>();
@@ -353,9 +349,20 @@ public class QuizHandler
                     JSONObject anotherRandomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
 
                     String trpnme = anotherRandomTroop.getString("Name");
-                    if (anotherRandomTroop.getJSONArray("Traits").join(" , ").contains(trait)) //If the current troop ALSO has the trait we're looking for
+                    boolean hasTrait = false;
+                    for (Object t : anotherRandomTroop.getJSONArray("ParsedTraits"))
                     {
-                        continue; //Get another
+                        JSONObject trt = (JSONObject) t;
+                        if (trt.getString("Name").equals(trait))
+                        {
+                            hasTrait = true;
+                            break;
+                        }
+                    }
+
+                    if (hasTrait)
+                    {
+                        continue;
                     }
 
                     if (!answers.contains(trpnme))
@@ -521,9 +528,10 @@ public class QuizHandler
         switch (sf)
         {
             case "truedamage":
-                //Which of these spells does true damage?
+                //Which of these troop's spells does true damage?
                 boolean tdFound = false;
-                String correctSpell = null;
+                String correctTroop = null;
+                
                 while (!tdFound)
                 {
                     JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
@@ -534,13 +542,21 @@ public class QuizHandler
                         if (step.getBoolean("TrueDamage"))
                         {
                             tdFound = true;
-                            correctSpell = randomSpell.getString("Name");
+                            for (Object t : GameData.arrayTroops)
+                            {
+                                JSONObject trp = (JSONObject) t;
+                                if (trp.getJSONObject("Spell").getString("Name").equals(randomSpell.getString("Name")))
+                                {
+                                    correctTroop = trp.getString("Name");
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
 
                 answers = new ArrayList<>();
-                answers.add(correctSpell);
+                answers.add(correctTroop);
 
                 while (answers.size() < 4)
                 {
@@ -558,18 +574,26 @@ public class QuizHandler
                     }
                     if (!hasTrueDamage)
                     {
-                        answers.add(randomSpell.getString("Name"));
+                        for (Object t : GameData.arrayTroops)
+                        {
+                            JSONObject trp = (JSONObject) t;
+                            if (trp.getJSONObject("Spell").getString("Name").equals(randomSpell.getString("Name")))
+                            {
+                                answers.add(trp.getString("Name"));
+                                break;
+                            }
+                        }
                     }
                 }
 
                 result = new Question(temp.templateText, answers, 0); //No need to format text.
                 break;
             case "creategems":
-                //Which of these spells creates gems?
+                //Which of these troop's spells creates gems?
                 //Spellstep.type = "CreateGems"
 
                 boolean cgFound = false;
-                correctSpell = null;
+                correctTroop = null;
                 while (!cgFound)
                 {
                     JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
@@ -577,16 +601,24 @@ public class QuizHandler
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
-                        if (step.getString("Type").equals("CreateGems"))
+                        if (step.getString("Type").equals("CreateGems") || step.getString("Type").equals("CreateGems2Colors"))
                         {
                             cgFound = true;
-                            correctSpell = randomSpell.getString("Name");
+                            for (Object t : GameData.arrayTroops)
+                            {
+                                JSONObject trp = (JSONObject) t;
+                                if (trp.getJSONObject("Spell").getString("Name").equals(randomSpell.getString("Name")))
+                                {
+                                    correctTroop = trp.getString("Name");
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
 
                 answers = new ArrayList<>();
-                answers.add(correctSpell);
+                answers.add(correctTroop);
 
                 while (answers.size() < 4)
                 {
@@ -596,7 +628,7 @@ public class QuizHandler
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
-                        if (step.getString("Type").equals("CreateGems"))
+                        if (step.getString("Type").equals("CreateGems") || step.getString("Type").equals("CreateGems2Colors"))
                         {
                             createsGems = true;
                             break;
@@ -604,12 +636,21 @@ public class QuizHandler
                     }
                     if (!createsGems)
                     {
-                        answers.add(randomSpell.getString("Name"));
+                        for (Object t : GameData.arrayTroops)
+                        {
+                            JSONObject trp = (JSONObject) t;
+                            if (trp.getJSONObject("Spell").getString("Name").equals(randomSpell.getString("Name")))
+                            {
+                                answers.add(trp.getString("Name"));
+                                break;
+                            }
+                        }
                     }
                 }
 
                 result = new Question(temp.templateText, answers, 0); //No need to format text.
                 break;
+            /*
             case "generatemana":
                 //Which of these spells can be used to generate mana?
                 //If any spellstep has "ConvertGems", "CreateGems", "GenerateMana", "ExplodeGem" or "DestroyGems". NOT "RemoveColor" - it doesn't give you mana
@@ -657,13 +698,14 @@ public class QuizHandler
 
                 result = new Question(temp.templateText, answers, 0);
                 break;
+             */
             case "destroygems":
-                //Which of these spells destroys gems (and gives you the mana)?
+                //Which of these troop's spells destroys/explodes (and gives you the mana)?
                 //If any spellstep has "DestroyGems" or "ExplodeGem", NOT "RemoveColor"
                 boolean dgFound = false;
-                correctSpell = null;
+                correctTroop = null;
 
-                acceptableSpellTypes = new ArrayList<>(Arrays.asList("ExplodeGem", "DestroyGems", "ExplodeGems"));
+                ArrayList<String> acceptableSpellTypes = new ArrayList<>(Arrays.asList("ExplodeGem", "DestroyGems", "ExplodeGems", "DestroyGems", "DestroyRow"));
                 while (!dgFound)
                 {
                     JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
@@ -674,13 +716,21 @@ public class QuizHandler
                         if (acceptableSpellTypes.contains(step.getString("Type")))
                         {
                             dgFound = true;
-                            correctSpell = randomSpell.getString("Name");
+                            for (Object t : GameData.arrayTroops)
+                            {
+                                JSONObject trp = (JSONObject) t;
+                                if (trp.getJSONObject("Spell").getString("Name").equals(randomSpell.getString("Name")))
+                                {
+                                    correctTroop = trp.getString("Name");
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
 
                 answers = new ArrayList<>();
-                answers.add(correctSpell);
+                answers.add(correctTroop);
 
                 while (answers.size() < 4)
                 {
@@ -698,7 +748,15 @@ public class QuizHandler
                     }
                     if (!destroysGems)
                     {
-                        answers.add(randomSpell.getString("Name"));
+                        for (Object t : GameData.arrayTroops)
+                        {
+                            JSONObject trp = (JSONObject) t;
+                            if (trp.getJSONObject("Spell").getString("Name").equals(randomSpell.getString("Name")))
+                            {
+                                answers.add(trp.getString("Name"));
+                                break;
+                            }
+                        }
                     }
                 }
 
@@ -707,7 +765,7 @@ public class QuizHandler
             case "debuff":
                 //Which of these spells causes debuffs?
                 boolean debuffFound = false;
-                correctSpell = null;
+                correctTroop = null;
 
                 while (!debuffFound)
                 {
@@ -719,13 +777,13 @@ public class QuizHandler
                         if (step.getString("Type").contains("Cause"))
                         {
                             debuffFound = true;
-                            correctSpell = randomSpell.getString("Name");
+                            correctTroop = randomSpell.getString("Name");
                         }
                     }
                 }
 
                 answers = new ArrayList<>();
-                answers.add(correctSpell);
+                answers.add(correctTroop);
 
                 while (answers.size() < 4)
                 {
@@ -752,7 +810,7 @@ public class QuizHandler
             case "convertgems":
                 //Which spell converts gems?
                 boolean convGFound = false;
-                correctSpell = null;
+                correctTroop = null;
 
                 while (!convGFound)
                 {
@@ -764,13 +822,13 @@ public class QuizHandler
                         if (step.getString("Type").equals("ConvertGems"))
                         {
                             convGFound = true;
-                            correctSpell = randomSpell.getString("Name");
+                            correctTroop = randomSpell.getString("Name");
                         }
                     }
                 }
 
                 answers = new ArrayList<>();
-                answers.add(correctSpell);
+                answers.add(correctTroop);
 
                 while (answers.size() < 4)
                 {
@@ -797,7 +855,7 @@ public class QuizHandler
             case "removecolor":
                 //Which spell removes gems, without giving you the mana?
                 boolean rcFound = false;
-                correctSpell = null;
+                correctTroop = null;
 
                 while (!rcFound)
                 {
@@ -809,13 +867,13 @@ public class QuizHandler
                         if (step.getString("Type").equals("RemoveColor"))
                         {
                             rcFound = true;
-                            correctSpell = randomSpell.getString("Name");
+                            correctTroop = randomSpell.getString("Name");
                         }
                     }
                 }
 
                 answers = new ArrayList<>();
-                answers.add(correctSpell);
+                answers.add(correctTroop);
 
                 while (answers.size() < 4)
                 {
@@ -843,7 +901,7 @@ public class QuizHandler
                 //Which spell gives stats?
                 //"IncreaseArmor", "IncreaseAttack", "IncreaseHealth" or "IncreaseSpellPower"
                 boolean increaseStatFound = false;
-                correctSpell = null;
+                correctTroop = null;
 
                 acceptableSpellTypes = new ArrayList<>(Arrays.asList("IncreaseArmor", "IncreaseAttack", "IncreaseHealth", "IncreaseSpellPower"));
                 while (!increaseStatFound)
@@ -856,13 +914,13 @@ public class QuizHandler
                         if (acceptableSpellTypes.contains(step.getString("Type")))
                         {
                             increaseStatFound = true;
-                            correctSpell = randomSpell.getString("Name");
+                            correctTroop = randomSpell.getString("Name");
                         }
                     }
                 }
 
                 answers = new ArrayList<>();
-                answers.add(correctSpell);
+                answers.add(correctTroop);
 
                 while (answers.size() < 4)
                 {
@@ -940,7 +998,7 @@ public class QuizHandler
         {
             case "bonuses":
                 //Which kingdom has bonuses "Lord, Duke and King of %%TYPE%%"?
-                String fullBonusString = randomKingdom.getJSONObject("Bonus_2").getString("Name");
+                String fullBonusString = randomKingdom.getJSONObject("Bonus2").getString("Name");
                 String bonusType = fullBonusString.substring(fullBonusString.lastIndexOf(" ") + 1);
                 String questionText = temp.templateText.replace("%%TYPE%%", bonusType);
 
@@ -952,7 +1010,7 @@ public class QuizHandler
                 while (answers.size() < 4)
                 {
                     JSONObject anotherRandomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
-                    String bnsStringFull = anotherRandomKingdom.getJSONObject("Bonus_2").getString("Name");
+                    String bnsStringFull = anotherRandomKingdom.getJSONObject("Bonus2").getString("Name");
                     String bnsString = bnsStringFull.substring(bnsStringFull.lastIndexOf(" ") + 1);
 
                     if (!bnsString.equals(questionText))
@@ -965,19 +1023,33 @@ public class QuizHandler
                 break;
             case "troops":
                 //Which of these troops is from %%NAME%%?
-                int randomTroopId = randomKingdom.getJSONArray("TroopIds").getInt(r.nextInt(randomKingdom.getJSONArray("TroopIds").length()));
+                int randomTroopId = -1;
+                while (randomTroopId == -1)
+                {
+                    randomTroopId = randomKingdom.getJSONArray("TroopIds").getInt(r.nextInt(randomKingdom.getJSONArray("TroopIds").length()));
+                }
+
                 JSONObject randomTroop = main.data.getTroopById(randomTroopId);
+
+                if (randomTroop == null)
+                {
+                    throw new NullPointerException("RandomTroop is null!");
+                }
                 questionText = temp.templateText.replace("%%NAME%%", randomKingdom.getString("Name"));
 
                 answers = new ArrayList<>();
 
-                correctKingdom = randomKingdom.getString("Name");
+                correctKingdom = randomTroop.getString("Name");
                 answers.add(correctKingdom);
 
                 while (answers.size() < 4)
                 {
                     JSONObject anotherRandomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
-                    int anotherRandomTroopId = anotherRandomKingdom.getJSONArray("TroopIds").getInt(r.nextInt(anotherRandomKingdom.getJSONArray("TroopIds").length()));
+                    int anotherRandomTroopId = -1;
+                    while (anotherRandomTroopId == -1)
+                    {
+                        anotherRandomTroopId = anotherRandomKingdom.getJSONArray("TroopIds").getInt(r.nextInt(anotherRandomKingdom.getJSONArray("TroopIds").length()));
+                    }
                     JSONObject anotherRandomTroop = main.data.getTroopById(anotherRandomTroopId);
 
                     if (!anotherRandomTroop.getString("Name").equals(randomTroop.getString("Name")))
@@ -988,6 +1060,7 @@ public class QuizHandler
 
                 result = new Question(questionText, answers, 0);
                 break;
+
             case "banner":
                 //Which kingdom has the banner %%BANNERNAME%%?
                 String banner = randomKingdom.getString("BannerName");

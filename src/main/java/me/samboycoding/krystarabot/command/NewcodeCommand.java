@@ -64,7 +64,7 @@ public class NewcodeCommand extends KrystaraCommand
     @Override
     public String getHelpText()
     {
-        return "Post a new code into the #codes channel.";
+        return "Announce a new code to everyone subscribed.";
     }
 
     @Override
