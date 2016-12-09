@@ -33,6 +33,7 @@ public class QuizHandler
     IChannel quizChannel = null;
     IRole quizRole = null;
     public static Thread quizThread = null;
+    public static QuizQuestionTimer qt = null;
 
     private Question currentQ = null;
 
@@ -205,7 +206,20 @@ public class QuizHandler
         if(currentQ.correctAnswer == pos)
         {
             //Correct
+            String nameOfSender = usr.getNicknameForGuild(c.getGuild()).isPresent() ? usr.getNicknameForGuild(c.getGuild()).get() : usr.getName();
+            currentScore++;
             
+            if(qt.isFirstCorrect())
+            {
+                currentScore += 2;
+            }
+            
+            qt.addCorrect(nameOfSender);
+            
+            unordered.remove(usr);
+            unordered.put(usr, currentScore);
+            
+            c.sendMessage(nameOfSender + " has submitted an answer!");
         }
     }
 

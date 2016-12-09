@@ -51,12 +51,13 @@ public class QuizStartTimer implements Runnable
             //Thread.sleep(2500);
             c.sendMessage("The person with the most points after 10 questions wins!\n\n" + Utilities.repeatString("-", 50));
             Thread.sleep(2000);
-            QuizHandler.quizThread = new Thread(new QuizQuestionTimer(c), "Quiz question timer");
+            
+            QuizHandler.qt = new QuizQuestionTimer(c);
+            QuizHandler.quizThread = new Thread(QuizHandler.qt, "Quiz question timer");
             QuizHandler.quizThread.start();
         } catch (Exception ex)
         {
             ex.printStackTrace();
         }
     }
-
 }

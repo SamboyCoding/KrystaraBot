@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
+import me.samboycoding.krystarabot.main;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -24,10 +25,12 @@ public class PingCommand extends KrystaraCommand
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
         msg.delete();
-        long lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+        long lagTime = ((Long) (System.currentTimeMillis() - msg.getCreationDate().atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()));
         if (lagTime < 0)
         {
+            main.logToBoth("Negative ping time?! Flipping.... Was: " + lagTime);
             lagTime = (long) Math.sqrt(lagTime * lagTime); //Makes it positive.
+            main.logToBoth("Is: " + lagTime);
         }
         chnl.sendMessage("Pong! `" + lagTime + "ms lag`.");
     }

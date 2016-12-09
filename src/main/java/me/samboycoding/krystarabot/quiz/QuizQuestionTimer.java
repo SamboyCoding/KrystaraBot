@@ -23,6 +23,9 @@ public class QuizQuestionTimer implements Runnable
     int numHardAsked = 0;
     Question q;
     
+    ArrayList<String> usersCorrect = new ArrayList<>();
+    String firstCorrectUser = "";
+    
     public QuizQuestionTimer(IChannel c)
     {
         chnl = c;
@@ -42,6 +45,8 @@ public class QuizQuestionTimer implements Runnable
                 Thread.sleep(10000);
                 
                 numQuestions++;
+                usersCorrect = new ArrayList<>();
+                firstCorrectUser = "";
                 String toSend = "**Question #" + numQuestions + ":**\n\n";
 
                 int difficulty = -1;
@@ -101,7 +106,11 @@ public class QuizQuestionTimer implements Runnable
                 msg.delete();
                 int pos = order.indexOf(0);
                 String letter = (pos == 0 ? "1" : (pos == 1 ? "2" : (pos == 2 ? "3" : "4")));
-                msg = chnl.sendMessage("The correct answer was: \n" + letter + ") " + q.answers.get(q.correctAnswer) + "\n" + Utilities.repeatString("-", 50));
+                msg = chnl.sendMessage("The correct answer was: "
+                        + "\n" + letter + ") " + q.answers.get(q.correctAnswer)
+                        + "\nThe following people got the answer correct: " + (usersCorrect.isEmpty() ? "Nobody!" : usersCorrect.toString().replace("[", "").replace("]", ""))
+                        + "\nThe first person to get the answer correct was: " + firstCorrectUser + "! They get two extra points!"
+                        + "\n" + Utilities.repeatString("-", 50));
             }
             
             chnl.sendMessage("The quiz is over! Thanks for playing! The scores were:");
@@ -111,5 +120,21 @@ public class QuizQuestionTimer implements Runnable
         {
             e.printStackTrace();
         }
+    }
+    
+    
+    public void addCorrect(String name)
+    {
+        usersCorrect.add(name);
+        
+        if(firstCorrectUser.isEmpty())
+        {
+            firstCorrectUser = name;
+        }
+    }
+    
+    public boolean isFirstCorrect()
+    {
+        return firstCorrectUser.isEmpty();
     }
 }
