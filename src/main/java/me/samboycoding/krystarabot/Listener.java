@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import me.samboycoding.krystarabot.command.*;
+import me.samboycoding.krystarabot.quiz.QuizHandler;
 import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.api.IDiscordClient;
@@ -110,9 +111,9 @@ public class Listener
                     .withDesc("Bot started on " + timestamp)
                     .withTitle("Hello, world!")
                     .build();
-            
+
             e.getClient().getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", o, false);
-            
+
             main.logToBoth("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
         {
@@ -144,6 +145,24 @@ public class Listener
                 //Dev #bot-updates channel
                 return;
             }
+            
+            if (chnl == main.quizH.getQuizChannel())
+            {
+                ArrayList<String> validOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4"));
+                
+                if(!validOptions.contains(e.getMessage().getContent()))
+                {
+                    msg.delete();
+                    return;
+                }
+                else
+                {
+                    //Handle result
+                    main.quizH.handleAnswer(msg);
+                    return;
+                }
+            }
+            
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
             String content = msg.getContent();
 
@@ -234,7 +253,7 @@ public class Listener
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
             Utilities.logEvent(LogType.USERJOIN, "User **" + nameOfUser + "** has joined the server!");
-            
+
             if (e.getGuild().getUsers().size() % 100 == 0)
             {
                 Utilities.logEvent(LogType.MILESTONE, "The server now has " + e.getGuild().getUsers().size() + " users!");
@@ -251,15 +270,14 @@ public class Listener
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
-            
+
             Utilities.logEvent(LogType.USERLEAVE, "User **" + nameOfUser + "** left the server!");
         } catch (Exception ignored)
         {
             //Ignore.
         }
     }
-    
-    
+
     @EventSubscriber
     public void onChangeName(NickNameChangeEvent e)
     {
@@ -267,7 +285,7 @@ public class Listener
         {
             String old = e.getOldNickname().isPresent() ? e.getOldNickname().get() : e.getUser().getName();
             String newName = e.getNewNickname().isPresent() ? e.getNewNickname().get() : e.getUser().getName();
-            
+
             Utilities.logEvent(LogType.RENAME, "User **" + old + "** changed their name to **" + newName + "**");
         } catch (Exception ignored)
         {

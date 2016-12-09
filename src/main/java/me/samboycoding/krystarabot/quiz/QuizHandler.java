@@ -3,18 +3,23 @@ package me.samboycoding.krystarabot.quiz;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 import me.samboycoding.krystarabot.GameData;
+import me.samboycoding.krystarabot.command.Top10Command;
 import me.samboycoding.krystarabot.main;
-import me.samboycoding.krystarabot.utilities.IDReference;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 import sx.blah.discord.util.RoleBuilder;
 
 /**
@@ -27,6 +32,13 @@ public class QuizHandler
 
     IChannel quizChannel = null;
     IRole quizRole = null;
+    public static Thread quizThread = null;
+
+    private Question currentQ = null;
+
+    LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
+    Top10Command.ValueComparator comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
+    TreeMap<IUser, Integer> ordered = new TreeMap<>(comp);
 
     ArrayList<QuestionTemplate> easyTemplates = new ArrayList<>();
     ArrayList<QuestionTemplate> normTemplates = new ArrayList<>();
@@ -51,9 +63,9 @@ public class QuizHandler
         //Normal #1
         normTemplates.add(new QuestionTemplate("What is/are %%TROOP%%'s types?", "type", "troop"));
         //Normal #2
-        normTemplates.add(new QuestionTemplate("Which troop has spell \"%%SPELL%%\"?", "spell", "troop"));
+        normTemplates.add(new QuestionTemplate("Which troop has the spell \"%%SPELL%%\"?", "spell", "troop"));
         //Normal #3
-        normTemplates.add(new QuestionTemplate("Which troop has trait \"%%TRAIT%%\"", "trait", "troop")); //"trait" singular
+        normTemplates.add(new QuestionTemplate("Which troop has the trait \"%%TRAIT%%\"?", "trait", "troop")); //"trait" singular
         //Normal #4
         normTemplates.add(new QuestionTemplate("Which spell causes debuffs?", "debuff", "spell"));
         //Normal #5
@@ -61,7 +73,7 @@ public class QuizHandler
         //Normal #6
         normTemplates.add(new QuestionTemplate("Which spell deletes gems (without giving you mana)?", "removecolor", "spell"));
         //Normal #7
-        normTemplates.add(new QuestionTemplate("Which spell gives stats?", "increasestat", "spell")); //"IncreaseArmor", "IncreaseAttack", "IncreaseHealth" or "IncreaseSpellPower"
+        normTemplates.add(new QuestionTemplate("Which spell can heal or increase stats of a troop or its allies?", "increasestat", "spell")); //"IncreaseArmor", "IncreaseAttack", "IncreaseHealth" or "IncreaseSpellPower"
 
         //Hard #0
         hardTemplates.add(new QuestionTemplate("What mana colors does %%TROOP%% use?", "manacolor", "troop")); //"manacolor" singular
@@ -92,13 +104,28 @@ public class QuizHandler
         normTemplates.add(new QuestionTemplate("What stat bonus is unlocked from reaching level 10 in %%KINGDOMNAME%%?", "level10", "kingdom"));
     }
 
+    public boolean isQuizRunning()
+    {
+        return quizThread != null;
+    }
+
+    public IChannel getQuizChannel()
+    {
+        return quizChannel;
+    }
+
+    public IRole getQuizRole()
+    {
+        return quizRole;
+    }
+
     public void initializeQuiz(IGuild srv, IUser sdr, IChannel source) throws Exception
     {
-        EnumSet<Permissions> sendReceiveMessages = EnumSet.of(Permissions.SEND_MESSAGES, Permissions.READ_MESSAGES, Permissions.READ_MESSAGE_HISTORY);
-        if (srv.getChannelsByName("Quiz").isEmpty())
+        //EnumSet<Permissions> sendReceiveMessages = EnumSet.of(Permissions.SEND_MESSAGES, Permissions.READ_MESSAGES, Permissions.READ_MESSAGE_HISTORY);
+        if (srv.getChannelsByName("quiz").isEmpty())
         {
-            quizChannel = srv.createChannel("Quiz");
-            quizChannel.overrideRolePermissions(srv.getEveryoneRole(), null, sendReceiveMessages); //Disallow @everyone to use the channel
+            quizChannel = srv.createChannel("quiz");
+            //quizChannel.overrideRolePermissions(srv.getEveryoneRole(), null, sendReceiveMessages); //Disallow @everyone to use the channel
         } else
         {
             //If the quiz channel exists, assume that the quiz is running
@@ -119,11 +146,17 @@ public class QuizHandler
         }
 
         sdr.addRole(quizRole);
+        
+        unordered = new LinkedHashMap<>();
+        comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
+        ordered = new TreeMap<>(comp);
+        
+        unordered.put(sdr, 0);
 
-        quizChannel.overrideRolePermissions(quizRole, sendReceiveMessages, null); //Allow members with the "quiz" role to access the channel
-        quizChannel.overrideRolePermissions(srv.getRoleByID(IDReference.MODROLE), sendReceiveMessages, null); //Allow members with the moderator role to access the channel
-
-        new Thread(new QuizStartTimer(quizChannel), "Quiz start timer").start();
+        //quizChannel.overrideRolePermissions(quizRole, sendReceiveMessages, null); //Allow members with the "quiz" role to access the channel
+        //quizChannel.overrideRolePermissions(srv.getRoleByID(IDReference.MODROLE), sendReceiveMessages, null); //Allow members with the moderator role to access the channel
+        quizThread = new Thread(new QuizStartTimer(quizChannel), "Quiz start timer");
+        quizThread.start();
     }
 
     public Question generateQuestion(int difficulty)
@@ -133,13 +166,47 @@ public class QuizHandler
         switch (difficulty)
         {
             case 1:
-                return handleTemplate(easyTemplates.get(r.nextInt(easyTemplates.size())), r);
+                currentQ = handleTemplate(easyTemplates.get(r.nextInt(easyTemplates.size())), r);
+                break;
             case 2:
-                return handleTemplate(normTemplates.get(r.nextInt(normTemplates.size())), r);
+                currentQ = handleTemplate(normTemplates.get(r.nextInt(normTemplates.size())), r);
+                break;
             case 3:
-                return handleTemplate(hardTemplates.get(r.nextInt(hardTemplates.size())), r);
+                currentQ = handleTemplate(hardTemplates.get(r.nextInt(hardTemplates.size())), r);
+                break;
+            default:
+                currentQ = null;
+                break;
         }
-        return null; //Invalid difficulty.
+        return currentQ;
+    }
+
+    public void handleAnswer(IMessage msg) throws MissingPermissionsException, RateLimitException, DiscordException
+    {
+        IUser usr = msg.getAuthor();
+        String text = msg.getContent();
+        IChannel c = msg.getChannel();
+
+        msg.delete();
+        
+        int currentScore = 0;
+        if(!unordered.containsKey(usr))
+        {
+            unordered.put(usr, currentScore);
+        } else
+        {
+            currentScore = unordered.get(usr);
+        }
+        
+        int answer = Integer.parseInt(text); //We can just do this as Listener checks if it is valid
+        
+        int pos = answer - 1;
+        
+        if(currentQ.correctAnswer == pos)
+        {
+            //Correct
+            
+        }
     }
 
     public Question getSpecificQuestion(int difficulty, int index)
@@ -201,6 +268,10 @@ public class QuizHandler
         //Leg/mythic troop
         //Only question is What is the name of %%TROOP%%'s third trait?
         JSONObject randomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
+        while (randomTroop.getInt("RarityIndex") < 5)
+        {
+            randomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
+        }
         String qText = templ.templateText.replace("%%TROOP%%", randomTroop.getString("Name"));
 
         ArrayList<String> answers = new ArrayList<>();
@@ -209,6 +280,11 @@ public class QuizHandler
         while (answers.size() < 4)
         {
             JSONObject anotherRandomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
+            while (anotherRandomTroop.getInt("RarityIndex") < 5)
+            {
+                anotherRandomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
+            }
+
             String trait = anotherRandomTroop.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
             if (!answers.contains(trait))
             {
@@ -531,7 +607,7 @@ public class QuizHandler
                 //Which of these troop's spells does true damage?
                 boolean tdFound = false;
                 String correctTroop = null;
-                
+
                 while (!tdFound)
                 {
                     JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
@@ -774,7 +850,7 @@ public class QuizHandler
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
-                        if (step.getString("Type").contains("Cause"))
+                        if ((step.getString("Type").contains("Cause") && !step.getString("Type").equals("CausesBarrier")) || step.getString("Type").equals("RandomStatusEffect"))
                         {
                             debuffFound = true;
                             correctTroop = randomSpell.getString("Name");
@@ -793,7 +869,7 @@ public class QuizHandler
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
-                        if (step.getString("Type").contains("Cause"))
+                        if ((step.getString("Type").contains("Cause") && !step.getString("Type").equals("CausesBarrier")) || step.getString("Type").equals("RandomStatusEffect"))
                         {
                             causesDebuff = true;
                             break;
@@ -898,12 +974,11 @@ public class QuizHandler
                 result = new Question(temp.templateText, answers, 0);
                 break;
             case "increasestat":
-                //Which spell gives stats?
-                //"IncreaseArmor", "IncreaseAttack", "IncreaseHealth" or "IncreaseSpellPower"
+                //Which spell can heal or increase stats of a troop or its allies?
                 boolean increaseStatFound = false;
                 correctTroop = null;
 
-                acceptableSpellTypes = new ArrayList<>(Arrays.asList("IncreaseArmor", "IncreaseAttack", "IncreaseHealth", "IncreaseSpellPower"));
+                acceptableSpellTypes = new ArrayList<>(Arrays.asList("Heal", "IncreaseHealth", "IncreaseArmor", "IncreaseAttack", "IncreaseSpellPower", "IncreaseRandom", "IncreaseAllStats", "StealRandomStat", "StealAttack", "StealArmor", "StealLife", "StealMagic", "Consume", "ConsumeConditional"));
                 while (!increaseStatFound)
                 {
                     JSONObject randomSpell = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length())).getJSONObject("Spell");
@@ -1013,7 +1088,7 @@ public class QuizHandler
                     String bnsStringFull = anotherRandomKingdom.getJSONObject("Bonus2").getString("Name");
                     String bnsString = bnsStringFull.substring(bnsStringFull.lastIndexOf(" ") + 1);
 
-                    if (!bnsString.equals(questionText))
+                    if (!bnsString.equals(bonusType))
                     {
                         answers.add(anotherRandomKingdom.getString("Name"));
                     }
@@ -1086,7 +1161,11 @@ public class QuizHandler
             case "level10":
                 //What stat bonus is unlocked from reaching level 10 in %%KINGDOMNAME%%
 
-                ArrayList<String> validValues = new ArrayList<>(Arrays.asList("Health", "Armor", "Attack", "Magic/Spell Power"));
+                ArrayList<String> validValues = new ArrayList<>(Arrays.asList("Health", "Armor", "Attack", "Magic"));
+                while (randomKingdom.isNull("LevelData"))
+                {
+                    randomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
+                }
                 String text = randomKingdom.getJSONObject("LevelData").getString("Stat");
                 questionText = temp.templateText.replace("%%KINGDOMNAME%%", randomKingdom.getString("Name"));
                 String stat;
@@ -1115,7 +1194,7 @@ public class QuizHandler
 
                 while (answers.size() < 4)
                 {
-                    String val = validValues.get(r.nextInt(3));
+                    String val = validValues.get(r.nextInt(4));
                     if (!answers.contains(val))
                     {
                         answers.add(val);

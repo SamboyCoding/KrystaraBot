@@ -101,7 +101,7 @@ public class Top10Command extends KrystaraCommand
         return SERVER;
     }
 
-    class ValueComparator implements Comparator<IUser>
+    public static class ValueComparator implements Comparator<IUser>
     {
 
         Map<IUser, Integer> base;
