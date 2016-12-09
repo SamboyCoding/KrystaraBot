@@ -55,7 +55,7 @@ public class TroopCommand extends KrystaraCommand
             return;
         }
         
-        JSONObject troopInfo = main.data.getTroopInfo(results.get(0));
+        JSONObject troopInfo = main.data.getTroopByName(results.get(0));
         
         String desc = troopInfo.getString("Description").replace("\n", "");
         troopName = troopInfo.getString("Name");

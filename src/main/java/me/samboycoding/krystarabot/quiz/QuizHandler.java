@@ -8,6 +8,7 @@ import java.util.Random;
 import me.samboycoding.krystarabot.GameData;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
@@ -75,7 +76,6 @@ public class QuizHandler
         hardTemplates.add(new QuestionTemplate("Which of these troops uses colors %%MANACOLOR1%% / %%MANACOLOR2%%?", "manacolors", "troop")); //Again, "manacolors" plural
 
         //Arcane traitstone - Cannot be done? No information on colors can be found.
-        
         /*
         //Hard #4
         hardTemplates.add(new QuestionTemplate("What is the name of the %%COL1%% / %%COL2%% traitstone?", "colors", "traitstone")); //Singular
@@ -83,8 +83,7 @@ public class QuizHandler
         hardTemplates.add(new QuestionTemplate("What color are arcane %%NAME%% traitstones?", "color", "traitstone")); //Plural
         //Hard #6
         hardTemplates.add(new QuestionTemplate("Where are Arcane %%NAME%% traitstones be found?", "location", "traitstone"));
-        */
-        
+         */
         //Kingdom
         //Easy #6
         easyTemplates.add(new QuestionTemplate("Which kingdom has bonuses \"Lord, Duke and King of %%TYPE%%\"?", "bonuses", "kingdom"));
@@ -187,14 +186,6 @@ public class QuizHandler
         String type = templ.searchIn;
         //Possible types: "troop", "spell", "leg/mythic_troop", "traitstone", "kingdom"
 
-        //TEMP: Continue looping until we get a troop/spell question
-        while (!type.equals("troop") && !type.equals("spell"))
-        {
-            System.out.println("Loop.");
-            templ = easyTemplates.get(r.nextInt(easyTemplates.size()));
-            type = templ.searchIn;
-        }
-        
         switch (type)
         {
             case "troop":
@@ -205,14 +196,22 @@ public class QuizHandler
             /*
             case "traitstone":
                 return handleTraitstoneTemplate(templ, r);
+             */
             case "kingdom":
                 return handleKingdomTemplate(templ, r);
-             */
         }
 
         //Leg/mythic troop
-        //Only question is "Which of these troops uses %%MANACOLOR1%% / %%MANACOLOR2%%?"
-        return null; //TODO
+        //Only question is What is the name of %%TROOP%%'s third trait?
+        
+        JSONObject randomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
+        String qText = templ.templateText.replace("%%TROOP%%", randomTroop.getString("Name"));
+        
+        ArrayList<String> answers = new ArrayList<>();
+        answers.add(randomTroop.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name"));
+        //TODO Get some other traits
+        
+        return new Question(qText, answers, 0);
     }
 
     private Question handleTroopTemplate(QuestionTemplate temp, Random r)
@@ -506,10 +505,10 @@ public class QuizHandler
         //Possible values: "truedamge", "creategems", "generatemana", "destroygems", "debuff", "convertgems", "removecolor", "increasestat"
 
         Question result;
-        ArrayList<String> answers = null;
+        ArrayList<String> answers;
 
         String sf = temp.searchFor;
-        
+
         switch (sf)
         {
             case "truedamage":
@@ -889,9 +888,8 @@ public class QuizHandler
     private Question handleTraitstoneTemplate(QuestionTemplate temp, Random r)
     {
         //"color", "colors", or "location"
-        
+
         //As far as i can see there is no way to find the colors of traitstones.
-        
         /*JSONArray traitstones = new JSONArray();
         for(Object k : GameData.arrayKingdoms)
         {
@@ -899,12 +897,11 @@ public class QuizHandler
             
             JSONObject traitstone = 
         }*/
-        
         //TODO: Investigate.
         Question result = null;
         ArrayList<String> answers;
-        
-        switch(temp.searchFor)
+
+        switch (temp.searchFor)
         {
             case "colors":
                 //What is the name of the %%COL1%% / %%COL2%% traitstone?
@@ -927,51 +924,129 @@ public class QuizHandler
     {
         Question result = null;
         ArrayList<String> answers;
-        
+
         JSONObject randomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
-        
-        switch(temp.searchFor)
+
+        switch (temp.searchFor)
         {
             case "bonuses":
                 //Which kingdom has bonuses "Lord, Duke and King of %%TYPE%%"?
                 String fullBonusString = randomKingdom.getJSONObject("Bonus_2").getString("Name");
                 String bonusType = fullBonusString.substring(fullBonusString.lastIndexOf(" ") + 1);
                 String questionText = temp.templateText.replace("%%TYPE%%", bonusType);
-                
+
                 answers = new ArrayList<>();
-                
+
                 String correctKingdom = randomKingdom.getString("Name");
                 answers.add(correctKingdom);
-                
-                while(answers.size() < 4)
+
+                while (answers.size() < 4)
                 {
                     JSONObject anotherRandomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
                     String bnsStringFull = anotherRandomKingdom.getJSONObject("Bonus_2").getString("Name");
                     String bnsString = bnsStringFull.substring(bnsStringFull.lastIndexOf(" ") + 1);
-                    
-                    if(!bnsString.equals(questionText))
+
+                    if (!bnsString.equals(questionText))
                     {
                         answers.add(anotherRandomKingdom.getString("Name"));
                     }
                 }
-                
+
                 result = new Question(questionText, answers, 0);
                 break;
             case "troops":
                 //Which of these troops is from %%NAME%%?
-                
+                int randomTroopId = randomKingdom.getJSONArray("TroopIds").getInt(r.nextInt(randomKingdom.getJSONArray("TroopIds").length()));
+                JSONObject randomTroop = main.data.getTroopById(randomTroopId);
+                questionText = temp.templateText.replace("%%NAME%%", randomKingdom.getString("Name"));
+
+                answers = new ArrayList<>();
+
+                correctKingdom = randomKingdom.getString("Name");
+                answers.add(correctKingdom);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject anotherRandomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
+                    int anotherRandomTroopId = anotherRandomKingdom.getJSONArray("TroopIds").getInt(r.nextInt(anotherRandomKingdom.getJSONArray("TroopIds").length()));
+                    JSONObject anotherRandomTroop = main.data.getTroopById(anotherRandomTroopId);
+
+                    if (!anotherRandomTroop.getString("Name").equals(randomTroop.getString("Name")))
+                    {
+                        answers.add(anotherRandomTroop.getString("Name"));
+                    }
+                }
+
+                result = new Question(questionText, answers, 0);
                 break;
             case "banner":
                 //Which kingdom has the banner %%BANNERNAME%%?
+                String banner = randomKingdom.getString("BannerName");
+
+                questionText = temp.templateText.replace("%%BANNERNAME%%", banner);
+                String correct = randomKingdom.getString("Name");
+                answers = new ArrayList<>();
+                answers.add(correct);
+
+                while (answers.size() < 4)
+                {
+                    JSONObject anotherRandomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
+                    String kngName = anotherRandomKingdom.getString("Name");
+
+                    if (!kngName.equals(correct))
+                    {
+                        answers.add(kngName);
+                    }
+                }
+
+                result = new Question(questionText, answers, 0);
                 break;
             case "level10":
                 //What stat bonus is unlocked from reaching level 10 in %%KINGDOMNAME%%
+
+                ArrayList<String> validValues = new ArrayList<>(Arrays.asList("Health", "Armor", "Attack", "Magic/Spell Power"));
+                String text = randomKingdom.getJSONObject("LevelData").getString("Stat");
+                questionText = temp.templateText.replace("%%KINGDOMNAME%%", randomKingdom.getString("Name"));
+                String stat;
+
+                switch (text)
+                {
+                    case "armor":
+                        stat = validValues.get(1);
+                        break;
+                    case "magic":
+                        stat = validValues.get(3);
+                        break;
+                    case "attack":
+                        stat = validValues.get(2);
+                        break;
+                    case "life":
+                        stat = validValues.get(0);
+                        break;
+                    default:
+                        stat = "INVALIDSTAT";
+                        break;
+                }
+
+                answers = new ArrayList<>();
+                answers.add(stat);
+
+                while (answers.size() < 4)
+                {
+                    String val = validValues.get(r.nextInt(3));
+                    if (!answers.contains(val))
+                    {
+                        answers.add(val);
+                    }
+                }
+
+                result = new Question(questionText, answers, 0);
                 break;
             default:
                 main.logToBoth("Unknown question type " + temp.searchFor);
                 result = null;
                 break;
         }
-        return result; //TODO
+        return result;
     }
 }

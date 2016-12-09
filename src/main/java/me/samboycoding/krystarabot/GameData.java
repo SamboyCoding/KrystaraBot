@@ -10,6 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import static java.nio.charset.Charset.defaultCharset;
+import static java.nio.charset.Charset.defaultCharset;
+import static java.nio.charset.Charset.defaultCharset;
+import static java.nio.charset.Charset.defaultCharset;
 
 /**
  * Class that collects and provides data from JSON-Source File
@@ -137,7 +140,7 @@ public class GameData
         }
     }
 
-    public JSONObject getTroopInfo(String troopName)
+    public JSONObject getTroopByName(String troopName)
     {
         JSONObject troop = null;
         for (Iterator<Object> it = arrayTroops.iterator(); it.hasNext();)
@@ -150,8 +153,22 @@ public class GameData
         }
         return troop;
     }
+    
+    public JSONObject getTroopById(int id)
+    {
+        JSONObject troop = null;
+        for (Iterator<Object> it = arrayTroops.iterator(); it.hasNext();)
+        {
+            JSONObject checkTroop = (JSONObject) it.next();
+            if (checkTroop.getInt("Id") == id)
+            {
+                return checkTroop;
+            }
+        }
+        return troop;
+    }
 
-    public JSONObject getTraitInfo(String traitName)
+    public JSONObject getTraitByName(String traitName)
     {
         JSONObject trait = null;
         for (Iterator<Object> it = arrayTraits.iterator(); it.hasNext();)

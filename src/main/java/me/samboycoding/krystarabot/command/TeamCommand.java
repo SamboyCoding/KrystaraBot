@@ -63,7 +63,7 @@ public class TeamCommand extends KrystaraCommand
         {
             String troop = things.get(i);
 
-            JSONObject exact = main.data.getTroopInfo(troop);
+            JSONObject exact = main.data.getTroopByName(troop);
             if (exact != null)
             {
                 if (exact.getJSONObject("ManaColors").getBoolean("ColorBlue"))
@@ -113,7 +113,7 @@ public class TeamCommand extends KrystaraCommand
 
             for (String troopN : results)
             {
-                JSONObject trp = main.data.getTroopInfo(troopN);
+                JSONObject trp = main.data.getTroopByName(troopN);
                 if (trp.getJSONObject("ManaColors").getBoolean("ColorBlue"))
                 {
                     manaBlue = true;
@@ -173,10 +173,10 @@ public class TeamCommand extends KrystaraCommand
 
             String banner = banners.get(0);
 
-            int troopId1 = main.data.getTroopInfo(teamTroops.get(0)).getInt("Id");
-            int troopId2 = main.data.getTroopInfo(teamTroops.get(1)).getInt("Id");
-            int troopId3 = main.data.getTroopInfo(teamTroops.get(2)).getInt("Id");
-            int troopId4 = main.data.getTroopInfo(teamTroops.get(3)).getInt("Id");
+            int troopId1 = main.data.getTroopByName(teamTroops.get(0)).getInt("Id");
+            int troopId2 = main.data.getTroopByName(teamTroops.get(1)).getInt("Id");
+            int troopId3 = main.data.getTroopByName(teamTroops.get(2)).getInt("Id");
+            int troopId4 = main.data.getTroopByName(teamTroops.get(3)).getInt("Id");
             int bannerId = main.data.getKingdomFromBanner(banner).getInt("Id");
             String bannerDsc = main.data.getKingdomFromBanner(banner).getString("BannerManaDescription");
             String kingdomNme = main.data.getKingdomFromBanner(banner).getString("Name");
@@ -186,10 +186,10 @@ public class TeamCommand extends KrystaraCommand
             bannerString = "**" + banner + "** (" + kingdomNme + ") - " + bannerDsc + "\n\n";
         } else
         {
-            int troopId1 = main.data.getTroopInfo(teamTroops.get(0)).getInt("Id");
-            int troopId2 = main.data.getTroopInfo(teamTroops.get(1)).getInt("Id");
-            int troopId3 = main.data.getTroopInfo(teamTroops.get(2)).getInt("Id");
-            int troopId4 = main.data.getTroopInfo(teamTroops.get(3)).getInt("Id");
+            int troopId1 = main.data.getTroopByName(teamTroops.get(0)).getInt("Id");
+            int troopId2 = main.data.getTroopByName(teamTroops.get(1)).getInt("Id");
+            int troopId3 = main.data.getTroopByName(teamTroops.get(2)).getInt("Id");
+            int troopId4 = main.data.getTroopByName(teamTroops.get(3)).getInt("Id");
             url = "http://ashtender.com/gems/teams/" + troopId1 + "," + troopId2 + "," + troopId3 + "," + troopId4;
             teamString = sdr.mention() + " created team: \n\n";
         }

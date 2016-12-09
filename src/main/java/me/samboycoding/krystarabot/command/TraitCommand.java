@@ -37,7 +37,7 @@ public class TraitCommand extends KrystaraCommand
             return;
         }
         String traitName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        JSONObject traitInfo = main.data.getTraitInfo(traitName);
+        JSONObject traitInfo = main.data.getTraitByName(traitName);
         if (traitInfo == null)
         {
             chnl.sendMessage("No trait `" + traitName + "` found, " + sdr.mention());
