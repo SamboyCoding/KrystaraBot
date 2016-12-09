@@ -209,7 +209,16 @@ public class QuizHandler
         
         ArrayList<String> answers = new ArrayList<>();
         answers.add(randomTroop.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name"));
-        //TODO Get some other traits
+        
+        while(answers.size() < 4)
+        {
+            JSONObject anotherRandomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
+            String trait = anotherRandomTroop.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
+            if(!answers.contains(trait))
+            {
+                answers.add(trait);
+            }
+        }
         
         return new Question(qText, answers, 0);
     }
