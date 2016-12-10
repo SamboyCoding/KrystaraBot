@@ -81,7 +81,7 @@ public class UserstatsCommand extends KrystaraCommand
         toSend += "\nList of Roles: " + sdrRolesNice.toString();
         toSend += "\nMessages sent: " + messageCount;
         toSend += "\nCommands sent: " + commandCount;
-        toSend += "\nQuiz Points: " + main.databaseHandler.getQuizScore(sdr, chnl.getGuild());
+        toSend += "\nQuiz Points: " + main.databaseHandler.getQuizScore(userstatsUsr, chnl.getGuild());
         toSend += "\n```";
 
         chnl.sendMessage(toSend);

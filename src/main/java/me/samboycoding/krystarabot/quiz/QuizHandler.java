@@ -102,7 +102,7 @@ public class QuizHandler
         //Normal #8
         normTemplates.add(new QuestionTemplate("What stat bonus is unlocked from reaching level 10 in %%KINGDOMNAME%%?", "level10", "kingdom"));
     }
-    
+
     public QuizQuestionTimer.QuizSubmitResult submitAnswer(Question question, IUser user, int answer)
     {
         synchronized (this)
@@ -161,7 +161,7 @@ public class QuizHandler
             source.sendMessage("There is a quiz in progress.  Please wait for it to finish before starting a new quiz. You can join it here: " + quizChannel.mention());
             return;
         }
-        
+
         List<IChannel> quizChannels = srv.getChannelsByName("quiz");
         if (quizChannels.isEmpty())
         {
@@ -170,23 +170,22 @@ public class QuizHandler
         {
             quizChannel = quizChannels.get(0);
             quizChannel.delete();
-            
+
             srv.createChannel("quiz");
-            
+
             quizChannel = srv.getChannelsByName("quiz").get(0);
         }
-        
-        //quizChannel is now set
 
+        //quizChannel is now set
         unordered = new LinkedHashMap<>();
         comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
         ordered = new TreeMap<>(comp);
-        
+
         unordered.put(sdr, new Integer(0));
 
         quizThread = new Thread(new QuizStartTimer(quizChannel), "Quiz start timer");
         quizThread.start();
-        
+
         if (quizChannel != source)
         {
             srv.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.");
@@ -196,7 +195,7 @@ public class QuizHandler
     public Question generateQuestion(int difficulty)
     {
         Random r = new Random();
-        
+
         Question theQ;
 
         switch (difficulty)
@@ -218,7 +217,7 @@ public class QuizHandler
         currentQ = theQ;
         return theQ;
     }
-    
+
     public void finishQuestion()
     {
         currentQ = null;
@@ -228,14 +227,14 @@ public class QuizHandler
     public void handleAnswer(IMessage msg) throws MissingPermissionsException, RateLimitException, DiscordException
     {
         Question theQ = currentQ;
-        
-        if(!isQuizRunning())
+
+        if (!isQuizRunning())
         {
-            msg.getAuthor().getOrCreatePMChannel().sendMessage("No quiz is running right now!");
+            msg.getAuthor().getOrCreatePMChannel().sendMessage("The quiz hasn't started yet, or has finished. Sorry!");
             msg.delete();
             return;
         }
-        
+
         IUser usr = msg.getAuthor();
         String text = msg.getContent();
         IChannel c = msg.getChannel();
@@ -243,7 +242,7 @@ public class QuizHandler
         msg.delete();
 
         int currentScore = 0;
-        if(!unordered.containsKey(usr))
+        if (!unordered.containsKey(usr))
         {
             unordered.put(usr, currentScore);
         } else
@@ -257,7 +256,7 @@ public class QuizHandler
 
         int scoreDelta = 0;
 
-        switch(submitAnswer(theQ, usr, pos))
+        switch (submitAnswer(theQ, usr, pos))
         {
             case Incorrect:
                 //c.sendMessage(nameOfSender + " has submitted an answer!");
@@ -483,7 +482,7 @@ public class QuizHandler
                     JSONObject anotherRandomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
 
                     String spl = anotherRandomTroop.getJSONObject("Spell").getString("Name");
-                    
+
                     if (!spl.equals(randomTroop.getJSONObject("Spell").getString("Name")))
                     {
                         answers.add(anotherRandomTroop.getString("Name"));
@@ -531,7 +530,6 @@ public class QuizHandler
                 break;
             case "manacolor":
                 //What mana colors does x use?
-                questionText = temp.templateText.replace("%%TROOP%%", randomTroop.getString("Name"));
                 String correctColors = "";
 
                 while (!correctColors.contains("/"))
@@ -557,6 +555,8 @@ public class QuizHandler
                         randomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
                     }
                 }
+
+                questionText = temp.templateText.replace("%%TROOP%%", randomTroop.getString("Name"));
                 answers = new ArrayList<>();
                 answers.add(correctColors);
 
@@ -1201,12 +1201,16 @@ public class QuizHandler
                 while (answers.size() < 4)
                 {
                     JSONObject anotherRandomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
-                    int anotherRandomTroopId = -1;
-                    while (anotherRandomTroopId == -1)
+                    JSONObject anotherRandomTroop = null;
+                    while (anotherRandomTroop == null)
                     {
-                        anotherRandomTroopId = anotherRandomKingdom.getJSONArray("TroopIds").getInt(r.nextInt(anotherRandomKingdom.getJSONArray("TroopIds").length()));
+                        int anotherRandomTroopId = -1;
+                        while (anotherRandomTroopId == -1)
+                        {
+                            anotherRandomTroopId = anotherRandomKingdom.getJSONArray("TroopIds").getInt(r.nextInt(anotherRandomKingdom.getJSONArray("TroopIds").length()));
+                        }
+                        anotherRandomTroop = main.data.getTroopById(anotherRandomTroopId);
                     }
-                    JSONObject anotherRandomTroop = main.data.getTroopById(anotherRandomTroopId);
 
                     if (!anotherRandomTroop.getString("Name").equals(randomTroop.getString("Name")))
                     {

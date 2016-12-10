@@ -1,10 +1,17 @@
 {"247393304151326721": {
     "102450956045668352": {
-        "QuizScore": 23,
+        "QuizScore": 105,
         "name": "SamboyGaming",
-        "messages": 1567,
+        "messages": 1677,
         "ReceivesCodes": true,
-        "commands": 408
+        "commands": 425
+    },
+    "213522019910811648": {
+        "QuizScore": 2,
+        "name": "Furak",
+        "messages": 1,
+        "ReceivesCodes": false,
+        "commands": 0
     },
     "234202516676542464": {
         "QuizScore": 0,
@@ -13,6 +20,13 @@
         "ReceivesCodes": false,
         "commands": 90
     },
+    "256558086808928256": {
+        "QuizScore": 0,
+        "name": "nolbin",
+        "messages": 1,
+        "ReceivesCodes": false,
+        "commands": 0
+    },
     "127413489051369472": {
         "QuizScore": 0,
         "name": "? AshaSekayi",
@@ -20,17 +34,52 @@
         "ReceivesCodes": false,
         "commands": 2
     },
+    "248875131592638464": {
+        "QuizScore": 43,
+        "name": "Bambii",
+        "messages": 64,
+        "ReceivesCodes": false,
+        "commands": 4
+    },
+    "252377395443662848": {
+        "QuizScore": 3,
+        "name": "NeX",
+        "messages": 5,
+        "ReceivesCodes": false,
+        "commands": 0
+    },
+    "95733951657672704": {
+        "QuizScore": 68,
+        "name": "MakoSipper",
+        "messages": 7,
+        "ReceivesCodes": false,
+        "commands": 0
+    },
     "190663943260340224": {
-        "QuizScore": 9,
+        "QuizScore": 45,
         "name": "MrSnake",
-        "messages": 375,
+        "messages": 377,
         "ReceivesCodes": true,
         "commands": 46
+    },
+    "243103269805621249": {
+        "QuizScore": 1,
+        "name": "Duran",
+        "messages": 1,
+        "ReceivesCodes": false,
+        "commands": 1
     },
     "205948482194767873": {
         "QuizScore": 0,
         "name": "D.Va",
         "messages": 2,
+        "ReceivesCodes": false,
+        "commands": 0
+    },
+    "159424976712105984": {
+        "QuizScore": 2,
+        "name": "Feni",
+        "messages": 1,
         "ReceivesCodes": false,
         "commands": 0
     }
