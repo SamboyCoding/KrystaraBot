@@ -1,10 +1,10 @@
 {"247393304151326721": {
     "102450956045668352": {
-        "QuizScore": 156,
+        "QuizScore": 194,
         "name": "SamboyGaming",
-        "messages": 1693,
+        "messages": 1731,
         "ReceivesCodes": true,
-        "commands": 430
+        "commands": 434
     },
     "248365334636003328": {
         "QuizScore": 24,
@@ -42,11 +42,11 @@
         "commands": 0
     },
     "234202516676542464": {
-        "QuizScore": 0,
+        "QuizScore": 40,
         "name": "Naga",
-        "messages": 688,
+        "messages": 704,
         "ReceivesCodes": false,
-        "commands": 90
+        "commands": 91
     },
     "127413489051369472": {
         "QuizScore": 0,
@@ -63,9 +63,9 @@
         "commands": 1
     },
     "248875131592638464": {
-        "QuizScore": 111,
+        "QuizScore": 143,
         "name": "Bambii",
-        "messages": 89,
+        "messages": 93,
         "ReceivesCodes": false,
         "commands": 11
     },
@@ -94,6 +94,13 @@
         "QuizScore": 0,
         "name": "D.Va",
         "messages": 2,
+        "ReceivesCodes": false,
+        "commands": 0
+    },
+    "111426722531926016": {
+        "QuizScore": 13,
+        "name": "Armo",
+        "messages": 1,
         "ReceivesCodes": false,
         "commands": 0
     },

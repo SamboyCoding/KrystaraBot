@@ -34,6 +34,7 @@ public class QuizHandler
     public static QuizQuestionTimer qt = null;
 
     private Question currentQ = null;
+    private int lastDifficulty = -1;
 
     LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
     Top10Command.ValueComparator comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
@@ -145,7 +146,7 @@ public class QuizHandler
 
     public boolean isQuizRunning()
     {
-        return qt != null;
+        return qt != null || quizThread != null;
     }
 
     public IChannel getQuizChannel()
@@ -198,6 +199,8 @@ public class QuizHandler
 
         Question theQ;
 
+        lastDifficulty = difficulty;
+        
         switch (difficulty)
         {
             case 1:
@@ -263,11 +266,11 @@ public class QuizHandler
                 break;
             case Correct:
                 //c.sendMessage(nameOfSender + " has submitted an answer!");
-                scoreDelta = 1;
+                scoreDelta = lastDifficulty;
                 break;
             case FirstCorrect:
                 //c.sendMessage(nameOfSender + " has submitted an answer!");
-                scoreDelta = 3;
+                scoreDelta = lastDifficulty + 2;
                 break;
             case AlreadyAnswered:
                 break;
@@ -1235,7 +1238,7 @@ public class QuizHandler
                     JSONObject anotherRandomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
                     String kngName = anotherRandomKingdom.getString("Name");
 
-                    if (!kngName.equals(correct))
+                    if (!answers.contains(kngName))
                     {
                         answers.add(kngName);
                     }
