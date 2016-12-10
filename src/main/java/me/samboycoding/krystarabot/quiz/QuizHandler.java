@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -72,7 +73,7 @@ public class QuizHandler
         //Normal #5
         normTemplates.add(new QuestionTemplate("Which spell converts gems?", "convertgems", "spell"));
         //Normal #6
-        normTemplates.add(new QuestionTemplate("Which spell deletes gems (without giving you mana)?", "removecolor", "spell"));
+        normTemplates.add(new QuestionTemplate("Which spell removes gems (without giving you mana)?", "removegems", "spell"));
         //Normal #7
         normTemplates.add(new QuestionTemplate("Which spell can heal or increase stats of a troop or its allies?", "increasestat", "spell")); //"IncreaseArmor", "IncreaseAttack", "IncreaseHealth" or "IncreaseSpellPower"
 
@@ -122,17 +123,25 @@ public class QuizHandler
 
     public void initializeQuiz(IGuild srv, IUser sdr, IChannel source) throws Exception
     {
+        if (isQuizRunning())
+        {
+            source.sendMessage("There is a quiz in progress.  Please wait for it to finish before starting a new quiz.");
+            return;
+        }
+        
         //EnumSet<Permissions> sendReceiveMessages = EnumSet.of(Permissions.SEND_MESSAGES, Permissions.READ_MESSAGES, Permissions.READ_MESSAGE_HISTORY);
-        if (srv.getChannelsByName("quiz").isEmpty())
+        List<IChannel> quizChannels = srv.getChannelsByName("quiz");
+        if (quizChannels.isEmpty())
         {
             quizChannel = srv.createChannel("quiz");
             //quizChannel.overrideRolePermissions(srv.getEveryoneRole(), null, sendReceiveMessages); //Disallow @everyone to use the channel
         } else
         {
+            quizChannel = quizChannels.get(0);
             //If the quiz channel exists, assume that the quiz is running
-            throw new IllegalStateException("Tried to initialize a quiz when one is already running!");
+            //throw new IllegalStateException("Tried to initialize a quiz when one is already running!");
         }
-
+        
         //quizChannel is now set
         if (srv.getRolesByName("Quiz").isEmpty())
         {
@@ -140,14 +149,13 @@ public class QuizHandler
                     .withName("Quiz")
                     .withColor(Color.blue)
                     .build();
+            sdr.addRole(quizRole);
         } else
         {
             //If the quiz role exists, assume that the quiz is running
-            throw new IllegalStateException("Tried to initialize a quiz when one is already running!");
+            //throw new IllegalStateException("Tried to initialize a quiz when one is already running!");
         }
 
-        sdr.addRole(quizRole);
-        
         unordered = new LinkedHashMap<>();
         comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
         ordered = new TreeMap<>(comp);
@@ -158,38 +166,60 @@ public class QuizHandler
         //quizChannel.overrideRolePermissions(srv.getRoleByID(IDReference.MODROLE), sendReceiveMessages, null); //Allow members with the moderator role to access the channel
         quizThread = new Thread(new QuizStartTimer(quizChannel), "Quiz start timer");
         quizThread.start();
+        
+        if (quizChannel != source)
+        {
+            source.sendMessage("A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.");
+        }
     }
 
     public Question generateQuestion(int difficulty)
     {
         Random r = new Random();
+        
+        Question theQ;
 
         switch (difficulty)
         {
             case 1:
-                currentQ = handleTemplate(easyTemplates.get(r.nextInt(easyTemplates.size())), r);
+                theQ = handleTemplate(easyTemplates.get(r.nextInt(easyTemplates.size())), r);
                 break;
             case 2:
-                currentQ = handleTemplate(normTemplates.get(r.nextInt(normTemplates.size())), r);
+                theQ = handleTemplate(normTemplates.get(r.nextInt(normTemplates.size())), r);
                 break;
             case 3:
-                currentQ = handleTemplate(hardTemplates.get(r.nextInt(hardTemplates.size())), r);
+                theQ = handleTemplate(hardTemplates.get(r.nextInt(hardTemplates.size())), r);
                 break;
             default:
-                currentQ = null;
+                theQ = null;
                 break;
         }
-        return currentQ;
+
+        currentQ = theQ;
+        return theQ;
+    }
+    
+    public void finishQuestion()
+    {
+        currentQ = null;
     }
 
     public void handleAnswer(IMessage msg) throws MissingPermissionsException, RateLimitException, DiscordException
     {
+        QuizQuestionTimer timer = qt;
+        Question theQ = currentQ;
+        
+        if (timer == null)
+        {
+            return;
+        }
+        
         IUser usr = msg.getAuthor();
         String text = msg.getContent();
         IChannel c = msg.getChannel();
 
         msg.delete();
-        
+
         int currentScore = 0;
         if(!unordered.containsKey(usr))
         {
@@ -198,28 +228,43 @@ public class QuizHandler
         {
             currentScore = unordered.get(usr);
         }
-        
+
         int answer = Integer.parseInt(text); //We can just do this as Listener checks if it is valid
-        
+
         int pos = answer - 1;
-        
-        if(currentQ.correctAnswer == pos)
+
+        String nameOfSender = usr.getNicknameForGuild(c.getGuild()).isPresent() ? usr.getNicknameForGuild(c.getGuild()).get() : usr.getName();
+
+        int scoreDelta = 0;
+
+        switch(timer.submitAnswer(theQ, usr, pos))
+        {
+            case Incorrect:
+                c.sendMessage(nameOfSender + " has submitted an answer!");
+                break;
+            case Correct:
+                c.sendMessage(nameOfSender + " has submitted an answer!");
+                scoreDelta = 1;
+                break;
+            case FirstCorrect:
+                c.sendMessage(nameOfSender + " has submitted an answer!");
+                scoreDelta = 3;
+                break;
+            case AlreadyAnswered:
+                break;
+            case TooEarly:
+                break;
+            case TooLate:
+                break;
+            default:
+                break;
+        }
+        if (scoreDelta > 0)
         {
             //Correct
-            String nameOfSender = usr.getNicknameForGuild(c.getGuild()).isPresent() ? usr.getNicknameForGuild(c.getGuild()).get() : usr.getName();
-            currentScore++;
-            
-            if(qt.isFirstCorrect())
-            {
-                currentScore += 2;
-            }
-            
-            qt.addCorrect(nameOfSender);
-            
+            currentScore += scoreDelta;
             unordered.remove(usr);
             unordered.put(usr, currentScore);
-            
-            c.sendMessage(nameOfSender + " has submitted an answer!");
         }
     }
 
@@ -629,7 +674,7 @@ public class QuizHandler
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
-                        if (step.getBoolean("TrueDamage"))
+                        if (step.getString("Type").equals("TrueDamage") || step.getString("Type").equals("TrueSplashDamage") || step.getString("Type").equals("TrueScatterDamage"))
                         {
                             tdFound = true;
                             for (Object t : GameData.arrayTroops)
@@ -656,7 +701,7 @@ public class QuizHandler
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
-                        if (step.getBoolean("TrueDamage"))
+                        if (step.getString("Type").equals("TrueDamage") || step.getString("Type").equals("TrueSplashDamage") || step.getString("Type").equals("TrueScatterDamage"))
                         {
                             hasTrueDamage = true;
                             break;
@@ -942,7 +987,7 @@ public class QuizHandler
 
                 result = new Question(temp.templateText, answers, 0);
                 break;
-            case "removecolor":
+            case "removegems":
                 //Which spell removes gems, without giving you the mana?
                 boolean rcFound = false;
                 correctTroop = null;
@@ -954,7 +999,7 @@ public class QuizHandler
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
-                        if (step.getString("Type").equals("RemoveColor"))
+                        if (step.getString("Type").equals("RemoveColor") || step.getString("Type").equals("RemoveGems"))
                         {
                             rcFound = true;
                             correctTroop = randomSpell.getString("Name");
@@ -973,7 +1018,7 @@ public class QuizHandler
                     for (Object o : spellSteps)
                     {
                         JSONObject step = (JSONObject) o;
-                        if (step.getString("Type").equals("RemoveColor"))
+                        if (step.getString("Type").equals("RemoveColor") || step.getString("Type").equals("RemoveGems"))
                         {
                             removesColor = true;
                             break;

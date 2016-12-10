@@ -41,7 +41,7 @@ public class QuizStartTimer implements Runnable
             }
             Thread.sleep(1500);
             msg.delete();
-            c.sendMessage("Welcome to the GoW discord quiz!");
+            c.sendMessage("Welcome to the GoW Discord quiz!");
             Thread.sleep(2500);
             c.sendMessage("You will be asked 10 questions, and will have 10 seconds to answer each question.");
             Thread.sleep(2500);

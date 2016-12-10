@@ -17,6 +17,9 @@ public class Question
     {
         question = q;
         answers = a;
-        correctAnswer = ca;
+
+        Object correctAnswerObj = answers.get(ca);
+        java.util.Collections.shuffle(answers);
+        correctAnswer = answers.indexOf(correctAnswerObj);
     }
 }
