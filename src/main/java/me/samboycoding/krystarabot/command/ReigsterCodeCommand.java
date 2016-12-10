@@ -25,14 +25,14 @@ public class ReigsterCodeCommand extends KrystaraCommand
     {
         if(arguments.size() < 1)
         {
-            chnl.sendMessage("Please specify either 'yes' or 'no'");
+            chnl.sendMessage("Use `?registercode yes` to register or `?registercode no` to unregister.");
             return;
         }
         String arg = arguments.get(0);
         
         if(!arg.equals("yes") && !arg.equals("no"))
         {
-            chnl.sendMessage("Please specify either 'yes' or 'no'");
+            chnl.sendMessage("Use `?registercode yes` to register or `?registercode no` to unregister.");
             return;
         }
         

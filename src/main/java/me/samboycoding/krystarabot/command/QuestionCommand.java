@@ -3,7 +3,6 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.quiz.Question;
-import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;

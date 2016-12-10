@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static me.samboycoding.krystarabot.Listener.messageCounter;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
+import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
@@ -80,6 +81,7 @@ public class UserstatsCommand extends KrystaraCommand
         toSend += "\nList of Roles: " + sdrRolesNice.toString();
         toSend += "\nMessages sent: " + messageCount;
         toSend += "\nCommands sent: " + commandCount;
+        toSend += "\nQuiz Points: " + main.databaseHandler.getQuizScore(sdr, chnl.getGuild());
         toSend += "\n```";
 
         chnl.sendMessage(toSend);

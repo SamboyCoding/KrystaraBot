@@ -80,12 +80,90 @@ public class UserDatabaseHandler
         {
             String jsonRaw = FileUtils.readFileToString(userDb, Charset.defaultCharset());
             userDBJSON = new JSONObject(jsonRaw);
+            
+            JSONObject server = userDBJSON.getJSONObject(IDReference.SERVERID);
+            
+            for (String id : server.keySet())
+            {
+                JSONObject usr = server.getJSONObject(id);
+                if (!usr.has("ReceivesCodes") || usr.isNull("ReceivesCodes"))
+                {
+                    usr.put("ReceivesCodes", false);
+                }
+                if (!usr.has("QuizScore") || usr.isNull("QuizScore"))
+                {
+                    usr.put("QuizScore", 0);
+                }
+            }
+            userDBJSON.remove(IDReference.SERVERID);
+            userDBJSON.put(IDReference.SERVERID, server);
+            
+            FileUtils.writeStringToFile(userDb, userDBJSON.toString(4), Charset.defaultCharset(), false);
+            
             main.logToBoth("Succesfully loaded user database from file!");
         } catch (IOException ex)
         {
             main.logToBoth("Error reading codes file!");
             ex.printStackTrace();
         }
+    }
+    
+    /**
+     * Gets a user's quiz score.
+     * @param usr The user
+     * @param server The guild
+     * @return The score
+     */
+    public int getQuizScore(IUser usr, IGuild server)
+    {
+        if (!userDBJSON.has(server.getID()))
+        {
+            userDBJSON.put(server.getID(), new JSONObject());
+        }
+
+        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
+        if (serverJSON.isNull(usr.getID()))
+        {
+            return -1;
+        } else
+        {
+            return serverJSON.getJSONObject(usr.getID()).getInt("QuizScore");
+        }
+    }
+    
+    /**
+     * Increases the specified users quiz score by the specified amount in the specified server.
+     * @param usr The user
+     * @param server The guild
+     * @param amount The amount to increment by
+     * @throws IOException If the changes cannot be written to the file.
+     */
+    public void increaseUserQuizScore(IUser usr, IGuild server, int amount) throws IOException
+    {
+        if (!userDBJSON.has(server.getID()))
+        {
+            userDBJSON.put(server.getID(), new JSONObject());
+        }
+        
+        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
+        if (serverJSON.isNull(usr.getID()))
+        {
+            //if key with sender id is NULL create new JSONObject for new user 
+            JSONObject newUser = new JSONObject();
+            newUser.put("messages", 1);
+            newUser.put("name", usr.getName());
+            newUser.put("commands", 0);
+            newUser.put("ReceivesCodes", false);
+            newUser.put("QuizScore", amount);
+            serverJSON.put(usr.getID(), newUser);
+        } else
+        { //if key already exists, increase message counter
+            JSONObject currentUser = serverJSON.getJSONObject(usr.getID());
+            int current = currentUser.getInt("QuizScore");
+            current += amount;
+            currentUser.put("QuizScore", current);
+        }
+        FileUtils.writeStringToFile(userDb, userDBJSON.toString(4), Charset.defaultCharset());
     }
 
     /**
@@ -110,6 +188,7 @@ public class UserDatabaseHandler
             newUser.put("name", usr.getName());
             newUser.put("commands", 0);
             newUser.put("ReceivesCodes", false);
+            newUser.put("QuizScore", 0);
             serverJSON.put(usr.getID(), newUser);
         } else
         { //if key already exists, increase message counter
@@ -144,6 +223,7 @@ public class UserDatabaseHandler
             newUser.put("name", usr.getName());
             newUser.put("commands", 1);
             newUser.put("ReceivesCodes", false);
+            newUser.put("QuizScore", 0);
             serverJSON.put(usr.getID(), newUser);
         } else
         {
@@ -182,6 +262,7 @@ public class UserDatabaseHandler
             newUser.put("name", usr.getName());
             newUser.put("commands", 0);
             newUser.put("ReceivesCodes", val);
+            newUser.put("QuizScore", 0);
             serverJSON.put(usr.getID(), newUser);
         } else
         {
@@ -216,10 +297,10 @@ public class UserDatabaseHandler
             return serverJSON.getJSONObject(usr.getID()).getBoolean("ReceivesCodes");
         }
     }
-    
+
     /**
      * Gets the number of users in the specified server that receive codes.
-     * 
+     *
      * @param server The server to search
      * @return The number of users with "ReceivesCodes" set to true.
      */
@@ -229,20 +310,20 @@ public class UserDatabaseHandler
         {
             return 0;
         }
-        
+
         int count = 0;
-        
+
         JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
-        
-        for(String id : serverJSON.keySet())
+
+        for (String id : serverJSON.keySet())
         {
             JSONObject user = serverJSON.getJSONObject(id);
-            if(user.getBoolean("ReceivesCodes"))
+            if (user.getBoolean("ReceivesCodes"))
             {
                 count++;
             }
         }
-        
+
         return count;
     }
 

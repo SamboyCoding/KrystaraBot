@@ -146,7 +146,7 @@ public class Listener
                 return;
             }
             
-            if (chnl == main.quizH.getQuizChannel())
+            if (chnl.equals(main.quizH.getQuizChannel()))
             {
                 ArrayList<String> validOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4"));
                 

@@ -1,6 +1,5 @@
 package me.samboycoding.krystarabot.quiz;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -11,17 +10,16 @@ import java.util.TreeMap;
 import me.samboycoding.krystarabot.GameData;
 import me.samboycoding.krystarabot.command.Top10Command;
 import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.utilities.IDReference;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
-import sx.blah.discord.util.RoleBuilder;
 
 /**
  * Handles the creation/destruction of a quiz, questions + answers, and scoring.
@@ -32,7 +30,6 @@ public class QuizHandler
 {
 
     IChannel quizChannel = null;
-    IRole quizRole = null;
     public static Thread quizThread = null;
     public static QuizQuestionTimer qt = null;
 
@@ -105,10 +102,50 @@ public class QuizHandler
         //Normal #8
         normTemplates.add(new QuestionTemplate("What stat bonus is unlocked from reaching level 10 in %%KINGDOMNAME%%?", "level10", "kingdom"));
     }
+    
+    public QuizQuestionTimer.QuizSubmitResult submitAnswer(Question question, IUser user, int answer)
+    {
+        synchronized (this)
+        {
+            if (qt.phase == QuizQuestionTimer.QuizPhase.Introduction)
+            {
+                return QuizQuestionTimer.QuizSubmitResult.TooEarly;
+            } else if ((qt.phase == QuizQuestionTimer.QuizPhase.Pausing) || (qt.phase == QuizQuestionTimer.QuizPhase.Completed)
+                    || (qt.q != question))
+            {
+                return QuizQuestionTimer.QuizSubmitResult.TooLate;
+            }
+
+            boolean isFirst = true;
+            boolean isCorrect = (question.correctAnswer == answer);
+
+            for (QuizQuestionTimer.QuizSubmitEntry entry : qt.submissions)
+            {
+                if (entry.user == user)
+                {
+                    return QuizQuestionTimer.QuizSubmitResult.AlreadyAnswered;
+                }
+                if (entry.result == QuizQuestionTimer.QuizSubmitResult.FirstCorrect)
+                {
+                    isFirst = false;
+                }
+            }
+
+            QuizQuestionTimer.QuizSubmitResult result = QuizQuestionTimer.QuizSubmitResult.Incorrect;
+            if (isCorrect)
+            {
+                result = isFirst ? QuizQuestionTimer.QuizSubmitResult.FirstCorrect : QuizQuestionTimer.QuizSubmitResult.Correct;
+            }
+
+            qt.submissions.add(new QuizQuestionTimer.QuizSubmitEntry(user, result));
+
+            return result;
+        }
+    }
 
     public boolean isQuizRunning()
     {
-        return quizThread != null;
+        return qt != null;
     }
 
     public IChannel getQuizChannel()
@@ -116,60 +153,43 @@ public class QuizHandler
         return quizChannel;
     }
 
-    public IRole getQuizRole()
-    {
-        return quizRole;
-    }
-
+    @SuppressWarnings("UnnecessaryBoxing")
     public void initializeQuiz(IGuild srv, IUser sdr, IChannel source) throws Exception
     {
         if (isQuizRunning())
         {
-            source.sendMessage("There is a quiz in progress.  Please wait for it to finish before starting a new quiz.");
+            source.sendMessage("There is a quiz in progress.  Please wait for it to finish before starting a new quiz. You can join it here: " + quizChannel.mention());
             return;
         }
         
-        //EnumSet<Permissions> sendReceiveMessages = EnumSet.of(Permissions.SEND_MESSAGES, Permissions.READ_MESSAGES, Permissions.READ_MESSAGE_HISTORY);
         List<IChannel> quizChannels = srv.getChannelsByName("quiz");
         if (quizChannels.isEmpty())
         {
             quizChannel = srv.createChannel("quiz");
-            //quizChannel.overrideRolePermissions(srv.getEveryoneRole(), null, sendReceiveMessages); //Disallow @everyone to use the channel
         } else
         {
             quizChannel = quizChannels.get(0);
-            //If the quiz channel exists, assume that the quiz is running
-            //throw new IllegalStateException("Tried to initialize a quiz when one is already running!");
+            quizChannel.delete();
+            
+            srv.createChannel("quiz");
+            
+            quizChannel = srv.getChannelsByName("quiz").get(0);
         }
         
         //quizChannel is now set
-        if (srv.getRolesByName("Quiz").isEmpty())
-        {
-            quizRole = new RoleBuilder(srv)
-                    .withName("Quiz")
-                    .withColor(Color.blue)
-                    .build();
-            sdr.addRole(quizRole);
-        } else
-        {
-            //If the quiz role exists, assume that the quiz is running
-            //throw new IllegalStateException("Tried to initialize a quiz when one is already running!");
-        }
 
         unordered = new LinkedHashMap<>();
         comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
         ordered = new TreeMap<>(comp);
         
-        unordered.put(sdr, 0);
+        unordered.put(sdr, new Integer(0));
 
-        //quizChannel.overrideRolePermissions(quizRole, sendReceiveMessages, null); //Allow members with the "quiz" role to access the channel
-        //quizChannel.overrideRolePermissions(srv.getRoleByID(IDReference.MODROLE), sendReceiveMessages, null); //Allow members with the moderator role to access the channel
         quizThread = new Thread(new QuizStartTimer(quizChannel), "Quiz start timer");
         quizThread.start();
         
         if (quizChannel != source)
         {
-            source.sendMessage("A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.");
+            srv.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.");
         }
     }
 
@@ -204,13 +224,15 @@ public class QuizHandler
         currentQ = null;
     }
 
+    @SuppressWarnings("UnnecessaryBoxing")
     public void handleAnswer(IMessage msg) throws MissingPermissionsException, RateLimitException, DiscordException
     {
-        QuizQuestionTimer timer = qt;
         Question theQ = currentQ;
         
-        if (timer == null)
+        if(!isQuizRunning())
         {
+            msg.getAuthor().getOrCreatePMChannel().sendMessage("No quiz is running right now!");
+            msg.delete();
             return;
         }
         
@@ -233,21 +255,19 @@ public class QuizHandler
 
         int pos = answer - 1;
 
-        String nameOfSender = usr.getNicknameForGuild(c.getGuild()).isPresent() ? usr.getNicknameForGuild(c.getGuild()).get() : usr.getName();
-
         int scoreDelta = 0;
 
-        switch(timer.submitAnswer(theQ, usr, pos))
+        switch(submitAnswer(theQ, usr, pos))
         {
             case Incorrect:
-                c.sendMessage(nameOfSender + " has submitted an answer!");
+                //c.sendMessage(nameOfSender + " has submitted an answer!");
                 break;
             case Correct:
-                c.sendMessage(nameOfSender + " has submitted an answer!");
+                //c.sendMessage(nameOfSender + " has submitted an answer!");
                 scoreDelta = 1;
                 break;
             case FirstCorrect:
-                c.sendMessage(nameOfSender + " has submitted an answer!");
+                //c.sendMessage(nameOfSender + " has submitted an answer!");
                 scoreDelta = 3;
                 break;
             case AlreadyAnswered:
@@ -264,7 +284,7 @@ public class QuizHandler
             //Correct
             currentScore += scoreDelta;
             unordered.remove(usr);
-            unordered.put(usr, currentScore);
+            unordered.put(usr, new Integer(currentScore));
         }
     }
 
@@ -463,9 +483,10 @@ public class QuizHandler
                     JSONObject anotherRandomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
 
                     String spl = anotherRandomTroop.getJSONObject("Spell").getString("Name");
-                    if (!answers.contains(spl))
+                    
+                    if (!spl.equals(randomTroop.getJSONObject("Spell").getString("Name")))
                     {
-                        answers.add(spl);
+                        answers.add(anotherRandomTroop.getString("Name"));
                     }
                 }
 
@@ -532,6 +553,7 @@ public class QuizHandler
 
                     if (!correctColors.contains("/"))
                     {
+                        correctColors = "";
                         randomTroop = GameData.arrayTroops.getJSONObject(r.nextInt(GameData.arrayTroops.length()));
                     }
                 }

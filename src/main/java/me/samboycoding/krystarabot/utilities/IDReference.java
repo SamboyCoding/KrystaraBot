@@ -10,7 +10,7 @@ public class IDReference
 
     public static final boolean LIVE = false;
     
-    public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL;
+    public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL;
     public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, MUTEDROLE, PCMOBILEROLE, CONSOLEROLE;
     public static String SERVERID;
     public static String MYTOKEN; //Set in main method.
@@ -27,6 +27,7 @@ public class IDReference
             CODESCHANNEL = "237455339857903617";
             BOTCOMMANDSCHANNEL = "237500381880516609";
             TEAMSCHANNEL = "236904343859757057";
+            GLOBALCHANNEL = "237788799982239745";
             
             
             //Roles
@@ -48,6 +49,7 @@ public class IDReference
             CODESCHANNEL = "247394202844004363";
             BOTCOMMANDSCHANNEL = "247394319449849856";
             TEAMSCHANNEL = "253244926618370048";
+            GLOBALCHANNEL = "247393304151326721";
             
             //Roles
             ADMINROLE = "247394012162424843";

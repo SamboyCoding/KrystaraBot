@@ -13,7 +13,7 @@ import sx.blah.discord.util.RateLimitException;
 public class QuizStartTimer implements Runnable
 {
 
-    int time = 20;
+    int time = 10;
     IChannel c;
 
     public QuizStartTimer(IChannel channel)
