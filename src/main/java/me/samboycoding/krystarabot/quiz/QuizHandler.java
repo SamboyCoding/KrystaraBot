@@ -262,14 +262,11 @@ public class QuizHandler
         switch (submitAnswer(theQ, usr, pos))
         {
             case Incorrect:
-                //c.sendMessage(nameOfSender + " has submitted an answer!");
                 break;
             case Correct:
-                //c.sendMessage(nameOfSender + " has submitted an answer!");
                 scoreDelta = lastDifficulty;
                 break;
             case FirstCorrect:
-                //c.sendMessage(nameOfSender + " has submitted an answer!");
                 scoreDelta = lastDifficulty + 2;
                 break;
             case AlreadyAnswered:
@@ -1228,6 +1225,12 @@ public class QuizHandler
                 //Which kingdom has the banner %%BANNERNAME%%?
                 String banner = randomKingdom.getString("BannerName");
 
+                while(banner.equals("Unnamed Banner"))
+                {
+                    randomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
+                    banner = randomKingdom.getString("BannerName");
+                }
+                
                 questionText = temp.templateText.replace("%%BANNERNAME%%", banner);
                 String correct = randomKingdom.getString("Name");
                 answers = new ArrayList<>();

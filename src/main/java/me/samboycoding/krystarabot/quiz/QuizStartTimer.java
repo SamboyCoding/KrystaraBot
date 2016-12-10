@@ -26,7 +26,7 @@ public class QuizStartTimer implements Runnable
     {
         try
         {
-            IMessage msg = c.sendMessage("Quiz will start in 20 seconds...");
+            IMessage msg = c.sendMessage("Quiz will start in 10 seconds...");
             for (int i = time; i >= 0; i--)
             {
                 try

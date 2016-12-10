@@ -8,8 +8,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
+import java.util.TreeMap;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
 import me.samboycoding.krystarabot.quiz.QuizHandler;
 import org.apache.commons.io.FileUtils;
@@ -25,7 +25,7 @@ import sx.blah.discord.util.RateLimitException;
  */
 public class main
 {    
-    private static final ArrayList<KrystaraCommand> commands = new ArrayList<>();
+    private static final TreeMap<String, KrystaraCommand> commands = new TreeMap<>();
     
     private static IDiscordClient cl;
     public static GameData data = new GameData();
@@ -84,15 +84,13 @@ public class main
     public static void registerCommand(KrystaraCommand c)
     {
         logToBoth("Registering" + (c.requiresAdmin() ? " ADMIN" : "") + " command ?" + c.getCommand());
-        commands.add(c);
-        
-        Collections.sort(commands);
+        commands.put(c.getCommand(), c);
     }
     
     @SuppressWarnings("unchecked")
-    public static ArrayList<KrystaraCommand> getCommands()
+    public static TreeMap<String, KrystaraCommand> getCommands()
     {
-        return (ArrayList<KrystaraCommand>) commands.clone();
+        return (TreeMap<String, KrystaraCommand>) commands.clone();
     }    
 
     public static void logToBoth(String msg)

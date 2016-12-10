@@ -1,6 +1,7 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.Utilities;
@@ -27,7 +28,7 @@ public class HelpCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        ArrayList<KrystaraCommand> cmdList = main.getCommands();
+        TreeMap<String, KrystaraCommand> cmdList = main.getCommands();
 
         String helpText = "Every command must start with '**?**' followed by the command name. Some commands have required or optional parameters shown in square brackets.\n\n"
                 + "Here is a list of all commands you can use:\n\n";
@@ -48,7 +49,7 @@ public class HelpCommand extends KrystaraCommand
                 continue;
             }
             cmdTypeHelp += c.toString() + "\n" + Utilities.repeatString("-", 60) + "\n"; //command category header
-            for (KrystaraCommand cmd : main.getCommands())
+            for (KrystaraCommand cmd : cmdList.values())
             {
                 if (cmd.getCommandType() != c)
                 {
