@@ -31,6 +31,10 @@ public class QuizStartTimer implements Runnable
             {
                 try
                 {
+                    if(msg == null)
+                    {
+                        return;
+                    }
                     msg.edit("Quiz will start in " + i + " seconds...");
                 } catch(RateLimitException e)
                 {

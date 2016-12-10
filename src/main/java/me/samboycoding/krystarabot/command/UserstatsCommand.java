@@ -42,6 +42,11 @@ public class UserstatsCommand extends KrystaraCommand
         {
             String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
             userstatsUsr = chnl.getGuild().getUserByID(id);
+            if(userstatsUsr == null)
+            {
+                chnl.sendMessage("Invalid @mention! Please @mention a valid user!");
+                return;
+            }
         }
         String name = userstatsUsr.getName();
         String nickname = userstatsUsr.getNicknameForGuild(chnl.getGuild()).isPresent() ? userstatsUsr.getNicknameForGuild(chnl.getGuild()).get() : userstatsUsr.getName();

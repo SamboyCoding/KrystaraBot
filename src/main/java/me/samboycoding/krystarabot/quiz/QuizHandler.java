@@ -796,7 +796,7 @@ public class QuizHandler
                         for (Object t : GameData.arrayTroops)
                         {
                             JSONObject trp = (JSONObject) t;
-                            if (trp.getJSONObject("Spell").getString("Name").equals(randomSpell.getString("Name")))
+                            if (trp.getJSONObject("Spell").getString("Name").equals(randomSpell.getString("Name")) && !answers.contains(trp.getString("Name")))
                             {
                                 answers.add(trp.getString("Name"));
                                 break;
@@ -1212,7 +1212,7 @@ public class QuizHandler
                         anotherRandomTroop = main.data.getTroopById(anotherRandomTroopId);
                     }
 
-                    if (!anotherRandomTroop.getString("Name").equals(randomTroop.getString("Name")))
+                    if (!answers.contains(anotherRandomTroop.getString("Name")))
                     {
                         answers.add(anotherRandomTroop.getString("Name"));
                     }
