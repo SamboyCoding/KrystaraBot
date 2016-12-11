@@ -2,12 +2,13 @@ package me.samboycoding.krystarabot;
 
 import java.awt.Color;
 import java.text.DateFormatSymbols;
+import java.time.ZoneId;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.TreeMap;
 import me.samboycoding.krystarabot.command.*;
-import me.samboycoding.krystarabot.quiz.QuizHandler;
 import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.api.IDiscordClient;
@@ -126,6 +127,7 @@ public class Listener
     @EventSubscriber
     public void onCommand(MessageReceivedEvent e)
     {
+//        System.out.println("FIRED!" + (System.currentTimeMillis() - e.getMessage().getCreationDate().atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()));
         IMessage msg = e.getMessage();
         IUser sdr = msg.getAuthor();
         IChannel chnl = msg.getChannel();
@@ -145,24 +147,23 @@ public class Listener
                 //Dev #bot-updates channel
                 return;
             }
-            
-            if (chnl == main.quizH.getQuizChannel())
+
+            if (chnl.equals(main.quizH.getQuizChannel()))
             {
                 ArrayList<String> validOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4"));
-                
-                if(!validOptions.contains(e.getMessage().getContent()))
+
+                if (!validOptions.contains(e.getMessage().getContent()))
                 {
                     msg.delete();
                     return;
-                }
-                else
+                } else
                 {
                     //Handle result
                     main.quizH.handleAnswer(msg);
                     return;
                 }
             }
-            
+
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
             String content = msg.getContent();
 
@@ -194,22 +195,14 @@ public class Listener
 
             main.logToBoth("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
 
-            ArrayList<KrystaraCommand> commands = main.getCommands();
-
-            boolean validCommand = false;
-            //Loop through all the defined commands, and if there is one, process it.
-            for (KrystaraCommand c : commands)
+            TreeMap<String, KrystaraCommand> commands = main.getCommands();
+            
+            if (commands.containsKey(command))
             {
-                if (c.getCommand().equals(command))
-                {
-                    validCommand = true;
-                    c.handleCommand(sdr, chnl, msg, arguments, argumentsFull);
-                }
-            }
-
-            //No command found
-            if (!validCommand)
+                commands.get(command).handleCommand(sdr, chnl, msg, arguments, argumentsFull);
+            } else
             {
+                //No command found
                 chnl.sendMessage("Invalid command \"" + command + "\". Do `?help` for a list of commands.");
             }
 

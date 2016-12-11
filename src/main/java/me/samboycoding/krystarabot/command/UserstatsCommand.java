@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static me.samboycoding.krystarabot.Listener.messageCounter;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
+import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
@@ -41,6 +42,11 @@ public class UserstatsCommand extends KrystaraCommand
         {
             String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
             userstatsUsr = chnl.getGuild().getUserByID(id);
+            if(userstatsUsr == null)
+            {
+                chnl.sendMessage("Invalid @mention! Please @mention a valid user!");
+                return;
+            }
         }
         String name = userstatsUsr.getName();
         String nickname = userstatsUsr.getNicknameForGuild(chnl.getGuild()).isPresent() ? userstatsUsr.getNicknameForGuild(chnl.getGuild()).get() : userstatsUsr.getName();
@@ -80,6 +86,7 @@ public class UserstatsCommand extends KrystaraCommand
         toSend += "\nList of Roles: " + sdrRolesNice.toString();
         toSend += "\nMessages sent: " + messageCount;
         toSend += "\nCommands sent: " + commandCount;
+        toSend += "\nQuiz Points: " + main.databaseHandler.getQuizScore(userstatsUsr, chnl.getGuild());
         toSend += "\n```";
 
         chnl.sendMessage(toSend);

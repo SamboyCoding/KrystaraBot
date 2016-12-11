@@ -13,7 +13,7 @@ import sx.blah.discord.util.RateLimitException;
 public class QuizStartTimer implements Runnable
 {
 
-    int time = 20;
+    int time = 10;
     IChannel c;
 
     public QuizStartTimer(IChannel channel)
@@ -26,11 +26,15 @@ public class QuizStartTimer implements Runnable
     {
         try
         {
-            IMessage msg = c.sendMessage("Quiz will start in 20 seconds...");
+            IMessage msg = c.sendMessage("Quiz will start in 10 seconds...");
             for (int i = time; i >= 0; i--)
             {
                 try
                 {
+                    if(msg == null)
+                    {
+                        return;
+                    }
                     msg.edit("Quiz will start in " + i + " seconds...");
                 } catch(RateLimitException e)
                 {
@@ -39,7 +43,6 @@ public class QuizStartTimer implements Runnable
                 }
                 Thread.sleep(1000);
             }
-            Thread.sleep(1500);
             msg.delete();
             c.sendMessage("Welcome to the GoW Discord quiz!");
             Thread.sleep(2500);
@@ -47,8 +50,10 @@ public class QuizStartTimer implements Runnable
             Thread.sleep(2500);
             c.sendMessage("The questions come in 3 difficulties: easy (1 point), medium (2 points), and hard (3 points).");
             Thread.sleep(2500);
-            //c.sendMessage("You will be asked 3 easy, 4 normal and 3 hard questions.");
-            //Thread.sleep(2500);
+            c.sendMessage("You will be asked 3 easy, 4 normal and 3 hard questions.");
+            Thread.sleep(2500);
+            c.sendMessage("Enter the number of the answer you think is correct. DO NOT attempt to enter the full answer.");
+            Thread.sleep(2500);
             c.sendMessage("The person with the most points after 10 questions wins!\n\n" + Utilities.repeatString("-", 50));
             Thread.sleep(2000);
             
