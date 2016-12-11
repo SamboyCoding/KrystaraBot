@@ -172,9 +172,7 @@ public class QuizHandler
             quizChannel = quizChannels.get(0);
             quizChannel.delete();
 
-            srv.createChannel("quiz");
-
-            quizChannel = quizChannels.get(0);
+            quizChannel = srv.createChannel("quiz");
         }
 
         //quizChannel is now set
