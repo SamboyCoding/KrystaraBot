@@ -87,10 +87,7 @@ public class LyyaQuestionFactory
      */
     private static abstract class LyyaQuestion_RandomBase extends LyyaQuestion
     {
-        public LyyaQuestion_RandomBase(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_RandomBase(Random r) { super(r); }
 
         public LyyaQuestion_RandomBase initialize()
         {
@@ -169,10 +166,7 @@ public class LyyaQuestionFactory
      */
     private static abstract class LyyaQuestion_TroopsFiltered extends LyyaQuestion
     {
-        public LyyaQuestion_TroopsFiltered(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TroopsFiltered(Random r) { super(r); }
 
         public LyyaQuestion_TroopsFiltered initialize()
         {
@@ -219,10 +213,7 @@ public class LyyaQuestionFactory
      */
     private static abstract class LyyaQuestion_TroopsSpellFiltered extends LyyaQuestion_TroopsFiltered
     {
-        public LyyaQuestion_TroopsSpellFiltered(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TroopsSpellFiltered(Random r) { super(r); }
 
         // Returns true if any part of the troop's spell has any one of the types specified in the
         // stepTypes array.
@@ -258,10 +249,7 @@ public class LyyaQuestionFactory
      */
     private static abstract class LyyaQuestion_Troops extends LyyaQuestion_RandomBase
     {
-        public LyyaQuestion_Troops(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_Troops(Random r) { super(r); }
 
         @Override
         protected JSONObject getRandomAnswer()
@@ -280,10 +268,7 @@ public class LyyaQuestionFactory
      */
     private static abstract class LyyaQuestion_Kingdoms extends LyyaQuestion_RandomBase
     {
-        public LyyaQuestion_Kingdoms(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_Kingdoms(Random r) { super(r); }
 
         @Override
         protected JSONObject getRandomAnswer()
@@ -302,10 +287,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_TroopToKingdom extends LyyaQuestion_Troops
     {
-        public LyyaQuestion_TroopToKingdom(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TroopToKingdom(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -353,10 +335,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_KingdomToTroop extends LyyaQuestion_TroopToKingdom
     {
-        public LyyaQuestion_KingdomToTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_KingdomToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -377,10 +356,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_TroopToSpell extends LyyaQuestion_Troops
     {
-        public LyyaQuestion_TroopToSpell(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TroopToSpell(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -406,10 +382,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_SpellToTroop extends LyyaQuestion_TroopToSpell
     {
-        public LyyaQuestion_SpellToTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_SpellToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -429,10 +402,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_TroopToType extends LyyaQuestion_Troops
     {
-        public LyyaQuestion_TroopToType(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TroopToType(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -463,10 +433,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_TypeToTroop extends LyyaQuestion_TroopToType
     {
-        public LyyaQuestion_TypeToTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TypeToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -525,10 +492,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_TraitToTroop extends LyyaQuestion_TroopToTrait
     {
-        public LyyaQuestion_TraitToTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TraitToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -548,10 +512,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_TroopToColor extends LyyaQuestion_Troops
     {
-        public LyyaQuestion_TroopToColor(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TroopToColor(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -613,10 +574,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_ColorToTroop extends LyyaQuestion_TroopToColor
     {
-        public LyyaQuestion_ColorToTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_ColorToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -636,10 +594,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_TroopToRarity extends LyyaQuestion_Troops
     {
-        public LyyaQuestion_TroopToRarity(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TroopToRarity(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -665,10 +620,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_RarityToTroop extends LyyaQuestion_TroopToRarity
     {
-        public LyyaQuestion_RarityToTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_RarityToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -688,10 +640,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_TrueDamageTroop extends LyyaQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_TrueDamageTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TrueDamageTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -711,10 +660,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_CreateGemsTroop extends LyyaQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_CreateGemsTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_CreateGemsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -734,10 +680,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_ConvertGemsTroop extends LyyaQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_ConvertGemsTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_ConvertGemsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -757,10 +700,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_DestroyGemsTroop extends LyyaQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_DestroyGemsTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_DestroyGemsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -781,10 +721,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_IncreaseStatsTroop extends LyyaQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_IncreaseStatsTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_IncreaseStatsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -806,10 +743,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_DecreaseStatsTroop extends LyyaQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_DecreaseStatsTroop(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_DecreaseStatsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -893,10 +827,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_KingdomToTraitstone extends LyyaQuestion_Kingdoms
     {
-        public LyyaQuestion_KingdomToTraitstone(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_KingdomToTraitstone(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -926,10 +857,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_TraitstoneToKingdom extends LyyaQuestion_KingdomToTraitstone
     {
-        public LyyaQuestion_TraitstoneToKingdom(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_TraitstoneToKingdom(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -949,10 +877,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_KingdomToStat extends LyyaQuestion_Kingdoms
     {
-        public LyyaQuestion_KingdomToStat(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_KingdomToStat(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -988,10 +913,7 @@ public class LyyaQuestionFactory
      */
     private static class LyyaQuestion_StatToKingdom extends LyyaQuestion_KingdomToStat
     {
-        public LyyaQuestion_StatToKingdom(Random r) 
-        {
-            super(r);
-        }
+        public LyyaQuestion_StatToKingdom(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
