@@ -157,6 +157,7 @@ public class QuizQuestionTimer implements Runnable
             chnl.sendMessage(scores);
 
             QuizHandler.qt = null;
+            QuizHandler.quizThread = null;
         } catch (Exception e)
         {
             e.printStackTrace();
