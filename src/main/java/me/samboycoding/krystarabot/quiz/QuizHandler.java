@@ -672,7 +672,7 @@ public class QuizHandler
 
         return result;
     }
-
+    
     private Question handleSpellTemplate(QuestionTemplate temp, Random r)
     {
         //Possible values: "truedamge", "creategems", "generatemana", "destroygems", "debuff", "convertgems", "removecolor", "increasestat"
