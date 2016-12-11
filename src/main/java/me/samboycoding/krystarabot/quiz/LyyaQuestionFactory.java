@@ -75,6 +75,18 @@ public class LyyaQuestionFactory
         {
             return Types[x];
         }
+        
+        public static QuestionType fromString(String s)
+        {
+            for (QuestionType t : Types)
+            {
+                if (t.name().equalsIgnoreCase(s))
+                {
+                    return t;
+                }
+            }
+            throw new InvalidParameterException();
+        }
     }
     
     /**
@@ -923,6 +935,60 @@ public class LyyaQuestionFactory
         }
     }
     
+    private static ArrayList<QuestionType> getTypesForDifficulty(LyyaQuestion.Difficulty difficulty)
+    {
+        ArrayList<QuestionType> result = new ArrayList<>();
+        
+        for (int i = 0; i < QuestionType.Count; i++)
+        {
+            QuestionType type = QuestionType.fromInteger(i);
+            if (getDifficultyForType(type) == difficulty)
+            {
+                result.add(type);
+            }
+        }
+        
+        return result;
+    }
+ 
+    private static LyyaQuestion.Difficulty getDifficultyForType(QuestionType type)
+    {
+        switch (type)
+        {
+            case TroopToKingdom:
+            case KingdomToTroop:
+            case TroopToRarity:
+            case TrueDamageTroop:
+            case CreateGemsTroop:
+            case ConvertGemsTroop:
+            case DestroyGemsTroop:
+            case RarityToTroop:
+                return LyyaQuestion.Difficulty.Easy;
+                
+            case TroopToSpell:
+            case SpellToTroop:
+            case TroopToType:
+            case TypeToTroop:
+            case IncreaseStatsTroop:
+            case DecreaseStatsTroop:
+            case EffectsTroop:
+                return LyyaQuestion.Difficulty.Moderate;
+                
+            case TroopToColor:
+            case ColorToTroop:
+            case TroopToTrait:
+            case TraitToTroop:
+            case KingdomToTraitstone:
+            case TraitstoneToKingdom:
+            case KingdomToStat:
+            case StatToKingdom:
+                return LyyaQuestion.Difficulty.Hard;
+        }
+
+        throw new InvalidParameterException();
+    }
+    
+
     /**
      * Generates a random question of the specified type.
      * @param r The random number generator to use.
@@ -1004,6 +1070,19 @@ public class LyyaQuestionFactory
         }
         
         throw new InvalidParameterException();
+    }
+    
+    /**
+     * Generates a random question of the specified difficulty.
+     * @param r The random number generator to use.
+     * @param difficulty The difficulty of question to create.
+     * @return A new question of the specified type.
+     */
+    public static LyyaQuestion getQuestion(Random r, LyyaQuestion.Difficulty difficulty)
+    {
+        ArrayList<QuestionType> types = getTypesForDifficulty(difficulty);
+        QuestionType type = types.get(r.nextInt(types.size()));
+        return getQuestion(r, type);
     }
 
     /**
