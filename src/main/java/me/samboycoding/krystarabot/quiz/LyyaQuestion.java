@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.samboycoding.krystarabot.quiz;
 
 import java.util.ArrayList;
@@ -16,7 +11,7 @@ import org.json.JSONObject;
 
 /**
  *
- * @author julians
+ * @author Emily Ash
  */
 public abstract class LyyaQuestion
 {
