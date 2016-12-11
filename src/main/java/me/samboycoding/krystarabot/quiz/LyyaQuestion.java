@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.samboycoding.krystarabot.quiz;
 
 import java.util.ArrayList;
@@ -15,11 +10,23 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- *
- * @author julians
+ * Alternative version of questions for the quiz.
+ * @author Emily Ash
  */
 public abstract class LyyaQuestion
 {
+    public static enum Difficulty
+    {
+        Easy,
+        Moderate,
+        Hard;
+
+        public int getPoints()
+        {
+            return (this == Hard) ? 3 : (this == Moderate) ? 2 : 1;
+        }
+    }
+
     protected ArrayList<JSONObject> answers;
     protected JSONObject correctAnswer;
     protected Random random;
@@ -45,5 +52,10 @@ public abstract class LyyaQuestion
     public int getCorrectAnswerIndex()
     {
         return answers.indexOf(correctAnswer);
+    }
+    
+    public Difficulty getDifficulty()
+    {
+        return Difficulty.Easy;
     }
 }
