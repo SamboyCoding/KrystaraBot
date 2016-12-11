@@ -1,17 +1,17 @@
 {"247393304151326721": {
     "102450956045668352": {
-        "QuizScore": 214,
+        "QuizScore": 228,
         "name": "SamboyGaming",
-        "messages": 102,
+        "messages": 135,
         "ReceivesCodes": false,
-        "commands": 49
+        "commands": 55
     },
     "234202516676542464": {
         "QuizScore": 0,
         "name": "Naga",
-        "messages": 241,
+        "messages": 247,
         "ReceivesCodes": false,
-        "commands": 216
+        "commands": 220
     },
     "248369690311655425": {
         "QuizScore": 60,
@@ -35,18 +35,32 @@
         "commands": 15
     },
     "95733951657672704": {
-        "QuizScore": 62,
+        "QuizScore": 69,
         "name": "MakoSipper",
         "messages": 6,
         "ReceivesCodes": false,
         "commands": 4
     },
     "190663943260340224": {
-        "QuizScore": 52,
+        "QuizScore": 102,
         "name": "MrSnake",
-        "messages": 22,
+        "messages": 45,
         "ReceivesCodes": false,
         "commands": 1
+    },
+    "237478303026380800": {
+        "QuizScore": 12,
+        "name": "Gwynhbleidd",
+        "messages": 1,
+        "ReceivesCodes": false,
+        "commands": 0
+    },
+    "243103269805621249": {
+        "QuizScore": 0,
+        "name": "Hoeshy",
+        "messages": 8,
+        "ReceivesCodes": false,
+        "commands": 0
     },
     "111426722531926016": {
         "QuizScore": 0,
@@ -55,10 +69,17 @@
         "ReceivesCodes": false,
         "commands": 2
     },
+    "233912061493510144": {
+        "QuizScore": 44,
+        "name": "Shinks",
+        "messages": 10,
+        "ReceivesCodes": false,
+        "commands": 2
+    },
     "179201142708895744": {
-        "QuizScore": 269,
+        "QuizScore": 302,
         "name": "yonizaf",
-        "messages": 2,
+        "messages": 6,
         "ReceivesCodes": false,
         "commands": 0
     }

@@ -28,6 +28,7 @@ import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.Image;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
+import sx.blah.discord.util.audio.AudioPlayer;
 
 /**
  * Main event listener
@@ -130,6 +131,7 @@ public class Listener
         IMessage msg = e.getMessage();
         IUser sdr = msg.getAuthor();
         IChannel chnl = msg.getChannel();
+        
         try
         {
             if (e.getMessage().getChannel().isPrivate())

@@ -185,7 +185,7 @@ public class QuizQuestionTimer implements Runnable
                 }
 
                 txt = txt.substring(lastQuestionBreak + 2);
-                Thread.sleep(750);
+                Thread.sleep(1000);
             }
 
             if (!txt.trim().isEmpty())
@@ -193,7 +193,7 @@ public class QuizQuestionTimer implements Runnable
                 chnl.sendMessage(txt);
             }
             
-            Thread.sleep(1000);
+            Thread.sleep(1250);
 
             chnl.sendMessage("The quiz is over! Thanks for playing! The top 10 scores were:");
 
