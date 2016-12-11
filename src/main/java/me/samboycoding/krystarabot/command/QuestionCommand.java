@@ -2,10 +2,8 @@ package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
 import java.util.Random;
-import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.quiz.LyyaQuestion;
 import me.samboycoding.krystarabot.quiz.LyyaQuestionFactory;
-import me.samboycoding.krystarabot.quiz.Question;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -110,7 +108,7 @@ public class QuestionCommand extends KrystaraCommand
 
         if (seed < 0)
         {
-            seed = System.currentTimeMillis() % 10000;            
+            seed = System.currentTimeMillis() % 10000;
         }
         Random r = new Random(seed);
 
@@ -168,7 +166,7 @@ public class QuestionCommand extends KrystaraCommand
     @Override
     public String getUsage()
     {
-        return "?question [difficulty] [question #]";
+        return "?question [difficulty/type (optional)] [amount (optional)] [seed (optional)]";
     }
 
     @Override

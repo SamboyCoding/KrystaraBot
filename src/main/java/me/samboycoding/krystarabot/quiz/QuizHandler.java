@@ -33,8 +33,8 @@ public class QuizHandler
     public static Thread quizThread = null;
     public static QuizQuestionTimer qt = null;
 
-    private Question currentQ = null;
-    private int lastDifficulty = -1;
+    public LyyaQuestion currentQ = null;
+    public LyyaQuestion.Difficulty lastDifficulty = null;
 
     LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
     Top10Command.ValueComparator comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
@@ -104,7 +104,7 @@ public class QuizHandler
         normTemplates.add(new QuestionTemplate("What stat bonus is unlocked from reaching level 10 in %%KINGDOMNAME%%?", "level10", "kingdom"));
     }
 
-    public QuizQuestionTimer.QuizSubmitResult submitAnswer(Question question, IUser user, int answer)
+    public QuizQuestionTimer.QuizSubmitResult submitAnswer(LyyaQuestion question, IUser user, int answer)
     {
         synchronized (this)
         {
@@ -118,7 +118,7 @@ public class QuizHandler
             }
 
             boolean isFirst = true;
-            boolean isCorrect = (question.correctAnswer == answer);
+            boolean isCorrect = (question.getCorrectAnswerIndex() == answer);
 
             for (QuizQuestionTimer.QuizSubmitEntry entry : qt.submissions)
             {
@@ -190,34 +190,6 @@ public class QuizHandler
             srv.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.");
         }
     }
-
-    public Question generateQuestion(int difficulty)
-    {
-        Random r = new Random();
-        
-        Question theQ;
-
-        lastDifficulty = difficulty;
-        
-        switch (difficulty)
-        {
-            case 1:
-                theQ = handleTemplate(easyTemplates.get(r.nextInt(easyTemplates.size())), r);
-                break;
-            case 2:
-                theQ = handleTemplate(normTemplates.get(r.nextInt(normTemplates.size())), r);
-                break;
-            case 3:
-                theQ = handleTemplate(hardTemplates.get(r.nextInt(hardTemplates.size())), r);
-                break;
-            default:
-                theQ = null;
-                break;
-        }
-
-        currentQ = theQ;
-        return theQ;
-    }
     
     public void finishQuestion()
     {
@@ -227,7 +199,7 @@ public class QuizHandler
     @SuppressWarnings("UnnecessaryBoxing")
     public void handleAnswer(IMessage msg) throws MissingPermissionsException, RateLimitException, DiscordException
     {
-        Question theQ = currentQ;
+        LyyaQuestion theQ = currentQ;
 
         if (!isQuizRunning())
         {
@@ -262,10 +234,10 @@ public class QuizHandler
             case Incorrect:
                 break;
             case Correct:
-                scoreDelta = lastDifficulty;
+                scoreDelta = lastDifficulty.getPoints();
                 break;
             case FirstCorrect:
-                scoreDelta = lastDifficulty + 2;
+                scoreDelta = lastDifficulty.getPoints() + 2;
                 break;
             case AlreadyAnswered:
                 break;

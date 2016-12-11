@@ -1,12 +1,7 @@
 package me.samboycoding.krystarabot.quiz;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Random;
-import me.samboycoding.krystarabot.GameData;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**

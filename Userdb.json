@@ -1,4 +1,11 @@
 {"247393304151326721": {
+    "102450956045668352": {
+        "QuizScore": 6,
+        "name": "SamboyGaming",
+        "messages": 40,
+        "ReceivesCodes": false,
+        "commands": 13
+    },
     "234202516676542464": {
         "QuizScore": 0,
         "name": "Naga",
@@ -14,11 +21,11 @@
         "commands": 3
     },
     "248875131592638464": {
-        "QuizScore": 36,
+        "QuizScore": 53,
         "name": "Madam Bambii",
-        "messages": 31,
+        "messages": 44,
         "ReceivesCodes": false,
-        "commands": 3
+        "commands": 4
     },
     "190663943260340224": {
         "QuizScore": 0,
@@ -35,7 +42,7 @@
         "commands": 2
     },
     "179201142708895744": {
-        "QuizScore": 22,
+        "QuizScore": 37,
         "name": "yonizaf",
         "messages": 1,
         "ReceivesCodes": false,

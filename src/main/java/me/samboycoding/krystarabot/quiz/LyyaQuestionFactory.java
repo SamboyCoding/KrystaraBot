@@ -990,7 +990,7 @@ public class LyyaQuestionFactory
     
 
     /**
-     * Generates a random question of the specified type.
+     * Generates a random question of the specified type, and a random difficulty.
      * @param r The random number generator to use.
      * @param type The type of question to create.
      * @return A new question of the specified type.
@@ -1069,11 +1069,11 @@ public class LyyaQuestionFactory
                 return new LyyaQuestion_StatToKingdom(r).initialize();
         }
         
-        throw new InvalidParameterException();
+        throw new InvalidParameterException("Invalid question type specified!");
     }
     
     /**
-     * Generates a random question of the specified difficulty.
+     * Generates a random question of the specified difficulty, and a random type.
      * @param r The random number generator to use.
      * @param difficulty The difficulty of question to create.
      * @return A new question of the specified type.
@@ -1086,7 +1086,7 @@ public class LyyaQuestionFactory
     }
 
     /**
-     * Generates a random question of a random type.
+     * Generates a random question of a random type (and thereby a random difficulty).
      * @param r The random number generator to use.
      * @return A new question of the specified type.
      */

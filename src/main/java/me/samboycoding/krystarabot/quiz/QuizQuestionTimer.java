@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import me.samboycoding.krystarabot.main;
+import static me.samboycoding.krystarabot.quiz.LyyaQuestion.Difficulty.Easy;
+import static me.samboycoding.krystarabot.quiz.LyyaQuestion.Difficulty.Hard;
+import static me.samboycoding.krystarabot.quiz.LyyaQuestion.Difficulty.Moderate;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -18,7 +21,7 @@ public class QuizQuestionTimer implements Runnable
 {
     IChannel chnl;
 
-    public Question q;
+    public LyyaQuestion q;
     public QuizPhase phase;
 
     public enum QuizPhase
@@ -67,8 +70,9 @@ public class QuizQuestionTimer implements Runnable
         try
         {
             int numQuestions = 0;
-            ArrayList<Integer> questionDifficulties
-                    = new ArrayList<>(Arrays.asList(1, 1, 1, 2, 2, 2, 2, 3, 3, 3));
+            
+            ArrayList<LyyaQuestion.Difficulty> questionDifficulties
+                    = new ArrayList<>(Arrays.asList(Easy, Easy, Easy, Moderate, Moderate, Moderate, Moderate, Hard, Hard, Hard));
             java.util.Collections.shuffle(questionDifficulties);
 
             while (questionDifficulties.size() > 0)
@@ -83,21 +87,28 @@ public class QuizQuestionTimer implements Runnable
                 }
                 String toSend = "**Question #" + numQuestions + ":**\n\n";
 
-                int difficulty = questionDifficulties.remove(0);
+                LyyaQuestion.Difficulty difficulty = questionDifficulties.remove(0);
 
-                Question question;
+                main.quizH.lastDifficulty = difficulty;
+                
+                LyyaQuestion question;
+                
+                long seed = System.currentTimeMillis() % 1000;
+                Random questionSeed = new Random(seed);
+                
                 synchronized (this)
                 {
-                    q = main.quizH.generateQuestion(difficulty);
+                    q = LyyaQuestionFactory.getQuestion(questionSeed, difficulty);
                     question = q;
+                    main.quizH.currentQ = q;
                 }
 
-                String plural = (difficulty > 1) ? "s" : "";
-                toSend += question.question + " (" + difficulty + " pt" + plural + ".)\n";
-                toSend += "1) " + question.answers.get(0) + "\n";
-                toSend += "2) " + question.answers.get(1) + "\n";
-                toSend += "3) " + question.answers.get(2) + "\n";
-                toSend += "4) " + question.answers.get(3) + "\n\n";
+                String plural = (difficulty == Moderate || difficulty == Hard) ? "s" : "";
+                toSend += question.getQuestionText() + " (" + difficulty.getPoints() + " pt" + plural + ") [" + seed + "]\n";
+                toSend += "1) " + question.getAnswerText(0) + "\n";
+                toSend += "2) " + question.getAnswerText(1) + "\n";
+                toSend += "3) " + question.getAnswerText(2) + "\n";
+                toSend += "4) " + question.getAnswerText(3) + "\n\n";
 
                 msg.delete();
 
@@ -119,10 +130,10 @@ public class QuizQuestionTimer implements Runnable
 
                 msg.delete();
 
-                int pos = question.correctAnswer;
+                int pos = question.getCorrectAnswerIndex();
                 String number = Integer.toString(pos + 1);
                 chnl.sendMessage("The correct answer was: "
-                        + "\n\n" + number + ") **" + question.answers.get(question.correctAnswer)
+                        + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
                         + "**\n\n" + getCorrectUserText()
                         + "\n" + Utilities.repeatString("-", 50));
             }
