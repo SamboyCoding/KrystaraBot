@@ -1,7 +1,10 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import java.util.Random;
 import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.quiz.LyyaQuestion;
+import me.samboycoding.krystarabot.quiz.LyyaQuestionFactory;
 import me.samboycoding.krystarabot.quiz.Question;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
@@ -28,50 +31,83 @@ public class QuestionCommand extends KrystaraCommand
             msg.delete();
             return;
         }
-
-        if (arguments.size() < 2)
+        
+        int qNum = -1;
+        int reps = 1;
+        
+        if (arguments.size() > 0)
         {
-            chnl.sendMessage("Insufficiant arguments! Check help.");
-            return;
-        }
-        String difficulty = arguments.get(0);
-        int qNum;
-        try
-        {
-            qNum = Integer.parseInt(arguments.get(1));
-        } catch (NumberFormatException e)
-        {
-            chnl.sendMessage("Second argument must be a whole number!");
-            return;
-        }
-
-        int difNum;
-
-        switch (difficulty.toLowerCase())
-        {
-            case "easy":
-                difNum = 1;
-                break;
-            case "normal":
-                difNum = 2;
-                break;
-            case "hard":
-                difNum = 3;
-                break;
-            default:
-                chnl.sendMessage("Invalid difficulty!");
+            try
+            {
+                qNum = Integer.parseInt(arguments.get(0));
+            } 
+            catch (NumberFormatException e)
+            {
+                chnl.sendMessage("Type argument must be a whole number!");
                 return;
+            }
+        }
+        
+        if (arguments.size() > 1)
+        {
+            try
+            {
+                reps = Math.min(10, Math.max(1, Integer.parseInt(arguments.get(1))));
+            } 
+            catch (NumberFormatException e)
+            {
+                chnl.sendMessage("Repeat count argument must be a whole number!");
+                return;
+            }
+        }
+        
+        long seed = -1;
+        if (arguments.size() > 2)
+        {
+            try
+            {
+                seed = Long.parseLong(arguments.get(2));
+            }
+            catch (NumberFormatException e)
+            {
+                chnl.sendMessage("Seed argument must be a whole number!");
+                return;
+            }
         }
 
-        Question q = main.quizH.getSpecificQuestion(difNum, qNum);
-        
-        if(q == null)
+        if (seed < 0)
         {
-            chnl.sendMessage("Invalid question number!");
-            return;
+            seed = System.currentTimeMillis() % 10000;            
         }
+        Random r = new Random(seed);
+
+        ArrayList<String> messageStrings = new ArrayList<>();
         
-        chnl.sendMessage("Question: \"" + q.question + "\"\nPossible answers: " + q.answers.toString().replace("[", "").replace("]", "") + "\nCorrect answer position: " + q.correctAnswer);
+        for (int rep = 0; rep < reps; rep++)
+        {
+            LyyaQuestion q;
+
+            if (qNum >= 0)
+            {
+                q = LyyaQuestionFactory.getQuestion(r, LyyaQuestionFactory.QuestionType.fromInteger(qNum));
+            }
+            else 
+            {
+                q = LyyaQuestionFactory.getQuestion(r);
+            }
+
+            String answerString = "";
+            for (int i = 0; i < LyyaQuestion.AnswerCount; i++)
+            {
+                String boldStr = (q.getCorrectAnswerIndex() == i) ? "**" : "";
+                answerString += Integer.toString(i+1) + ") " + boldStr + q.getAnswerText(i) + boldStr + "\n";
+            }
+            
+            messageStrings.add("Question: " + q.getQuestionText() + " (" + seed + ")\n" + answerString);
+        }
+ 
+        String finalString = String.join("\n\n", messageStrings);
+        chnl.sendMessage(finalString);
     }
 
     @Override

@@ -172,9 +172,7 @@ public class QuizHandler
             quizChannel = quizChannels.get(0);
             quizChannel.delete();
 
-            srv.createChannel("quiz");
-
-            quizChannel = srv.getChannelsByName("quiz").get(0);
+            quizChannel = srv.createChannel("quiz");
         }
 
         //quizChannel is now set
@@ -196,7 +194,7 @@ public class QuizHandler
     public Question generateQuestion(int difficulty)
     {
         Random r = new Random();
-
+        
         Question theQ;
 
         lastDifficulty = difficulty;
@@ -220,7 +218,7 @@ public class QuizHandler
         currentQ = theQ;
         return theQ;
     }
-
+    
     public void finishQuestion()
     {
         currentQ = null;
@@ -672,7 +670,7 @@ public class QuizHandler
 
         return result;
     }
-
+    
     private Question handleSpellTemplate(QuestionTemplate temp, Random r)
     {
         //Possible values: "truedamge", "creategems", "generatemana", "destroygems", "debuff", "convertgems", "removecolor", "increasestat"

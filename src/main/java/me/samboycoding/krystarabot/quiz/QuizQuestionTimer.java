@@ -16,7 +16,6 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class QuizQuestionTimer implements Runnable
 {
-
     IChannel chnl;
 
     public Question q;
@@ -42,7 +41,6 @@ public class QuizQuestionTimer implements Runnable
 
     public static class QuizSubmitEntry
     {
-
         IUser user;
         QuizSubmitResult result;
 
@@ -71,7 +69,6 @@ public class QuizQuestionTimer implements Runnable
             int numQuestions = 0;
             ArrayList<Integer> questionDifficulties
                     = new ArrayList<>(Arrays.asList(1, 1, 1, 2, 2, 2, 2, 3, 3, 3));
-            //= new ArrayList<>(Arrays.asList(1, 2, 3));
             java.util.Collections.shuffle(questionDifficulties);
 
             while (questionDifficulties.size() > 0)
@@ -97,7 +94,6 @@ public class QuizQuestionTimer implements Runnable
 
                 String plural = (difficulty > 1) ? "s" : "";
                 toSend += question.question + " (" + difficulty + " pt" + plural + ".)\n";
-
                 toSend += "1) " + question.answers.get(0) + "\n";
                 toSend += "2) " + question.answers.get(1) + "\n";
                 toSend += "3) " + question.answers.get(2) + "\n";
@@ -115,7 +111,7 @@ public class QuizQuestionTimer implements Runnable
                 }
 
                 Thread.sleep(10000);
-
+                
                 synchronized (this)
                 {
                     phase = QuizPhase.Pausing;
