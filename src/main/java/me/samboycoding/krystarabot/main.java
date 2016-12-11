@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
+import me.samboycoding.krystarabot.quiz.LyyaQuestionFactory;
 import me.samboycoding.krystarabot.quiz.QuizHandler;
 import org.apache.commons.io.FileUtils;
 import sx.blah.discord.api.ClientBuilder;

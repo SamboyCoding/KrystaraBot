@@ -127,7 +127,6 @@ public class Listener
     @EventSubscriber
     public void onCommand(MessageReceivedEvent e)
     {
-//        System.out.println("FIRED!" + (System.currentTimeMillis() - e.getMessage().getCreationDate().atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()));
         IMessage msg = e.getMessage();
         IUser sdr = msg.getAuthor();
         IChannel chnl = msg.getChannel();
