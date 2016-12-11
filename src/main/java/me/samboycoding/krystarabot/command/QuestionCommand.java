@@ -32,19 +32,52 @@ public class QuestionCommand extends KrystaraCommand
             return;
         }
         
-        int qNum = -1;
         int reps = 1;
+        LyyaQuestion.Difficulty difficulty = null;
+        LyyaQuestionFactory.QuestionType type = null;
         
         if (arguments.size() > 0)
         {
-            try
+            switch (arguments.get(0))
             {
-                qNum = Integer.parseInt(arguments.get(0));
-            } 
-            catch (NumberFormatException e)
-            {
-                chnl.sendMessage("Type argument must be a whole number!");
-                return;
+                // Try to get the question as a difficulty group
+                case "any":
+                case "all":
+                    break;
+                    
+                case "easy":
+                   difficulty =  LyyaQuestion.Difficulty.Easy;
+                   break;
+                   
+                case "moderate":
+                   difficulty =  LyyaQuestion.Difficulty.Moderate;
+                   break;
+                   
+                case "hard":
+                   difficulty =  LyyaQuestion.Difficulty.Hard;
+                   break;
+                   
+                default:
+                    try
+                    {
+                        // Try to get the question as a string from the enum values
+                        type = LyyaQuestionFactory.QuestionType.fromString(arguments.get(0));
+                    }
+                    catch (Exception e)
+                    {
+                        try
+                        {
+                            // Try to get the question as an integer as a last resort
+                            int iType = Integer.parseInt(arguments.get(0));
+                            type = LyyaQuestionFactory.QuestionType.fromInteger(iType);
+                        }
+                        catch (Exception e2)
+                        {
+                            chnl.sendMessage("Type argument must be in range (0-" + (LyyaQuestionFactory.QuestionType.Count-1) + ")");
+                            return;
+                        }
+                    }
+                    break;
             }
         }
         
@@ -87,9 +120,13 @@ public class QuestionCommand extends KrystaraCommand
         {
             LyyaQuestion q;
 
-            if (qNum >= 0)
+            if (difficulty != null)
             {
-                q = LyyaQuestionFactory.getQuestion(r, LyyaQuestionFactory.QuestionType.fromInteger(qNum));
+                q = LyyaQuestionFactory.getQuestion(r, difficulty);
+            }
+            else if (type != null)
+            {
+                q = LyyaQuestionFactory.getQuestion(r, type);
             }
             else 
             {
