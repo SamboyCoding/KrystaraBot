@@ -31,6 +31,7 @@ public class QuestionCommand extends KrystaraCommand
         }
         
         int reps = 1;
+        long seed = -1;
         LyyaQuestion.Difficulty difficulty = null;
         LyyaQuestionFactory.QuestionType type = null;
         
@@ -92,7 +93,6 @@ public class QuestionCommand extends KrystaraCommand
             }
         }
         
-        long seed = -1;
         if (arguments.size() > 2)
         {
             try
@@ -139,6 +139,9 @@ public class QuestionCommand extends KrystaraCommand
             }
             
             messageStrings.add("Question: " + q.getQuestionText() + " (" + seed + ")\n" + answerString);
+            
+            seed++;
+            r.setSeed(seed);
         }
  
         String finalString = String.join("\n\n", messageStrings);
