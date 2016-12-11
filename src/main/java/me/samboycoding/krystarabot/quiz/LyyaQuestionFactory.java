@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.samboycoding.krystarabot.quiz;
 
 import java.security.InvalidParameterException;
@@ -458,7 +453,7 @@ public class LyyaQuestionFactory
         public LyyaQuestion_TroopToTrait(Random r) 
         {
             super(r);
-            traitIndex = r.nextInt(2);
+            traitIndex = r.nextInt(3);
         }
 
         @Override
