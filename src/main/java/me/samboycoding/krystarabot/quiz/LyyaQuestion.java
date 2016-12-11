@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 /**
  * Alternative version of questions for the quiz.
+ *
  * @author Emily Ash
  */
 public abstract class LyyaQuestion
