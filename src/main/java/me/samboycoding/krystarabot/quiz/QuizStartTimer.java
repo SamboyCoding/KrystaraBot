@@ -27,7 +27,7 @@ public class QuizStartTimer implements Runnable
         try
         {
             IMessage msg = c.sendMessage("Quiz will start in 10 seconds...");
-            for (int i = time; i >= 0; i--)
+            for (int i = time; i > 0; i--)
             {
                 try
                 {
@@ -48,9 +48,9 @@ public class QuizStartTimer implements Runnable
             Thread.sleep(2500);
             c.sendMessage("You will be asked 10 questions, and will have 10 seconds to answer each question.");
             Thread.sleep(2500);
-            c.sendMessage("The questions come in 3 difficulties: easy (1 point), medium (2 points), and hard (3 points).");
-            Thread.sleep(2500);
-            c.sendMessage("You will be asked 3 easy, 4 normal and 3 hard questions.");
+            //c.sendMessage("The questions come in 3 difficulties: easy (1 point), medium (2 points), and hard (3 points).");
+            //Thread.sleep(2500);
+            c.sendMessage("You will be asked 3 easy (1 point), 4 normal (2 points) and 3 hard (3 points) questions.");
             Thread.sleep(2500);
             c.sendMessage("Enter the number of the answer you think is correct. DO NOT attempt to enter the full answer.");
             Thread.sleep(2500);

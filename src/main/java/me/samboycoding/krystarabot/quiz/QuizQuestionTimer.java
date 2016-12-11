@@ -19,10 +19,13 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class QuizQuestionTimer implements Runnable
 {
+
     IChannel chnl;
 
     public LyyaQuestion q;
     public QuizPhase phase;
+
+    String quizLog = "";
 
     public enum QuizPhase
     {
@@ -44,6 +47,7 @@ public class QuizQuestionTimer implements Runnable
 
     public static class QuizSubmitEntry
     {
+
         IUser user;
         QuizSubmitResult result;
 
@@ -56,6 +60,8 @@ public class QuizQuestionTimer implements Runnable
 
     ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
 
+    IMessage msg;
+
     public QuizQuestionTimer(IChannel c)
     {
         chnl = c;
@@ -65,20 +71,25 @@ public class QuizQuestionTimer implements Runnable
     @Override
     public void run()
     {
-        IMessage msg;
         Random r = new Random();
         try
         {
             int numQuestions = 0;
-            
+
             ArrayList<LyyaQuestion.Difficulty> questionDifficulties
                     = new ArrayList<>(Arrays.asList(Easy, Easy, Easy, Moderate, Moderate, Moderate, Moderate, Hard, Hard, Hard));
+                    //= new ArrayList<>(Arrays.asList(Easy, Moderate, Hard));
             java.util.Collections.shuffle(questionDifficulties);
 
             while (questionDifficulties.size() > 0)
             {
-                msg = chnl.sendMessage("Question will be revealed in 10 seconds...");
+                IMessage timer = chnl.sendMessage("Question will be revealed in 10 seconds...");
                 Thread.sleep(10000);
+
+                if (msg != null)
+                {
+                    msg.delete();
+                }
 
                 numQuestions++;
                 synchronized (this)
@@ -90,12 +101,12 @@ public class QuizQuestionTimer implements Runnable
                 LyyaQuestion.Difficulty difficulty = questionDifficulties.remove(0);
 
                 main.quizH.lastDifficulty = difficulty;
-                
+
                 LyyaQuestion question;
-                
-                long seed = System.currentTimeMillis() % 1000;
-                Random questionSeed = new Random(seed);
-                
+
+                Random questionSeed = new Random();
+                long seed = Utilities.getSeed(questionSeed);
+
                 synchronized (this)
                 {
                     q = LyyaQuestionFactory.getQuestion(questionSeed, difficulty);
@@ -104,17 +115,18 @@ public class QuizQuestionTimer implements Runnable
                 }
 
                 String plural = (difficulty == Moderate || difficulty == Hard) ? "s" : "";
-                toSend += question.getQuestionText() + " (" + difficulty.getPoints() + " pt" + plural + ") [" + seed + "]\n";
+                toSend += question.getQuestionText() + " (" + difficulty.getPoints() + " pt" + plural + ") [Question ID: **" + difficulty.name() + "-" + seed + "**]\n";
                 toSend += "1) " + question.getAnswerText(0) + "\n";
                 toSend += "2) " + question.getAnswerText(1) + "\n";
                 toSend += "3) " + question.getAnswerText(2) + "\n";
                 toSend += "4) " + question.getAnswerText(3) + "\n\n";
 
-                msg.delete();
+                quizLog += toSend;
+                timer.delete();
 
-                chnl.sendMessage(toSend);
+                msg = chnl.sendMessage(toSend);
 
-                msg = chnl.sendMessage("Answer will be revealed in 10 seconds...");
+                timer = chnl.sendMessage("Answer will be revealed in 10 seconds...");
 
                 synchronized (this)
                 {
@@ -122,32 +134,73 @@ public class QuizQuestionTimer implements Runnable
                 }
 
                 Thread.sleep(10000);
-                
+
                 synchronized (this)
                 {
                     phase = QuizPhase.Pausing;
                 }
 
-                msg.delete();
+                timer.delete();
 
                 int pos = question.getCorrectAnswerIndex();
                 String number = Integer.toString(pos + 1);
-                chnl.sendMessage("The correct answer was: "
+
+                toSend = "The correct answer was: "
                         + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
                         + "**\n\n" + getCorrectUserText()
-                        + "\n" + Utilities.repeatString("-", 50));
+                        + "\n" + Utilities.repeatString("-", 50);
+
+                quizLog += toSend + "\n";
+
+                msg.delete();
+
+                msg = chnl.sendMessage(toSend);
             }
 
             synchronized (this)
             {
                 phase = QuizPhase.Completed;
             }
+            
+            msg.delete();
+
+            chnl.sendMessage("...\n\n\n\nQuiz Log: ");
+
+            String txt = quizLog;
+
+            while (txt.trim().length() > 0)
+            {
+                String TwoThousandChars = txt.substring(0, (txt.length() > 2000 ? 2000 : txt.length()));
+                int lastQuestionBreak = TwoThousandChars.lastIndexOf("--");
+                String toSend = txt.substring(0, lastQuestionBreak + 1);
+
+                if (toSend.trim().length() > 0)
+                {
+                    chnl.sendMessage(toSend);
+                }
+                
+                if(txt.trim().length() < 1)
+                {
+                    break;
+                }
+
+                txt = txt.substring(lastQuestionBreak + 2);
+                Thread.sleep(750);
+            }
+
+            if (!txt.trim().isEmpty())
+            {
+                chnl.sendMessage(txt);
+            }
+            
+            Thread.sleep(1000);
 
             chnl.sendMessage("The quiz is over! Thanks for playing! The top 10 scores were:");
 
             main.quizH.ordered.putAll(main.quizH.unordered); //Sort.
 
-            String scores = "```\nName" + Utilities.repeatString(" ", 46) + "Score";
+            String scores = "```\nName" + Utilities.repeatString(" ", 46) + "Score"
+                    + "\n" + Utilities.repeatString("-", 80);
             int numDone = 0;
             for (IUser u : main.quizH.ordered.descendingKeySet())
             {
@@ -161,10 +214,16 @@ public class QuizQuestionTimer implements Runnable
                     scores += "\n" + nameOfUser + Utilities.repeatString(" ", 50 - nameOfUser.length()) + score;
                     numDone++;
                 }
+                
+                Thread.sleep(500);
             }
 
             scores += "\n```";
 
+            quizLog += scores;
+
+            Thread.sleep(1500);
+            
             chnl.sendMessage(scores);
 
             QuizHandler.qt = null;
