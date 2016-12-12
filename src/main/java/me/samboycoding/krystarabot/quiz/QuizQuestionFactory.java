@@ -303,7 +303,7 @@ public class QuizQuestionFactory
         @Override
         public String getQuestionText()
         {
-            return "Which **kingdom** is **" + correctAnswer.getString("Name") + "** from?";
+            return "What **kingdom** is **" + correctAnswer.getString("Name") + "** from?";
         }
 
         @Override
@@ -352,7 +352,7 @@ public class QuizQuestionFactory
         public String getQuestionText()
         {
             JSONObject kingdom = getKingdomForTroop(correctAnswer);
-            return "Which **troop** comes from the kingdom of **" + kingdom.getString("Name") + "**?";
+            return "What **troop** comes from the kingdom of **" + kingdom.getString("Name") + "**?";
         }
 
         @Override
@@ -398,7 +398,7 @@ public class QuizQuestionFactory
         @Override
         public String getQuestionText()
         {
-            return "Which **troop** uses the spell **\"" + correctAnswer.getJSONObject("Spell").getString("Name") + "\"**?";
+            return "What **troop** uses the spell **\"" + correctAnswer.getJSONObject("Spell").getString("Name") + "\"**?";
         }
 
         @Override
@@ -449,7 +449,7 @@ public class QuizQuestionFactory
         @Override
         public String getQuestionText()
         {
-            return "Which **troop** is of type **" + getTroopType(correctAnswer) + "**?";
+            return "What **troop** is of type **" + getTroopType(correctAnswer) + "**?";
         }
 
         @Override
@@ -518,7 +518,7 @@ public class QuizQuestionFactory
         @Override
         public String getQuestionText()
         {
-            return "Which **troop** has the trait **\"" + correctAnswer.getJSONArray("ParsedTraits").getJSONObject(traitIndex).getString("Name") + "\"**?";
+            return "What **troop** has the trait **\"" + correctAnswer.getJSONArray("ParsedTraits").getJSONObject(traitIndex).getString("Name") + "\"**?";
         }
 
         @Override
@@ -867,7 +867,7 @@ public class QuizQuestionFactory
         @Override
         public String getQuestionText()
         {
-            return "What **troop** causes **" + effectEntry.effectName + "** as part of its spell?";
+            return "What **troop** can cause **" + effectEntry.effectName + "** as part of its spell?";
         }
 
         @Override
@@ -893,7 +893,7 @@ public class QuizQuestionFactory
         @Override
         public String getQuestionText()
         {
-            return "Which **Arcane Traitstone** can be found in **" + correctAnswer.getString("Name") + "**?";
+            return "What **Arcane Traitstone** can be found in **" + correctAnswer.getString("Name") + "**?";
         }
 
         @Override
@@ -943,7 +943,7 @@ public class QuizQuestionFactory
         @Override
         public String getQuestionText()
         {
-            return "Which **stat** is increased by reaching level 10 in the kingdom of **" + correctAnswer.getString("Name") + "**?";
+            return "What **stat** is increased by reaching level 10 in the kingdom of **" + correctAnswer.getString("Name") + "**?";
         }
 
         @Override
@@ -979,7 +979,7 @@ public class QuizQuestionFactory
         @Override
         public String getQuestionText()
         {
-            return "Which **kingdom** gives an increase to **" + getStatForKingdom(correctAnswer) + "** at level 10?";
+            return "What **kingdom** gives an increase to **" + getStatForKingdom(correctAnswer) + "** at level 10?";
         }
 
         @Override

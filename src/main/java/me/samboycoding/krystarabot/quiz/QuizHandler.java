@@ -31,7 +31,6 @@ public class QuizHandler
 
     private IChannel quizChannel = null;
     private Thread quizThread = null;
-    private QuizStartTimer quizStartTimer = null;
     private QuizQuestionTimer quizQuestionTimer = null;
 
     private QuizQuestion currentQ = null;
@@ -85,24 +84,14 @@ public class QuizHandler
 
         synchronized (this)
         {
-            quizStartTimer = new QuizStartTimer(this, quizChannel);
-            quizThread = new Thread(quizStartTimer, "Quiz start timer");
+            quizQuestionTimer = new QuizQuestionTimer(this, quizChannel, 10, 10);
+            quizThread = new Thread(quizQuestionTimer, "Quiz question timer");
             quizThread.start();
         }
 
         if (quizChannel != source)
         {
             srv.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.");
-        }
-    }
-    
-    public void handleStartTimerComplete()
-    {
-        synchronized (this)
-        {
-            quizQuestionTimer = new QuizQuestionTimer(this, quizChannel);
-            quizThread = new Thread(quizQuestionTimer, "Quiz question timer");
-            quizThread.start();
         }
     }
     
@@ -120,10 +109,6 @@ public class QuizHandler
         
         synchronized (this)
         {
-            if (quizStartTimer != null)
-            {
-                quizStartTimer.abort();
-            }
             if (quizQuestionTimer != null)
             {
                 quizQuestionTimer.abort();
@@ -146,7 +131,6 @@ public class QuizHandler
         
         synchronized (this)
         {
-            quizStartTimer = null;
             quizQuestionTimer = null;
             quizThread = null;
         }

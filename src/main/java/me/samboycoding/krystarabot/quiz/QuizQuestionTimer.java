@@ -12,6 +12,8 @@ import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
 /**
@@ -30,6 +32,8 @@ public class QuizQuestionTimer implements Runnable
     private String quizLog = "";
     private boolean isAborted = false;
     private final Object abortSignal = new Object();
+    private final int qCount;
+    private final int qTimeSeconds;
     
     public enum QuizPhase
     {
@@ -67,11 +71,13 @@ public class QuizQuestionTimer implements Runnable
     private IMessage msg;
     private QuizHandler qh;
 
-    public QuizQuestionTimer(QuizHandler handler, IChannel c)
+    public QuizQuestionTimer(QuizHandler handler, IChannel c, int questionCount, int questionTimeInSeconds)
     {
         chnl = c;
         phase = QuizPhase.Introduction;
         qh = handler;
+        qCount = questionCount;
+        qTimeSeconds = questionTimeInSeconds;
     }
     
     private static class QuestionLogEntry
@@ -86,37 +92,87 @@ public class QuizQuestionTimer implements Runnable
         }
     }
     
+    private IMessage sendCountdownMessage(String formatString, int seconds) 
+            throws MissingPermissionsException, RateLimitException, DiscordException, InterruptedException
+    {
+        String messageString = String.format(formatString, seconds);
+        IMessage msg = chnl.sendMessage(messageString);
+        while (seconds > 0)
+        {
+            sleepFor(1000);
+            seconds--;
+            
+            try
+            {
+                messageString = String.format(formatString, seconds);
+                msg.edit(messageString);
+            } catch(RateLimitException e)
+            {
+                sleepFor(500);
+                //Ignore and move on, with an extra 1/2 second wait.
+            }
+        }
+        return msg;
+    }
+    
     @Override
     public void run()
     {
-        Random r = new Random();
         try
         {
-            int numQuestions = 0;
+            IMessage msg = sendCountdownMessage("Quiz will start in %1$d seconds...", 10);
+            msg.delete();
 
-            ArrayList<QuizQuestion.Difficulty> questionDifficulties
-                    = new ArrayList<>(Arrays.asList(Easy, Easy, Easy, Moderate, Moderate, Moderate, Moderate, Hard, Hard, Hard));
-            //= new ArrayList<>(Arrays.asList(Easy, Moderate, Hard));
+            chnl.sendMessage("Welcome to the GoW Discord quiz!");
+            sleepFor(2500);
+
+            chnl.sendMessage("You will be asked " + qCount + " questions, and will have " + qTimeSeconds + 
+                    " seconds to answer each question.");
+            sleepFor(2500);
+
+            chnl.sendMessage("Submit only the _number_ of the answer you think is correct (1-" + 
+                    QuizQuestion.AnswerCount + "). All other answers will not be counted.");
+            sleepFor(2500);
+
+            chnl.sendMessage("The person with the most points after " + qCount + " questions wins!\n\n" + 
+                    Utilities.repeatString("-", 40));
+            sleepFor(2000);
+            
+            int curQuestionIndex = 0;
+
+            ArrayList<QuizQuestion.Difficulty> questionDifficulties = new ArrayList<>();
+            
+            for (int i = 0; i < qCount / 3; i++)
+            {
+                questionDifficulties.add(Easy);
+            }
+            for (int i = 0; i < qCount / 3; i++)
+            {
+                questionDifficulties.add(Hard);
+            }
+            while (questionDifficulties.size() < qCount)
+            {
+                questionDifficulties.add(Moderate);
+            }
             java.util.Collections.shuffle(questionDifficulties);
 
             ArrayList<QuestionLogEntry> questionLog = new ArrayList<>();
             
             while (questionDifficulties.size() > 0)
             {
-                IMessage timer = chnl.sendMessage("Question #" + (numQuestions+1) + " will be revealed in 10 seconds...");
-                sleepFor(10000);
-
+                String formatString = "Question #" + (curQuestionIndex+1) + " will be revealed in %1$d seconds...";
+                IMessage timer = sendCountdownMessage(formatString, 10);
                 if (msg != null)
                 {
                     msg.delete();
                 }
 
-                numQuestions++;
+                curQuestionIndex++;
                 synchronized (this)
                 {
                     submissions = new ArrayList<>();
                 }
-                String toSend = "**Question #" + numQuestions + ":**\n\n";
+                String toSend = "**Question #" + curQuestionIndex + ":**\n\n";
 
                 QuizQuestion.Difficulty difficulty = questionDifficulties.remove(0);
 
@@ -145,14 +201,13 @@ public class QuizQuestionTimer implements Runnable
 
                 msg = chnl.sendMessage(toSend);
 
-                timer = chnl.sendMessage("Answer will be revealed in 10 seconds...");
-
                 synchronized (this)
                 {
                     phase = QuizPhase.WaitingForAnswers;
                 }
 
-                sleepFor(10000);
+                formatString = "Answer will be revealed in %1$d seconds...";
+                timer = sendCountdownMessage(formatString, qTimeSeconds);
 
                 synchronized (this)
                 {
@@ -164,7 +219,7 @@ public class QuizQuestionTimer implements Runnable
                 int pos = question.getCorrectAnswerIndex();
                 String number = Integer.toString(pos + 1);
 
-                toSend = "**Question #" + numQuestions + ":**\n\nThe correct answer was: "
+                toSend = "**Question #" + curQuestionIndex + ":**\n\nThe correct answer was: "
                         + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
                         + "**\n\n" + getCorrectUserText(difficulty)
                         + "\n" + Utilities.repeatString("-", 40);
