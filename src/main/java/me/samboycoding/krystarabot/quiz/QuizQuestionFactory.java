@@ -14,7 +14,7 @@ import org.json.JSONObject;
  * Alternative question factory for the quiz
  * @author Emily Ash
  */
-public class LyyaQuestionFactory
+public class QuizQuestionFactory
 {
     public enum QuestionType
     {
@@ -96,11 +96,11 @@ public class LyyaQuestionFactory
     /**
      * Base class for most questions that use random items in the world data (or features of troops) as answers.
      */
-    private static abstract class LyyaQuestion_RandomBase extends LyyaQuestion
+    private static abstract class QuizQuestion_RandomBase extends QuizQuestion
     {
-        public LyyaQuestion_RandomBase(Random r) { super(r); }
+        public QuizQuestion_RandomBase(Random r) { super(r); }
 
-        public LyyaQuestion_RandomBase initialize()
+        public QuizQuestion_RandomBase initialize()
         {
             HashMap<Object, Object> keyMap = new HashMap<>();
             ArrayList<Object> keys;
@@ -175,11 +175,11 @@ public class LyyaQuestionFactory
     /**
      * Base class for most questions that want troops with a specific feature as answers.
      */
-    private static abstract class LyyaQuestion_TroopsFiltered extends LyyaQuestion
+    private static abstract class QuizQuestion_TroopsFiltered extends QuizQuestion
     {
-        public LyyaQuestion_TroopsFiltered(Random r) { super(r); }
+        public QuizQuestion_TroopsFiltered(Random r) { super(r); }
 
-        public LyyaQuestion_TroopsFiltered initialize()
+        public QuizQuestion_TroopsFiltered initialize()
         {
             // Choose a troop at random as the "correct answer" until we find one that
             // satisfies the criteria
@@ -222,9 +222,9 @@ public class LyyaQuestionFactory
     /**
      * Base class for most questions that want troops with a specific effect in their spell.
      */
-    private static abstract class LyyaQuestion_TroopsSpellFiltered extends LyyaQuestion_TroopsFiltered
+    private static abstract class QuizQuestion_TroopsSpellFiltered extends QuizQuestion_TroopsFiltered
     {
-        public LyyaQuestion_TroopsSpellFiltered(Random r) { super(r); }
+        public QuizQuestion_TroopsSpellFiltered(Random r) { super(r); }
 
         // Returns true if any part of the troop's spell has any one of the types specified in the
         // stepTypes array.
@@ -258,9 +258,9 @@ public class LyyaQuestionFactory
     /**
      * Base class for most questions that use troops (or features of troops) as answers.
      */
-    private static abstract class LyyaQuestion_Troops extends LyyaQuestion_RandomBase
+    private static abstract class QuizQuestion_Troops extends QuizQuestion_RandomBase
     {
-        public LyyaQuestion_Troops(Random r) { super(r); }
+        public QuizQuestion_Troops(Random r) { super(r); }
 
         @Override
         protected JSONObject getRandomAnswer()
@@ -277,9 +277,9 @@ public class LyyaQuestionFactory
     /**
      * Base class for most questions that use kingdoms (or features of kingdoms) as answers.
      */
-    private static abstract class LyyaQuestion_Kingdoms extends LyyaQuestion_RandomBase
+    private static abstract class QuizQuestion_Kingdoms extends QuizQuestion_RandomBase
     {
-        public LyyaQuestion_Kingdoms(Random r) { super(r); }
+        public QuizQuestion_Kingdoms(Random r) { super(r); }
 
         @Override
         protected JSONObject getRandomAnswer()
@@ -296,9 +296,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify a troop's kingdom.
      */
-    private static class LyyaQuestion_TroopToKingdom extends LyyaQuestion_Troops
+    private static class QuizQuestion_TroopToKingdom extends QuizQuestion_Troops
     {
-        public LyyaQuestion_TroopToKingdom(Random r) { super(r); }
+        public QuizQuestion_TroopToKingdom(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -344,9 +344,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop is from the specified kingdom.
      */
-    private static class LyyaQuestion_KingdomToTroop extends LyyaQuestion_TroopToKingdom
+    private static class QuizQuestion_KingdomToTroop extends QuizQuestion_TroopToKingdom
     {
-        public LyyaQuestion_KingdomToTroop(Random r) { super(r); }
+        public QuizQuestion_KingdomToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -365,9 +365,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify a troop's spell.
      */
-    private static class LyyaQuestion_TroopToSpell extends LyyaQuestion_Troops
+    private static class QuizQuestion_TroopToSpell extends QuizQuestion_Troops
     {
-        public LyyaQuestion_TroopToSpell(Random r) { super(r); }
+        public QuizQuestion_TroopToSpell(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -391,9 +391,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify a spell's troop.
      */
-    private static class LyyaQuestion_SpellToTroop extends LyyaQuestion_TroopToSpell
+    private static class QuizQuestion_SpellToTroop extends QuizQuestion_TroopToSpell
     {
-        public LyyaQuestion_SpellToTroop(Random r) { super(r); }
+        public QuizQuestion_SpellToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -411,9 +411,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify a troop's type.
      */
-    private static class LyyaQuestion_TroopToType extends LyyaQuestion_Troops
+    private static class QuizQuestion_TroopToType extends QuizQuestion_Troops
     {
-        public LyyaQuestion_TroopToType(Random r) { super(r); }
+        public QuizQuestion_TroopToType(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -442,9 +442,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop is of the specified type.
      */
-    private static class LyyaQuestion_TypeToTroop extends LyyaQuestion_TroopToType
+    private static class QuizQuestion_TypeToTroop extends QuizQuestion_TroopToType
     {
-        public LyyaQuestion_TypeToTroop(Random r) { super(r); }
+        public QuizQuestion_TypeToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -472,11 +472,11 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify one of a troop's traits.
      */
-    private static class LyyaQuestion_TroopToTrait extends LyyaQuestion_Troops
+    private static class QuizQuestion_TroopToTrait extends QuizQuestion_Troops
     {
         protected final int traitIndex;
         
-        public LyyaQuestion_TroopToTrait(Random r) 
+        public QuizQuestion_TroopToTrait(Random r) 
         {
             super(r);
             traitIndex = r.nextInt(3);
@@ -511,9 +511,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop has the specified trait.
      */
-    private static class LyyaQuestion_TraitToTroop extends LyyaQuestion_TroopToTrait
+    private static class QuizQuestion_TraitToTroop extends QuizQuestion_TroopToTrait
     {
-        public LyyaQuestion_TraitToTroop(Random r) { super(r); }
+        public QuizQuestion_TraitToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -531,9 +531,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify a troop's color.
      */
-    private static class LyyaQuestion_TroopToColor extends LyyaQuestion_Troops
+    private static class QuizQuestion_TroopToColor extends QuizQuestion_Troops
     {
-        public LyyaQuestion_TroopToColor(Random r) { super(r); }
+        public QuizQuestion_TroopToColor(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -593,9 +593,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop is of the specified color.
      */
-    private static class LyyaQuestion_ColorToTroop extends LyyaQuestion_TroopToColor
+    private static class QuizQuestion_ColorToTroop extends QuizQuestion_TroopToColor
     {
-        public LyyaQuestion_ColorToTroop(Random r) { super(r); }
+        public QuizQuestion_ColorToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -613,9 +613,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify a troop's rarity.
      */
-    private static class LyyaQuestion_TroopToRarity extends LyyaQuestion_Troops
+    private static class QuizQuestion_TroopToRarity extends QuizQuestion_Troops
     {
-        public LyyaQuestion_TroopToRarity(Random r) { super(r); }
+        public QuizQuestion_TroopToRarity(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -639,9 +639,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop is of the specified rarity.
      */
-    private static class LyyaQuestion_RarityToTroop extends LyyaQuestion_TroopToRarity
+    private static class QuizQuestion_RarityToTroop extends QuizQuestion_TroopToRarity
     {
-        public LyyaQuestion_RarityToTroop(Random r) { super(r); }
+        public QuizQuestion_RarityToTroop(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -659,9 +659,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop causes true damage.
      */
-    private static class LyyaQuestion_TrueDamageTroop extends LyyaQuestion_TroopsSpellFiltered
+    private static class QuizQuestion_TrueDamageTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_TrueDamageTroop(Random r) { super(r); }
+        public QuizQuestion_TrueDamageTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -679,9 +679,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop creates gems.
      */
-    private static class LyyaQuestion_CreateGemsTroop extends LyyaQuestion_TroopsSpellFiltered
+    private static class QuizQuestion_CreateGemsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_CreateGemsTroop(Random r) { super(r); }
+        public QuizQuestion_CreateGemsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -699,9 +699,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop converts gems.
      */
-    private static class LyyaQuestion_ConvertGemsTroop extends LyyaQuestion_TroopsSpellFiltered
+    private static class QuizQuestion_ConvertGemsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_ConvertGemsTroop(Random r) { super(r); }
+        public QuizQuestion_ConvertGemsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -719,9 +719,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop destroys, removes, or explodes gems.
      */
-    private static class LyyaQuestion_DestroyGemsTroop extends LyyaQuestion_TroopsSpellFiltered
+    private static class QuizQuestion_DestroyGemsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_DestroyGemsTroop(Random r) { super(r); }
+        public QuizQuestion_DestroyGemsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -740,9 +740,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop increases stats.
      */
-    private static class LyyaQuestion_IncreaseStatsTroop extends LyyaQuestion_TroopsSpellFiltered
+    private static class QuizQuestion_IncreaseStatsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_IncreaseStatsTroop(Random r) { super(r); }
+        public QuizQuestion_IncreaseStatsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -762,9 +762,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop decreases stats.
      */
-    private static class LyyaQuestion_DecreaseStatsTroop extends LyyaQuestion_TroopsSpellFiltered
+    private static class QuizQuestion_DecreaseStatsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_DecreaseStatsTroop(Random r) { super(r); }
+        public QuizQuestion_DecreaseStatsTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -784,9 +784,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop gives resources (Gold, Souls, Maps).
      */
-    private static class LyyaQuestion_GiveResourcesTroop extends LyyaQuestion_TroopsSpellFiltered
+    private static class QuizQuestion_GiveResourcesTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_GiveResourcesTroop(Random r) { super(r); }
+        public QuizQuestion_GiveResourcesTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -804,9 +804,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop gives extra turns.
      */
-    private static class LyyaQuestion_GiveExtraTurnTroop extends LyyaQuestion_TroopsSpellFiltered
+    private static class QuizQuestion_GiveExtraTurnTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public LyyaQuestion_GiveExtraTurnTroop(Random r) { super(r); }
+        public QuizQuestion_GiveExtraTurnTroop(Random r) { super(r); }
         
         @Override
         public String getQuestionText()
@@ -824,7 +824,7 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which troop causes a specific effect.
      */
-    private static class LyyaQuestion_EffectsTroop extends LyyaQuestion_TroopsSpellFiltered
+    private static class QuizQuestion_EffectsTroop extends QuizQuestion_TroopsSpellFiltered
     {
         private final EffectEntry effectEntry;
         
@@ -857,7 +857,7 @@ public class LyyaQuestionFactory
             new EffectEntry("Web", "CauseWeb", true)
         };
 
-        public LyyaQuestion_EffectsTroop(Random r) 
+        public QuizQuestion_EffectsTroop(Random r) 
         {
             super(r);
             
@@ -886,9 +886,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which traitstone can be found in the specified kingdom.
      */
-    private static class LyyaQuestion_KingdomToTraitstone extends LyyaQuestion_Kingdoms
+    private static class QuizQuestion_KingdomToTraitstone extends QuizQuestion_Kingdoms
     {
-        public LyyaQuestion_KingdomToTraitstone(Random r) { super(r); }
+        public QuizQuestion_KingdomToTraitstone(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -916,9 +916,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which kingdom has the specified traitstone.
      */
-    private static class LyyaQuestion_TraitstoneToKingdom extends LyyaQuestion_KingdomToTraitstone
+    private static class QuizQuestion_TraitstoneToKingdom extends QuizQuestion_KingdomToTraitstone
     {
-        public LyyaQuestion_TraitstoneToKingdom(Random r) { super(r); }
+        public QuizQuestion_TraitstoneToKingdom(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -936,9 +936,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which stat can be increased in the specified kingdom.
      */
-    private static class LyyaQuestion_KingdomToStat extends LyyaQuestion_Kingdoms
+    private static class QuizQuestion_KingdomToStat extends QuizQuestion_Kingdoms
     {
-        public LyyaQuestion_KingdomToStat(Random r) { super(r); }
+        public QuizQuestion_KingdomToStat(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -972,9 +972,9 @@ public class LyyaQuestionFactory
     /**
      * Asks a user to identify which kingdom has the specified stat increase.
      */
-    private static class LyyaQuestion_StatToKingdom extends LyyaQuestion_KingdomToStat
+    private static class QuizQuestion_StatToKingdom extends QuizQuestion_KingdomToStat
     {
-        public LyyaQuestion_StatToKingdom(Random r) { super(r); }
+        public QuizQuestion_StatToKingdom(Random r) { super(r); }
 
         @Override
         public String getQuestionText()
@@ -989,7 +989,7 @@ public class LyyaQuestionFactory
         }
     }
     
-    private static ArrayList<QuestionType> getTypesForDifficulty(LyyaQuestion.Difficulty difficulty)
+    private static ArrayList<QuestionType> getTypesForDifficulty(QuizQuestion.Difficulty difficulty)
     {
         ArrayList<QuestionType> result = new ArrayList<>();
         
@@ -1005,7 +1005,7 @@ public class LyyaQuestionFactory
         return result;
     }
  
-    private static LyyaQuestion.Difficulty getDifficultyForType(QuestionType type)
+    private static QuizQuestion.Difficulty getDifficultyForType(QuestionType type)
     {
         switch (type)
         {
@@ -1019,7 +1019,7 @@ public class LyyaQuestionFactory
             case RarityToTroop:
             case GiveResourcesTroop:
             case GiveExtraTurnTroop:
-                return LyyaQuestion.Difficulty.Easy;
+                return QuizQuestion.Difficulty.Easy;
                 
             case TroopToSpell:
             case SpellToTroop:
@@ -1028,7 +1028,7 @@ public class LyyaQuestionFactory
             case IncreaseStatsTroop:
             case DecreaseStatsTroop:
             case EffectsTroop:
-                return LyyaQuestion.Difficulty.Moderate;
+                return QuizQuestion.Difficulty.Moderate;
                 
             case TroopToColor:
             case ColorToTroop:
@@ -1038,7 +1038,7 @@ public class LyyaQuestionFactory
             case TraitstoneToKingdom:
             case KingdomToStat:
             case StatToKingdom:
-                return LyyaQuestion.Difficulty.Hard;
+                return QuizQuestion.Difficulty.Hard;
         }
 
         throw new InvalidParameterException();
@@ -1051,84 +1051,84 @@ public class LyyaQuestionFactory
      * @param type The type of question to create.
      * @return A new question of the specified type.
      */
-    public static LyyaQuestion getQuestion(Random r, QuestionType type)
+    public static QuizQuestion getQuestion(Random r, QuestionType type)
     {
         switch (type)
         {
             case TroopToKingdom:
-                return new LyyaQuestion_TroopToKingdom(r).initialize();
+                return new QuizQuestion_TroopToKingdom(r).initialize();
                 
             case KingdomToTroop:
-                return new LyyaQuestion_KingdomToTroop(r).initialize();
+                return new QuizQuestion_KingdomToTroop(r).initialize();
                 
             case TroopToSpell:
-                return new LyyaQuestion_TroopToSpell(r).initialize();
+                return new QuizQuestion_TroopToSpell(r).initialize();
 
             case SpellToTroop:
-                return new LyyaQuestion_SpellToTroop(r).initialize();
+                return new QuizQuestion_SpellToTroop(r).initialize();
                 
             case TroopToType:
-                return new LyyaQuestion_TroopToType(r).initialize();
+                return new QuizQuestion_TroopToType(r).initialize();
                 
             case TypeToTroop:
-                return new LyyaQuestion_TypeToTroop(r).initialize();
+                return new QuizQuestion_TypeToTroop(r).initialize();
                 
             case TroopToColor:
-                return new LyyaQuestion_TroopToColor(r).initialize();
+                return new QuizQuestion_TroopToColor(r).initialize();
                 
             case ColorToTroop:
-                return new LyyaQuestion_ColorToTroop(r).initialize();
+                return new QuizQuestion_ColorToTroop(r).initialize();
                 
             case TroopToRarity:
-                return new LyyaQuestion_TroopToRarity(r).initialize();
+                return new QuizQuestion_TroopToRarity(r).initialize();
                 
             case RarityToTroop:
-                return new LyyaQuestion_RarityToTroop(r).initialize();
+                return new QuizQuestion_RarityToTroop(r).initialize();
                 
             case TroopToTrait:
-                return new LyyaQuestion_TroopToTrait(r).initialize();
+                return new QuizQuestion_TroopToTrait(r).initialize();
                 
             case TraitToTroop:
-                return new LyyaQuestion_TraitToTroop(r).initialize();
+                return new QuizQuestion_TraitToTroop(r).initialize();
                 
             case TrueDamageTroop:
-                return new LyyaQuestion_TrueDamageTroop(r).initialize();
+                return new QuizQuestion_TrueDamageTroop(r).initialize();
                 
             case CreateGemsTroop:
-                return new LyyaQuestion_CreateGemsTroop(r).initialize();
+                return new QuizQuestion_CreateGemsTroop(r).initialize();
                 
             case ConvertGemsTroop:
-                return new LyyaQuestion_ConvertGemsTroop(r).initialize();
+                return new QuizQuestion_ConvertGemsTroop(r).initialize();
                 
             case DestroyGemsTroop:
-                return new LyyaQuestion_DestroyGemsTroop(r).initialize();
+                return new QuizQuestion_DestroyGemsTroop(r).initialize();
                 
             case IncreaseStatsTroop:
-                return new LyyaQuestion_IncreaseStatsTroop(r).initialize();
+                return new QuizQuestion_IncreaseStatsTroop(r).initialize();
                 
             case DecreaseStatsTroop:
-                return new LyyaQuestion_DecreaseStatsTroop(r).initialize();
+                return new QuizQuestion_DecreaseStatsTroop(r).initialize();
                 
             case GiveResourcesTroop:
-                return new LyyaQuestion_GiveResourcesTroop(r).initialize();
+                return new QuizQuestion_GiveResourcesTroop(r).initialize();
                 
             case GiveExtraTurnTroop:
-                return new LyyaQuestion_GiveExtraTurnTroop(r).initialize();
+                return new QuizQuestion_GiveExtraTurnTroop(r).initialize();
                 
             case EffectsTroop:
-                return new LyyaQuestion_EffectsTroop(r).initialize();
+                return new QuizQuestion_EffectsTroop(r).initialize();
                 
             case KingdomToTraitstone:
-                return new LyyaQuestion_KingdomToTraitstone(r).initialize();
+                return new QuizQuestion_KingdomToTraitstone(r).initialize();
                 
             case TraitstoneToKingdom:
-                return new LyyaQuestion_TraitstoneToKingdom(r).initialize();
+                return new QuizQuestion_TraitstoneToKingdom(r).initialize();
                 
             case KingdomToStat:
-                return new LyyaQuestion_KingdomToStat(r).initialize();
+                return new QuizQuestion_KingdomToStat(r).initialize();
                 
             case StatToKingdom:
-                return new LyyaQuestion_StatToKingdom(r).initialize();
+                return new QuizQuestion_StatToKingdom(r).initialize();
         }
         
         throw new InvalidParameterException("Invalid question type specified!");
@@ -1140,7 +1140,7 @@ public class LyyaQuestionFactory
      * @param difficulty The difficulty of question to create.
      * @return A new question of the specified type.
      */
-    public static LyyaQuestion getQuestion(Random r, LyyaQuestion.Difficulty difficulty)
+    public static QuizQuestion getQuestion(Random r, QuizQuestion.Difficulty difficulty)
     {
         ArrayList<QuestionType> types = getTypesForDifficulty(difficulty);
         QuestionType type = types.get(r.nextInt(types.size()));
@@ -1152,7 +1152,7 @@ public class LyyaQuestionFactory
      * @param r The random number generator to use.
      * @return A new question of the specified type.
      */
-    public static LyyaQuestion getQuestion(Random r)
+    public static QuizQuestion getQuestion(Random r)
     {
         QuestionType type = QuestionType.fromInteger(r.nextInt(QuestionType.Count));
         return getQuestion(r, type);

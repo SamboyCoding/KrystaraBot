@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import me.samboycoding.krystarabot.main;
-import static me.samboycoding.krystarabot.quiz.LyyaQuestion.Difficulty.Easy;
-import static me.samboycoding.krystarabot.quiz.LyyaQuestion.Difficulty.Hard;
-import static me.samboycoding.krystarabot.quiz.LyyaQuestion.Difficulty.Moderate;
+import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Easy;
+import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Hard;
+import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Moderate;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -23,7 +23,7 @@ public class QuizQuestionTimer implements Runnable
 
     IChannel chnl;
 
-    public LyyaQuestion q;
+    public QuizQuestion q;
     public QuizPhase phase;
 
     String quizLog = "";
@@ -77,7 +77,7 @@ public class QuizQuestionTimer implements Runnable
         {
             int numQuestions = 0;
 
-            ArrayList<LyyaQuestion.Difficulty> questionDifficulties
+            ArrayList<QuizQuestion.Difficulty> questionDifficulties
                     = new ArrayList<>(Arrays.asList(Easy, Easy, Easy, Moderate, Moderate, Moderate, Moderate, Hard, Hard, Hard));
             //= new ArrayList<>(Arrays.asList(Easy, Moderate, Hard));
             java.util.Collections.shuffle(questionDifficulties);
@@ -99,18 +99,18 @@ public class QuizQuestionTimer implements Runnable
                 }
                 String toSend = "**Question #" + numQuestions + ":**\n\n";
 
-                LyyaQuestion.Difficulty difficulty = questionDifficulties.remove(0);
+                QuizQuestion.Difficulty difficulty = questionDifficulties.remove(0);
 
                 main.quizH.lastDifficulty = difficulty;
 
-                LyyaQuestion question;
+                QuizQuestion question;
 
                 Random questionSeed = new Random();
                 long seed = Utilities.getSeed(questionSeed);
 
                 synchronized (this)
                 {
-                    q = LyyaQuestionFactory.getQuestion(questionSeed, difficulty);
+                    q = QuizQuestionFactory.getQuestion(questionSeed, difficulty);
                     question = q;
                     main.quizH.currentQ = q;
                 }

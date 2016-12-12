@@ -2,8 +2,8 @@ package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
 import java.util.Random;
-import me.samboycoding.krystarabot.quiz.LyyaQuestion;
-import me.samboycoding.krystarabot.quiz.LyyaQuestionFactory;
+import me.samboycoding.krystarabot.quiz.QuizQuestion;
+import me.samboycoding.krystarabot.quiz.QuizQuestionFactory;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -32,8 +32,8 @@ public class QuestionCommand extends KrystaraCommand
         
         int reps = 1;
         long seed = -1;
-        LyyaQuestion.Difficulty difficulty = null;
-        LyyaQuestionFactory.QuestionType type = null;
+        QuizQuestion.Difficulty difficulty = null;
+        QuizQuestionFactory.QuestionType type = null;
         
         if (arguments.size() > 0)
         {
@@ -45,22 +45,22 @@ public class QuestionCommand extends KrystaraCommand
                     break;
                     
                 case "easy":
-                   difficulty =  LyyaQuestion.Difficulty.Easy;
+                   difficulty =  QuizQuestion.Difficulty.Easy;
                    break;
                    
                 case "moderate":
-                   difficulty =  LyyaQuestion.Difficulty.Moderate;
+                   difficulty =  QuizQuestion.Difficulty.Moderate;
                    break;
                    
                 case "hard":
-                   difficulty =  LyyaQuestion.Difficulty.Hard;
+                   difficulty =  QuizQuestion.Difficulty.Hard;
                    break;
                    
                 default:
                     try
                     {
                         // Try to get the question as a string from the enum values
-                        type = LyyaQuestionFactory.QuestionType.fromString(arguments.get(0));
+                        type = QuizQuestionFactory.QuestionType.fromString(arguments.get(0));
                     }
                     catch (Exception e)
                     {
@@ -68,20 +68,20 @@ public class QuestionCommand extends KrystaraCommand
                         {
                             // Try to get the question as an integer as a last resort
                             int iType = Integer.parseInt(arguments.get(0));
-                            type = LyyaQuestionFactory.QuestionType.fromInteger(iType);
+                            type = QuizQuestionFactory.QuestionType.fromInteger(iType);
                         }
                         catch (Exception e2)
                         {
                             ArrayList<String> typeStrings = new ArrayList<>();
                             
-                            for (int i = 0; i < LyyaQuestionFactory.QuestionType.Count; i++)
+                            for (int i = 0; i < QuizQuestionFactory.QuestionType.Count; i++)
                             {
-                                typeStrings.add(LyyaQuestionFactory.QuestionType.fromInteger(i).toString());
+                                typeStrings.add(QuizQuestionFactory.QuestionType.fromInteger(i).toString());
                             }
                             chnl.sendMessage("Invalid question type.  Valid values are:" +
                                     "\n**any, all:** Generate a question of any type" +
                                     "\n**easy, moderate, hard:** Generate a question of the specified difficulty" +
-                                    "\n**0, 1, ..., " + (LyyaQuestionFactory.QuestionType.Count-1) + ":** Generate a question of the specified index" +
+                                    "\n**0, 1, ..., " + (QuizQuestionFactory.QuestionType.Count-1) + ":** Generate a question of the specified index" +
                                     "\n**" + String.join(", ", typeStrings) + ":** Generate a question of the specified type");
                             return;
                         }
@@ -126,23 +126,23 @@ public class QuestionCommand extends KrystaraCommand
         
         for (int rep = 0; rep < reps; rep++)
         {
-            LyyaQuestion q;
+            QuizQuestion q;
 
             if (difficulty != null)
             {
-                q = LyyaQuestionFactory.getQuestion(r, difficulty);
+                q = QuizQuestionFactory.getQuestion(r, difficulty);
             }
             else if (type != null)
             {
-                q = LyyaQuestionFactory.getQuestion(r, type);
+                q = QuizQuestionFactory.getQuestion(r, type);
             }
             else 
             {
-                q = LyyaQuestionFactory.getQuestion(r);
+                q = QuizQuestionFactory.getQuestion(r);
             }
 
             String answerString = "";
-            for (int i = 0; i < LyyaQuestion.AnswerCount; i++)
+            for (int i = 0; i < QuizQuestion.AnswerCount; i++)
             {
                 String boldStr = (q.getCorrectAnswerIndex() == i) ? "**" : "";
                 answerString += Integer.toString(i+1) + ") " + boldStr + q.getAnswerText(i) + boldStr + "\n";

@@ -5,11 +5,11 @@ import java.util.Random;
 import org.json.JSONObject;
 
 /**
- * Alternative version of questions for the quiz.
+ * Base class of questions for the quiz.
  *
  * @author Emily Ash
  */
-public abstract class LyyaQuestion
+public abstract class QuizQuestion
 {
     public static enum Difficulty
     {
@@ -29,7 +29,7 @@ public abstract class LyyaQuestion
     
     public final static int AnswerCount = 4;
     
-    public LyyaQuestion(Random r)
+    public QuizQuestion(Random r)
     {
         answers = new ArrayList<>();
         random = r;
