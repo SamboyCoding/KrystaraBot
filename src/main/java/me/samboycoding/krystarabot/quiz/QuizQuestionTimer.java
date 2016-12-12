@@ -172,7 +172,6 @@ public class QuizQuestionTimer implements Runnable
                 {
                     submissions = new ArrayList<>();
                 }
-                String toSend = "**Question #" + curQuestionIndex + ":**\n\n";
 
                 QuizQuestion.Difficulty difficulty = questionDifficulties.remove(0);
 
@@ -192,16 +191,21 @@ public class QuizQuestionTimer implements Runnable
 
                 questionLog.add(new QuestionLogEntry(difficulty, seed));
 
-                toSend += question.getQuestionText() + " (" + pointString + ")\n";
-                toSend += "1) " + question.getAnswerText(0) + "\n";
-                toSend += "2) " + question.getAnswerText(1) + "\n";
-                toSend += "3) " + question.getAnswerText(2) + "\n";
-                toSend += "4) " + question.getAnswerText(3) + "\n\n";
+                String questionPrefix = "**Question #" + curQuestionIndex + ":**\n\n";
+                questionPrefix += question.getQuestionText() + " (" + pointString + ")\n\n";
+                
+                quizLog += questionPrefix;
+                
+                String questionBody = "";
+                for (int i = 0; i < QuizQuestion.AnswerCount; i++)
+                {
+                    questionBody += (i+1) + ") " + question.getAnswerText(i) + "\n";
+                }
 
-                quizLog += toSend;
+                quizLog += questionBody;
                 timer.delete();
 
-                msg = chnl.sendMessage(toSend);
+                msg = chnl.sendMessage(questionPrefix + questionBody);
 
                 synchronized (this)
                 {
@@ -221,16 +225,16 @@ public class QuizQuestionTimer implements Runnable
                 int pos = question.getCorrectAnswerIndex();
                 String number = Integer.toString(pos + 1);
 
-                toSend = "**Question #" + curQuestionIndex + ":**\n\nThe correct answer was: "
+                String answerBody = "The correct answer was: "
                         + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
                         + "**\n\n" + getCorrectUserText(difficulty)
                         + "\n" + Utilities.repeatString("-", 40);
 
-                quizLog += toSend + "\n";
+                quizLog += answerBody + "\n";
 
                 msg.delete();
 
-                msg = chnl.sendMessage(toSend);
+                msg = chnl.sendMessage(questionPrefix + answerBody);
             }
 
             synchronized (this)
@@ -287,14 +291,17 @@ public class QuizQuestionTimer implements Runnable
                 String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();;
 
                 main.databaseHandler.increaseUserQuizScore(u, chnl.getGuild(), score);
-                u.getOrCreatePMChannel().sendMessage("You got " + score + " points on the quiz! You are now on " + main.databaseHandler.getQuizScore(u, chnl.getGuild()));
+                if (score > 0)
+                {
+                    u.getOrCreatePMChannel().sendMessage("You scored " + score + " points on the quiz! You now have a total of " + 
+                            main.databaseHandler.getQuizScore(u, chnl.getGuild()) + " points.");
+                    sleepFor(500);
+                }
                 if (numDone <= 10)
                 {
                     scores += "\n" + nameOfUser + Utilities.repeatString(" ", 50 - nameOfUser.length()) + score;
                     numDone++;
                 }
-
-                sleepFor(500);
             }
 
             scores += "\n```";
