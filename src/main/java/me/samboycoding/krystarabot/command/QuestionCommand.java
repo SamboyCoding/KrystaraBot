@@ -37,7 +37,7 @@ public class QuestionCommand extends KrystaraCommand
         
         if (arguments.size() > 0)
         {
-            switch (arguments.get(0))
+            switch (arguments.get(0).toLowerCase())
             {
                 // Try to get the question as a difficulty group
                 case "any":
