@@ -72,7 +72,17 @@ public class QuestionCommand extends KrystaraCommand
                         }
                         catch (Exception e2)
                         {
-                            chnl.sendMessage("Type argument must be in range (0-" + (LyyaQuestionFactory.QuestionType.Count-1) + ")");
+                            ArrayList<String> typeStrings = new ArrayList<>();
+                            
+                            for (int i = 0; i < LyyaQuestionFactory.QuestionType.Count; i++)
+                            {
+                                typeStrings.add(LyyaQuestionFactory.QuestionType.fromInteger(i).toString());
+                            }
+                            chnl.sendMessage("Invalid question type.  Valid values are:" +
+                                    "\n**any, all:** Generate a question of any type" +
+                                    "\n**easy, moderate, hard:** Generate a question of the specified difficulty" +
+                                    "\n**0, 1, ..., " + (LyyaQuestionFactory.QuestionType.Count-1) + ":** Generate a question of the specified index" +
+                                    "\n**" + String.join(", ", typeStrings) + ":** Generate a question of the specified type");
                             return;
                         }
                     }
