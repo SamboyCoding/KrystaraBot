@@ -41,10 +41,10 @@ public class QuizStartTimer implements Runnable
                     msg.edit("Quiz will start in " + i + " seconds...");
                 } catch(RateLimitException e)
                 {
-                    Thread.sleep(500);
+                    sleepFor(500);
                     //Ignore and move on, with an extra 1/2 second wait.
                 }
-                Thread.sleep(1000);
+                sleepFor(1000);
             }
             msg.delete();
             c.sendMessage("Welcome to the GoW Discord quiz!");
