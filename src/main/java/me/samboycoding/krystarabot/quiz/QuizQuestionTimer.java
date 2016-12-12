@@ -225,12 +225,17 @@ public class QuizQuestionTimer implements Runnable
             Thread.sleep(1500);
             
             chnl.sendMessage(scores);
-
-            QuizHandler.qt = null;
-            QuizHandler.quizThread = null;
         } catch (Exception e)
         {
             e.printStackTrace();
+        } finally
+        {
+            synchronized (this)
+            {
+                phase = QuizPhase.Completed;
+            }
+            QuizHandler.qt = null;
+            QuizHandler.quizThread = null;
         }
     }
 
