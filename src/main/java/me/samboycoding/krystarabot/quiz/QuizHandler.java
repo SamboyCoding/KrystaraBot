@@ -111,10 +111,13 @@ public class QuizHandler
             if (qt.phase == QuizQuestionTimer.QuizPhase.Introduction)
             {
                 return QuizQuestionTimer.QuizSubmitResult.TooEarly;
-            } else if ((qt.phase == QuizQuestionTimer.QuizPhase.Pausing) || (qt.phase == QuizQuestionTimer.QuizPhase.Completed)
-                    || (qt.q != question))
+            } else
             {
-                return QuizQuestionTimer.QuizSubmitResult.TooLate;
+                if ((qt.phase == QuizQuestionTimer.QuizPhase.Pausing) || (qt.phase == QuizQuestionTimer.QuizPhase.Completed)
+                        || (qt.q != question))
+                {
+                    return QuizQuestionTimer.QuizSubmitResult.TooLate;
+                }
             }
 
             boolean isFirst = true;
@@ -190,7 +193,7 @@ public class QuizHandler
             srv.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.");
         }
     }
-    
+
     public void finishQuestion()
     {
         currentQ = null;
@@ -642,7 +645,7 @@ public class QuizHandler
 
         return result;
     }
-    
+
     private Question handleSpellTemplate(QuestionTemplate temp, Random r)
     {
         //Possible values: "truedamge", "creategems", "generatemana", "destroygems", "debuff", "convertgems", "removecolor", "increasestat"
@@ -1195,12 +1198,12 @@ public class QuizHandler
                 //Which kingdom has the banner %%BANNERNAME%%?
                 String banner = randomKingdom.getString("BannerName");
 
-                while(banner.equals("Unnamed Banner"))
+                while (banner.equals("Unnamed Banner"))
                 {
                     randomKingdom = GameData.arrayKingdoms.getJSONObject(r.nextInt(GameData.arrayKingdoms.length()));
                     banner = randomKingdom.getString("BannerName");
                 }
-                
+
                 questionText = temp.templateText.replace("%%BANNERNAME%%", banner);
                 String correct = randomKingdom.getString("Name");
                 answers = new ArrayList<>();

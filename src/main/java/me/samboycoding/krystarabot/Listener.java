@@ -2,7 +2,6 @@ package me.samboycoding.krystarabot;
 
 import java.awt.Color;
 import java.text.DateFormatSymbols;
-import java.time.ZoneId;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +27,6 @@ import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.Image;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
-import sx.blah.discord.util.audio.AudioPlayer;
 
 /**
  * Main event listener

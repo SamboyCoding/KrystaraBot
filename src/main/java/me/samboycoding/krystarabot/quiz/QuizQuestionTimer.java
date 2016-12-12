@@ -11,6 +11,7 @@ import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.RateLimitException;
 
 /**
  * The thread that handles the asking/answering of questions
@@ -78,7 +79,7 @@ public class QuizQuestionTimer implements Runnable
 
             ArrayList<LyyaQuestion.Difficulty> questionDifficulties
                     = new ArrayList<>(Arrays.asList(Easy, Easy, Easy, Moderate, Moderate, Moderate, Moderate, Hard, Hard, Hard));
-                    //= new ArrayList<>(Arrays.asList(Easy, Moderate, Hard));
+            //= new ArrayList<>(Arrays.asList(Easy, Moderate, Hard));
             java.util.Collections.shuffle(questionDifficulties);
 
             while (questionDifficulties.size() > 0)
@@ -161,7 +162,7 @@ public class QuizQuestionTimer implements Runnable
             {
                 phase = QuizPhase.Completed;
             }
-            
+
             msg.delete();
 
             chnl.sendMessage("...\n\n\n\nQuiz Log: ");
@@ -178,8 +179,8 @@ public class QuizQuestionTimer implements Runnable
                 {
                     chnl.sendMessage(toSend);
                 }
-                
-                if(txt.trim().length() < 1)
+
+                if (txt.trim().length() < 1)
                 {
                     break;
                 }
@@ -192,7 +193,7 @@ public class QuizQuestionTimer implements Runnable
             {
                 chnl.sendMessage(txt);
             }
-            
+
             Thread.sleep(1250);
 
             chnl.sendMessage("The quiz is over! Thanks for playing! The top 10 scores were:");
@@ -214,7 +215,7 @@ public class QuizQuestionTimer implements Runnable
                     scores += "\n" + nameOfUser + Utilities.repeatString(" ", 50 - nameOfUser.length()) + score;
                     numDone++;
                 }
-                
+
                 Thread.sleep(500);
             }
 
@@ -223,8 +224,33 @@ public class QuizQuestionTimer implements Runnable
             quizLog += scores;
 
             Thread.sleep(1500);
-            
+
             chnl.sendMessage(scores);
+        } catch (RateLimitException rle)
+        {
+            //Attempt to provide a meaningful error.
+            
+            StackTraceElement[] st = rle.getStackTrace();
+
+            boolean success = false;
+            
+            for (StackTraceElement el : st)
+            {
+                if (el.getClassName().equals(QuizQuestionTimer.class.getName()))
+                {
+                    main.logToBoth("[Error] [Quiz] Rate limited! Line " + el.getLineNumber() + " limited for " + rle.getRetryDelay() + " ms.");
+                    success = true;
+                }
+            }
+            
+            
+            if(!success)
+            {
+                //Failed to provide meaningful error.
+                main.logToBoth("Rate limited, but not us, but happening in us?! For: " + rle.getRetryDelay() + ". Stacktrace: ");
+                rle.printStackTrace();
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
