@@ -11,7 +11,7 @@ public class IDReference
     public static final boolean LIVE = false;
     
     public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL;
-    public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, MUTEDROLE, PCMOBILEROLE, CONSOLEROLE;
+    public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE;
     public static String SERVERID;
     public static String MYTOKEN; //Set in main method.
     public static String MYID; //Gets set once readyevent done.
@@ -35,7 +35,6 @@ public class IDReference
             DEVROLE = "237461438548017154";
             MODROLE = "236897692599451648";
             STREAMERROLE = "240689877325185024";
-            MUTEDROLE = "241943239374929920";
             PCMOBILEROLE = "237500925982277634";
             CONSOLEROLE = "237500960576897024";
             
@@ -56,7 +55,6 @@ public class IDReference
             DEVROLE = "247395805567123467";
             MODROLE = "247395922177163264";
             STREAMERROLE = "247395963243593728";
-            MUTEDROLE = "247396046416773121";
             PCMOBILEROLE = "247395991127457792";
             CONSOLEROLE = "247396031422005248";
             
