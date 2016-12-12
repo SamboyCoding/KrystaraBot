@@ -250,7 +250,7 @@ public class QuizQuestionTimer implements Runnable
                 for (QuestionLogEntry entry : questionLog)
                 {
                     i++;
-                    questionLogText += "  " + i + ": " + entry.difficulty.toString() + " " + entry.seed + "\n";
+                    questionLogText += "  " + i + ":  ?question " + entry.difficulty.toString() + " 1 " + entry.seed + "\n";
                 }
                 Thread.sleep(1000);
                 chnl.sendMessage(questionLogText);
