@@ -238,7 +238,10 @@ public class QuizQuestionTimer implements Runnable
                 phase = QuizPhase.Completed;
             }
 
+            String formatString = "Results: %1$d seconds";
+            IMessage timer = sendCountdownMessage(formatString, 10);
             msg.delete();
+            timer.delete();
 
             chnl.sendMessage("...\n\n\n\nQuiz Log: ");
 
