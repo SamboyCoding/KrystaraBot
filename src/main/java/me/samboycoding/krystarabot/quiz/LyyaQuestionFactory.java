@@ -449,13 +449,23 @@ public class LyyaQuestionFactory
         @Override
         public String getQuestionText()
         {
-            return "Which **troop** is of type **" + correctAnswer.getString("Type") + "**?";
+            return "Which **troop** is of type **" + getTroopType(correctAnswer) + "**?";
         }
 
         @Override
         public String getAnswerText(int index)
         {
             return answers.get(index).getString("Name");
+        }
+
+        private String getTroopType(JSONObject obj)
+        {
+            String type = obj.getString("Type");
+            if (type.indexOf("-") < 0)
+            {
+                type += " only";
+            }
+            return type;
         }
     }
 
