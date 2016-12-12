@@ -182,7 +182,7 @@ public class Utilities
         }
         if (ba0.length != ba1.length || ba0.length != bar.length)
         {
-            throw new RuntimeException("bad serialized length");
+            throw new RuntimeException("Bad serialized length");
         }
         int i = 0;
         while (i < ba0.length && ba0[i] == ba1[i])

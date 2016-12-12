@@ -194,7 +194,7 @@ public class QuizQuestionTimer implements Runnable
                 chnl.sendMessage(txt);
             }
 
-            Thread.sleep(1250);
+            Thread.sleep(1500);
 
             chnl.sendMessage("The quiz is over! Thanks for playing! The top 10 scores were:");
 
