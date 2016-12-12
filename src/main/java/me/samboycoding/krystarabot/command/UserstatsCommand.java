@@ -64,10 +64,6 @@ public class UserstatsCommand extends KrystaraCommand
             {
                 continue;
             }
-            if (r.getID().equals(IDReference.MUTEDROLE))
-            {
-                continue;
-            }
             sdrRolesNice.add(r.getName());
         }
 

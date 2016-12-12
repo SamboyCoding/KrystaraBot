@@ -62,10 +62,6 @@ public class ServerstatsCommand extends KrystaraCommand
             {
                 continue;
             }
-            if (r2.getID().equals(IDReference.MUTEDROLE))
-            {
-                continue;
-            }
             if (r2.getName().equals("KrystaraBot"))
             {
                 continue;
