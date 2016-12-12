@@ -36,34 +36,40 @@ public class TroopCommand extends KrystaraCommand
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
+
+        JSONObject troopInfo;
+
         String troopName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        ArrayList<String> results = main.data.searchForTroop(troopName);
-        
-        if(results.isEmpty())
+        troopInfo = main.data.getTroopByName(troopName);
+
+        if (troopInfo == null)
         {
-            chnl.sendMessage("No troop `" + troopName + "` found, " + sdr.mention());
-            return;
+            ArrayList<String> results = main.data.searchForTroop(troopName);
+
+            if (results.isEmpty())
+            {
+                chnl.sendMessage("No troop `" + troopName + "` found, " + sdr.mention());
+                return;
+            }
+            if (results.size() > 5)
+            {
+                chnl.sendMessage("Search term is far too broad (" + results.size() + " results) - please refine it.");
+                return;
+            }
+            if (results.size() > 1)
+            {
+                chnl.sendMessage("Search term \"" + troopName + "\" is too ambiguous. Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
+                return;
+            }
+
+            troopInfo = main.data.getTroopByName(results.get(0));
         }
-        if(results.size() > 5)
-        {
-            chnl.sendMessage("Search term is far too broad (" + results.size() + " results) - please refine it.");
-            return;
-        }
-        if(results.size() > 1)
-        {
-            chnl.sendMessage("Search term \"" + troopName + "\" is too ambiguous. Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
-            return;
-        }
-        
-        JSONObject troopInfo = main.data.getTroopByName(results.get(0));
-        
+
         String desc = troopInfo.getString("Description").replace("\n", "");
         troopName = troopInfo.getString("Name");
         String kingdom = troopInfo.getString("Kingdom");
         String rarity = troopInfo.getString("TroopRarity");
         String troopType = troopInfo.getString("Type").replace("-", "/");
-        //String type1 = troopInfo.getString("TroopType");
-        //String type2 = troopInfo.getString("TroopType2");
         String spell = troopInfo.getJSONObject("Spell").getString("Name");
         int summonCost = troopInfo.getJSONObject("Spell").getInt("Cost");
 
@@ -115,8 +121,7 @@ public class TroopCommand extends KrystaraCommand
         int lifeLvl1 = troopInfo.getInt("Health_Base");
         int attackLvl1 = troopInfo.getInt("Attack_Base");
         int magicLvl1 = troopInfo.getInt("SpellPower_Base");
-        */
-        
+         */
         String troopId = troopInfo.getString("FileBase");
         URL URL = new URL("http://ashtender.com/gems/assets/cards/" + troopId + ".jpg");
         //get spell description
@@ -159,7 +164,7 @@ public class TroopCommand extends KrystaraCommand
         String info = "**" + troopName + "** (" + desc + ")\n" + rarity + " from " + kingdom + ", Type: " + troopType + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\n\n**Spell**";
         info += "\n" + spell + " (" + summonCost + ")\n" + troopSpellDesc;
         info += "\n" + manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
-        
+
         info += "\n\n**Stats**";
         //info += "\nLevel 1:   " + emojiArmor + " " + armorLvl1 + "    " + emojiLife + " " + lifeLvl1 + "    " + emojiAttack + " " + attackLvl1 + "    " + emojiMagic + " " + magicLvl1;
         //info += "\nLevel 10:  " + emojiArmor + " " + armorLvl10 + "    " + emojiLife + " " + lifeLvl10 + "    " + emojiAttack + " " + attackLvl10 + "    " + emojiMagic + " " + magicLvl10;

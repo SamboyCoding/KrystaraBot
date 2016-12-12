@@ -240,7 +240,7 @@ public class QuizHandler
                 scoreDelta = lastDifficulty.getPoints();
                 break;
             case FirstCorrect:
-                scoreDelta = lastDifficulty.getPoints() + 2;
+                scoreDelta = lastDifficulty.getPoints() + 1;
                 break;
             case AlreadyAnswered:
                 break;
