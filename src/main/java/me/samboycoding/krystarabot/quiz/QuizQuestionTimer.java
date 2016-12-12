@@ -24,11 +24,13 @@ public class QuizQuestionTimer implements Runnable
 
     IChannel chnl;
 
-    public QuizQuestion q;
-    public QuizPhase phase;
+    private QuizQuestion q;
+    private QuizPhase phase;
 
-    String quizLog = "";
-
+    private String quizLog = "";
+    private boolean isAborted = false;
+    private final Object abortSignal = new Object();
+    
     public enum QuizPhase
     {
         Introduction,
@@ -60,14 +62,16 @@ public class QuizQuestionTimer implements Runnable
         }
     }
 
-    ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
+    private ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
 
-    IMessage msg;
+    private IMessage msg;
+    private QuizHandler qh;
 
-    public QuizQuestionTimer(IChannel c)
+    public QuizQuestionTimer(QuizHandler handler, IChannel c)
     {
         chnl = c;
         phase = QuizPhase.Introduction;
+        qh = handler;
     }
     
     private static class QuestionLogEntry
@@ -81,7 +85,7 @@ public class QuizQuestionTimer implements Runnable
             seed = s;
         }
     }
-
+    
     @Override
     public void run()
     {
@@ -100,7 +104,7 @@ public class QuizQuestionTimer implements Runnable
             while (questionDifficulties.size() > 0)
             {
                 IMessage timer = chnl.sendMessage("Question #" + (numQuestions+1) + " will be revealed in 10 seconds...");
-                Thread.sleep(10000);
+                sleepFor(10000);
 
                 if (msg != null)
                 {
@@ -116,8 +120,6 @@ public class QuizQuestionTimer implements Runnable
 
                 QuizQuestion.Difficulty difficulty = questionDifficulties.remove(0);
 
-                main.quizH.lastDifficulty = difficulty;
-
                 QuizQuestion question;
 
                 Random questionSeed = new Random();
@@ -127,7 +129,7 @@ public class QuizQuestionTimer implements Runnable
                 {
                     q = QuizQuestionFactory.getQuestion(questionSeed, difficulty);
                     question = q;
-                    main.quizH.currentQ = q;
+                    qh.setQuestion(q, difficulty);
                 }
 
                 questionLog.add(new QuestionLogEntry(difficulty, seed));
@@ -150,7 +152,7 @@ public class QuizQuestionTimer implements Runnable
                     phase = QuizPhase.WaitingForAnswers;
                 }
 
-                Thread.sleep(10000);
+                sleepFor(10000);
 
                 synchronized (this)
                 {
@@ -199,7 +201,7 @@ public class QuizQuestionTimer implements Runnable
                 String toSend = txt.substring(0, lastQuestionBreak + 1).trim();
                 if (toSend.length() > 0)
                 {
-                    Thread.sleep(1000);
+                    sleepFor(1000);
                     chnl.sendMessage(toSend);
                 }
 
@@ -208,11 +210,11 @@ public class QuizQuestionTimer implements Runnable
             
             if (txt.length() > 0)
             {
-                Thread.sleep(1000);
+                sleepFor(1000);
                 chnl.sendMessage(txt);
             }
 
-            Thread.sleep(2500);
+            sleepFor(2500);
 
             main.quizH.ordered.putAll(main.quizH.unordered); //Sort.
 
@@ -232,14 +234,14 @@ public class QuizQuestionTimer implements Runnable
                     numDone++;
                 }
 
-                Thread.sleep(500);
+                sleepFor(500);
             }
 
             scores += "\n```";
 
             quizLog += scores;
 
-            Thread.sleep(1500);
+            sleepFor(1500);
 
             chnl.sendMessage(scores);
 
@@ -252,7 +254,7 @@ public class QuizQuestionTimer implements Runnable
                     i++;
                     questionLogText += "  " + i + ":  ?question " + entry.difficulty.toString() + " 1 " + entry.seed + "\n";
                 }
-                Thread.sleep(1000);
+                sleepFor(1000);
                 chnl.sendMessage(questionLogText);
             }
         } catch (RateLimitException rle)
@@ -280,6 +282,16 @@ public class QuizQuestionTimer implements Runnable
                 rle.printStackTrace();
             }
             
+        } catch (InterruptedException ie)
+        {
+            try
+            {
+                chnl.sendMessage("Quiz was aborted.");
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -289,11 +301,79 @@ public class QuizQuestionTimer implements Runnable
             {
                 phase = QuizPhase.Completed;
             }
-            QuizHandler.qt = null;
-            QuizHandler.quizThread = null;
+            
+            if (!isAborted)
+            {
+                qh.handleQuestionTimerComplete();
+            }
         }
     }
+    
+    private void sleepFor(int timeout) throws InterruptedException
+    {
+        synchronized (abortSignal)
+        {
+            abortSignal.wait(timeout);
+            if (isAborted)
+            {
+                throw new InterruptedException();
+            }
+        }
+    }
+    
+    public void abort()
+    {
+        synchronized (abortSignal)
+        {
+            isAborted = true;
+            abortSignal.notify();
+        }
+    }
+    
+    public QuizSubmitResult submitAnswer(QuizQuestion question, IUser user, int answer)
+    {
+        synchronized (this)
+        {
+            if (phase == QuizQuestionTimer.QuizPhase.Introduction)
+            {
+                return QuizQuestionTimer.QuizSubmitResult.TooEarly;
+            }
+            else
+            {
+                if ((phase == QuizQuestionTimer.QuizPhase.Pausing) || (phase == QuizQuestionTimer.QuizPhase.Completed)
+                        || (q != question))
+                {
+                    return QuizQuestionTimer.QuizSubmitResult.TooLate;
+                }
+            }
 
+            boolean isFirst = true;
+            boolean isCorrect = (question.getCorrectAnswerIndex() == answer);
+
+            for (QuizQuestionTimer.QuizSubmitEntry entry : submissions)
+            {
+                if (entry.user == user)
+                {
+                    return QuizQuestionTimer.QuizSubmitResult.AlreadyAnswered;
+                }
+                if (entry.result == QuizQuestionTimer.QuizSubmitResult.FirstCorrect)
+                {
+                    isFirst = false;
+                }
+            }
+
+            QuizQuestionTimer.QuizSubmitResult result = QuizQuestionTimer.QuizSubmitResult.Incorrect;
+            if (isCorrect)
+            {
+                result = isFirst ? QuizQuestionTimer.QuizSubmitResult.FirstCorrect : QuizQuestionTimer.QuizSubmitResult.Correct;
+            }
+
+            submissions.add(new QuizQuestionTimer.QuizSubmitEntry(user, result));
+
+            return result;
+        }
+    }
+    
     private String getCorrectUserText(QuizQuestion.Difficulty difficulty)
     {
         ArrayList<String> correctUserNames = new ArrayList<>();

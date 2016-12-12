@@ -90,6 +90,7 @@ public class Listener
             main.registerCommand(new SearchCommand());
             main.registerCommand(new ServerstatsCommand());
             main.registerCommand(new SpellCommand());
+            main.registerCommand(new StopQuizCommand());
             main.registerCommand(new TeamCommand());
             main.registerCommand(new Top10Command());
             main.registerCommand(new TraitCommand());
@@ -147,7 +148,7 @@ public class Listener
                 return;
             }
 
-            if (chnl.equals(main.quizH.getQuizChannel()))
+            if (chnl.equals(main.quizH.getQuizChannel()) && main.quizH.isQuizRunning())
             {
                 ArrayList<String> validOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4"));
 

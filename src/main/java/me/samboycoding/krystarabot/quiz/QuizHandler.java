@@ -29,12 +29,13 @@ import sx.blah.discord.util.RateLimitException;
 public class QuizHandler
 {
 
-    IChannel quizChannel = null;
-    public static Thread quizThread = null;
-    public static QuizQuestionTimer qt = null;
+    private IChannel quizChannel = null;
+    private Thread quizThread = null;
+    private QuizStartTimer quizStartTimer = null;
+    private QuizQuestionTimer quizQuestionTimer = null;
 
-    public QuizQuestion currentQ = null;
-    public QuizQuestion.Difficulty lastDifficulty = null;
+    private QuizQuestion currentQ = null;
+    private QuizQuestion.Difficulty currentDifficulty = null;
 
     LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
     Top10Command.ValueComparator comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
@@ -44,52 +45,9 @@ public class QuizHandler
     {
     }
 
-    public QuizQuestionTimer.QuizSubmitResult submitAnswer(QuizQuestion question, IUser user, int answer)
-    {
-        synchronized (this)
-        {
-            if (qt.phase == QuizQuestionTimer.QuizPhase.Introduction)
-            {
-                return QuizQuestionTimer.QuizSubmitResult.TooEarly;
-            } else
-            {
-                if ((qt.phase == QuizQuestionTimer.QuizPhase.Pausing) || (qt.phase == QuizQuestionTimer.QuizPhase.Completed)
-                        || (qt.q != question))
-                {
-                    return QuizQuestionTimer.QuizSubmitResult.TooLate;
-                }
-            }
-
-            boolean isFirst = true;
-            boolean isCorrect = (question.getCorrectAnswerIndex() == answer);
-
-            for (QuizQuestionTimer.QuizSubmitEntry entry : qt.submissions)
-            {
-                if (entry.user == user)
-                {
-                    return QuizQuestionTimer.QuizSubmitResult.AlreadyAnswered;
-                }
-                if (entry.result == QuizQuestionTimer.QuizSubmitResult.FirstCorrect)
-                {
-                    isFirst = false;
-                }
-            }
-
-            QuizQuestionTimer.QuizSubmitResult result = QuizQuestionTimer.QuizSubmitResult.Incorrect;
-            if (isCorrect)
-            {
-                result = isFirst ? QuizQuestionTimer.QuizSubmitResult.FirstCorrect : QuizQuestionTimer.QuizSubmitResult.Correct;
-            }
-
-            qt.submissions.add(new QuizQuestionTimer.QuizSubmitEntry(user, result));
-
-            return result;
-        }
-    }
-
     public boolean isQuizRunning()
     {
-        return qt != null || quizThread != null;
+        return (quizThread != null);
     }
 
     public IChannel getQuizChannel()
@@ -125,35 +83,104 @@ public class QuizHandler
 
         unordered.put(sdr, new Integer(0));
 
-        quizThread = new Thread(new QuizStartTimer(quizChannel), "Quiz start timer");
-        quizThread.start();
+        synchronized (this)
+        {
+            quizStartTimer = new QuizStartTimer(this, quizChannel);
+            quizThread = new Thread(quizStartTimer, "Quiz start timer");
+            quizThread.start();
+        }
 
         if (quizChannel != source)
         {
             srv.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.");
         }
     }
-
-    public void finishQuestion()
+    
+    public void handleStartTimerComplete()
     {
-        currentQ = null;
+        synchronized (this)
+        {
+            quizQuestionTimer = new QuizQuestionTimer(this, quizChannel);
+            quizThread = new Thread(quizQuestionTimer, "Quiz question timer");
+            quizThread.start();
+        }
+    }
+    
+    public void handleQuestionTimerComplete()
+    {
+        synchronized (this)
+        {
+            quizThread = null;
+        }
+    }
+    
+    public void abort()
+    {
+        Thread runningThread = null;
+        
+        synchronized (this)
+        {
+            if (quizStartTimer != null)
+            {
+                quizStartTimer.abort();
+            }
+            if (quizQuestionTimer != null)
+            {
+                quizQuestionTimer.abort();
+            }
+            runningThread = quizThread;
+        }
+        
+        if (runningThread != null)
+        {
+            try
+            {
+                synchronized (runningThread)
+                {
+                    runningThread.wait();
+                }
+            }
+            catch (InterruptedException e)
+            {}
+        }
+        
+        synchronized (this)
+        {
+            quizStartTimer = null;
+            quizQuestionTimer = null;
+            quizThread = null;
+        }
+    }
+    
+    public void setQuestion(QuizQuestion q, QuizQuestion.Difficulty difficulty)
+    {
+        synchronized (this)
+        {
+            currentQ = q;
+            currentDifficulty = difficulty;
+        }
     }
 
     @SuppressWarnings("UnnecessaryBoxing")
     public void handleAnswer(IMessage msg) throws MissingPermissionsException, RateLimitException, DiscordException
     {
-        QuizQuestion theQ = currentQ;
+        QuizQuestion theQ;
+        QuizQuestionTimer timer;
 
-        if (!isQuizRunning())
+        synchronized (this)
         {
-            msg.getAuthor().getOrCreatePMChannel().sendMessage("The quiz hasn't started yet, or has finished. Sorry!");
+            theQ = currentQ;
+            timer = quizQuestionTimer;
+        }
+
+        if (timer == null)
+        {
             msg.delete();
             return;
         }
 
         IUser usr = msg.getAuthor();
         String text = msg.getContent();
-        IChannel c = msg.getChannel();
 
         msg.delete();
 
@@ -172,15 +199,15 @@ public class QuizHandler
 
         int scoreDelta = 0;
 
-        switch (submitAnswer(theQ, usr, pos))
+        switch (timer.submitAnswer(theQ, usr, pos))
         {
             case Incorrect:
                 break;
             case Correct:
-                scoreDelta = lastDifficulty.getPoints();
+                scoreDelta = currentDifficulty.getPoints();
                 break;
             case FirstCorrect:
-                scoreDelta = lastDifficulty.getPoints() + 1;
+                scoreDelta = currentDifficulty.getPoints() + 1;
                 break;
             case AlreadyAnswered:
                 break;
