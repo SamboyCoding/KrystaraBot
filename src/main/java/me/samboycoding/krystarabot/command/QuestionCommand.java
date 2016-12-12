@@ -140,8 +140,7 @@ public class QuestionCommand extends KrystaraCommand
             
             messageStrings.add("Question: " + q.getQuestionText() + " (" + seed + ")\n" + answerString);
             
-            seed++;
-            r.setSeed(seed);
+            seed = Utilities.getSeed(r);
         }
  
         String finalString = String.join("\n\n", messageStrings);

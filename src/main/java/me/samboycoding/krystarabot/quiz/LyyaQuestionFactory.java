@@ -36,6 +36,8 @@ public class LyyaQuestionFactory
         DestroyGemsTroop,
         IncreaseStatsTroop,
         DecreaseStatsTroop,
+        GiveResourcesTroop,
+        GiveExtraTurnTroop,
         EffectsTroop,
         KingdomToTraitstone,
         TraitstoneToKingdom,
@@ -62,6 +64,8 @@ public class LyyaQuestionFactory
             DestroyGemsTroop,
             IncreaseStatsTroop,
             DecreaseStatsTroop,
+            GiveResourcesTroop,
+            GiveExtraTurnTroop,
             EffectsTroop,
             KingdomToTraitstone,
             TraitstoneToKingdom,
@@ -768,6 +772,46 @@ public class LyyaQuestionFactory
     }
     
     /**
+     * Asks a user to identify which troop gives resources (Gold, Souls, Maps).
+     */
+    private static class LyyaQuestion_GiveResourcesTroop extends LyyaQuestion_TroopsSpellFiltered
+    {
+        public LyyaQuestion_GiveResourcesTroop(Random r) { super(r); }
+        
+        @Override
+        public String getQuestionText()
+        {
+            return "What **troop** has a spell that can be used to generate **Gold, Souls,** or **Maps**?";
+        }
+
+        @Override
+        protected boolean matchesFilter(JSONObject obj)
+        {
+            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("GiveGold", "GiveSouls", "GiveTreasureMaps")));
+        }
+    }
+
+    /**
+     * Asks a user to identify which troop gives extra turns.
+     */
+    private static class LyyaQuestion_GiveExtraTurnTroop extends LyyaQuestion_TroopsSpellFiltered
+    {
+        public LyyaQuestion_GiveExtraTurnTroop(Random r) { super(r); }
+        
+        @Override
+        public String getQuestionText()
+        {
+            return "What **troop** has a spell that can give an **extra turn**?";
+        }
+
+        @Override
+        protected boolean matchesFilter(JSONObject obj)
+        {
+            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("ExtraTurn", "ExtraTurnConditional")));
+        }
+    }
+
+    /**
      * Asks a user to identify which troop causes a specific effect.
      */
     private static class LyyaQuestion_EffectsTroop extends LyyaQuestion_TroopsSpellFiltered
@@ -963,6 +1007,8 @@ public class LyyaQuestionFactory
             case ConvertGemsTroop:
             case DestroyGemsTroop:
             case RarityToTroop:
+            case GiveResourcesTroop:
+            case GiveExtraTurnTroop:
                 return LyyaQuestion.Difficulty.Easy;
                 
             case TroopToSpell:
@@ -990,7 +1036,7 @@ public class LyyaQuestionFactory
     
 
     /**
-     * Generates a random question of the specified type, and a random difficulty.
+     * Generates a random question of the specified type.
      * @param r The random number generator to use.
      * @param type The type of question to create.
      * @return A new question of the specified type.
@@ -1052,6 +1098,12 @@ public class LyyaQuestionFactory
                 
             case DecreaseStatsTroop:
                 return new LyyaQuestion_DecreaseStatsTroop(r).initialize();
+                
+            case GiveResourcesTroop:
+                return new LyyaQuestion_GiveResourcesTroop(r).initialize();
+                
+            case GiveExtraTurnTroop:
+                return new LyyaQuestion_GiveExtraTurnTroop(r).initialize();
                 
             case EffectsTroop:
                 return new LyyaQuestion_EffectsTroop(r).initialize();
