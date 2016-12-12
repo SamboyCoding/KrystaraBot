@@ -7,6 +7,7 @@ import me.samboycoding.krystarabot.main;
 import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Easy;
 import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Hard;
 import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Moderate;
+import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -68,6 +69,18 @@ public class QuizQuestionTimer implements Runnable
         chnl = c;
         phase = QuizPhase.Introduction;
     }
+    
+    private static class QuestionLogEntry
+    {
+        public final QuizQuestion.Difficulty difficulty;
+        public final long seed;
+        
+        public QuestionLogEntry(QuizQuestion.Difficulty d, long s)
+        {
+            difficulty = d;
+            seed = s;
+        }
+    }
 
     @Override
     public void run()
@@ -82,9 +95,11 @@ public class QuizQuestionTimer implements Runnable
             //= new ArrayList<>(Arrays.asList(Easy, Moderate, Hard));
             java.util.Collections.shuffle(questionDifficulties);
 
+            ArrayList<QuestionLogEntry> questionLog = new ArrayList<>();
+            
             while (questionDifficulties.size() > 0)
             {
-                IMessage timer = chnl.sendMessage("Question will be revealed in 10 seconds...");
+                IMessage timer = chnl.sendMessage("Question #" + (numQuestions+1) + " will be revealed in 10 seconds...");
                 Thread.sleep(10000);
 
                 if (msg != null)
@@ -115,8 +130,9 @@ public class QuizQuestionTimer implements Runnable
                     main.quizH.currentQ = q;
                 }
 
+                questionLog.add(new QuestionLogEntry(difficulty, seed));
                 String plural = (difficulty == Moderate || difficulty == Hard) ? "s" : "";
-                toSend += question.getQuestionText() + " (" + difficulty.getPoints() + " pt" + plural + ") [Question ID: **" + difficulty.name() + "-" + seed + "**]\n";
+                toSend += question.getQuestionText() + " (" + difficulty.getPoints() + " pt" + plural + ")\n";
                 toSend += "1) " + question.getAnswerText(0) + "\n";
                 toSend += "2) " + question.getAnswerText(1) + "\n";
                 toSend += "3) " + question.getAnswerText(2) + "\n";
@@ -146,10 +162,10 @@ public class QuizQuestionTimer implements Runnable
                 int pos = question.getCorrectAnswerIndex();
                 String number = Integer.toString(pos + 1);
 
-                toSend = "The correct answer was: "
+                toSend = "**Question #" + numQuestions + ":**\n\nThe correct answer was: "
                         + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
-                        + "**\n\n" + getCorrectUserText()
-                        + "\n" + Utilities.repeatString("-", 50);
+                        + "**\n\n" + getCorrectUserText(difficulty)
+                        + "\n" + Utilities.repeatString("-", 40);
 
                 quizLog += toSend + "\n";
 
@@ -167,36 +183,36 @@ public class QuizQuestionTimer implements Runnable
 
             chnl.sendMessage("...\n\n\n\nQuiz Log: ");
 
-            String txt = quizLog;
+            String txt = (quizLog + "\n\nThe quiz is over! Thanks for playing! And the winner is...").trim();
 
-            while (txt.trim().length() > 0)
+            final int CHUNK_SIZE = 2000;
+            
+            while (txt.length() > CHUNK_SIZE)
             {
-                String TwoThousandChars = txt.substring(0, (txt.length() > 2000 ? 2000 : txt.length()));
-                int lastQuestionBreak = TwoThousandChars.lastIndexOf("--");
-                String toSend = txt.substring(0, lastQuestionBreak + 1);
-
-                if (toSend.trim().length() > 0)
-                {
-                    chnl.sendMessage(toSend);
-                }
-
-                if (txt.trim().length() < 1)
+                String chunk = txt.substring(0, CHUNK_SIZE);
+                int lastQuestionBreak = chunk.lastIndexOf("--");
+                if (lastQuestionBreak < 0)
                 {
                     break;
                 }
+                
+                String toSend = txt.substring(0, lastQuestionBreak + 1).trim();
+                if (toSend.length() > 0)
+                {
+                    Thread.sleep(1000);
+                    chnl.sendMessage(toSend);
+                }
 
-                txt = txt.substring(lastQuestionBreak + 2);
-                Thread.sleep(1000);
+                txt = txt.substring(lastQuestionBreak + 2).trim();
             }
-
-            if (!txt.trim().isEmpty())
+            
+            if (txt.length() > 0)
             {
+                Thread.sleep(1000);
                 chnl.sendMessage(txt);
             }
 
-            Thread.sleep(1500);
-
-            chnl.sendMessage("The quiz is over! Thanks for playing! The top 10 scores were:");
+            Thread.sleep(2500);
 
             main.quizH.ordered.putAll(main.quizH.unordered); //Sort.
 
@@ -226,6 +242,19 @@ public class QuizQuestionTimer implements Runnable
             Thread.sleep(1500);
 
             chnl.sendMessage(scores);
+
+            if (!IDReference.LIVE)
+            {
+                String questionLogText = "Debug info:\n";
+                int i = 0;
+                for (QuestionLogEntry entry : questionLog)
+                {
+                    i++;
+                    questionLogText += "  " + i + ": " + entry.difficulty.toString() + " " + entry.seed + "\n";
+                }
+                Thread.sleep(1000);
+                chnl.sendMessage(questionLogText);
+            }
         } catch (RateLimitException rle)
         {
             //Attempt to provide a meaningful error.
@@ -265,10 +294,13 @@ public class QuizQuestionTimer implements Runnable
         }
     }
 
-    private String getCorrectUserText()
+    private String getCorrectUserText(QuizQuestion.Difficulty difficulty)
     {
         ArrayList<String> correctUserNames = new ArrayList<>();
         String firstCorrectUserName = null;
+
+        String plural = (difficulty == Moderate || difficulty == Hard) ? "s" : "";
+        String pointText = " (" + difficulty.getPoints() + " pt" + plural + ")";
 
         synchronized (this)
         {
@@ -289,10 +321,10 @@ public class QuizQuestionTimer implements Runnable
             }
         }
 
-        String result = "The following people answered correctly: " + (correctUserNames.isEmpty() ? "Nobody!" : correctUserNames.toString().replace("[", "").replace("]", ""));
+        String result = "The following people answered correctly: " + (correctUserNames.isEmpty() ? "**Nobody**!" : "**" + correctUserNames.toString().replace("[", "").replace("]", "") + "**" + pointText);
         if (firstCorrectUserName != null)
         {
-            result += "\nThe first correct answer was from " + firstCorrectUserName + "! (+2 pts.)";
+            result += "\nThe first correct answer was from **" + firstCorrectUserName + "**! (+1 pt)";
         }
         return result;
     }

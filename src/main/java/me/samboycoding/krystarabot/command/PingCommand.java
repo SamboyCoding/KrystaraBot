@@ -25,7 +25,7 @@ public class PingCommand extends KrystaraCommand
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
         msg.delete();
-        long lagTime = ((Long) (msg.getCreationDate().atZone(ZoneId.of("UTC")).toInstant().toEpochMilli() - System.currentTimeMillis()));
+        long lagTime = ((Long) (msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis()));
         /*if (lagTime < 0)
         {
             main.logToBoth("Negative ping time?! Flipping.... Was: " + lagTime);

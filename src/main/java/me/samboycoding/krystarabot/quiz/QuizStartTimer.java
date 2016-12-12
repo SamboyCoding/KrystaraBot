@@ -54,7 +54,7 @@ public class QuizStartTimer implements Runnable
             Thread.sleep(2500);
             c.sendMessage("Enter the number of the answer you think is correct. DO NOT attempt to enter the full answer.");
             Thread.sleep(2500);
-            c.sendMessage("The person with the most points after 10 questions wins!\n\n" + Utilities.repeatString("-", 50));
+            c.sendMessage("The person with the most points after 10 questions wins!\n\n" + Utilities.repeatString("-", 40));
             Thread.sleep(2000);
             
             QuizHandler.qt = new QuizQuestionTimer(c);
