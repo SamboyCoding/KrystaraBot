@@ -160,7 +160,7 @@ public class QuizQuestionTimer implements Runnable
             
             while (questionDifficulties.size() > 0)
             {
-                String formatString = "Question #" + (curQuestionIndex+1) + " will be revealed in %1$d seconds...";
+                String formatString = "Next question: %1$d seconds";
                 IMessage timer = sendCountdownMessage(formatString, 10);
                 if (msg != null)
                 {
@@ -188,9 +188,11 @@ public class QuizQuestionTimer implements Runnable
                     qh.setQuestion(q, difficulty);
                 }
 
+                String pointString = getPointString(difficulty, false);
+
                 questionLog.add(new QuestionLogEntry(difficulty, seed));
-                String plural = (difficulty == Moderate || difficulty == Hard) ? "s" : "";
-                toSend += question.getQuestionText() + " (" + difficulty.getPoints() + " pt" + plural + ")\n";
+
+                toSend += question.getQuestionText() + " (" + pointString + ")\n";
                 toSend += "1) " + question.getAnswerText(0) + "\n";
                 toSend += "2) " + question.getAnswerText(1) + "\n";
                 toSend += "3) " + question.getAnswerText(2) + "\n";
@@ -206,7 +208,7 @@ public class QuizQuestionTimer implements Runnable
                     phase = QuizPhase.WaitingForAnswers;
                 }
 
-                formatString = "Answer will be revealed in %1$d seconds...";
+                formatString = "Time remaining: %1$d seconds";
                 timer = sendCountdownMessage(formatString, qTimeSeconds);
 
                 synchronized (this)
@@ -302,7 +304,7 @@ public class QuizQuestionTimer implements Runnable
 
             if (!IDReference.LIVE)
             {
-                String questionLogText = "Debug info:\n";
+                String questionLogText = "Debug info (dev-server only):\n";
                 int i = 0;
                 for (QuestionLogEntry entry : questionLog)
                 {
@@ -429,14 +431,22 @@ public class QuizQuestionTimer implements Runnable
         }
     }
     
+    private String getPointString(QuizQuestion.Difficulty difficulty, boolean wasFirst)
+    {
+        int points = difficulty.getPoints() + (wasFirst ? 1 : 0);
+        String plural = (points > 1) ? "s" : "";
+        return points + " pt" + plural;
+    }
+    
     private String getCorrectUserText(QuizQuestion.Difficulty difficulty)
     {
         ArrayList<String> correctUserNames = new ArrayList<>();
         String firstCorrectUserName = null;
 
-        String plural = (difficulty == Moderate || difficulty == Hard) ? "s" : "";
-        String pointText = " (" + difficulty.getPoints() + " pt" + plural + ")";
-
+        String firstPointText = getPointString(difficulty, true);
+        String pointText = getPointString(difficulty, false);
+        String result;
+        
         synchronized (this)
         {
             for (QuizSubmitEntry entry : submissions)
@@ -446,20 +456,31 @@ public class QuizQuestionTimer implements Runnable
                 {
                     String name = entry.user.getNicknameForGuild(chnl.getGuild()).isPresent()
                             ? entry.user.getNicknameForGuild(chnl.getGuild()).get() : entry.user.getName();
-                    correctUserNames.add(name);
 
                     if (entry.result == QuizSubmitResult.FirstCorrect)
                     {
                         firstCorrectUserName = name;
                     }
+                    else
+                    {
+                        correctUserNames.add(name);
+                    }
                 }
             }
         }
-
-        String result = "The following people answered correctly: " + (correctUserNames.isEmpty() ? "**Nobody**!" : "**" + correctUserNames.toString().replace("[", "").replace("]", "") + "**" + pointText);
-        if (firstCorrectUserName != null)
+        
+        if (firstCorrectUserName == null)
         {
-            result += "\nThe first correct answer was from **" + firstCorrectUserName + "**! (+1 pt)";
+            // Nobody got it correct
+            result = "Correct answers: **Nobody!**";
+        }
+        else
+        {
+            result = "Correct answers: **" + firstCorrectUserName + "** (" + firstPointText + ")";
+            if (correctUserNames.size() > 0)
+            {
+                result += ", **" + correctUserNames.toString().replace("[", "").replace("]", "") + "** (" + pointText + ")";
+            }
         }
         return result;
     }
