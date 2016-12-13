@@ -177,7 +177,13 @@ public class QuizQuestionTimer implements Runnable
 
                 String pointString = getPointString(difficulty, false);
                 String questionPrefix = "**Question #" + (iQuestion+1) + ":**\n\n";
-                questionPrefix += question.getQuestionText() + " (" + pointString + ")\n";
+                String questionText = question.getQuestionText();
+                String questionSecondaryText = question.getQuestionSecondaryText();
+                if (!questionSecondaryText.isEmpty())
+                {
+                    questionSecondaryText += "\n";
+                }
+                questionPrefix += questionText + " (" + pointString + ")\n" + questionSecondaryText;
                 quizLog.add(questionPrefix);
 
                 if (answerMessage != null)

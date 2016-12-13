@@ -69,6 +69,11 @@ public abstract class QuizQuestion
         return "";
     }
     
+    public String getQuestionSecondaryText()
+    {
+        return "";
+    }
+    
     public String getAnswerText(int index)
     {
         return "";

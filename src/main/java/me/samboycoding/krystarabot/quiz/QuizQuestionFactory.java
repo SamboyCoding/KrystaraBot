@@ -30,6 +30,8 @@ public class QuizQuestionFactory
         RarityToTroop,
         TroopToTrait,
         TraitToTroop,
+        FlavorTextToTroop,
+        
         TrueDamageTroop,
         CreateGemsTroop,
         ConvertGemsTroop,
@@ -39,11 +41,14 @@ public class QuizQuestionFactory
         GiveResourcesTroop,
         GiveExtraTurnTroop,
         SummonTransformTroop,
+        DrainManaTroop,
         EffectsTroop,
+        
         KingdomToTraitstone,
         TraitstoneToKingdom,
         KingdomToStat,
         StatToKingdom,
+        
         ClassToBonusColor,
         BonusColorToClass,
         ClassToTrait,
@@ -63,6 +68,7 @@ public class QuizQuestionFactory
             RarityToTroop,
             TroopToTrait,
             TraitToTroop,
+            FlavorTextToTroop,
             TrueDamageTroop,
             CreateGemsTroop,
             ConvertGemsTroop,
@@ -72,6 +78,7 @@ public class QuizQuestionFactory
             GiveResourcesTroop,
             GiveExtraTurnTroop,
             SummonTransformTroop,
+            DrainManaTroop,
             EffectsTroop,
             KingdomToTraitstone,
             TraitstoneToKingdom,
@@ -685,6 +692,73 @@ public class QuizQuestionFactory
         }
     }   
 
+        /**
+     * Asks a user to identify a troop from its flavor text.
+     */
+    private static class QuizQuestion_FlavorTextToTroop extends QuizQuestion_Troops
+    {
+        public QuizQuestion_FlavorTextToTroop(Random r) { super(r); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **troop** is this?";
+        }
+        
+        @Override
+        public String getQuestionSecondaryText()
+        {
+            return "_" + getTroopFlavorText(correctAnswer) + "_";
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+
+        @Override
+        protected ArrayList<Object> getKeys(JSONObject obj)
+        {
+            String flavorText = getTroopFlavorText(obj);
+            String name = obj.getString("Name");
+            if (flavorText.length() > 80)
+            {
+                return null;
+            }
+            if (flavorText.toLowerCase().contains(name.toLowerCase()))
+            {
+                return null;
+            }
+            return new ArrayList<>(Arrays.asList(flavorText));
+        }
+        
+        private String getTroopFlavorText(JSONObject troop)
+        {
+            String flavorText = troop.getString("Description");
+            if (flavorText.endsWith("\n"))
+            {
+                flavorText = flavorText.substring(0, flavorText.length() - 1);
+            }
+            if (!flavorText.isEmpty())
+            {
+                switch (flavorText.charAt(flavorText.length() - 1))
+                {
+                    case '.':
+                    case '?':
+                    case '!':
+                        break;
+                        
+                    default:
+                        flavorText += ".";
+                        break;
+                }
+            }
+            
+            return flavorText;
+        }
+    }
+    
     /**
      * Asks a user to identify which troop causes true damage.
      */
@@ -871,6 +945,26 @@ public class QuizQuestionFactory
         }
     }
     
+    /**
+     * Asks a user to identify which troop drains mana.
+     */
+    private static class QuizQuestion_DrainManaTroop extends QuizQuestion_TroopsSpellFiltered
+    {
+        public QuizQuestion_DrainManaTroop(Random r) { super(r); }
+        
+        @Override
+        public String getQuestionText()
+        {
+            return "What **troop** has a spell that can **drain** or **steal mana** from another troop?";
+        }
+
+        @Override
+        protected boolean matchesFilter(JSONObject obj)
+        {
+            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("DecreaseMana")));
+        }
+    }
+
     /**
      * Asks a user to identify which troop causes a specific effect.
      */
@@ -1182,6 +1276,8 @@ public class QuizQuestionFactory
             case GiveResourcesTroop:
             case GiveExtraTurnTroop:
             case SummonTransformTroop:
+            case DrainManaTroop:
+            case FlavorTextToTroop:
                 return QuizQuestion.Difficulty.Easy;
                 
             case TroopToSpell:
@@ -1261,6 +1357,9 @@ public class QuizQuestionFactory
             case TraitToTroop:
                 return new QuizQuestion_TraitToTroop(r).initialize();
                 
+            case FlavorTextToTroop:
+                return new QuizQuestion_FlavorTextToTroop(r).initialize();
+                
             case TrueDamageTroop:
                 return new QuizQuestion_TrueDamageTroop(r).initialize();
                 
@@ -1287,6 +1386,9 @@ public class QuizQuestionFactory
                 
             case SummonTransformTroop:
                 return new QuizQuestion_SummonTransformTroop(r).initialize();
+                
+            case DrainManaTroop:
+                return new QuizQuestion_DrainManaTroop(r).initialize();
                 
             case EffectsTroop:
                 return new QuizQuestion_EffectsTroop(r).initialize();

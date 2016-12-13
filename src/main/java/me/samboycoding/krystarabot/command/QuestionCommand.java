@@ -158,7 +158,12 @@ public class QuestionCommand extends KrystaraCommand
                 answerString += Integer.toString(i+1) + ") " + boldStr + q.getAnswerText(i) + boldStr + "\n";
             }
             
-            messageStrings.add("Question: " + q.getQuestionText() + " (" + seed + ")\n" + answerString);
+            String secondaryText = q.getQuestionSecondaryText();
+            if (!secondaryText.isEmpty())
+            {
+                secondaryText += "\n";
+            }
+            messageStrings.add("Question: " + q.getQuestionText() + " (" + seed + ")\n" + secondaryText + answerString);
             
             seed = Utilities.getSeed(r);
         }
