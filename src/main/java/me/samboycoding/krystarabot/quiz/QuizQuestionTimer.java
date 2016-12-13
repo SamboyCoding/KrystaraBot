@@ -1,5 +1,6 @@
 package me.samboycoding.krystarabot.quiz;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -68,7 +69,6 @@ public class QuizQuestionTimer implements Runnable
 
     private ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
 
-    private IMessage msg;
     private QuizHandler qh;
 
     public QuizQuestionTimer(QuizHandler handler, IChannel c, int questionCount, int questionTimeInSeconds)
@@ -148,185 +148,75 @@ public class QuizQuestionTimer implements Runnable
     {
         try
         {
-            IMessage msg = sendCountdownMessage("Quiz will start in %1$d seconds...", 10);
-            msg.delete();
-
-            chnl.sendMessage("Welcome to the GoW Discord quiz!");
-            sleepFor(2500);
-
-            chnl.sendMessage("You will be asked " + qCount + " questions, and will have " + qTimeSeconds + 
-                    " seconds to answer each question.");
-            sleepFor(2500);
-
-            chnl.sendMessage("Questions are worth 1-3 points according to difficulty, and the" +
-                    " first correct answer is worth 1 extra point.");
-            sleepFor(2500);
-
-            chnl.sendMessage("Submit only the _number_ of the answer you think is correct (1-" + 
-                    QuizQuestion.AnswerCount + "). All other answers will not be counted.");
-            sleepFor(2500);
-
-            chnl.sendMessage("The person with the most points after " + qCount + " questions wins!\n\n" + 
-                    Utilities.repeatString("-", 40));
-            sleepFor(2000);
+            sendIntro();
             
-            int curQuestionIndex = 0;
-
-            ArrayList<QuizQuestion.Difficulty> questionDifficulties = new ArrayList<>();
-            
-            for (int i = 0; i < qCount / 3; i++)
-            {
-                questionDifficulties.add(Easy);
-            }
-            for (int i = 0; i < qCount / 3; i++)
-            {
-                questionDifficulties.add(Hard);
-            }
-            while (questionDifficulties.size() < qCount)
-            {
-                questionDifficulties.add(Moderate);
-            }
-            java.util.Collections.shuffle(questionDifficulties);
-
+            ArrayList<QuizQuestion.Difficulty> questionDifficulties = getQuestionDifficulties();
             ArrayList<QuestionLogEntry> questionLog = new ArrayList<>();
             ArrayList<String> quizLog = new ArrayList();
             
-            while (questionDifficulties.size() > 0)
+            IMessage answerMessage = null;
+            Random questionSeed = new Random();
+            for (int iQuestion = 0; iQuestion < questionDifficulties.size(); iQuestion++)
             {
-                String formatString = "Next question: %1$d seconds";
-                IMessage timer = sendCountdownMessage(formatString, 10);
-                if (msg != null)
-                {
-                    msg.delete();
-                }
+                QuizQuestion.Difficulty difficulty = questionDifficulties.get(iQuestion);
 
-                curQuestionIndex++;
-                synchronized (this)
-                {
-                    submissions = new ArrayList<>();
-                }
-
-                QuizQuestion.Difficulty difficulty = questionDifficulties.remove(0);
-
+                sendCountdownMessage("Next question: %1$d seconds", 10).delete();
+                
                 QuizQuestion question;
-
-                Random questionSeed = new Random();
                 long seed = Utilities.getSeed(questionSeed);
+                question = QuizQuestionFactory.getQuestion(questionSeed, difficulty);
 
                 synchronized (this)
                 {
-                    q = QuizQuestionFactory.getQuestion(questionSeed, difficulty);
-                    question = q;
+                    q = question;
                     qh.setQuestion(q, difficulty);
+                    submissions.clear();
                 }
-
-                String pointString = getPointString(difficulty, false);
 
                 questionLog.add(new QuestionLogEntry(difficulty, seed));
 
-                String questionPrefix = "**Question #" + curQuestionIndex + ":**\n\n";
+                String pointString = getPointString(difficulty, false);
+                String questionPrefix = "**Question #" + (iQuestion+1) + ":**\n\n";
                 questionPrefix += question.getQuestionText() + " (" + pointString + ")\n";
-                
                 quizLog.add(questionPrefix);
-                
-                String questionBody = "\n";
-                for (int i = 0; i < QuizQuestion.AnswerCount; i++)
+
+                if (answerMessage != null)
                 {
-                    questionBody += (i+1) + ") " + question.getAnswerText(i) + "\n";
+                    answerMessage.delete();
                 }
 
-                quizLog.add(questionBody);
-                timer.delete();
-
-                msg = chnl.sendMessage(questionPrefix + questionBody);
+                IMessage questionMessage = sendQuestion(question, quizLog, questionPrefix);
 
                 synchronized (this)
                 {
                     phase = QuizPhase.WaitingForAnswers;
                 }
 
-                formatString = "Time remaining: %1$d seconds";
-                timer = sendCountdownMessage(formatString, qTimeSeconds);
+                sendCountdownMessage("Time remaining: %1$d seconds", qTimeSeconds).delete();
 
                 synchronized (this)
                 {
                     phase = QuizPhase.Pausing;
                 }
 
-                timer.delete();
+                questionMessage.delete();
 
-                int pos = question.getCorrectAnswerIndex();
-                String number = Integer.toString(pos + 1);
-
-                String answerBody = "\nThe correct answer was: "
-                        + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
-                        + "**\n\n" + getCorrectUserText(difficulty)
-                        + "\n" + Utilities.repeatString("-", 40);
-
-                quizLog.add(answerBody + "\n");
-
-                msg.delete();
-
-                msg = chnl.sendMessage(questionPrefix + answerBody);
+                answerMessage = sendAnswer(question, difficulty, quizLog, questionPrefix);
             }
 
             synchronized (this)
             {
                 phase = QuizPhase.Completed;
             }
-
-            String formatString = "Results: %1$d seconds";
-            IMessage timer = sendCountdownMessage(formatString, 10);
-            msg.delete();
-            timer.delete();
-
-            quizLog.add("\n\nThe quiz is over! Thanks for playing! And the winner is...");
-
-            sendLargeMessage(quizLog);
-            sleepFor(2500);
-
-            main.quizH.ordered.putAll(main.quizH.unordered); //Sort.
-
-            String scores = "```\nName" + Utilities.repeatString(" ", 46) + "Score"
-                    + "\n" + Utilities.repeatString("-", 80);
-            int numDone = 0;
-            for (IUser u : main.quizH.ordered.descendingKeySet())
+            
+            sendCountdownMessage("Results: %1$d seconds", 5).delete();
+            if (answerMessage != null)
             {
-                Integer score = main.quizH.unordered.get(u);
-                String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();;
-
-                main.databaseHandler.increaseUserQuizScore(u, chnl.getGuild(), score);
-                if (score > 0)
-                {
-                    u.getOrCreatePMChannel().sendMessage("You scored " + score + " points on the quiz! You now have a total of " + 
-                            main.databaseHandler.getQuizScore(u, chnl.getGuild()) + " points.");
-                    sleepFor(500);
-                }
-                if (numDone <= 10)
-                {
-                    scores += "\n" + nameOfUser + Utilities.repeatString(" ", 50 - nameOfUser.length()) + score;
-                    numDone++;
-                }
+                answerMessage.delete();
             }
 
-            scores += "\n```";
-
-            sleepFor(1500);
-
-            chnl.sendMessage(scores);
-
-            if (IDReference.Environment != IDReference.RuntimeEnvironment.Live)
-            {
-                String questionLogText = "Debug info (dev-server only):\n";
-                int i = 0;
-                for (QuestionLogEntry entry : questionLog)
-                {
-                    i++;
-                    questionLogText += "  " + i + ":  ?question " + entry.difficulty.toString() + " 1 " + entry.seed + "\n";
-                }
-                sleepFor(1000);
-                chnl.sendMessage(questionLogText);
-            }
+            sendResults(quizLog, questionLog);
+            
         } catch (RateLimitException rle)
         {
             //Attempt to provide a meaningful error.
@@ -356,7 +246,7 @@ public class QuizQuestionTimer implements Runnable
         {
             try
             {
-                chnl.sendMessage("Quiz was aborted.");
+                chnl.sendMessage("Quiz was stopped.");
             }
             catch (Exception e)
             {
@@ -377,6 +267,129 @@ public class QuizQuestionTimer implements Runnable
                 qh.handleQuestionTimerComplete();
             }
         }
+    }
+
+    private IMessage sendAnswer(QuizQuestion question, QuizQuestion.Difficulty difficulty, ArrayList<String> quizLog, String questionPrefix)
+            throws RateLimitException, MissingPermissionsException, DiscordException
+    {
+        IMessage msg;
+        int pos = question.getCorrectAnswerIndex();
+        String number = Integer.toString(pos + 1);
+        String answerBody = "\nThe correct answer was: "
+                + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
+                + "**\n\n" + getCorrectUserText(difficulty)
+                + "\n" + Utilities.repeatString("-", 40);
+        quizLog.add(answerBody + "\n");
+        msg = chnl.sendMessage(questionPrefix + answerBody);
+        return msg;
+    }
+
+    private IMessage sendQuestion(QuizQuestion question, ArrayList<String> quizLog, String questionPrefix) 
+            throws MissingPermissionsException, DiscordException, InterruptedException, RateLimitException
+    {
+        IMessage msg;
+        String questionBody = "\n";
+        for (int i = 0; i < QuizQuestion.AnswerCount; i++)
+        {
+            questionBody += (i+1) + ") " + question.getAnswerText(i) + "\n";
+        }
+        quizLog.add(questionBody);
+        msg = chnl.sendMessage(questionPrefix + questionBody);
+        return msg;
+    }
+
+    private ArrayList<QuizQuestion.Difficulty> getQuestionDifficulties()
+    {
+        ArrayList<QuizQuestion.Difficulty> questionDifficulties = new ArrayList<>();
+        for (int i = 0; i < qCount / 3; i++)
+        {
+            questionDifficulties.add(Easy);
+        }
+        for (int i = 0; i < qCount / 3; i++)
+        {
+            questionDifficulties.add(Hard);
+        }
+        while (questionDifficulties.size() < qCount)
+        {
+            questionDifficulties.add(Moderate);
+        }
+        java.util.Collections.shuffle(questionDifficulties);
+        return questionDifficulties;
+    }
+
+    private void sendResults(ArrayList<String> quizLog, ArrayList<QuestionLogEntry> questionLog) 
+            throws IOException, MissingPermissionsException, RateLimitException, InterruptedException, DiscordException
+    {
+        quizLog.add("\nThe quiz is over! And the winner is...");
+        
+        sendLargeMessage(quizLog);
+        sleepFor(1000);
+        
+        main.quizH.ordered.putAll(main.quizH.unordered); //Sort.
+        
+        String scores = "```\nName" + Utilities.repeatString(" ", 46) + "Score"
+                + "\n" + Utilities.repeatString("-", 80);
+        int numDone = 0;
+        for (IUser u : main.quizH.ordered.descendingKeySet())
+        {
+            Integer score = main.quizH.unordered.get(u);
+            String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();;
+            
+            main.databaseHandler.increaseUserQuizScore(u, chnl.getGuild(), score);
+            if (score > 0)
+            {
+                u.getOrCreatePMChannel().sendMessage("You scored " + score + " points on the quiz! You now have a total of " +
+                        main.databaseHandler.getQuizScore(u, chnl.getGuild()) + " points.");
+                sleepFor(500);
+            }
+            if (numDone <= 10)
+            {
+                scores += "\n" + nameOfUser + Utilities.repeatString(" ", 50 - nameOfUser.length()) + score;
+                numDone++;
+            }
+        }
+        
+        scores += "\n```";
+        
+        sleepFor(1500);
+        
+        chnl.sendMessage(scores);
+        
+        sleepFor(1000);
+        chnl.sendMessage("Thanks for playing! To play again, use the command `?quiz` in any channel.");
+        
+        if (IDReference.Environment != IDReference.RuntimeEnvironment.Live)
+        {
+            String questionLogText = "Debug info (dev-server only):\n";
+            int i = 0;
+            for (QuestionLogEntry entry : questionLog)
+            {
+                i++;
+                questionLogText += "  " + i + ":  ?question " + entry.difficulty.toString() + " 1 " + entry.seed + "\n";
+            }
+            sleepFor(1000);
+            chnl.sendMessage(questionLogText);
+        }
+    }
+
+    private void sendIntro() throws InterruptedException, MissingPermissionsException, RateLimitException, DiscordException
+    {
+        sendCountdownMessage("Quiz will start in %1$d seconds...", 10).delete();
+
+        chnl.sendMessage("Welcome to the GoW Discord quiz!");
+        sleepFor(2500);
+        chnl.sendMessage("You will be asked " + qCount + " questions, and will have " + qTimeSeconds +
+                " seconds to answer each question.");
+        sleepFor(2500);
+        chnl.sendMessage("Questions are worth 1-3 points according to difficulty, and the" +
+                " first correct answer is worth 1 extra point.");
+        sleepFor(2500);
+        chnl.sendMessage("Submit only the _number_ of the answer you think is correct (1-" +
+                QuizQuestion.AnswerCount + "). All other answers will not be counted.");
+        sleepFor(2500);
+        chnl.sendMessage("The person with the most points after " + qCount + " questions wins!\n\n" +
+                Utilities.repeatString("-", 40));
+        sleepFor(2000);
     }
     
     private void sleepFor(int timeout) throws InterruptedException
