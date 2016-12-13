@@ -2,6 +2,7 @@ package me.samboycoding.krystarabot.quiz;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Random;
 import me.samboycoding.krystarabot.main;
 import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Easy;
@@ -29,7 +30,6 @@ public class QuizQuestionTimer implements Runnable
     private QuizQuestion q;
     private QuizPhase phase;
 
-    private String quizLog = "";
     private boolean isAborted = false;
     private final Object abortSignal = new Object();
     private final int qCount;
@@ -115,6 +115,34 @@ public class QuizQuestionTimer implements Runnable
         return msg;
     }
     
+    private void sendLargeMessage(Iterable<String> messageParts) 
+            throws MissingPermissionsException, RateLimitException, DiscordException, InterruptedException
+    {
+        final int CHUNK_MAX_LENGTH = 2000;
+
+        String chunk = "";
+        Iterator<String> messageIterator = messageParts.iterator();
+        
+        while (messageIterator.hasNext())
+        {
+            String nextMsg = messageIterator.next();
+            if ((chunk.length() + nextMsg.length()) > CHUNK_MAX_LENGTH)
+            {
+                sleepFor(1000);
+                chnl.sendMessage(chunk);
+                chunk = "";
+            }
+
+            chunk += nextMsg + "\n";
+        }
+
+        if (!chunk.isEmpty())
+        {
+            sleepFor(1000);
+            chnl.sendMessage(chunk);
+        }
+    }
+    
     @Override
     public void run()
     {
@@ -128,6 +156,10 @@ public class QuizQuestionTimer implements Runnable
 
             chnl.sendMessage("You will be asked " + qCount + " questions, and will have " + qTimeSeconds + 
                     " seconds to answer each question.");
+            sleepFor(2500);
+
+            chnl.sendMessage("Questions are worth 1-3 points according to difficulty, and the" +
+                    " first correct answer is worth 1 extra point.");
             sleepFor(2500);
 
             chnl.sendMessage("Submit only the _number_ of the answer you think is correct (1-" + 
@@ -157,6 +189,7 @@ public class QuizQuestionTimer implements Runnable
             java.util.Collections.shuffle(questionDifficulties);
 
             ArrayList<QuestionLogEntry> questionLog = new ArrayList<>();
+            ArrayList<String> quizLog = new ArrayList();
             
             while (questionDifficulties.size() > 0)
             {
@@ -192,17 +225,17 @@ public class QuizQuestionTimer implements Runnable
                 questionLog.add(new QuestionLogEntry(difficulty, seed));
 
                 String questionPrefix = "**Question #" + curQuestionIndex + ":**\n\n";
-                questionPrefix += question.getQuestionText() + " (" + pointString + ")\n\n";
+                questionPrefix += question.getQuestionText() + " (" + pointString + ")\n";
                 
-                quizLog += questionPrefix;
+                quizLog.add(questionPrefix);
                 
-                String questionBody = "";
+                String questionBody = "\n";
                 for (int i = 0; i < QuizQuestion.AnswerCount; i++)
                 {
                     questionBody += (i+1) + ") " + question.getAnswerText(i) + "\n";
                 }
 
-                quizLog += questionBody;
+                quizLog.add(questionBody);
                 timer.delete();
 
                 msg = chnl.sendMessage(questionPrefix + questionBody);
@@ -225,12 +258,12 @@ public class QuizQuestionTimer implements Runnable
                 int pos = question.getCorrectAnswerIndex();
                 String number = Integer.toString(pos + 1);
 
-                String answerBody = "The correct answer was: "
+                String answerBody = "\nThe correct answer was: "
                         + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
                         + "**\n\n" + getCorrectUserText(difficulty)
                         + "\n" + Utilities.repeatString("-", 40);
 
-                quizLog += answerBody + "\n";
+                quizLog.add(answerBody + "\n");
 
                 msg.delete();
 
@@ -247,37 +280,9 @@ public class QuizQuestionTimer implements Runnable
             msg.delete();
             timer.delete();
 
-            chnl.sendMessage("...\n\n\n\nQuiz Log: ");
+            quizLog.add("\n\nThe quiz is over! Thanks for playing! And the winner is...");
 
-            String txt = (quizLog + "\n\nThe quiz is over! Thanks for playing! And the winner is...").trim();
-
-            final int CHUNK_SIZE = 2000;
-            
-            while (txt.length() > CHUNK_SIZE)
-            {
-                String chunk = txt.substring(0, CHUNK_SIZE);
-                int lastQuestionBreak = chunk.lastIndexOf("--");
-                if (lastQuestionBreak < 0)
-                {
-                    break;
-                }
-                
-                String toSend = txt.substring(0, lastQuestionBreak + 1).trim();
-                if (toSend.length() > 0)
-                {
-                    sleepFor(1000);
-                    chnl.sendMessage(toSend);
-                }
-
-                txt = txt.substring(lastQuestionBreak + 2).trim();
-            }
-            
-            if (txt.length() > 0)
-            {
-                sleepFor(1000);
-                chnl.sendMessage(txt);
-            }
-
+            sendLargeMessage(quizLog);
             sleepFor(2500);
 
             main.quizH.ordered.putAll(main.quizH.unordered); //Sort.
@@ -305,8 +310,6 @@ public class QuizQuestionTimer implements Runnable
             }
 
             scores += "\n```";
-
-            quizLog += scores;
 
             sleepFor(1500);
 
