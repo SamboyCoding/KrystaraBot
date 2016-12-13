@@ -53,6 +53,8 @@ public class QuizQuestionFactory
         TraitstoneToKingdom("Which kingdom contains this traitstone?", QuizQuestion.Difficulty.Hard),
         KingdomToStat("Which stat is got from this kingdom?", QuizQuestion.Difficulty.Hard),
         StatToKingdom("Which kingdom gives this stat?", QuizQuestion.Difficulty.Hard),
+        BannerArtToKingdom("Which kingdom has the pictured banner?", QuizQuestion.Difficulty.Easy),
+        ShieldArtToKingdom("Which kingdom has the pictured shield?", QuizQuestion.Difficulty.Moderate),
         
         ClassToBonusColor("Which bonus color is got from this class?", QuizQuestion.Difficulty.Unused),
         BonusColorToClass("Which class gives this bonus color?", QuizQuestion.Difficulty.Unused),
@@ -105,6 +107,8 @@ public class QuizQuestionFactory
             TraitstoneToKingdom,
             KingdomToStat,
             StatToKingdom,
+            BannerArtToKingdom,
+            ShieldArtToKingdom,
             ClassToBonusColor,
             BonusColorToClass,
             ClassToTrait,
@@ -488,7 +492,7 @@ public class QuizQuestionFactory
         {
             try
             {
-                return new URL("http://ashtender.com/gems/assets/spells/" + correctAnswer.getJSONObject("Spell").getInt("Id") + ".jpg");
+                return new URL("http://ashtender.com/gems/assets/spells/" + correctAnswer.getJSONObject("Spell").getInt("Id") + "_small.jpg");
             }
             catch (MalformedURLException e)
             {}
@@ -1192,6 +1196,86 @@ public class QuizQuestionFactory
     }
 
     /**
+     * Asks a user to identify a kingdom by its banner art.
+     */
+    private static class QuizQuestion_BannerArtToKingdom extends QuizQuestion_Kingdoms
+    {
+        public QuizQuestion_BannerArtToKingdom(Random r) { super(r); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **kingdom's banner** is pictured below?";
+        }
+        
+        @Override
+        public URL getQuestionImageUrl()
+        {
+            try
+            {
+                return new URL("http://ashtender.com/gems/assets/banners/" + correctAnswer.getString("FileBase") + "_small.png");
+            }
+            catch (MalformedURLException e)
+            {}
+            return null;
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+
+        @Override
+        protected ArrayList<Object> getKeys(JSONObject obj)
+        {
+            if (obj.isNull("BannerFileBase"))
+            {
+                return null;
+            }
+            return new ArrayList<>(Arrays.asList(obj));
+        }
+    }
+    
+    /**
+     * Asks a user to identify a kingdom by its shield art.
+     */
+    private static class QuizQuestion_ShieldArtToKingdom extends QuizQuestion_Kingdoms
+    {
+        public QuizQuestion_ShieldArtToKingdom(Random r) { super(r); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **kingdom's shield** is pictured below?";
+        }
+        
+        @Override
+        public URL getQuestionImageUrl()
+        {
+            try
+            {
+                return new URL("http://ashtender.com/gems/assets/shields/" + correctAnswer.getString("FileBase") + "_small.png");
+            }
+            catch (MalformedURLException e)
+            {}
+            return null;
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+
+        @Override
+        protected ArrayList<Object> getKeys(JSONObject obj)
+        {
+            return new ArrayList<>(Arrays.asList(obj));
+        }
+    }
+    
+    /**
      * Asks a user to identify which color weapons have affinity with a given class.
      */
     private static class QuizQuestion_ClassToBonusColor extends QuizQuestion_Classes
@@ -1415,6 +1499,12 @@ public class QuizQuestionFactory
                 
             case StatToKingdom:
                 return new QuizQuestion_StatToKingdom(r).initialize();
+                
+            case BannerArtToKingdom:
+                return new QuizQuestion_BannerArtToKingdom(r).initialize();
+
+            case ShieldArtToKingdom:
+                return new QuizQuestion_ShieldArtToKingdom(r).initialize();
 
             case ClassToBonusColor:
                 return new QuizQuestion_ClassToBonusColor(r).initialize();
