@@ -1,5 +1,9 @@
 package me.samboycoding.krystarabot.quiz;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +35,7 @@ public class QuizQuestionFactory
         TroopToTrait("Which trait does this troop have?"),
         TraitToTroop("Which troop has this trait?"),
         FlavorTextToTroop("Which troop has this flavour text?"),
+        SpellArtToTroop("Which troop has the pictured spell?"),
         
         TrueDamageTroop("Which of these troops does true damage?"),
         CreateGemsTroop("Which of these troops creates gems?"),
@@ -82,6 +87,7 @@ public class QuizQuestionFactory
             TroopToTrait,
             TraitToTroop,
             FlavorTextToTroop,
+            SpellArtToTroop,
             TrueDamageTroop,
             CreateGemsTroop,
             ConvertGemsTroop,
@@ -453,6 +459,38 @@ public class QuizQuestionFactory
         public String getQuestionText()
         {
             return "What **troop** uses the spell **\"" + correctAnswer.getJSONObject("Spell").getString("Name") + "\"**?";
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+    }
+
+    /**
+     * Asks a user to identify a troop by its spell's art.
+     */
+    private static class QuizQuestion_SpellArtToTroop extends QuizQuestion_TroopToSpell
+    {
+        public QuizQuestion_SpellArtToTroop(Random r) { super(r); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **troop's spell** is pictured below?";
+        }
+        
+        @Override
+        public URL getQuestionImageUrl()
+        {
+            try
+            {
+                return new URL("http://ashtender.com/gems/assets/spells/" + correctAnswer.getJSONObject("Spell").getInt("Id") + ".jpg");
+            }
+            catch (MalformedURLException e)
+            {}
+            return null;
         }
 
         @Override
@@ -1296,6 +1334,7 @@ public class QuizQuestionFactory
             case SummonTransformTroop:
             case DrainManaTroop:
             case FlavorTextToTroop:
+            case SpellArtToTroop:
                 return QuizQuestion.Difficulty.Easy;
                 
             case TroopToSpell:
@@ -1377,6 +1416,9 @@ public class QuizQuestionFactory
                 
             case FlavorTextToTroop:
                 return new QuizQuestion_FlavorTextToTroop(r).initialize();
+                
+            case SpellArtToTroop:
+                return new QuizQuestion_SpellArtToTroop(r).initialize();
                 
             case TrueDamageTroop:
                 return new QuizQuestion_TrueDamageTroop(r).initialize();

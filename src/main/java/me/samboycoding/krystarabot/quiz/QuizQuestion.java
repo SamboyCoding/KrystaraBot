@@ -1,5 +1,7 @@
 package me.samboycoding.krystarabot.quiz;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -72,6 +74,11 @@ public abstract class QuizQuestion
     public String getQuestionSecondaryText()
     {
         return "";
+    }
+    
+    public URL getQuestionImageUrl()
+    {
+        return null;
     }
     
     public String getAnswerText(int index)

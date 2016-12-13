@@ -1,6 +1,8 @@
 package me.samboycoding.krystarabot.quiz;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -11,6 +13,7 @@ import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Hard;
 import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Moderate;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
+import org.apache.commons.io.FilenameUtils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -154,6 +157,9 @@ public class QuizQuestionTimer implements Runnable
             ArrayList<QuestionLogEntry> questionLog = new ArrayList<>();
             ArrayList<String> quizLog = new ArrayList();
             
+            IMessage questionMessage = null;
+            IMessage imageMessage = null;
+            IMessage choicesMessage = null;
             IMessage answerMessage = null;
             Random questionSeed = new Random();
             for (int iQuestion = 0; iQuestion < questionDifficulties.size(); iQuestion++)
@@ -161,6 +167,27 @@ public class QuizQuestionTimer implements Runnable
                 QuizQuestion.Difficulty difficulty = questionDifficulties.get(iQuestion);
 
                 sendCountdownMessage("Next question: %1$d seconds", 10).delete();
+
+                if (answerMessage != null)
+                {
+                    answerMessage.delete();
+                    answerMessage = null;
+                }
+                if (choicesMessage != null)
+                {
+                    choicesMessage.delete();
+                    choicesMessage = null;
+                }
+                if (imageMessage != null)
+                {
+                    imageMessage.delete();
+                    imageMessage = null;
+                }
+                if (questionMessage != null)
+                {
+                    questionMessage.delete();
+                    questionMessage = null;
+                }
                 
                 QuizQuestion question;
                 long seed = Utilities.getSeed(questionSeed);
@@ -176,22 +203,33 @@ public class QuizQuestionTimer implements Runnable
                 questionLog.add(new QuestionLogEntry(difficulty, seed));
 
                 String pointString = getPointString(difficulty, false);
-                String questionPrefix = "**Question #" + (iQuestion+1) + ":**\n\n";
-                String questionText = question.getQuestionText();
+                String questionText = "**Question #" + (iQuestion+1) + ":**\n\n" + question.getQuestionText() +
+                        " (" + pointString + ")\n";
+                
                 String questionSecondaryText = question.getQuestionSecondaryText();
                 if (!questionSecondaryText.isEmpty())
                 {
-                    questionSecondaryText += "\n";
+                    questionText += questionSecondaryText + "\n";
                 }
-                questionPrefix += questionText + " (" + pointString + ")\n" + questionSecondaryText;
-                quizLog.add(questionPrefix);
+                
+                URL imageUrl = question.getQuestionImageUrl();
 
-                if (answerMessage != null)
+                quizLog.add(questionText);
+                questionMessage = chnl.sendMessage(questionText);
+                if (imageUrl != null)
                 {
-                    answerMessage.delete();
+                    try
+                    {
+                        InputStream imageStream = imageUrl.openStream();
+                        String imageName = "image." + FilenameUtils.getExtension(imageUrl.getPath());
+                        imageMessage = chnl.sendFile("", false, imageStream, imageName);
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
-
-                IMessage questionMessage = sendQuestion(question, quizLog, questionPrefix);
+                choicesMessage = sendChoices(question, quizLog);
 
                 synchronized (this)
                 {
@@ -205,9 +243,10 @@ public class QuizQuestionTimer implements Runnable
                     phase = QuizPhase.Pausing;
                 }
 
-                questionMessage.delete();
-
-                answerMessage = sendAnswer(question, difficulty, quizLog, questionPrefix);
+                choicesMessage.delete();
+                choicesMessage = null;
+                
+                answerMessage = sendAnswer(question, difficulty, quizLog);
             }
 
             synchronized (this)
@@ -219,6 +258,18 @@ public class QuizQuestionTimer implements Runnable
             if (answerMessage != null)
             {
                 answerMessage.delete();
+            }
+            if (choicesMessage != null)
+            {
+                choicesMessage.delete();
+            }
+            if (imageMessage != null)
+            {
+                imageMessage.delete();
+            }
+            if (questionMessage != null)
+            {
+                questionMessage.delete();
             }
 
             sendResults(quizLog, questionLog);
@@ -275,7 +326,7 @@ public class QuizQuestionTimer implements Runnable
         }
     }
 
-    private IMessage sendAnswer(QuizQuestion question, QuizQuestion.Difficulty difficulty, ArrayList<String> quizLog, String questionPrefix)
+    private IMessage sendAnswer(QuizQuestion question, QuizQuestion.Difficulty difficulty, ArrayList<String> quizLog)
             throws RateLimitException, MissingPermissionsException, DiscordException
     {
         IMessage msg;
@@ -286,11 +337,11 @@ public class QuizQuestionTimer implements Runnable
                 + "**\n\n" + getCorrectUserText(difficulty)
                 + "\n" + Utilities.repeatString("-", 40);
         quizLog.add(answerBody + "\n");
-        msg = chnl.sendMessage(questionPrefix + answerBody);
+        msg = chnl.sendMessage(answerBody);
         return msg;
     }
 
-    private IMessage sendQuestion(QuizQuestion question, ArrayList<String> quizLog, String questionPrefix) 
+    private IMessage sendChoices(QuizQuestion question, ArrayList<String> quizLog) 
             throws MissingPermissionsException, DiscordException, InterruptedException, RateLimitException
     {
         IMessage msg;
@@ -300,7 +351,7 @@ public class QuizQuestionTimer implements Runnable
             questionBody += (i+1) + ") " + question.getAnswerText(i) + "\n";
         }
         quizLog.add(questionBody);
-        msg = chnl.sendMessage(questionPrefix + questionBody);
+        msg = chnl.sendMessage(questionBody);
         return msg;
     }
 

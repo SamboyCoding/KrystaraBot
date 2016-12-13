@@ -1,10 +1,14 @@
 package me.samboycoding.krystarabot.command;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import me.samboycoding.krystarabot.quiz.QuizQuestion;
 import me.samboycoding.krystarabot.quiz.QuizQuestionFactory;
 import me.samboycoding.krystarabot.utilities.Utilities;
+import org.apache.commons.io.FilenameUtils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -133,10 +137,12 @@ public class QuestionCommand extends KrystaraCommand
         Random r = new Random(seed);
 
         ArrayList<String> messageStrings = new ArrayList<>();
+        URL lastImageUrl = null;
         
         for (int rep = 0; rep < reps; rep++)
         {
             QuizQuestion q;
+            URL imageUrl = null;
 
             if (difficulty != null)
             {
@@ -151,6 +157,11 @@ public class QuestionCommand extends KrystaraCommand
                 q = QuizQuestionFactory.getQuestion(r);
             }
 
+            imageUrl = q.getQuestionImageUrl();
+            if (imageUrl != null)
+            {
+                lastImageUrl = imageUrl;
+            }
             String answerString = "";
             for (int i = 0; i < QuizQuestion.AnswerCount; i++)
             {
@@ -170,6 +181,13 @@ public class QuestionCommand extends KrystaraCommand
  
         String finalString = String.join("\n\n", messageStrings);
         chnl.sendMessage(finalString);
+        
+        if (lastImageUrl != null)
+        {
+            InputStream stream = lastImageUrl.openStream();
+            String imageName = "image." + FilenameUtils.getExtension(lastImageUrl.getPath());
+            chnl.sendFile("", false, stream, imageName);
+        }
     }
 
     @Override
