@@ -42,6 +42,9 @@ public class QuizQuestionTimer implements Runnable
     private final QuizQuestionFactory.QuestionType questionTypeFilter;
     private final long randomSeed;
     private final QuizHandler qh;
+    
+    private final ArrayList<IMessage> chatterMessages = new ArrayList<>();
+    private final ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
 
     public enum QuizPhase
     {
@@ -73,8 +76,6 @@ public class QuizQuestionTimer implements Runnable
             result = r;
         }
     }
-
-    private ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
 
     public QuizQuestionTimer(QuizHandler handler, IChannel c, int questionCount, int questionTimeInSeconds,
             QuizQuestion.Difficulty difficulty, QuizQuestionFactory.QuestionType questionType, long seed)
@@ -179,6 +180,11 @@ public class QuizQuestionTimer implements Runnable
                 sendCountdownMessage("Next question: %1$d seconds", 10).delete();
 
                 // Remove any old question, choice, and answer from the view
+                synchronized (this)
+                {
+                    clearChatterMessages();
+                }
+                
                 if (answerMessage != null)
                 {
                     answerMessage.delete();
@@ -537,6 +543,36 @@ public class QuizQuestionTimer implements Runnable
         }
     }
     
+    public void addChatterMessage(IMessage chatterMessage)
+            throws MissingPermissionsException, RateLimitException, DiscordException
+    {
+        synchronized (this)
+        {
+            if ((phase == QuizPhase.Pausing) || (phase == QuizPhase.Completed))
+            {
+                chatterMessages.add(chatterMessage);
+            }
+            else
+            {
+                chatterMessage.delete();
+            }
+        }
+    }
+    
+    private void clearChatterMessages() 
+            throws RateLimitException, MissingPermissionsException, DiscordException
+    {
+        synchronized (this)
+        {
+            for (IMessage chatterMessage : chatterMessages)
+            {
+                chatterMessage.delete();
+            }
+            chatterMessages.clear();
+        }
+    }
+
+
     public QuizSubmitResult submitAnswer(QuizQuestion question, IUser user, int answer)
     {
         synchronized (this)

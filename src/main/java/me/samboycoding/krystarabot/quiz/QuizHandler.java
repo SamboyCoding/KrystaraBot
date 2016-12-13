@@ -163,8 +163,21 @@ public class QuizHandler
         }
 
         IUser usr = msg.getAuthor();
-        String text = msg.getContent();
+        String text = msg.getContent().trim();
 
+        int answer = -1;
+        if (text.length() == 1)
+        {
+            char answerChar = text.charAt(0);
+            answer = (answerChar - '0') - 1;
+        }
+
+        if (answer < 0 || answer >= QuizQuestion.AnswerCount)
+        {
+            timer.addChatterMessage(msg);
+            return;
+        }
+        
         msg.delete();
 
         int currentScore = 0;
@@ -176,13 +189,9 @@ public class QuizHandler
             currentScore = unordered.get(usr);
         }
 
-        int answer = Integer.parseInt(text); //We can just do this as Listener checks if it is valid
-
-        int pos = answer - 1;
-
         int scoreDelta = 0;
 
-        switch (timer.submitAnswer(theQ, usr, pos))
+        switch (timer.submitAnswer(theQ, usr, answer))
         {
             case Incorrect:
                 break;
