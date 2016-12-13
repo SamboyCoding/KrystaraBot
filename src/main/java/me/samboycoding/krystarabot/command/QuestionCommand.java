@@ -83,11 +83,11 @@ public class QuestionCommand extends KrystaraCommand
 
                         for (int i = 0; i < QuizQuestion.Difficulty.Count; i++)
                         {
-                            difficultyStrings.add(QuizQuestion.Difficulty.fromInteger(i).toString());
+                            difficultyStrings.add(QuizQuestion.Difficulty.fromInteger(i).name());
                         }
                         for (int i = 0; i < QuizQuestionFactory.QuestionType.Count; i++)
                         {
-                            typeStrings.add(QuizQuestionFactory.QuestionType.fromInteger(i).toString());
+                            typeStrings.add(QuizQuestionFactory.QuestionType.fromInteger(i).name());
                         }
                         chnl.sendMessage("Invalid question type.  Valid values are:" +
                                 "\n**any, all:** Generate a question of any type" +
