@@ -1,5 +1,6 @@
 package me.samboycoding.krystarabot.quiz;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Random;
 import org.json.JSONObject;
@@ -15,7 +16,35 @@ public abstract class QuizQuestion
     {
         Easy,
         Moderate,
-        Hard;
+        Hard,
+        Unused;
+        
+        private static final Difficulty[] Difficulties =
+        {
+            Easy,
+            Moderate,
+            Hard,
+            Unused
+        };
+
+        public static final int Count = Difficulties.length;
+        
+        public static Difficulty fromInteger(int x)
+        {
+            return Difficulties[x];
+        }
+        
+        public static Difficulty fromString(String s)
+        {
+            for (Difficulty d : Difficulties)
+            {
+                if (d.name().equalsIgnoreCase(s))
+                {
+                    return d;
+                }
+            }
+            throw new InvalidParameterException();
+        }
 
         public int getPoints()
         {

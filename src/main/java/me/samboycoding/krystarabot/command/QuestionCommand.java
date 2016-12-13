@@ -44,25 +44,27 @@ public class QuestionCommand extends KrystaraCommand
                 case "all":
                     break;
                     
-                case "easy":
-                   difficulty =  QuizQuestion.Difficulty.Easy;
-                   break;
-                   
-                case "moderate":
-                   difficulty =  QuizQuestion.Difficulty.Moderate;
-                   break;
-                   
-                case "hard":
-                   difficulty =  QuizQuestion.Difficulty.Hard;
-                   break;
-                   
                 default:
                     try
                     {
-                        // Try to get the question as a string from the enum values
-                        type = QuizQuestionFactory.QuestionType.fromString(arguments.get(0));
+                        // Try to get the difficulty as a string from the enum values
+                        difficulty = QuizQuestion.Difficulty.fromString(arguments.get(0));
                     }
-                    catch (Exception e)
+                    catch (Exception e1)
+                    {}
+                    
+                    if (difficulty == null)
+                    {
+                        try
+                        {
+                            // Try to get the question as a string from the enum values
+                            type = QuizQuestionFactory.QuestionType.fromString(arguments.get(0));
+                        }
+                        catch (Exception e2)
+                        {}
+                    }
+                    
+                    if ((difficulty == null) && (type == null))
                     {
                         try
                         {
@@ -70,21 +72,29 @@ public class QuestionCommand extends KrystaraCommand
                             int iType = Integer.parseInt(arguments.get(0));
                             type = QuizQuestionFactory.QuestionType.fromInteger(iType);
                         }
-                        catch (Exception e2)
+                        catch (Exception e3)
+                        {}
+                    }
+                    
+                    if ((difficulty == null) && (type == null))
+                    {
+                        ArrayList<String> difficultyStrings = new ArrayList<>();
+                        ArrayList<String> typeStrings = new ArrayList<>();
+
+                        for (int i = 0; i < QuizQuestion.Difficulty.Count; i++)
                         {
-                            ArrayList<String> typeStrings = new ArrayList<>();
-                            
-                            for (int i = 0; i < QuizQuestionFactory.QuestionType.Count; i++)
-                            {
-                                typeStrings.add(QuizQuestionFactory.QuestionType.fromInteger(i).toString());
-                            }
-                            chnl.sendMessage("Invalid question type.  Valid values are:" +
-                                    "\n**any, all:** Generate a question of any type" +
-                                    "\n**easy, moderate, hard:** Generate a question of the specified difficulty" +
-                                    "\n**0, 1, ..., " + (QuizQuestionFactory.QuestionType.Count-1) + ":** Generate a question of the specified index" +
-                                    "\n**" + String.join(", ", typeStrings) + ":** Generate a question of the specified type");
-                            return;
+                            difficultyStrings.add(QuizQuestion.Difficulty.fromInteger(i).toString());
                         }
+                        for (int i = 0; i < QuizQuestionFactory.QuestionType.Count; i++)
+                        {
+                            typeStrings.add(QuizQuestionFactory.QuestionType.fromInteger(i).toString());
+                        }
+                        chnl.sendMessage("Invalid question type.  Valid values are:" +
+                                "\n**any, all:** Generate a question of any type" +
+                                "\n**" + String.join(", ", difficultyStrings) + ":** Generate a question of the specified difficulty" +
+                                "\n**0, 1, ..., " + (QuizQuestionFactory.QuestionType.Count-1) + ":** Generate a question of the specified index" +
+                                "\n**" + String.join(", ", typeStrings) + ":** Generate a question of the specified type");
+                        return;
                     }
                     break;
             }

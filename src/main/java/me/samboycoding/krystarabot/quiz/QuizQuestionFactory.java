@@ -38,11 +38,16 @@ public class QuizQuestionFactory
         DecreaseStatsTroop,
         GiveResourcesTroop,
         GiveExtraTurnTroop,
+        SummonTransformTroop,
         EffectsTroop,
         KingdomToTraitstone,
         TraitstoneToKingdom,
         KingdomToStat,
-        StatToKingdom;
+        StatToKingdom,
+        ClassToBonusColor,
+        BonusColorToClass,
+        ClassToTrait,
+        TraitToClass;
         
         private static final QuestionType[] Types =
         {
@@ -66,11 +71,16 @@ public class QuizQuestionFactory
             DecreaseStatsTroop,
             GiveResourcesTroop,
             GiveExtraTurnTroop,
+            SummonTransformTroop,
             EffectsTroop,
             KingdomToTraitstone,
             TraitstoneToKingdom,
             KingdomToStat,
-            StatToKingdom
+            StatToKingdom,
+            ClassToBonusColor,
+            BonusColorToClass,
+            ClassToTrait,
+            TraitToClass
         };
         
         public static final int Count = Types.length;
@@ -290,6 +300,25 @@ public class QuizQuestionFactory
         protected JSONObject getRandomKingdom()
         {
             return GameData.arrayKingdoms.getJSONObject(random.nextInt(GameData.arrayKingdoms.length()));
+        }
+    }
+
+    /**
+     * Base class for most questions that use classes (or features of classes) as answers.
+     */
+    private static abstract class QuizQuestion_Classes extends QuizQuestion_RandomBase
+    {
+        public QuizQuestion_Classes(Random r) { super(r); }
+
+        @Override
+        protected JSONObject getRandomAnswer()
+        {
+            return getRandomClass();
+        }
+    
+        protected JSONObject getRandomClass()
+        {
+            return GameData.arrayClasses.getJSONObject(random.nextInt(GameData.arrayClasses.length()));
         }
     }
 
@@ -822,6 +851,27 @@ public class QuizQuestionFactory
     }
 
     /**
+     * Asks a user to identify which troop summons or transforms.
+     */
+    private static class QuizQuestion_SummonTransformTroop extends QuizQuestion_TroopsSpellFiltered
+    {
+        public QuizQuestion_SummonTransformTroop(Random r) { super(r); }
+        
+        @Override
+        public String getQuestionText()
+        {
+            return "What **troop** has a spell that can **summon** or **transform** itself or another troop?";
+        }
+
+        @Override
+        protected boolean matchesFilter(JSONObject obj)
+        {
+            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("SummoningNoError", "SummoningType", "SummoningConditional",
+                    "SummoningTypeConditional", "Transform", "TransformType", "TransformTypeConditional", "TransformEnemy")));
+        }
+    }
+    
+    /**
      * Asks a user to identify which troop causes a specific effect.
      */
     private static class QuizQuestion_EffectsTroop extends QuizQuestion_TroopsSpellFiltered
@@ -988,7 +1038,119 @@ public class QuizQuestionFactory
             return answers.get(index).getString("Name");
         }
     }
+
+    /**
+     * Asks a user to identify which color weapons have affinity with a given class.
+     */
+    private static class QuizQuestion_ClassToBonusColor extends QuizQuestion_Classes
+    {
+        public QuizQuestion_ClassToBonusColor(Random r) { super(r); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **color weapons** get bonus Magic when used by the **" + correctAnswer.getString("Name") + "** class?";
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return getBonusColorForClass(answers.get(index));
+        }
+
+        @Override
+        protected ArrayList<Object> getKeys(JSONObject obj)
+        {
+            return new ArrayList<>(Arrays.asList(getBonusColorForClass(obj)));
+        }
+        
+        protected String getBonusColorForClass(JSONObject obj)
+        {
+            String colorName = obj.getString("BonusWeapon");
+            return colorName.substring(0, 1).toUpperCase() + colorName.substring(1);
+        }
+    }
+
+    /**
+     * Asks a user to identify which class has affinity to the specified color.
+     */
+    private static class QuizQuestion_BonusColorToClass extends QuizQuestion_ClassToBonusColor
+    {
+        public QuizQuestion_BonusColorToClass(Random r) { super(r); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **class** gets bonus Magic when using **" + getBonusColorForClass(correctAnswer) + "** weapons?";
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+    }
+
+    /**
+     * Asks a user to identify one of a class's traits.
+     */
+    private static class QuizQuestion_ClassToTrait extends QuizQuestion_Classes
+    {
+        protected final int traitIndex;
+        
+        public QuizQuestion_ClassToTrait(Random r) 
+        {
+            super(r);
+            traitIndex = r.nextInt(3);
+        }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What is the name of one of the **traits** of the **" + correctAnswer.getString("Name") + "** class?";
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getJSONArray("ParsedTraits").getJSONObject(traitIndex).getString("Name");
+        }
+
+        @Override
+        protected ArrayList<Object> getKeys(JSONObject obj)
+        {
+            JSONArray traitArray = obj.getJSONArray("ParsedTraits");
+            Object[] traits =
+            {
+                traitArray.getJSONObject(0).getString("Name"),
+                traitArray.getJSONObject(1).getString("Name"),
+                traitArray.getJSONObject(2).getString("Name")
+            };
+            return new ArrayList<>(Arrays.asList(traits));
+        }
+    }
     
+
+    /**
+     * Asks a user to identify which class has the specified trait.
+     */
+    private static class QuizQuestion_TraitToClass extends QuizQuestion_ClassToTrait
+    {
+        public QuizQuestion_TraitToClass(Random r) { super(r); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **class** has the trait **\"" + correctAnswer.getJSONArray("ParsedTraits").getJSONObject(traitIndex).getString("Name") + "\"**?";
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+    }
+
     private static ArrayList<QuestionType> getTypesForDifficulty(QuizQuestion.Difficulty difficulty)
     {
         ArrayList<QuestionType> result = new ArrayList<>();
@@ -1019,6 +1181,7 @@ public class QuizQuestionFactory
             case RarityToTroop:
             case GiveResourcesTroop:
             case GiveExtraTurnTroop:
+            case SummonTransformTroop:
                 return QuizQuestion.Difficulty.Easy;
                 
             case TroopToSpell:
@@ -1039,6 +1202,13 @@ public class QuizQuestionFactory
             case KingdomToStat:
             case StatToKingdom:
                 return QuizQuestion.Difficulty.Hard;
+
+            case ClassToTrait:
+            case TraitToClass:
+            case ClassToBonusColor:
+            case BonusColorToClass:
+                // TODO: Do we want these questions?
+                return QuizQuestion.Difficulty.Unused;
         }
 
         throw new InvalidParameterException();
@@ -1115,6 +1285,9 @@ public class QuizQuestionFactory
             case GiveExtraTurnTroop:
                 return new QuizQuestion_GiveExtraTurnTroop(r).initialize();
                 
+            case SummonTransformTroop:
+                return new QuizQuestion_SummonTransformTroop(r).initialize();
+                
             case EffectsTroop:
                 return new QuizQuestion_EffectsTroop(r).initialize();
                 
@@ -1129,6 +1302,18 @@ public class QuizQuestionFactory
                 
             case StatToKingdom:
                 return new QuizQuestion_StatToKingdom(r).initialize();
+
+            case ClassToBonusColor:
+                return new QuizQuestion_ClassToBonusColor(r).initialize();
+                
+            case BonusColorToClass:
+                return new QuizQuestion_BonusColorToClass(r).initialize();
+
+            case ClassToTrait:
+                return new QuizQuestion_ClassToTrait(r).initialize();
+                
+            case TraitToClass:
+                return new QuizQuestion_TraitToClass(r).initialize();
         }
         
         throw new InvalidParameterException("Invalid question type specified!");
@@ -1154,7 +1339,10 @@ public class QuizQuestionFactory
      */
     public static QuizQuestion getQuestion(Random r)
     {
-        QuestionType type = QuestionType.fromInteger(r.nextInt(QuestionType.Count));
+        ArrayList<QuestionType> types = getTypesForDifficulty(QuizQuestion.Difficulty.Easy);
+        types.addAll(getTypesForDifficulty(QuizQuestion.Difficulty.Moderate));
+        types.addAll(getTypesForDifficulty(QuizQuestion.Difficulty.Hard));
+        QuestionType type = types.get(r.nextInt(types.size()));
         return getQuestion(r, type);
     }
 }
