@@ -89,9 +89,13 @@ public class QuizHandler
             quizThread.start();
         }
 
-        if (quizChannel != source)
+        IChannel globalChannel = srv.getChannelByID(IDReference.GLOBALCHANNEL);
+        String quizAnnounceText = "A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.";
+        
+        globalChannel.sendMessage(quizAnnounceText);
+        if (source != globalChannel)
         {
-            srv.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.");
+            source.sendMessage(quizAnnounceText);
         }
     }
     
