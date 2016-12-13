@@ -48,7 +48,8 @@ public class QuizHandler
     }
 
     @SuppressWarnings("UnnecessaryBoxing")
-    public void initializeQuiz(IGuild srv, IUser sdr, IChannel source) throws Exception
+    public void initializeQuiz(IGuild srv, IUser sdr, IChannel source,
+            int questionCount, QuizQuestion.Difficulty difficulty, QuizQuestionFactory.QuestionType questionType, long randomSeed) throws Exception
     {
         if (isQuizRunning())
         {
@@ -77,7 +78,8 @@ public class QuizHandler
 
         synchronized (this)
         {
-            quizQuestionTimer = new QuizQuestionTimer(this, quizChannel, 10, 10);
+            quizQuestionTimer = new QuizQuestionTimer(this, quizChannel, questionCount, 10,
+                difficulty, questionType, randomSeed);
             quizThread = new Thread(quizQuestionTimer, "Quiz question timer");
             quizThread.start();
         }

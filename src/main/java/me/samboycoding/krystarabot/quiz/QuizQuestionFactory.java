@@ -22,49 +22,51 @@ public class QuizQuestionFactory
 {
     public enum QuestionType
     {
-        TroopToKingdom("Which kingdom is this troop from?"),
-        KingdomToTroop("Which troop is in this kingdom?"),
-        TroopToSpell("Which spell does this troop have?"),
-        SpellToTroop("Which troop has this spell?"),
-        TroopToType("Which type does this troop have?"),
-        TypeToTroop("Which troop has this type?"),
-        TroopToColor("Which color(s) does this troop use?"),
-        ColorToTroop("Which troop uses this/these color(s)?"),
-        TroopToRarity("Which rarity is this troop?"),
-        RarityToTroop("Which troop is of this rarity?"),
-        TroopToTrait("Which trait does this troop have?"),
-        TraitToTroop("Which troop has this trait?"),
-        FlavorTextToTroop("Which troop has this flavour text?"),
-        SpellArtToTroop("Which troop has the pictured spell?"),
+        TroopToKingdom("Which kingdom is this troop from?", QuizQuestion.Difficulty.Easy),
+        KingdomToTroop("Which troop is in this kingdom?", QuizQuestion.Difficulty.Easy),
+        TroopToSpell("Which spell does this troop have?", QuizQuestion.Difficulty.Moderate),
+        SpellToTroop("Which troop has this spell?", QuizQuestion.Difficulty.Moderate),
+        TroopToType("Which type does this troop have?", QuizQuestion.Difficulty.Moderate),
+        TypeToTroop("Which troop has this type?", QuizQuestion.Difficulty.Moderate),
+        TroopToColor("Which color(s) does this troop use?", QuizQuestion.Difficulty.Hard),
+        ColorToTroop("Which troop uses this/these color(s)?", QuizQuestion.Difficulty.Hard),
+        TroopToRarity("Which rarity is this troop?", QuizQuestion.Difficulty.Easy),
+        RarityToTroop("Which troop is of this rarity?", QuizQuestion.Difficulty.Easy),
+        TroopToTrait("Which trait does this troop have?", QuizQuestion.Difficulty.Hard),
+        TraitToTroop("Which troop has this trait?", QuizQuestion.Difficulty.Hard),
+        FlavorTextToTroop("Which troop has this flavour text?", QuizQuestion.Difficulty.Easy),
+        SpellArtToTroop("Which troop has the pictured spell?", QuizQuestion.Difficulty.Easy),
         
-        TrueDamageTroop("Which of these troops does true damage?"),
-        CreateGemsTroop("Which of these troops creates gems?"),
-        ConvertGemsTroop("Which of these troops converts gems?"),
-        DestroyGemsTroop("Which of these troops destroys gems?"),
-        IncreaseStatsTroop("Which of these troops increases the stats of itself or others?"),
-        DecreaseStatsTroop("Which of these troops decreases the stats of itself or others?"),
-        GiveResourcesTroop("Which of these troops gives resources?"),
-        GiveExtraTurnTroop("Which of these troops gives an extra turn?"),
-        SummonTransformTroop("Which of these troops summons or transforms a troop?"),
-        DrainManaTroop("Which of these troops drains mana?"),
-        EffectsTroop("Which of these troops gives effects?"),
+        TrueDamageTroop("Which of these troops does true damage?", QuizQuestion.Difficulty.Easy),
+        CreateGemsTroop("Which of these troops creates gems?", QuizQuestion.Difficulty.Easy),
+        ConvertGemsTroop("Which of these troops converts gems?", QuizQuestion.Difficulty.Easy),
+        DestroyGemsTroop("Which of these troops destroys gems?", QuizQuestion.Difficulty.Easy),
+        IncreaseStatsTroop("Which of these troops increases the stats of itself or others?", QuizQuestion.Difficulty.Moderate),
+        DecreaseStatsTroop("Which of these troops decreases the stats of itself or others?", QuizQuestion.Difficulty.Moderate),
+        GiveResourcesTroop("Which of these troops gives resources?", QuizQuestion.Difficulty.Easy),
+        GiveExtraTurnTroop("Which of these troops gives an extra turn?", QuizQuestion.Difficulty.Easy),
+        SummonTransformTroop("Which of these troops summons or transforms a troop?", QuizQuestion.Difficulty.Easy),
+        DrainManaTroop("Which of these troops drains mana?", QuizQuestion.Difficulty.Easy),
+        EffectsTroop("Which of these troops gives effects?", QuizQuestion.Difficulty.Moderate),
         
-        KingdomToTraitstone("Which traitstone is found in this kingdom?"),
-        TraitstoneToKingdom("Which kingdom contains this traitstone?"),
-        KingdomToStat("Which stat is got from this kingdom?"),
-        StatToKingdom("Which kingdom gives this stat?"),
+        KingdomToTraitstone("Which traitstone is found in this kingdom?", QuizQuestion.Difficulty.Hard),
+        TraitstoneToKingdom("Which kingdom contains this traitstone?", QuizQuestion.Difficulty.Hard),
+        KingdomToStat("Which stat is got from this kingdom?", QuizQuestion.Difficulty.Hard),
+        StatToKingdom("Which kingdom gives this stat?", QuizQuestion.Difficulty.Hard),
         
-        ClassToBonusColor("Which Bonus Color is got from this class?"),
-        BonusColorToClass("Which class gives this bonus color?"),
-        ClassToTrait("Which trait is got from this class?"),
-        TraitToClass("Which class gives this trait?");
+        ClassToBonusColor("Which bonus color is got from this class?", QuizQuestion.Difficulty.Unused),
+        BonusColorToClass("Which class gives this bonus color?", QuizQuestion.Difficulty.Unused),
+        ClassToTrait("Which trait is got from this class?", QuizQuestion.Difficulty.Unused),
+        TraitToClass("Which class gives this trait?", QuizQuestion.Difficulty.Unused);
         
         
         private final String descriptionText;
+        public final QuizQuestion.Difficulty difficulty;
         
-        private QuestionType(String desc)
+        private QuestionType(String desc, QuizQuestion.Difficulty d)
         {
             descriptionText = desc;
+            difficulty = d;
         }
         
         public String toString()
@@ -1308,7 +1310,7 @@ public class QuizQuestionFactory
         for (int i = 0; i < QuestionType.Count; i++)
         {
             QuestionType type = QuestionType.fromInteger(i);
-            if (getDifficultyForType(type) == difficulty)
+            if (type.difficulty == difficulty)
             {
                 result.add(type);
             }
@@ -1317,57 +1319,6 @@ public class QuizQuestionFactory
         return result;
     }
  
-    private static QuizQuestion.Difficulty getDifficultyForType(QuestionType type)
-    {
-        switch (type)
-        {
-            case TroopToKingdom:
-            case KingdomToTroop:
-            case TroopToRarity:
-            case TrueDamageTroop:
-            case CreateGemsTroop:
-            case ConvertGemsTroop:
-            case DestroyGemsTroop:
-            case RarityToTroop:
-            case GiveResourcesTroop:
-            case GiveExtraTurnTroop:
-            case SummonTransformTroop:
-            case DrainManaTroop:
-            case FlavorTextToTroop:
-            case SpellArtToTroop:
-                return QuizQuestion.Difficulty.Easy;
-                
-            case TroopToSpell:
-            case SpellToTroop:
-            case TroopToType:
-            case TypeToTroop:
-            case IncreaseStatsTroop:
-            case DecreaseStatsTroop:
-            case EffectsTroop:
-                return QuizQuestion.Difficulty.Moderate;
-                
-            case TroopToColor:
-            case ColorToTroop:
-            case TroopToTrait:
-            case TraitToTroop:
-            case KingdomToTraitstone:
-            case TraitstoneToKingdom:
-            case KingdomToStat:
-            case StatToKingdom:
-                return QuizQuestion.Difficulty.Hard;
-
-            case ClassToTrait:
-            case TraitToClass:
-            case ClassToBonusColor:
-            case BonusColorToClass:
-                // TODO: Do we want these questions?
-                return QuizQuestion.Difficulty.Unused;
-        }
-
-        throw new InvalidParameterException();
-    }
-    
-
     /**
      * Generates a random question of the specified type.
      * @param r The random number generator to use.
