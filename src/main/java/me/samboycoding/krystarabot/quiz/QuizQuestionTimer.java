@@ -315,7 +315,7 @@ public class QuizQuestionTimer implements Runnable
 
             chnl.sendMessage(scores);
 
-            if (!IDReference.LIVE)
+            if (IDReference.Environment != IDReference.RuntimeEnvironment.Live)
             {
                 String questionLogText = "Debug info (dev-server only):\n";
                 int i = 0;

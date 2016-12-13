@@ -47,7 +47,7 @@ public class Listener
         try
         {
             main.logToBoth("Attempting to change username, please wait...");
-            if (IDReference.LIVE)
+            if (IDReference.Environment == IDReference.RuntimeEnvironment.Live)
             {
                 main.logToBoth("Logging in to LIVE server.");
                 cl.changeUsername("Krystara");
