@@ -18,41 +18,54 @@ public class QuizQuestionFactory
 {
     public enum QuestionType
     {
-        TroopToKingdom,
-        KingdomToTroop,
-        TroopToSpell,
-        SpellToTroop,
-        TroopToType,
-        TypeToTroop,
-        TroopToColor,
-        ColorToTroop,
-        TroopToRarity,
-        RarityToTroop,
-        TroopToTrait,
-        TraitToTroop,
-        FlavorTextToTroop,
+        TroopToKingdom("Which kingdom is this troop from?"),
+        KingdomToTroop("Which troop is in this kingdom?"),
+        TroopToSpell("Which spell does this troop have?"),
+        SpellToTroop("Which troop has this spell?"),
+        TroopToType("Which type does this troop have?"),
+        TypeToTroop("Which troop has this type?"),
+        TroopToColor("Which color(s) does this troop use?"),
+        ColorToTroop("Which troop uses this/these color(s)?"),
+        TroopToRarity("Which rarity is this troop?"),
+        RarityToTroop("Which troop is of this rarity?"),
+        TroopToTrait("Which trait does this troop have?"),
+        TraitToTroop("Which troop has this trait?"),
+        FlavorTextToTroop("Which troop has this flavour text?"),
         
-        TrueDamageTroop,
-        CreateGemsTroop,
-        ConvertGemsTroop,
-        DestroyGemsTroop,
-        IncreaseStatsTroop,
-        DecreaseStatsTroop,
-        GiveResourcesTroop,
-        GiveExtraTurnTroop,
-        SummonTransformTroop,
-        DrainManaTroop,
-        EffectsTroop,
+        TrueDamageTroop("Which of these troops does true damage?"),
+        CreateGemsTroop("Which of these troops creates gems?"),
+        ConvertGemsTroop("Which of these troops converts gems?"),
+        DestroyGemsTroop("Which of these troops destroys gems?"),
+        IncreaseStatsTroop("Which of these troops increases the stats of itself or others?"),
+        DecreaseStatsTroop("Which of these troops decreases the stats of itself or others?"),
+        GiveResourcesTroop("Which of these troops gives resources?"),
+        GiveExtraTurnTroop("Which of these troops gives an extra turn?"),
+        SummonTransformTroop("Which of these troops summons or transforms a troop?"),
+        DrainManaTroop("Which of these troops drains mana?"),
+        EffectsTroop("Which of these troops gives effects?"),
         
-        KingdomToTraitstone,
-        TraitstoneToKingdom,
-        KingdomToStat,
-        StatToKingdom,
+        KingdomToTraitstone("Which traitstone is found in this kingdom?"),
+        TraitstoneToKingdom("Which kingdom contains this traitstone?"),
+        KingdomToStat("Which stat is got from this kingdom?"),
+        StatToKingdom("Which kingdom gives this stat?"),
         
-        ClassToBonusColor,
-        BonusColorToClass,
-        ClassToTrait,
-        TraitToClass;
+        ClassToBonusColor("Which Bonus Color is got from this class?"),
+        BonusColorToClass("Which class gives this bonus color?"),
+        ClassToTrait("Which trait is got from this class?"),
+        TraitToClass("Which class gives this trait?");
+        
+        
+        private final String descriptionText;
+        
+        private QuestionType(String desc)
+        {
+            descriptionText = desc;
+        }
+        
+        public String toString()
+        {
+            return descriptionText;
+        }
         
         private static final QuestionType[] Types =
         {
@@ -107,6 +120,11 @@ public class QuizQuestionFactory
                 }
             }
             throw new InvalidParameterException();
+        }
+        
+        public static QuestionType[] getTypes()
+        {
+            return Types.clone();
         }
     }
     

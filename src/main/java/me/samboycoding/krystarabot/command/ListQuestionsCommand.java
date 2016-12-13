@@ -1,0 +1,65 @@
+package me.samboycoding.krystarabot.command;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
+import me.samboycoding.krystarabot.quiz.QuizQuestionFactory;
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
+
+/**
+ * Represents the ?listquestions command
+ *
+ * @author Sam
+ */
+public class ListQuestionsCommand extends KrystaraCommand
+{
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        ArrayList<QuizQuestionFactory.QuestionType> qTypes = new ArrayList<>(Arrays.asList(QuizQuestionFactory.QuestionType.getTypes()));
+        
+        String questionTypes = "There are " + qTypes.size() + " questions defined. Full List (in no particular order): \n";
+        
+        int num = 0;
+        for(QuizQuestionFactory.QuestionType qt : qTypes)
+        {
+            num++;
+            questionTypes += "\n\t" + num + ") " + qt.toString();
+        }
+        
+        sdr.getOrCreatePMChannel().sendMessage(questionTypes);
+    }
+
+    @Override
+    public String getHelpText()
+    {
+        return "Lists all the defined quiz questions.";
+    }
+
+    @Override
+    public Boolean requiresAdmin()
+    {
+        return false;
+    }
+
+    @Override
+    public CommandType getCommandType()
+    {
+        return GOW;
+    }
+
+    @Override
+    public String getUsage()
+    {
+        return "?listquestions";
+    }
+
+    @Override
+    public String getCommand()
+    {
+        return "listquestions";
+    }
+
+}
