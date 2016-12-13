@@ -81,6 +81,7 @@ public class Listener
             main.registerCommand(new HelpCommand());
             main.registerCommand(new KickCommand());
             main.registerCommand(new KingdomCommand());
+            main.registerCommand(new ListQuestionsCommand());
             main.registerCommand(new NewcodeCommand());
             main.registerCommand(new PingCommand());
             main.registerCommand(new PlatformCommand());
