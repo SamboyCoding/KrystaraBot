@@ -96,7 +96,14 @@ public class KingdomCommand extends KrystaraCommand
         }
 
         String kingdomId = kingdomInfo.getString("FileBase");
-        String troops = kingdomInfo.getJSONArray("Troops").toString().replace("[", "").replace("]", "").replace(",", ", ").replace("\"", "");
+        ArrayList<String> troopNames = new ArrayList<>();
+        for (Object oTroopName : kingdomInfo.getJSONArray("Troops"))
+        {
+            String troopName = (String)oTroopName;
+            troopNames.add(troopName);
+        }
+        troopNames.sort((s1, s2) -> s1.compareTo(s2));
+        String troops = String.join(", ", troopNames);
 
         if (bannerName.equals("Unnamed Banner"))
         {

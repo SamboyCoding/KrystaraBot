@@ -1,10 +1,13 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -46,7 +49,33 @@ public class TraitCommand extends KrystaraCommand
         traitName = traitInfo.getString("Name");
         String traitDesc = traitInfo.getString("Description");
 
-        chnl.sendMessage("**" + traitName + "**: " + traitDesc);
+        String result = "**" + traitName + "**: " + traitDesc + "\n";
+
+        HashSet<JSONObject> troopMap = new HashSet<>();
+        for (Object oTroop : GameData.arrayTroops)
+        {
+            JSONObject troop = (JSONObject)oTroop;
+            JSONArray traitTable = troop.getJSONArray("ParsedTraits");
+            for (Object oSearchTrait : traitTable)
+            {
+                JSONObject searchTrait = (JSONObject)oSearchTrait;
+                if (searchTrait.getString("Code").equals(traitInfo.getString("Code")))
+                {
+                    troopMap.add(troop);
+                }
+            }
+        }
+        
+        if (!troopMap.isEmpty())
+        {
+            JSONObject[] oTroops = troopMap.toArray(new JSONObject[0]);
+            ArrayList<JSONObject> troops = new ArrayList<>(Arrays.asList(oTroops));
+            troops.sort((t1, t2) -> t1.getString("Name").compareTo(t2.getString("Name")));
+            String[] troopNames = troops.stream().map(t -> t.getString("Name")).toArray(String[]::new);
+            result += "Used by: " + String.join(", ", troopNames) + "\n";
+        }
+        
+        chnl.sendMessage(result);
     }
 
     @Override

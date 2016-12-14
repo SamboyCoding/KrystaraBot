@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import me.samboycoding.krystarabot.main;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
@@ -59,6 +61,32 @@ public class Utilities
         }
 
         main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", bldr.build(), false);
+    }
+    
+    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts) 
+            throws MissingPermissionsException, RateLimitException, DiscordException, InterruptedException
+    {
+        final int CHUNK_MAX_LENGTH = 2000;
+
+        String chunk = "";
+        Iterator<String> messageIterator = messageParts.iterator();
+        
+        while (messageIterator.hasNext())
+        {
+            String nextMsg = messageIterator.next();
+            if ((chunk.length() + nextMsg.length()) > CHUNK_MAX_LENGTH)
+            {
+                channel.sendMessage(chunk);
+                chunk = "";
+            }
+
+            chunk += nextMsg + "\n";
+        }
+
+        if (!chunk.isEmpty())
+        {
+            channel.sendMessage(chunk);
+        }
     }
 
     /**

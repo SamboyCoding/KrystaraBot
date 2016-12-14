@@ -215,6 +215,7 @@ public class GameDataLoaderThread implements Runnable
                     //Data slimming
                     newTrait.put("Name", trait.get("Name"));
                     newTrait.put("Description", trait.get("Description"));
+                    newTrait.put("Code", trait.get("Code"));
 
                     //Add to known traits
                     traits.put(newTrait);
@@ -256,6 +257,7 @@ public class GameDataLoaderThread implements Runnable
                     //Data slimming
                     newTrait.put("Name", trait.get("Name"));
                     newTrait.put("Description", trait.get("Description"));
+                    newTrait.put("Code", trait.get("Code"));
 
                     //Add to known traits
                     traits.put(newTrait);
