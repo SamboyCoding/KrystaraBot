@@ -21,24 +21,16 @@ public abstract class QuizQuestion
         Hard,
         Unused;
         
-        private static final Difficulty[] Difficulties =
-        {
-            Easy,
-            Moderate,
-            Hard,
-            Unused
-        };
-
-        public static final int Count = Difficulties.length;
+        public static final int Count = values().length;
         
         public static Difficulty fromInteger(int x)
         {
-            return Difficulties[x];
+            return values()[x];
         }
         
         public static Difficulty fromString(String s)
         {
-            for (Difficulty d : Difficulties)
+            for (Difficulty d : values())
             {
                 if (d.name().equalsIgnoreCase(s))
                 {

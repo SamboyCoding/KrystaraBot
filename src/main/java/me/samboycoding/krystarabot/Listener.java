@@ -98,6 +98,7 @@ public class Listener
             main.registerCommand(new TroopCommand());
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
+            main.registerCommand(new WeaponCommand());
 
             String timestamp = "";
             Calendar now = main.getNow();
@@ -151,18 +152,8 @@ public class Listener
 
             if (chnl.equals(main.quizH.getQuizChannel()) && main.quizH.isQuizRunning())
             {
-                ArrayList<String> validOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4"));
-
-                if (!validOptions.contains(e.getMessage().getContent()))
-                {
-                    msg.delete();
-                    return;
-                } else
-                {
-                    //Handle result
-                    main.quizH.handleAnswer(msg);
-                    return;
-                }
+                main.quizH.handleAnswer(msg);
+                return;
             }
 
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();

@@ -10,12 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import static java.nio.charset.Charset.defaultCharset;
-import static java.nio.charset.Charset.defaultCharset;
-import static java.nio.charset.Charset.defaultCharset;
-import static java.nio.charset.Charset.defaultCharset;
 
 /**
- * Class that collects and provides data from JSON-Source File
+ * Class that provides data from JSON-Source File
  *
  * @author MrSnake
  */
@@ -23,7 +20,7 @@ public class GameData
 {
 
     private final File sourceJSON = new File("Data.json"); //Source File
-    public static JSONArray arrayTroops, arrayTraits, arraySpells, arrayClasses, arrayKingdoms; //JSON arrays for original data
+    public static JSONArray arrayTroops, arrayTraits, arraySpells, arrayClasses, arrayKingdoms, arrayWeapons; //JSON arrays for original data
     public static boolean dataLoaded = false; //If the data has been loaded
 
     /**
@@ -156,7 +153,6 @@ public class GameData
     
     public JSONObject getTroopById(int id)
     {
-        JSONObject troop = null;
         for (Iterator<Object> it = arrayTroops.iterator(); it.hasNext();)
         {
             JSONObject checkTroop = (JSONObject) it.next();
@@ -165,7 +161,33 @@ public class GameData
                 return checkTroop;
             }
         }
-        return troop;
+        return null;
+    }
+    
+    public JSONObject getWeaponById(int id)
+    {
+        for (Iterator<Object> it = arrayWeapons.iterator(); it.hasNext();)
+        {
+            JSONObject checkWeapon = (JSONObject) it.next();
+            if (checkWeapon.getInt("Id") == id)
+            {
+                return checkWeapon;
+            }
+        }
+        return null;
+    }
+    
+    public JSONObject getWeaponByName(String traitName)
+    {
+        for (Iterator<Object> it = arrayWeapons.iterator(); it.hasNext();)
+        {
+            JSONObject checkWeapon = (JSONObject) it.next();
+            if (checkWeapon.getString("Name").toLowerCase().equals(traitName.toLowerCase()))
+            {
+                return checkWeapon;
+            }
+        }
+        return null;
     }
 
     public JSONObject getTraitByName(String traitName)
@@ -234,6 +256,22 @@ public class GameData
         ArrayList<String> res = new ArrayList<>();
 
         for (Iterator<Object> it = arrayTroops.iterator(); it.hasNext();)
+        {
+            String name = ((JSONObject) it.next()).getString("Name");
+            if (name.toLowerCase().contains(searchTerm.toLowerCase()))
+            {
+                res.add(name);
+            }
+        }
+
+        return res;
+    }
+    
+    public ArrayList<String> searchForWeapon(String searchTerm)
+    {
+        ArrayList<String> res = new ArrayList<>();
+
+        for (Iterator<Object> it = arrayWeapons.iterator(); it.hasNext();)
         {
             String name = ((JSONObject) it.next()).getString("Name");
             if (name.toLowerCase().contains(searchTerm.toLowerCase()))

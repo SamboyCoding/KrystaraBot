@@ -27,7 +27,6 @@ public class QuizHandler
     private QuizQuestionTimer quizQuestionTimer = null;
 
     private QuizQuestion currentQ = null;
-    private QuizQuestion.Difficulty currentDifficulty = null;
 
     LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
     Top10Command.ValueComparator comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
@@ -48,7 +47,8 @@ public class QuizHandler
     }
 
     @SuppressWarnings("UnnecessaryBoxing")
-    public void initializeQuiz(IGuild srv, IUser sdr, IChannel source) throws Exception
+    public void initializeQuiz(IGuild srv, IUser sdr, IChannel source,
+            int questionCount, QuizQuestion.Difficulty difficulty, QuizQuestionFactory.QuestionType questionType, long randomSeed) throws Exception
     {
         if (isQuizRunning())
         {
@@ -77,7 +77,8 @@ public class QuizHandler
 
         synchronized (this)
         {
-            quizQuestionTimer = new QuizQuestionTimer(this, quizChannel, 10, 10);
+            quizQuestionTimer = new QuizQuestionTimer(this, quizChannel, questionCount, 10,
+                difficulty, questionType, randomSeed);
             quizThread = new Thread(quizQuestionTimer, "Quiz question timer");
             quizThread.start();
         }
@@ -102,7 +103,7 @@ public class QuizHandler
     
     public void abort()
     {
-        Thread runningThread = null;
+        Thread runningThread;
         
         synchronized (this)
         {
@@ -133,12 +134,11 @@ public class QuizHandler
         }
     }
     
-    public void setQuestion(QuizQuestion q, QuizQuestion.Difficulty difficulty)
+    public void setQuestion(QuizQuestion q)
     {
         synchronized (this)
         {
             currentQ = q;
-            currentDifficulty = difficulty;
         }
     }
 
@@ -161,8 +161,21 @@ public class QuizHandler
         }
 
         IUser usr = msg.getAuthor();
-        String text = msg.getContent();
+        String text = msg.getContent().trim();
 
+        int answer = -1;
+        if (text.length() == 1)
+        {
+            char answerChar = text.charAt(0);
+            answer = (answerChar - '0') - 1;
+        }
+
+        if (answer < 0 || answer >= QuizQuestion.AnswerCount)
+        {
+            timer.addChatterMessage(msg);
+            return;
+        }
+        
         msg.delete();
 
         int currentScore = 0;
@@ -174,21 +187,17 @@ public class QuizHandler
             currentScore = unordered.get(usr);
         }
 
-        int answer = Integer.parseInt(text); //We can just do this as Listener checks if it is valid
-
-        int pos = answer - 1;
-
         int scoreDelta = 0;
 
-        switch (timer.submitAnswer(theQ, usr, pos))
+        switch (timer.submitAnswer(theQ, usr, answer))
         {
             case Incorrect:
                 break;
             case Correct:
-                scoreDelta = currentDifficulty.getPoints();
+                scoreDelta = theQ.getDifficulty().getPoints();
                 break;
             case FirstCorrect:
-                scoreDelta = currentDifficulty.getPoints() + 1;
+                scoreDelta = theQ.getDifficulty().getPoints() + 1;
                 break;
             case AlreadyAnswered:
                 break;

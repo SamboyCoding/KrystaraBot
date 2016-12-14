@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import java.util.Arrays;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
+import me.samboycoding.krystarabot.quiz.QuizQuestion;
 import me.samboycoding.krystarabot.quiz.QuizQuestionFactory;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -15,20 +16,30 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class ListQuestionsCommand extends KrystaraCommand
 {
+    
+    public ListQuestionsCommand()
+    {
+        commandName = "listquestions";
+    }
+    
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        ArrayList<QuizQuestionFactory.QuestionType> qTypes = new ArrayList<>(Arrays.asList(QuizQuestionFactory.QuestionType.getTypes()));
+        ArrayList<QuizQuestionFactory.QuestionType> qTypes = new ArrayList<>(Arrays.asList(QuizQuestionFactory.QuestionType.values()));
         
-        String questionTypes = "There are " + qTypes.size() + " questions defined. Full List (in no particular order): \n";
+        String questionTypes = "";
         
         int num = 0;
         for(QuizQuestionFactory.QuestionType qt : qTypes)
         {
-            num++;
-            questionTypes += "\n\t" + num + ") " + qt.toString();
+            if (qt.difficulty != QuizQuestion.Difficulty.Unused)
+            {
+                num++;
+                questionTypes += "\n\t" + num + ") " + qt.description + " (" + qt.difficulty + ")";
+            }
         }
         
+        questionTypes = "There are " + num + " questions defined. Full List (in no particular order): \n" + questionTypes;
         sdr.getOrCreatePMChannel().sendMessage(questionTypes);
     }
 

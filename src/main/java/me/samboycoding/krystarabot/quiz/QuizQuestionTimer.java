@@ -38,7 +38,14 @@ public class QuizQuestionTimer implements Runnable
     private final Object abortSignal = new Object();
     private final int qCount;
     private final int qTimeSeconds;
+    private final QuizQuestion.Difficulty difficultyFilter;
+    private final QuizQuestionFactory.QuestionType questionTypeFilter;
+    private final long randomSeed;
+    private final QuizHandler qh;
     
+    private final ArrayList<IMessage> chatterMessages = new ArrayList<>();
+    private final ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
+
     public enum QuizPhase
     {
         Introduction,
@@ -70,17 +77,17 @@ public class QuizQuestionTimer implements Runnable
         }
     }
 
-    private ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
-
-    private QuizHandler qh;
-
-    public QuizQuestionTimer(QuizHandler handler, IChannel c, int questionCount, int questionTimeInSeconds)
+    public QuizQuestionTimer(QuizHandler handler, IChannel c, int questionCount, int questionTimeInSeconds,
+            QuizQuestion.Difficulty difficulty, QuizQuestionFactory.QuestionType questionType, long seed)
     {
         chnl = c;
         phase = QuizPhase.Introduction;
         qh = handler;
         qCount = questionCount;
         qTimeSeconds = questionTimeInSeconds;
+        difficultyFilter = difficulty;
+        questionTypeFilter = questionType;
+        randomSeed = seed;
     }
     
     private static class QuestionLogEntry
@@ -161,13 +168,23 @@ public class QuizQuestionTimer implements Runnable
             IMessage imageMessage = null;
             IMessage choicesMessage = null;
             IMessage answerMessage = null;
-            Random questionSeed = new Random();
+            Random random = new Random();
+            if (randomSeed >= 0)
+            {
+                random.setSeed(randomSeed);
+            }
+            
             for (int iQuestion = 0; iQuestion < questionDifficulties.size(); iQuestion++)
             {
-                QuizQuestion.Difficulty difficulty = questionDifficulties.get(iQuestion);
-
+                // Count down to the next question
                 sendCountdownMessage("Next question: %1$d seconds", 10).delete();
 
+                // Remove any old question, choice, and answer from the view
+                synchronized (this)
+                {
+                    clearChatterMessages();
+                }
+                
                 if (answerMessage != null)
                 {
                     answerMessage.delete();
@@ -189,64 +206,42 @@ public class QuizQuestionTimer implements Runnable
                     questionMessage = null;
                 }
                 
-                QuizQuestion question;
-                long seed = Utilities.getSeed(questionSeed);
-                question = QuizQuestionFactory.getQuestion(questionSeed, difficulty);
+                // Determine question difficulty
+                QuizQuestion.Difficulty difficulty = getDifficultyForQuestion(questionDifficulties, iQuestion);
 
-                synchronized (this)
-                {
-                    q = question;
-                    qh.setQuestion(q, difficulty);
-                    submissions.clear();
-                }
+                // Get a new question of the specified difficulty
+                QuizQuestion question = getQuestion(random, difficulty, questionLog);
 
-                questionLog.add(new QuestionLogEntry(difficulty, seed));
+                // Send the question
+                questionMessage = sendQuestion(question, iQuestion, quizLog);
 
-                String pointString = getPointString(difficulty, false);
-                String questionText = "**Question #" + (iQuestion+1) + ":**\n\n" + question.getQuestionText() +
-                        " (" + pointString + ")\n";
-                
-                String questionSecondaryText = question.getQuestionSecondaryText();
-                if (!questionSecondaryText.isEmpty())
-                {
-                    questionText += questionSecondaryText + "\n";
-                }
-                
-                URL imageUrl = question.getQuestionImageUrl();
+                // Send the associated image, if any
+                imageMessage = sendImage(question);
 
-                quizLog.add(questionText);
-                questionMessage = chnl.sendMessage(questionText);
-                if (imageUrl != null)
-                {
-                    try
-                    {
-                        InputStream imageStream = imageUrl.openStream();
-                        String imageName = "image." + FilenameUtils.getExtension(imageUrl.getPath());
-                        imageMessage = chnl.sendFile("", false, imageStream, imageName);
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
+                // Send the associated choices
                 choicesMessage = sendChoices(question, quizLog);
 
+                // Start accepting answers
                 synchronized (this)
                 {
                     phase = QuizPhase.WaitingForAnswers;
                 }
 
+                // Wait for a bit for answers
                 sendCountdownMessage("Time remaining: %1$d seconds", qTimeSeconds).delete();
 
+                // Stop accepting answers
                 synchronized (this)
                 {
                     phase = QuizPhase.Pausing;
                 }
 
+                // Remove choices from the view
                 choicesMessage.delete();
                 choicesMessage = null;
                 
-                answerMessage = sendAnswer(question, difficulty, quizLog);
+                // Show answers and scores
+                answerMessage = sendAnswerAndResults(question, quizLog);
             }
 
             synchronized (this)
@@ -326,7 +321,88 @@ public class QuizQuestionTimer implements Runnable
         }
     }
 
-    private IMessage sendAnswer(QuizQuestion question, QuizQuestion.Difficulty difficulty, ArrayList<String> quizLog)
+    private QuizQuestion.Difficulty getDifficultyForQuestion(ArrayList<QuizQuestion.Difficulty> questionDifficulties, int iQuestion)
+    {
+        QuizQuestion.Difficulty difficulty;
+        if (difficultyFilter != null)
+        {
+            difficulty = difficultyFilter;
+        }
+        else if (questionTypeFilter != null)
+        {
+            difficulty = questionTypeFilter.difficulty;
+        }
+        else
+        {
+            difficulty = questionDifficulties.get(iQuestion);
+        }
+        return difficulty;
+    }
+
+    private QuizQuestion getQuestion(Random random, QuizQuestion.Difficulty difficulty, ArrayList<QuestionLogEntry> questionLog)
+    {
+        // Get a new question
+        QuizQuestion question;
+        long seed = Utilities.getSeed(random);
+        if (questionTypeFilter != null)
+        {
+            question = QuizQuestionFactory.getQuestion(random, questionTypeFilter);
+        }
+        else
+        {
+            question = QuizQuestionFactory.getQuestion(random, difficulty);
+        }
+        
+        synchronized (this)
+        {
+            q = question;
+            qh.setQuestion(q);
+            submissions.clear();
+        }
+        questionLog.add(new QuestionLogEntry(difficulty, seed));
+        return question;
+    }
+
+    private IMessage sendQuestion(QuizQuestion question, int iQuestion, ArrayList<String> quizLog) 
+            throws MissingPermissionsException, DiscordException, RateLimitException
+    {
+        IMessage questionMessage;
+        String pointString = getPointString(question.getDifficulty(), false);
+        String questionText = "**Question #" + (iQuestion+1) + ":**\n\n" + question.getQuestionText() +
+                " (" + pointString + ")\n";
+        String questionSecondaryText = question.getQuestionSecondaryText();
+        if (!questionSecondaryText.isEmpty())
+        {
+            questionText += questionSecondaryText + "\n";
+        }
+        quizLog.add(questionText);
+        questionMessage = chnl.sendMessage(questionText);
+        return questionMessage;
+    }
+
+    private IMessage sendImage(QuizQuestion question) 
+            throws RateLimitException, DiscordException, MissingPermissionsException
+    {
+        IMessage imageMessage = null;
+        URL imageUrl = question.getQuestionImageUrl();
+        if (imageUrl != null)
+        {
+            try
+            {
+                InputStream imageStream = imageUrl.openStream();
+                String imageName = "image." + FilenameUtils.getExtension(imageUrl.getPath());
+                imageMessage = chnl.sendFile("", false, imageStream, imageName);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                imageMessage = chnl.sendMessage(imageUrl.toString());
+            }
+        }
+        return imageMessage;
+    }
+
+    private IMessage sendAnswerAndResults(QuizQuestion question, ArrayList<String> quizLog)
             throws RateLimitException, MissingPermissionsException, DiscordException
     {
         IMessage msg;
@@ -334,7 +410,7 @@ public class QuizQuestionTimer implements Runnable
         String number = Integer.toString(pos + 1);
         String answerBody = "\nThe correct answer was: "
                 + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
-                + "**\n\n" + getCorrectUserText(difficulty)
+                + "**\n\n" + getCorrectUserText(question.getDifficulty())
                 + "\n" + Utilities.repeatString("-", 40);
         quizLog.add(answerBody + "\n");
         msg = chnl.sendMessage(answerBody);
@@ -393,12 +469,6 @@ public class QuizQuestionTimer implements Runnable
             String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();;
             
             main.databaseHandler.increaseUserQuizScore(u, chnl.getGuild(), score);
-            if (score > 0)
-            {
-                u.getOrCreatePMChannel().sendMessage("You scored " + score + " points on the quiz! You now have a total of " +
-                        main.databaseHandler.getQuizScore(u, chnl.getGuild()) + " points.");
-                sleepFor(500);
-            }
             if (numDone <= 10)
             {
                 scores += "\n" + nameOfUser + Utilities.repeatString(" ", 50 - nameOfUser.length()) + score;
@@ -413,7 +483,9 @@ public class QuizQuestionTimer implements Runnable
         chnl.sendMessage(scores);
         
         sleepFor(1000);
-        chnl.sendMessage("Thanks for playing! To play again, use the command `?quiz` in any channel.");
+        chnl.sendMessage("Thanks for playing!\n" +
+                "To play again, use the command `?quiz` in any channel.\n" +
+                "To see your total lifetime score, use the command `?userstats`.");
         
         if (IDReference.Environment != IDReference.RuntimeEnvironment.Live)
         {
@@ -470,6 +542,36 @@ public class QuizQuestionTimer implements Runnable
         }
     }
     
+    public void addChatterMessage(IMessage chatterMessage)
+            throws MissingPermissionsException, RateLimitException, DiscordException
+    {
+        synchronized (this)
+        {
+            if ((phase == QuizPhase.Pausing) || (phase == QuizPhase.Completed))
+            {
+                chatterMessages.add(chatterMessage);
+            }
+            else
+            {
+                chatterMessage.delete();
+            }
+        }
+    }
+    
+    private void clearChatterMessages() 
+            throws RateLimitException, MissingPermissionsException, DiscordException
+    {
+        synchronized (this)
+        {
+            for (IMessage chatterMessage : chatterMessages)
+            {
+                chatterMessage.delete();
+            }
+            chatterMessages.clear();
+        }
+    }
+
+
     public QuizSubmitResult submitAnswer(QuizQuestion question, IUser user, int answer)
     {
         synchronized (this)

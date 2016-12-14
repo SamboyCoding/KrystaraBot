@@ -1,7 +1,5 @@
 package me.samboycoding.krystarabot.quiz;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -10,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.function.BiFunction;
 import me.samboycoding.krystarabot.GameData;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,103 +21,184 @@ public class QuizQuestionFactory
 {
     public enum QuestionType
     {
-        TroopToKingdom("Which kingdom is this troop from?"),
-        KingdomToTroop("Which troop is in this kingdom?"),
-        TroopToSpell("Which spell does this troop have?"),
-        SpellToTroop("Which troop has this spell?"),
-        TroopToType("Which type does this troop have?"),
-        TypeToTroop("Which troop has this type?"),
-        TroopToColor("Which color(s) does this troop use?"),
-        ColorToTroop("Which troop uses this/these color(s)?"),
-        TroopToRarity("Which rarity is this troop?"),
-        RarityToTroop("Which troop is of this rarity?"),
-        TroopToTrait("Which trait does this troop have?"),
-        TraitToTroop("Which troop has this trait?"),
-        FlavorTextToTroop("Which troop has this flavour text?"),
-        SpellArtToTroop("Which troop has the pictured spell?"),
+        TroopToKingdom("Which kingdom is this troop from?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_TroopToKingdom(r, t).initialize()),
+
+        KingdomToTroop("Which troop is in this kingdom?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_KingdomToTroop(r, t).initialize()),
+
+        TroopToSpell("Which spell does this troop have?", 
+                QuizQuestion.Difficulty.Moderate,
+                (r, t) -> new QuizQuestion_TroopToSpell(r, t).initialize()),
+
+        SpellToTroop("Which troop has this spell?", 
+                QuizQuestion.Difficulty.Moderate,
+                (r, t) -> new QuizQuestion_SpellToTroop(r, t).initialize()),
+
+        TroopToType("Which type does this troop have?", 
+                QuizQuestion.Difficulty.Moderate,
+                (r, t) -> new QuizQuestion_TroopToType(r, t).initialize()),
+
+        TypeToTroop("Which troop has this type?", 
+                QuizQuestion.Difficulty.Moderate,
+                (r, t) -> new QuizQuestion_TypeToTroop(r, t).initialize()),
+
+        TroopToColor("Which color(s) does this troop use?", 
+                QuizQuestion.Difficulty.Hard,
+                (r, t) -> new QuizQuestion_TroopToColor(r, t).initialize()),
         
-        TrueDamageTroop("Which of these troops does true damage?"),
-        CreateGemsTroop("Which of these troops creates gems?"),
-        ConvertGemsTroop("Which of these troops converts gems?"),
-        DestroyGemsTroop("Which of these troops destroys gems?"),
-        IncreaseStatsTroop("Which of these troops increases the stats of itself or others?"),
-        DecreaseStatsTroop("Which of these troops decreases the stats of itself or others?"),
-        GiveResourcesTroop("Which of these troops gives resources?"),
-        GiveExtraTurnTroop("Which of these troops gives an extra turn?"),
-        SummonTransformTroop("Which of these troops summons or transforms a troop?"),
-        DrainManaTroop("Which of these troops drains mana?"),
-        EffectsTroop("Which of these troops gives effects?"),
+        ColorToTroop("Which troop uses this/these color(s)?", 
+                QuizQuestion.Difficulty.Hard,
+                (r, t) -> new QuizQuestion_ColorToTroop(r, t).initialize()),
         
-        KingdomToTraitstone("Which traitstone is found in this kingdom?"),
-        TraitstoneToKingdom("Which kingdom contains this traitstone?"),
-        KingdomToStat("Which stat is got from this kingdom?"),
-        StatToKingdom("Which kingdom gives this stat?"),
+        TroopToRarity("Which rarity is this troop?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_TroopToRarity(r, t).initialize()),
         
-        ClassToBonusColor("Which Bonus Color is got from this class?"),
-        BonusColorToClass("Which class gives this bonus color?"),
-        ClassToTrait("Which trait is got from this class?"),
-        TraitToClass("Which class gives this trait?");
+        RarityToTroop("Which troop is of this rarity?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_RarityToTroop(r, t).initialize()),
+        
+        TroopToTrait("Which trait does this troop have?", 
+                QuizQuestion.Difficulty.Hard,
+                (r, t) -> new QuizQuestion_TroopToTrait(r, t).initialize()),
+        
+        TraitToTroop("Which troop has this trait?", 
+                QuizQuestion.Difficulty.Hard,
+                (r, t) -> new QuizQuestion_TraitToTroop(r, t).initialize()),
+        
+        FlavorTextToTroop("Which troop has this flavour text?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_FlavorTextToTroop(r, t).initialize()),
+        
+        SpellArtToTroop("Which troop has the pictured spell?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_SpellArtToTroop(r, t).initialize()),
+
+        CardArtToTroop("Which troop is pictured?", 
+                QuizQuestion.Difficulty.Unused,
+                (r, t) -> new QuizQuestion_CardArtToTroop(r, t).initialize()),
+        
+
+        TrueDamageTroop("Which of these troops does true damage?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_TrueDamageTroop(r, t).initialize()),
+        
+        CreateGemsTroop("Which of these troops creates gems?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_CreateGemsTroop(r, t).initialize()),
+        
+        ConvertGemsTroop("Which of these troops converts gems?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_ConvertGemsTroop(r, t).initialize()),
+        
+        DestroyGemsTroop("Which of these troops destroys gems?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_DestroyGemsTroop(r, t).initialize()),
+        
+        IncreaseStatsTroop("Which of these troops increases the stats of itself or others?", 
+                QuizQuestion.Difficulty.Moderate,
+                (r, t) -> new QuizQuestion_IncreaseStatsTroop(r, t).initialize()),
+        
+        DecreaseStatsTroop("Which of these troops decreases the stats of itself or others?", 
+                QuizQuestion.Difficulty.Moderate,
+                (r, t) -> new QuizQuestion_DecreaseStatsTroop(r, t).initialize()),
+        
+        GiveResourcesTroop("Which of these troops gives resources?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_GiveResourcesTroop(r, t).initialize()),
+        
+        GiveExtraTurnTroop("Which of these troops gives an extra turn?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_GiveExtraTurnTroop(r, t).initialize()),
+        
+        SummonTransformTroop("Which of these troops summons or transforms a troop?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_SummonTransformTroop(r, t).initialize()),
+        
+        DrainManaTroop("Which of these troops drains mana?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_DrainManaTroop(r, t).initialize()),
+        
+        EffectsTroop("Which of these troops gives effects?", 
+                QuizQuestion.Difficulty.Moderate,
+                (r, t) -> new QuizQuestion_EffectsTroop(r, t).initialize()),
         
         
-        private final String descriptionText;
+        KingdomToTraitstone("Which traitstone is found in this kingdom?", 
+                QuizQuestion.Difficulty.Hard,
+                (r, t) -> new QuizQuestion_KingdomToTraitstone(r, t).initialize()),
         
-        private QuestionType(String desc)
+        TraitstoneToKingdom("Which kingdom contains this traitstone?", 
+                QuizQuestion.Difficulty.Hard,
+                (r, t) -> new QuizQuestion_TraitstoneToKingdom(r, t).initialize()),
+
+        KingdomToStat("Which stat is got from this kingdom?", 
+                QuizQuestion.Difficulty.Hard,
+                (r, t) -> new QuizQuestion_KingdomToStat(r, t).initialize()),
+        
+        StatToKingdom("Which kingdom gives this stat?", 
+                QuizQuestion.Difficulty.Hard,
+                (r, t) -> new QuizQuestion_StatToKingdom(r, t).initialize()),
+        
+        BannerArtToKingdom("Which kingdom has the pictured banner?", 
+                QuizQuestion.Difficulty.Easy,
+                (r, t) -> new QuizQuestion_BannerArtToKingdom(r, t).initialize()),
+        
+        ShieldArtToKingdom("Which kingdom has the pictured shield?", 
+                QuizQuestion.Difficulty.Moderate,
+                (r, t) -> new QuizQuestion_ShieldArtToKingdom(r, t).initialize()),
+        
+        
+        ClassToBonusColor("Which bonus color does this class give?", 
+                QuizQuestion.Difficulty.Unused,
+                (r, t) -> new QuizQuestion_ClassToBonusColor(r, t).initialize()),
+        
+        BonusColorToClass("Which class gives this bonus color?", 
+                QuizQuestion.Difficulty.Unused,
+                (r, t) -> new QuizQuestion_BonusColorToClass(r, t).initialize()),
+        
+        ClassToTrait("Which trait does this class have?", 
+                QuizQuestion.Difficulty.Unused,
+                (r, t) -> new QuizQuestion_ClassToTrait(r, t).initialize()),
+
+        TraitToClass("Which class has this trait?", 
+                QuizQuestion.Difficulty.Unused,
+                (r, t) -> new QuizQuestion_TraitToClass(r, t).initialize()),
+        
+        ClassArtToClass("Which class is pictured?", 
+                QuizQuestion.Difficulty.Unused,
+                (r, t) -> new QuizQuestion_ClassArtToClass(r, t).initialize());
+
+        
+        public final String description;
+        public final QuizQuestion.Difficulty difficulty;
+        public final BiFunction<Random, QuestionType, QuizQuestion> createFn;
+        
+        private QuestionType(String desc, QuizQuestion.Difficulty d, BiFunction<Random, QuestionType, QuizQuestion> fn)
         {
-            descriptionText = desc;
+            description = desc;
+            difficulty = d;
+            createFn = fn;
         }
         
-        public String toString()
+        public QuizQuestion createQuestion(Random r)
         {
-            return descriptionText;
+            return createFn.apply(r, this);
         }
         
-        private static final QuestionType[] Types =
-        {
-            TroopToKingdom,
-            KingdomToTroop,
-            TroopToSpell,
-            SpellToTroop,
-            TroopToType,
-            TypeToTroop,
-            TroopToColor,
-            ColorToTroop,
-            TroopToRarity,
-            RarityToTroop,
-            TroopToTrait,
-            TraitToTroop,
-            FlavorTextToTroop,
-            SpellArtToTroop,
-            TrueDamageTroop,
-            CreateGemsTroop,
-            ConvertGemsTroop,
-            DestroyGemsTroop,
-            IncreaseStatsTroop,
-            DecreaseStatsTroop,
-            GiveResourcesTroop,
-            GiveExtraTurnTroop,
-            SummonTransformTroop,
-            DrainManaTroop,
-            EffectsTroop,
-            KingdomToTraitstone,
-            TraitstoneToKingdom,
-            KingdomToStat,
-            StatToKingdom,
-            ClassToBonusColor,
-            BonusColorToClass,
-            ClassToTrait,
-            TraitToClass
-        };
-        
-        public static final int Count = Types.length;
+        public static final int Count = values().length;
         
         public static QuestionType fromInteger(int x)
         {
-            return Types[x];
+            return values()[x];
         }
         
         public static QuestionType fromString(String s)
         {
-            for (QuestionType t : Types)
+            for (QuestionType t : values())
             {
                 if (t.name().equalsIgnoreCase(s))
                 {
@@ -127,11 +207,6 @@ public class QuizQuestionFactory
             }
             throw new InvalidParameterException();
         }
-        
-        public static QuestionType[] getTypes()
-        {
-            return Types.clone();
-        }
     }
     
     /**
@@ -139,8 +214,14 @@ public class QuizQuestionFactory
      */
     private static abstract class QuizQuestion_RandomBase extends QuizQuestion
     {
-        public QuizQuestion_RandomBase(Random r) { super(r); }
-
+        private QuestionType type;
+        
+        public QuizQuestion_RandomBase(Random r, QuestionType t)
+        { 
+            super(r);
+            type = t;
+        }
+        
         public QuizQuestion_RandomBase initialize()
         {
             HashMap<Object, Object> keyMap = new HashMap<>();
@@ -185,6 +266,12 @@ public class QuizQuestionFactory
             return this;
         }
 
+        @Override
+        public Difficulty getDifficulty()
+        {
+            return type.difficulty;
+        }
+
         protected abstract ArrayList<Object> getKeys(JSONObject obj);
 
         protected abstract JSONObject getRandomAnswer();
@@ -218,7 +305,13 @@ public class QuizQuestionFactory
      */
     private static abstract class QuizQuestion_TroopsFiltered extends QuizQuestion
     {
-        public QuizQuestion_TroopsFiltered(Random r) { super(r); }
+        private QuestionType type;
+                
+        public QuizQuestion_TroopsFiltered(Random r, QuestionType t)
+        { 
+            super(r);
+            type = t;
+        }
 
         public QuizQuestion_TroopsFiltered initialize()
         {
@@ -252,6 +345,12 @@ public class QuizQuestionFactory
             return this;
         }
 
+        @Override
+        public Difficulty getDifficulty()
+        {
+            return type.difficulty;
+        }
+
         protected abstract boolean matchesFilter(JSONObject obj);
         
         protected JSONObject getRandomTroop()
@@ -265,7 +364,7 @@ public class QuizQuestionFactory
      */
     private static abstract class QuizQuestion_TroopsSpellFiltered extends QuizQuestion_TroopsFiltered
     {
-        public QuizQuestion_TroopsSpellFiltered(Random r) { super(r); }
+        public QuizQuestion_TroopsSpellFiltered(Random r, QuestionType t) { super(r, t); }
 
         // Returns true if any part of the troop's spell has any one of the types specified in the
         // stepTypes array.
@@ -301,7 +400,7 @@ public class QuizQuestionFactory
      */
     private static abstract class QuizQuestion_Troops extends QuizQuestion_RandomBase
     {
-        public QuizQuestion_Troops(Random r) { super(r); }
+        public QuizQuestion_Troops(Random r, QuestionType t) { super(r, t); }
 
         @Override
         protected JSONObject getRandomAnswer()
@@ -320,7 +419,7 @@ public class QuizQuestionFactory
      */
     private static abstract class QuizQuestion_Kingdoms extends QuizQuestion_RandomBase
     {
-        public QuizQuestion_Kingdoms(Random r) { super(r); }
+        public QuizQuestion_Kingdoms(Random r, QuestionType t) { super(r, t); }
 
         @Override
         protected JSONObject getRandomAnswer()
@@ -339,7 +438,7 @@ public class QuizQuestionFactory
      */
     private static abstract class QuizQuestion_Classes extends QuizQuestion_RandomBase
     {
-        public QuizQuestion_Classes(Random r) { super(r); }
+        public QuizQuestion_Classes(Random r, QuestionType t) { super(r, t); }
 
         @Override
         protected JSONObject getRandomAnswer()
@@ -358,7 +457,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TroopToKingdom extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToKingdom(Random r) { super(r); }
+        public QuizQuestion_TroopToKingdom(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -406,7 +505,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_KingdomToTroop extends QuizQuestion_TroopToKingdom
     {
-        public QuizQuestion_KingdomToTroop(Random r) { super(r); }
+        public QuizQuestion_KingdomToTroop(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -427,7 +526,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TroopToSpell extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToSpell(Random r) { super(r); }
+        public QuizQuestion_TroopToSpell(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -453,7 +552,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_SpellToTroop extends QuizQuestion_TroopToSpell
     {
-        public QuizQuestion_SpellToTroop(Random r) { super(r); }
+        public QuizQuestion_SpellToTroop(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -473,7 +572,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_SpellArtToTroop extends QuizQuestion_TroopToSpell
     {
-        public QuizQuestion_SpellArtToTroop(Random r) { super(r); }
+        public QuizQuestion_SpellArtToTroop(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -486,7 +585,39 @@ public class QuizQuestionFactory
         {
             try
             {
-                return new URL("http://ashtender.com/gems/assets/spells/" + correctAnswer.getJSONObject("Spell").getInt("Id") + ".jpg");
+                return new URL("http://ashtender.com/gems/assets/spells/" + correctAnswer.getJSONObject("Spell").getInt("Id") + "_small.jpg");
+            }
+            catch (MalformedURLException e)
+            {}
+            return null;
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+    }
+
+    /**
+     * Asks a user to identify a troop by its card art.
+     */
+    private static class QuizQuestion_CardArtToTroop extends QuizQuestion_TroopToSpell
+    {
+        public QuizQuestion_CardArtToTroop(Random r, QuestionType t) { super(r, t); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **troop** is pictured below?";
+        }
+        
+        @Override
+        public URL getQuestionImageUrl()
+        {
+            try
+            {
+                return new URL("http://ashtender.com/gems/assets/cards/" + correctAnswer.getString("FileBase") + "_small.jpg");
             }
             catch (MalformedURLException e)
             {}
@@ -505,7 +636,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TroopToType extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToType(Random r) { super(r); }
+        public QuizQuestion_TroopToType(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -536,7 +667,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TypeToTroop extends QuizQuestion_TroopToType
     {
-        public QuizQuestion_TypeToTroop(Random r) { super(r); }
+        public QuizQuestion_TypeToTroop(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -568,9 +699,9 @@ public class QuizQuestionFactory
     {
         protected final int traitIndex;
         
-        public QuizQuestion_TroopToTrait(Random r) 
+        public QuizQuestion_TroopToTrait(Random r, QuestionType t) 
         {
-            super(r);
+            super(r, t);
             traitIndex = r.nextInt(3);
         }
 
@@ -605,7 +736,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TraitToTroop extends QuizQuestion_TroopToTrait
     {
-        public QuizQuestion_TraitToTroop(Random r) { super(r); }
+        public QuizQuestion_TraitToTroop(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -625,7 +756,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TroopToColor extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToColor(Random r) { super(r); }
+        public QuizQuestion_TroopToColor(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -687,7 +818,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_ColorToTroop extends QuizQuestion_TroopToColor
     {
-        public QuizQuestion_ColorToTroop(Random r) { super(r); }
+        public QuizQuestion_ColorToTroop(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -707,7 +838,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TroopToRarity extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToRarity(Random r) { super(r); }
+        public QuizQuestion_TroopToRarity(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -733,7 +864,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_RarityToTroop extends QuizQuestion_TroopToRarity
     {
-        public QuizQuestion_RarityToTroop(Random r) { super(r); }
+        public QuizQuestion_RarityToTroop(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -753,7 +884,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_FlavorTextToTroop extends QuizQuestion_Troops
     {
-        public QuizQuestion_FlavorTextToTroop(Random r) { super(r); }
+        public QuizQuestion_FlavorTextToTroop(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -820,7 +951,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TrueDamageTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_TrueDamageTroop(Random r) { super(r); }
+        public QuizQuestion_TrueDamageTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -840,7 +971,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_CreateGemsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_CreateGemsTroop(Random r) { super(r); }
+        public QuizQuestion_CreateGemsTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -860,7 +991,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_ConvertGemsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_ConvertGemsTroop(Random r) { super(r); }
+        public QuizQuestion_ConvertGemsTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -880,7 +1011,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_DestroyGemsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_DestroyGemsTroop(Random r) { super(r); }
+        public QuizQuestion_DestroyGemsTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -901,7 +1032,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_IncreaseStatsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_IncreaseStatsTroop(Random r) { super(r); }
+        public QuizQuestion_IncreaseStatsTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -923,7 +1054,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_DecreaseStatsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_DecreaseStatsTroop(Random r) { super(r); }
+        public QuizQuestion_DecreaseStatsTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -945,7 +1076,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_GiveResourcesTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_GiveResourcesTroop(Random r) { super(r); }
+        public QuizQuestion_GiveResourcesTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -965,7 +1096,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_GiveExtraTurnTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_GiveExtraTurnTroop(Random r) { super(r); }
+        public QuizQuestion_GiveExtraTurnTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -985,7 +1116,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_SummonTransformTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_SummonTransformTroop(Random r) { super(r); }
+        public QuizQuestion_SummonTransformTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -1006,7 +1137,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_DrainManaTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_DrainManaTroop(Random r) { super(r); }
+        public QuizQuestion_DrainManaTroop(Random r, QuestionType t) { super(r, t); }
         
         @Override
         public String getQuestionText()
@@ -1057,9 +1188,9 @@ public class QuizQuestionFactory
             new EffectEntry("Web", "CauseWeb", true)
         };
 
-        public QuizQuestion_EffectsTroop(Random r) 
+        public QuizQuestion_EffectsTroop(Random r, QuestionType t) 
         {
-            super(r);
+            super(r, t);
             
             effectEntry = EffectTable[r.nextInt(EffectTable.length)];
         }
@@ -1088,7 +1219,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_KingdomToTraitstone extends QuizQuestion_Kingdoms
     {
-        public QuizQuestion_KingdomToTraitstone(Random r) { super(r); }
+        public QuizQuestion_KingdomToTraitstone(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -1118,7 +1249,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TraitstoneToKingdom extends QuizQuestion_KingdomToTraitstone
     {
-        public QuizQuestion_TraitstoneToKingdom(Random r) { super(r); }
+        public QuizQuestion_TraitstoneToKingdom(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -1138,7 +1269,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_KingdomToStat extends QuizQuestion_Kingdoms
     {
-        public QuizQuestion_KingdomToStat(Random r) { super(r); }
+        public QuizQuestion_KingdomToStat(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -1174,7 +1305,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_StatToKingdom extends QuizQuestion_KingdomToStat
     {
-        public QuizQuestion_StatToKingdom(Random r) { super(r); }
+        public QuizQuestion_StatToKingdom(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -1190,11 +1321,91 @@ public class QuizQuestionFactory
     }
 
     /**
+     * Asks a user to identify a kingdom by its banner art.
+     */
+    private static class QuizQuestion_BannerArtToKingdom extends QuizQuestion_Kingdoms
+    {
+        public QuizQuestion_BannerArtToKingdom(Random r, QuestionType t) { super(r, t); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **kingdom's banner** is pictured below?";
+        }
+        
+        @Override
+        public URL getQuestionImageUrl()
+        {
+            try
+            {
+                return new URL("http://ashtender.com/gems/assets/banners/" + correctAnswer.getString("FileBase") + "_small.png");
+            }
+            catch (MalformedURLException e)
+            {}
+            return null;
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+
+        @Override
+        protected ArrayList<Object> getKeys(JSONObject obj)
+        {
+            if (obj.isNull("BannerFileBase"))
+            {
+                return null;
+            }
+            return new ArrayList<>(Arrays.asList(obj));
+        }
+    }
+    
+    /**
+     * Asks a user to identify a kingdom by its shield art.
+     */
+    private static class QuizQuestion_ShieldArtToKingdom extends QuizQuestion_Kingdoms
+    {
+        public QuizQuestion_ShieldArtToKingdom(Random r, QuestionType t) { super(r, t); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **kingdom's shield** is pictured below?";
+        }
+        
+        @Override
+        public URL getQuestionImageUrl()
+        {
+            try
+            {
+                return new URL("http://ashtender.com/gems/assets/shields/" + correctAnswer.getString("FileBase") + "_small.png");
+            }
+            catch (MalformedURLException e)
+            {}
+            return null;
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+
+        @Override
+        protected ArrayList<Object> getKeys(JSONObject obj)
+        {
+            return new ArrayList<>(Arrays.asList(obj));
+        }
+    }
+    
+    /**
      * Asks a user to identify which color weapons have affinity with a given class.
      */
     private static class QuizQuestion_ClassToBonusColor extends QuizQuestion_Classes
     {
-        public QuizQuestion_ClassToBonusColor(Random r) { super(r); }
+        public QuizQuestion_ClassToBonusColor(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -1226,7 +1437,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_BonusColorToClass extends QuizQuestion_ClassToBonusColor
     {
-        public QuizQuestion_BonusColorToClass(Random r) { super(r); }
+        public QuizQuestion_BonusColorToClass(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -1248,9 +1459,9 @@ public class QuizQuestionFactory
     {
         protected final int traitIndex;
         
-        public QuizQuestion_ClassToTrait(Random r) 
+        public QuizQuestion_ClassToTrait(Random r, QuestionType t) 
         {
-            super(r);
+            super(r, t);
             traitIndex = r.nextInt(3);
         }
 
@@ -1286,7 +1497,7 @@ public class QuizQuestionFactory
      */
     private static class QuizQuestion_TraitToClass extends QuizQuestion_ClassToTrait
     {
-        public QuizQuestion_TraitToClass(Random r) { super(r); }
+        public QuizQuestion_TraitToClass(Random r, QuestionType t) { super(r, t); }
 
         @Override
         public String getQuestionText()
@@ -1301,6 +1512,44 @@ public class QuizQuestionFactory
         }
     }
 
+    /**
+     * Asks a user to identify a troop by its card art.
+     */
+    private static class QuizQuestion_ClassArtToClass extends QuizQuestion_Classes
+    {
+        public QuizQuestion_ClassArtToClass(Random r, QuestionType t) { super(r, t); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **class** is pictured below?";
+        }
+        
+        @Override
+        public URL getQuestionImageUrl()
+        {
+            try
+            {
+                return new URL("http://ashtender.com/gems/assets/classes/" + correctAnswer.getInt("Id") + "_small.png");
+            }
+            catch (MalformedURLException e)
+            {}
+            return null;
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+
+        @Override
+        protected ArrayList<Object> getKeys(JSONObject obj)
+        {
+            return new ArrayList<>(Arrays.asList(obj));
+        }
+    }
+    
     private static ArrayList<QuestionType> getTypesForDifficulty(QuizQuestion.Difficulty difficulty)
     {
         ArrayList<QuestionType> result = new ArrayList<>();
@@ -1308,7 +1557,7 @@ public class QuizQuestionFactory
         for (int i = 0; i < QuestionType.Count; i++)
         {
             QuestionType type = QuestionType.fromInteger(i);
-            if (getDifficultyForType(type) == difficulty)
+            if (type.difficulty == difficulty)
             {
                 result.add(type);
             }
@@ -1317,57 +1566,6 @@ public class QuizQuestionFactory
         return result;
     }
  
-    private static QuizQuestion.Difficulty getDifficultyForType(QuestionType type)
-    {
-        switch (type)
-        {
-            case TroopToKingdom:
-            case KingdomToTroop:
-            case TroopToRarity:
-            case TrueDamageTroop:
-            case CreateGemsTroop:
-            case ConvertGemsTroop:
-            case DestroyGemsTroop:
-            case RarityToTroop:
-            case GiveResourcesTroop:
-            case GiveExtraTurnTroop:
-            case SummonTransformTroop:
-            case DrainManaTroop:
-            case FlavorTextToTroop:
-            case SpellArtToTroop:
-                return QuizQuestion.Difficulty.Easy;
-                
-            case TroopToSpell:
-            case SpellToTroop:
-            case TroopToType:
-            case TypeToTroop:
-            case IncreaseStatsTroop:
-            case DecreaseStatsTroop:
-            case EffectsTroop:
-                return QuizQuestion.Difficulty.Moderate;
-                
-            case TroopToColor:
-            case ColorToTroop:
-            case TroopToTrait:
-            case TraitToTroop:
-            case KingdomToTraitstone:
-            case TraitstoneToKingdom:
-            case KingdomToStat:
-            case StatToKingdom:
-                return QuizQuestion.Difficulty.Hard;
-
-            case ClassToTrait:
-            case TraitToClass:
-            case ClassToBonusColor:
-            case BonusColorToClass:
-                // TODO: Do we want these questions?
-                return QuizQuestion.Difficulty.Unused;
-        }
-
-        throw new InvalidParameterException();
-    }
-    
-
     /**
      * Generates a random question of the specified type.
      * @param r The random number generator to use.
@@ -1376,109 +1574,7 @@ public class QuizQuestionFactory
      */
     public static QuizQuestion getQuestion(Random r, QuestionType type)
     {
-        switch (type)
-        {
-            case TroopToKingdom:
-                return new QuizQuestion_TroopToKingdom(r).initialize();
-                
-            case KingdomToTroop:
-                return new QuizQuestion_KingdomToTroop(r).initialize();
-                
-            case TroopToSpell:
-                return new QuizQuestion_TroopToSpell(r).initialize();
-
-            case SpellToTroop:
-                return new QuizQuestion_SpellToTroop(r).initialize();
-                
-            case TroopToType:
-                return new QuizQuestion_TroopToType(r).initialize();
-                
-            case TypeToTroop:
-                return new QuizQuestion_TypeToTroop(r).initialize();
-                
-            case TroopToColor:
-                return new QuizQuestion_TroopToColor(r).initialize();
-                
-            case ColorToTroop:
-                return new QuizQuestion_ColorToTroop(r).initialize();
-                
-            case TroopToRarity:
-                return new QuizQuestion_TroopToRarity(r).initialize();
-                
-            case RarityToTroop:
-                return new QuizQuestion_RarityToTroop(r).initialize();
-                
-            case TroopToTrait:
-                return new QuizQuestion_TroopToTrait(r).initialize();
-                
-            case TraitToTroop:
-                return new QuizQuestion_TraitToTroop(r).initialize();
-                
-            case FlavorTextToTroop:
-                return new QuizQuestion_FlavorTextToTroop(r).initialize();
-                
-            case SpellArtToTroop:
-                return new QuizQuestion_SpellArtToTroop(r).initialize();
-                
-            case TrueDamageTroop:
-                return new QuizQuestion_TrueDamageTroop(r).initialize();
-                
-            case CreateGemsTroop:
-                return new QuizQuestion_CreateGemsTroop(r).initialize();
-                
-            case ConvertGemsTroop:
-                return new QuizQuestion_ConvertGemsTroop(r).initialize();
-                
-            case DestroyGemsTroop:
-                return new QuizQuestion_DestroyGemsTroop(r).initialize();
-                
-            case IncreaseStatsTroop:
-                return new QuizQuestion_IncreaseStatsTroop(r).initialize();
-                
-            case DecreaseStatsTroop:
-                return new QuizQuestion_DecreaseStatsTroop(r).initialize();
-                
-            case GiveResourcesTroop:
-                return new QuizQuestion_GiveResourcesTroop(r).initialize();
-                
-            case GiveExtraTurnTroop:
-                return new QuizQuestion_GiveExtraTurnTroop(r).initialize();
-                
-            case SummonTransformTroop:
-                return new QuizQuestion_SummonTransformTroop(r).initialize();
-                
-            case DrainManaTroop:
-                return new QuizQuestion_DrainManaTroop(r).initialize();
-                
-            case EffectsTroop:
-                return new QuizQuestion_EffectsTroop(r).initialize();
-                
-            case KingdomToTraitstone:
-                return new QuizQuestion_KingdomToTraitstone(r).initialize();
-                
-            case TraitstoneToKingdom:
-                return new QuizQuestion_TraitstoneToKingdom(r).initialize();
-                
-            case KingdomToStat:
-                return new QuizQuestion_KingdomToStat(r).initialize();
-                
-            case StatToKingdom:
-                return new QuizQuestion_StatToKingdom(r).initialize();
-
-            case ClassToBonusColor:
-                return new QuizQuestion_ClassToBonusColor(r).initialize();
-                
-            case BonusColorToClass:
-                return new QuizQuestion_BonusColorToClass(r).initialize();
-
-            case ClassToTrait:
-                return new QuizQuestion_ClassToTrait(r).initialize();
-                
-            case TraitToClass:
-                return new QuizQuestion_TraitToClass(r).initialize();
-        }
-        
-        throw new InvalidParameterException("Invalid question type specified!");
+        return type.createQuestion(r);
     }
     
     /**
