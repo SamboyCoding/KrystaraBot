@@ -97,13 +97,12 @@ public class QuestionCommand extends KrystaraCommand
             {
                 secondaryText += "\n";
             }
-            messageStrings.add("Question: " + q.getQuestionText() + " (" + seed + ")\n" + secondaryText + answerString);
+            messageStrings.add("Question: " + q.getQuestionText() + " (" + seed + ")\n" + secondaryText + answerString + "\n");
             
             seed = Utilities.getSeed(r);
         }
  
-        String finalString = String.join("\n\n", messageStrings);
-        chnl.sendMessage(finalString);
+        Utilities.sendLargeMessage(chnl, messageStrings);
         
         if (lastImageUrl != null)
         {
