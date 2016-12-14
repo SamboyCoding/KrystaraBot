@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import static me.samboycoding.krystarabot.Listener.messageCounter;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
+import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
@@ -25,50 +25,115 @@ public class Top10Command extends KrystaraCommand
     {
         commandName = "top10";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if(!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             sdr.getOrCreatePMChannel().sendMessage("To reduce spam, top10 can only be used in the #bot-commands channel. Thanks!");
             return;
         }
-        
+
+        String operation = null;
+
+        if (arguments.isEmpty())
+        {
+            operation = "messages";
+        } else
+        {
+            String arg = arguments.get(0).toLowerCase().trim();
+
+            switch (arg)
+            {
+                case "messages":
+                case "chat":
+                    operation = "messages";
+                    break;
+                case "quiz":
+                    operation = "quiz";
+                    break;
+                default:
+                    chnl.sendMessage("No operation `" + arg + "` found. Please use 'messages' or 'quiz'");
+                    return;
+            }
+        }
+
         LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
         ValueComparator comp = new ValueComparator((Map<IUser, Integer>) unordered);
         TreeMap<IUser, Integer> ordered = new TreeMap<>(comp);
 
-        messageCounter.getUserIDList(chnl.getGuild()).stream().filter((id) -> !(id.equals(IDReference.MYID))).filter((id) -> !(id.equals("190663943260340224"))).filter((id) -> !(id.equals("102450956045668352"))).map((id) -> chnl.getGuild().getUserByID(id)).forEach((current) ->
+        switch (operation)
         {
-            //Skip the bot.
-            //Skip MrSnake
-            //Skip Samboy
-            
-            unordered.put(current, messageCounter.getMessageCountForUser(current, chnl.getGuild()));
-        });
-        
-        ordered.putAll(unordered); //Now it's sorted, by values
+            case "messages":
 
-        String toSend1 = "```\nTOP 10 USERS (BY MESSAGE COUNT) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Number of messages\n";
+                main.databaseHandler.getUserIDList(chnl.getGuild()).stream().filter((id) -> !(id.equals(IDReference.MYID))).filter((id) -> !(id.equals("190663943260340224"))).filter((id) -> !(id.equals("102450956045668352"))).map((id) -> chnl.getGuild().getUserByID(id)).forEach((current)
+                        -> 
+                        {
+                            //Skip the bot.
+                            //Skip MrSnake
+                            //Skip Samboy
 
-        int count1 = 0;
-        int numSpaces = 60;
-        for (IUser u : ordered.descendingKeySet())
-        {
-            String usrName = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
-            count1++;
-            
-            toSend1 += "\n" + usrName + Utilities.repeatString(" ", numSpaces - usrName.length()) + unordered.get(u);
-            if (count1 > 10)
-            {
+                            unordered.put(current, main.databaseHandler.getMessageCountForUser(current, chnl.getGuild()));
+                });
+
+                ordered.putAll(unordered); //Now it's sorted, by values
+
+                String toSend = "```\nTOP 10 USERS (BY MESSAGE COUNT) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Number of messages\n";
+
+                int count = 0;
+                int numSpaces = 60;
+                for (IUser u : ordered.descendingKeySet())
+                {
+                    String usrName = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
+                    count++;
+
+                    toSend += "\n" + usrName + Utilities.repeatString(" ", numSpaces - usrName.length()) + unordered.get(u);
+                    if (count > 10)
+                    {
+                        break;
+                    }
+                }
+
+                toSend += "\n```";
+
+                chnl.sendMessage(toSend);
                 break;
-            }
+            case "quiz":
+
+                main.databaseHandler.getUserIDList(chnl.getGuild()).stream().filter((id) -> !(id.equals(IDReference.MYID))).map((id) -> chnl.getGuild().getUserByID(id)).forEach((current)
+                        -> 
+                        {
+                            //Skip the bot.
+                            //Skip MrSnake
+                            //Skip Samboy
+
+                            unordered.put(current, main.databaseHandler.getQuizScore(current, chnl.getGuild()));
+                });
+
+                ordered.putAll(unordered); //Now it's sorted, by values
+
+                String toSend1 = "```\nTOP 10 USERS (BY QUIZ SCORE) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Quiz Score\n";
+
+                int count1 = 0;
+                numSpaces = 60;
+                for (IUser u : ordered.descendingKeySet())
+                {
+                    String usrName = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
+                    count1++;
+
+                    toSend1 += "\n" + usrName + Utilities.repeatString(" ", numSpaces - usrName.length()) + unordered.get(u);
+                    if (count1 > 10)
+                    {
+                        break;
+                    }
+                }
+
+                toSend1 += "\n```";
+
+                chnl.sendMessage(toSend1);
+                break;
         }
-
-        toSend1 += "\n```";
-
-        chnl.sendMessage(toSend1);
     }
 
     @Override
@@ -94,11 +159,12 @@ public class Top10Command extends KrystaraCommand
     {
         return "top10";
     }
-    
+
     @Override
     public CommandType getCommandType()
     {
         return SERVER;
+
     }
 
     public static class ValueComparator implements Comparator<IUser>
