@@ -164,21 +164,15 @@ public class QuizQuestionFactory
                 (r, t) -> new QuizQuestion_TraitToClass(r, t).initialize());
         
         
-        private final String descriptionText;
+        public final String description;
         public final QuizQuestion.Difficulty difficulty;
         public final BiFunction<Random, QuestionType, QuizQuestion> createFn;
         
         private QuestionType(String desc, QuizQuestion.Difficulty d, BiFunction<Random, QuestionType, QuizQuestion> fn)
         {
-            descriptionText = desc;
+            description = desc;
             difficulty = d;
             createFn = fn;
-        }
-        
-        @Override
-        public String toString()
-        {
-            return descriptionText;
         }
         
         public QuizQuestion createQuestion(Random r)
@@ -186,55 +180,16 @@ public class QuizQuestionFactory
             return createFn.apply(r, this);
         }
         
-        private static final QuestionType[] Types =
-        {
-            TroopToKingdom,
-            KingdomToTroop,
-            TroopToSpell,
-            SpellToTroop,
-            TroopToType,
-            TypeToTroop,
-            TroopToColor,
-            ColorToTroop,
-            TroopToRarity,
-            RarityToTroop,
-            TroopToTrait,
-            TraitToTroop,
-            FlavorTextToTroop,
-            SpellArtToTroop,
-            TrueDamageTroop,
-            CreateGemsTroop,
-            ConvertGemsTroop,
-            DestroyGemsTroop,
-            IncreaseStatsTroop,
-            DecreaseStatsTroop,
-            GiveResourcesTroop,
-            GiveExtraTurnTroop,
-            SummonTransformTroop,
-            DrainManaTroop,
-            EffectsTroop,
-            KingdomToTraitstone,
-            TraitstoneToKingdom,
-            KingdomToStat,
-            StatToKingdom,
-            BannerArtToKingdom,
-            ShieldArtToKingdom,
-            ClassToBonusColor,
-            BonusColorToClass,
-            ClassToTrait,
-            TraitToClass
-        };
-        
-        public static final int Count = Types.length;
+        public static final int Count = values().length;
         
         public static QuestionType fromInteger(int x)
         {
-            return Types[x];
+            return values()[x];
         }
         
         public static QuestionType fromString(String s)
         {
-            for (QuestionType t : Types)
+            for (QuestionType t : values())
             {
                 if (t.name().equalsIgnoreCase(s))
                 {
@@ -242,11 +197,6 @@ public class QuizQuestionFactory
                 }
             }
             throw new InvalidParameterException();
-        }
-        
-        public static QuestionType[] getTypes()
-        {
-            return Types.clone();
         }
     }
     
