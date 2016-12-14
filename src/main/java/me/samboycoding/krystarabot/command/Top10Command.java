@@ -139,7 +139,7 @@ public class Top10Command extends KrystaraCommand
     @Override
     public String getHelpText()
     {
-        return "Shows the 10 most talkative users (i.e. those that sent the most messages) on the server.";
+        return "Shows the top 10 users on the server, either by quiz points or messages sent.";
     }
 
     @Override
@@ -151,7 +151,7 @@ public class Top10Command extends KrystaraCommand
     @Override
     public String getUsage()
     {
-        return "?top10";
+        return "?top10 [quiz|messages]";
     }
 
     @Override
