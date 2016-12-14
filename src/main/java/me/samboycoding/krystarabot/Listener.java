@@ -98,6 +98,7 @@ public class Listener
             main.registerCommand(new TroopCommand());
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
+            main.registerCommand(new WeaponCommand());
 
             String timestamp = "";
             Calendar now = main.getNow();

@@ -16,6 +16,12 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class ListQuestionsCommand extends KrystaraCommand
 {
+    
+    public ListQuestionsCommand()
+    {
+        commandName = "listquestions";
+    }
+    
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
