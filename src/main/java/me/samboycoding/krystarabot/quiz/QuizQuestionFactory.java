@@ -76,7 +76,12 @@ public class QuizQuestionFactory
         SpellArtToTroop("Which troop has the pictured spell?", 
                 QuizQuestion.Difficulty.Easy,
                 (r, t) -> new QuizQuestion_SpellArtToTroop(r, t).initialize()),
+
+        CardArtToTroop("Which troop is pictured?", 
+                QuizQuestion.Difficulty.Unused,
+                (r, t) -> new QuizQuestion_CardArtToTroop(r, t).initialize()),
         
+
         TrueDamageTroop("Which of these troops does true damage?", 
                 QuizQuestion.Difficulty.Easy,
                 (r, t) -> new QuizQuestion_TrueDamageTroop(r, t).initialize()),
@@ -161,8 +166,12 @@ public class QuizQuestionFactory
 
         TraitToClass("Which class has this trait?", 
                 QuizQuestion.Difficulty.Unused,
-                (r, t) -> new QuizQuestion_TraitToClass(r, t).initialize());
+                (r, t) -> new QuizQuestion_TraitToClass(r, t).initialize()),
         
+        ClassArtToClass("Which class is pictured?", 
+                QuizQuestion.Difficulty.Unused,
+                (r, t) -> new QuizQuestion_ClassArtToClass(r, t).initialize());
+
         
         public final String description;
         public final QuizQuestion.Difficulty difficulty;
@@ -577,6 +586,38 @@ public class QuizQuestionFactory
             try
             {
                 return new URL("http://ashtender.com/gems/assets/spells/" + correctAnswer.getJSONObject("Spell").getInt("Id") + "_small.jpg");
+            }
+            catch (MalformedURLException e)
+            {}
+            return null;
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+    }
+
+    /**
+     * Asks a user to identify a troop by its card art.
+     */
+    private static class QuizQuestion_CardArtToTroop extends QuizQuestion_TroopToSpell
+    {
+        public QuizQuestion_CardArtToTroop(Random r, QuestionType t) { super(r, t); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **troop** is pictured below?";
+        }
+        
+        @Override
+        public URL getQuestionImageUrl()
+        {
+            try
+            {
+                return new URL("http://ashtender.com/gems/assets/cards/" + correctAnswer.getString("FileBase") + "_small.jpg");
             }
             catch (MalformedURLException e)
             {}
@@ -1471,6 +1512,44 @@ public class QuizQuestionFactory
         }
     }
 
+    /**
+     * Asks a user to identify a troop by its card art.
+     */
+    private static class QuizQuestion_ClassArtToClass extends QuizQuestion_Classes
+    {
+        public QuizQuestion_ClassArtToClass(Random r, QuestionType t) { super(r, t); }
+
+        @Override
+        public String getQuestionText()
+        {
+            return "What **class** is pictured below?";
+        }
+        
+        @Override
+        public URL getQuestionImageUrl()
+        {
+            try
+            {
+                return new URL("http://ashtender.com/gems/assets/classes/" + correctAnswer.getInt("Id") + "_small.png");
+            }
+            catch (MalformedURLException e)
+            {}
+            return null;
+        }
+
+        @Override
+        public String getAnswerText(int index)
+        {
+            return answers.get(index).getString("Name");
+        }
+
+        @Override
+        protected ArrayList<Object> getKeys(JSONObject obj)
+        {
+            return new ArrayList<>(Arrays.asList(obj));
+        }
+    }
+    
     private static ArrayList<QuestionType> getTypesForDifficulty(QuizQuestion.Difficulty difficulty)
     {
         ArrayList<QuestionType> result = new ArrayList<>();
