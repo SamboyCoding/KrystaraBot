@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -312,6 +310,7 @@ public class GameDataLoaderThread implements Runnable
                 newWeapon.put("MasteryRequirement", weapon.getInt("MasteryRequirement"));
                 newWeapon.put("Spell", weapon.getJSONObject("Spell"));
                 newWeapon.put("WeaponRarity", weapon.getString("WeaponRarity"));
+                newWeapon.put("IsWeapon", true);
                 
                 JSONObject weaponSpell = new JSONObject();
                 

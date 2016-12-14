@@ -25,7 +25,7 @@ public class TeamCommand extends KrystaraCommand
     {
         commandName = "team";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -50,7 +50,7 @@ public class TeamCommand extends KrystaraCommand
             return;
         }
 
-        ArrayList<String> teamTroops = new ArrayList<>();
+        ArrayList<String> teamEntries = new ArrayList<>();
 
         Boolean manaRed = false,
                 manaBlue = false,
@@ -58,12 +58,16 @@ public class TeamCommand extends KrystaraCommand
                 manaYellow = false,
                 manaGreen = false,
                 manaPurple = false;
-        
+
         for (int i = 0; i < 4; i++)
         {
-            String troop = things.get(i);
+            String thing = things.get(i);
 
-            JSONObject exact = main.data.getTroopByName(troop);
+            JSONObject exact = main.data.getTroopByName(thing);
+            if (exact == null)
+            {
+                exact = main.data.getWeaponByName(thing); //Try to get exact weapon, if no exact troop found.
+            }
             if (exact != null)
             {
                 if (exact.getJSONObject("ManaColors").getBoolean("ColorBlue"))
@@ -90,56 +94,57 @@ public class TeamCommand extends KrystaraCommand
                 {
                     manaPurple = true;
                 }
-                teamTroops.add(exact.getString("Name"));
+                teamEntries.add(exact.getString("Name"));
                 continue;
             }
-            ArrayList<String> results = main.data.searchForTroop(troop);
+            ArrayList<String> results = main.data.searchForTroop(thing);
+            results.addAll(main.data.searchForWeapon(thing)); //Search for weapons too
 
             if (results.size() > 5)
             {
-                chnl.sendMessage("Search term: \"" + troop + "\" is too broad (" + results.size() + " results). Please refine.");
+                chnl.sendMessage("Search term: \"" + thing + "\" is too broad (" + results.size() + " results). Please refine.");
                 return;
             }
             if (results.size() > 1)
             {
-                chnl.sendMessage("Ambigous troop name \"" + troop + "\". Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
+                chnl.sendMessage("Ambigous troop/weapon name \"" + thing + "\". Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
                 return;
             }
             if (results.isEmpty())
             {
-                chnl.sendMessage("Unknown troop \"" + troop + "\". Please correct it.");
+                chnl.sendMessage("Unknown troop/weapon \"" + thing + "\". Please correct it.");
                 return;
             }
 
-            for (String troopN : results)
+            for (String thingN : results)
             {
-                JSONObject trp = main.data.getTroopByName(troopN);
-                if (trp.getJSONObject("ManaColors").getBoolean("ColorBlue"))
+                JSONObject thng = main.data.getTroopByName(thingN);
+                if (thng.getJSONObject("ManaColors").getBoolean("ColorBlue"))
                 {
                     manaBlue = true;
                 }
-                if (trp.getJSONObject("ManaColors").getBoolean("ColorRed"))
+                if (thng.getJSONObject("ManaColors").getBoolean("ColorRed"))
                 {
                     manaRed = true;
                 }
-                if (trp.getJSONObject("ManaColors").getBoolean("ColorBrown"))
+                if (thng.getJSONObject("ManaColors").getBoolean("ColorBrown"))
                 {
                     manaBrown = true;
                 }
-                if (trp.getJSONObject("ManaColors").getBoolean("ColorYellow"))
+                if (thng.getJSONObject("ManaColors").getBoolean("ColorYellow"))
                 {
                     manaYellow = true;
                 }
-                if (trp.getJSONObject("ManaColors").getBoolean("ColorGreen"))
+                if (thng.getJSONObject("ManaColors").getBoolean("ColorGreen"))
                 {
                     manaGreen = true;
                 }
-                if (trp.getJSONObject("ManaColors").getBoolean("ColorPurple"))
+                if (thng.getJSONObject("ManaColors").getBoolean("ColorPurple"))
                 {
                     manaPurple = true;
                 }
             }
-            teamTroops.add(results.get(0));
+            teamEntries.add(results.get(0));
         }
 
         String manaColors = "This team uses the following colors: " + (manaBlue ? chnl.getGuild().getEmojiByName("mana_blue").toString() + " " : "");
@@ -173,10 +178,37 @@ public class TeamCommand extends KrystaraCommand
 
             String banner = banners.get(0);
 
-            int troopId1 = main.data.getTroopByName(teamTroops.get(0)).getInt("Id");
-            int troopId2 = main.data.getTroopByName(teamTroops.get(1)).getInt("Id");
-            int troopId3 = main.data.getTroopByName(teamTroops.get(2)).getInt("Id");
-            int troopId4 = main.data.getTroopByName(teamTroops.get(3)).getInt("Id");
+            Integer troopId1 = null;
+            Integer troopId2 = null;
+            Integer troopId3 = null;
+            Integer troopId4 = null;
+
+            for (String t : teamEntries)
+            {
+                JSONObject info;
+                if (main.data.getTroopByName(t) == null)
+                {
+                    info = main.data.getWeaponByName(t);
+                } else
+                {
+                    info = main.data.getTroopByName(t);
+                }
+
+                if (troopId1 == null)
+                {
+                    troopId1 = info.getInt("Id");
+                } else if (troopId2 == null)
+                {
+                    troopId2 = info.getInt("Id");
+                } else if (troopId3 == null)
+                {
+                    troopId3 = info.getInt("Id");
+                } else if (troopId4 == null)
+                {
+                    troopId4 = info.getInt("Id");
+                }
+            }
+
             int bannerId = main.data.getKingdomFromBanner(banner).getInt("Id");
             String bannerDsc = main.data.getKingdomFromBanner(banner).getString("BannerManaDescription");
             String kingdomNme = main.data.getKingdomFromBanner(banner).getString("Name");
@@ -186,15 +218,76 @@ public class TeamCommand extends KrystaraCommand
             bannerString = "**" + banner + "** (" + kingdomNme + ") - " + bannerDsc + "\n\n";
         } else
         {
-            int troopId1 = main.data.getTroopByName(teamTroops.get(0)).getInt("Id");
-            int troopId2 = main.data.getTroopByName(teamTroops.get(1)).getInt("Id");
-            int troopId3 = main.data.getTroopByName(teamTroops.get(2)).getInt("Id");
-            int troopId4 = main.data.getTroopByName(teamTroops.get(3)).getInt("Id");
+            Integer troopId1 = null;
+            Integer troopId2 = null;
+            Integer troopId3 = null;
+            Integer troopId4 = null;
+
+            for (String t : teamEntries)
+            {
+                JSONObject info;
+                if (main.data.getTroopByName(t) == null)
+                {
+                    info = main.data.getWeaponByName(t);
+                } else
+                {
+                    info = main.data.getTroopByName(t);
+                }
+
+                if (troopId1 == null)
+                {
+                    troopId1 = info.getInt("Id");
+                } else if (troopId2 == null)
+                {
+                    troopId2 = info.getInt("Id");
+                } else if (troopId3 == null)
+                {
+                    troopId3 = info.getInt("Id");
+                } else if (troopId4 == null)
+                {
+                    troopId4 = info.getInt("Id");
+                }
+            }
+
             url = "http://ashtender.com/gems/teams/" + troopId1 + "," + troopId2 + "," + troopId3 + "," + troopId4;
             teamString = sdr.mention() + " created team: \n\n";
         }
 
-        teamString += "**Troops:**\n\t-" + teamTroops.get(0) + "\n\t-" + teamTroops.get(1) + "\n\t-" + teamTroops.get(2) + "\n\t-" + teamTroops.get(3);
+        teamString += "**Troops:**";
+
+        boolean weaponProccessed = false;
+        for (String t : teamEntries)
+        {
+            JSONObject info;
+            if (main.data.getTroopByName(t) == null)
+            {
+                info = main.data.getWeaponByName(t);
+            } else
+            {
+                info = main.data.getTroopByName(t);
+            }
+
+            String toAdd = "";
+
+            if (info.getBoolean("IsWeapon"))
+            {
+                if (weaponProccessed)
+                {
+                    //Two weapons?
+                    chnl.sendMessage("You cannot have two weapons on one team!");
+                    return;
+                }
+
+                toAdd = "Hero (" + info.getString("Name") + ")";
+            }
+
+            if (toAdd.equals(""))
+            {
+                toAdd = info.getString("Name");
+            }
+
+            teamString += "\n\t-" + toAdd;
+        }
         teamString += "\n\n" + (bannerString != null ? bannerString : "") + manaColors + "\n\n" + url;
 
         chnl.sendMessage("Team posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
@@ -224,7 +317,7 @@ public class TeamCommand extends KrystaraCommand
     {
         return "team";
     }
-    
+
     @Override
     public CommandType getCommandType()
     {
