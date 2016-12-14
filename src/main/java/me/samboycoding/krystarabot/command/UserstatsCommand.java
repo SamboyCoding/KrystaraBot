@@ -2,7 +2,6 @@ package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import static me.samboycoding.krystarabot.Listener.messageCounter;
 import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
@@ -12,6 +11,7 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Status;
+import static me.samboycoding.krystarabot.Listener.dbHandler;
 
 /**
  *
@@ -54,8 +54,8 @@ public class UserstatsCommand extends KrystaraCommand
         Status state = userstatsUsr.getStatus();
         List<IRole> sdrRoles = userstatsUsr.getRolesForGuild(chnl.getGuild());
         int numRolesSdr = sdrRoles.size() - 1; //-1 to remove @everyone
-        int messageCount = messageCounter.getMessageCountForUser(sdr, chnl.getGuild());
-        int commandCount = messageCounter.getCommandCountForUser(sdr, chnl.getGuild());
+        int messageCount = dbHandler.getMessageCountForUser(sdr, chnl.getGuild());
+        int commandCount = dbHandler.getCommandCountForUser(sdr, chnl.getGuild());
 
         List<String> sdrRolesNice = new ArrayList<>();
         for (IRole r : sdrRoles)

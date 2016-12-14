@@ -2,9 +2,9 @@
     "102450956045668352": {
         "QuizScore": 327,
         "name": "SamboyGaming",
-        "messages": 1905,
+        "messages": 1908,
         "ReceivesCodes": true,
-        "commands": 468
+        "commands": 470
     },
     "248365334636003328": {
         "QuizScore": 24,
@@ -41,6 +41,13 @@
         "ReceivesCodes": false,
         "commands": 1
     },
+    "250359814411124737": {
+        "QuizScore": 0,
+        "name": "Kahil71",
+        "messages": 3,
+        "ReceivesCodes": false,
+        "commands": 0
+    },
     "213522019910811648": {
         "QuizScore": 2,
         "name": "Furak",
@@ -54,6 +61,13 @@
         "messages": 813,
         "ReceivesCodes": false,
         "commands": 130
+    },
+    "176814715832369152": {
+        "QuizScore": 0,
+        "name": "Rehio",
+        "messages": 3,
+        "ReceivesCodes": false,
+        "commands": 0
     },
     "127413489051369472": {
         "QuizScore": 15,

@@ -162,7 +162,7 @@ public class QuizQuestionTimer implements Runnable
             
             ArrayList<QuizQuestion.Difficulty> questionDifficulties = getQuestionDifficulties();
             ArrayList<QuestionLogEntry> questionLog = new ArrayList<>();
-            ArrayList<String> quizLog = new ArrayList();
+            ArrayList<String> quizLog = new ArrayList<>();
             
             IMessage questionMessage = null;
             IMessage imageMessage = null;

@@ -36,7 +36,7 @@ import sx.blah.discord.util.RateLimitException;
 public class Listener
 {
 
-    public static UserDatabaseHandler messageCounter = main.databaseHandler;
+    public static UserDatabaseHandler dbHandler = main.databaseHandler;
 
     //<editor-fold defaultstate="collapsed" desc="ReadyEvent handler">
     @EventSubscriber
@@ -95,7 +95,6 @@ public class Listener
             main.registerCommand(new TeamCommand());
             main.registerCommand(new Top10Command());
             main.registerCommand(new TraitCommand());
-            main.registerCommand(new TraitstoneCommand());
             main.registerCommand(new TroopCommand());
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
@@ -161,7 +160,7 @@ public class Listener
             String content = msg.getContent();
 
             //Message Counter
-            messageCounter.countMessage(sdr, chnl.getGuild());
+            dbHandler.countMessage(sdr, chnl.getGuild());
 
             if (!content.startsWith("?"))
             {
@@ -169,7 +168,7 @@ public class Listener
                 return;
             }
 
-            messageCounter.countCommand(sdr, chnl.getGuild());
+            dbHandler.countCommand(sdr, chnl.getGuild());
 
             String command;
             ArrayList<String> arguments = new ArrayList<>();

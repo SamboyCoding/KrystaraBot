@@ -219,7 +219,7 @@ public class QuestionCommand extends KrystaraCommand
         {
             try
             {
-                questionCount = Math.min(10, Math.max(1, Integer.parseInt(arguments.get(1))));
+                questionCount = Math.min(30, Math.max(1, Integer.parseInt(arguments.get(1))));
             } 
             catch (NumberFormatException e)
             {
