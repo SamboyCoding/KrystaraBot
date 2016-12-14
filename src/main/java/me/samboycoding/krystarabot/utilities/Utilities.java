@@ -63,8 +63,20 @@ public class Utilities
         main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", bldr.build(), false);
     }
     
-    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts) 
-            throws MissingPermissionsException, RateLimitException, DiscordException, InterruptedException
+    /**
+     * Sends the specified message to the specified channel, splitting it up if
+     * necessary to get it below the 2000 char limit
+     *
+     * @param channel The channel to send it to
+     * @param messageParts The parts of the message to send
+     * @param waitCallback The method to be called to wait between messages, if any
+     * @throws DiscordException If there is a miscellaneous error during sending
+     * @throws RateLimitException If the bot is rate-limited
+     * @throws MissingPermissionsException If the bot is missing the
+     * SENDMESSAGES permission
+     */
+    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts, Runnable waitCallback) 
+            throws MissingPermissionsException, RateLimitException, DiscordException
     {
         final int CHUNK_MAX_LENGTH = 2000;
 
@@ -78,6 +90,11 @@ public class Utilities
             {
                 channel.sendMessage(chunk);
                 chunk = "";
+                
+                if (waitCallback != null)
+                {
+                    waitCallback.run();
+                }
             }
 
             chunk += nextMsg + "\n";
@@ -87,6 +104,23 @@ public class Utilities
         {
             channel.sendMessage(chunk);
         }
+    }
+
+    /**
+     * Sends the specified message to the specified channel, splitting it up if
+     * necessary to get it below the 2000 char limit
+     *
+     * @param channel The channel to send it to
+     * @param messageParts The parts of the message to send
+     * @throws DiscordException If there is a miscellaneous error during sending
+     * @throws RateLimitException If the bot is rate-limited
+     * @throws MissingPermissionsException If the bot is missing the
+     * SENDMESSAGES permission
+     */
+    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts) 
+            throws MissingPermissionsException, RateLimitException, DiscordException
+    {
+        sendLargeMessage(channel, messageParts, null);
     }
 
     /**

@@ -126,31 +126,10 @@ public class QuizQuestionTimer implements Runnable
     }
     
     private void sendLargeMessage(Iterable<String> messageParts) 
-            throws MissingPermissionsException, RateLimitException, DiscordException, InterruptedException
+            throws MissingPermissionsException, RateLimitException, DiscordException
     {
-        final int CHUNK_MAX_LENGTH = 2000;
-
-        String chunk = "";
-        Iterator<String> messageIterator = messageParts.iterator();
-        
-        while (messageIterator.hasNext())
-        {
-            String nextMsg = messageIterator.next();
-            if ((chunk.length() + nextMsg.length()) > CHUNK_MAX_LENGTH)
-            {
-                sleepFor(1000);
-                chnl.sendMessage(chunk);
-                chunk = "";
-            }
-
-            chunk += nextMsg + "\n";
-        }
-
-        if (!chunk.isEmpty())
-        {
-            sleepFor(1000);
-            chnl.sendMessage(chunk);
-        }
+        Utilities.sendLargeMessage(chnl, messageParts, () -> 
+            { try { sleepFor(1000); } catch (InterruptedException e) {} });
     }
     
     @Override

@@ -255,7 +255,7 @@ public class TeamCommand extends KrystaraCommand
 
         teamString += "**Troops:**";
 
-        boolean weaponProccessed = false;
+        boolean weaponProcessed = false;
         for (String t : teamEntries)
         {
             JSONObject info;
@@ -271,7 +271,7 @@ public class TeamCommand extends KrystaraCommand
 
             if (info.getBoolean("IsWeapon"))
             {
-                if (weaponProccessed)
+                if (weaponProcessed)
                 {
                     //Two weapons?
                     chnl.sendMessage("You cannot have two weapons on one team!");
@@ -279,6 +279,7 @@ public class TeamCommand extends KrystaraCommand
                 }
 
                 toAdd = "Hero (" + info.getString("Name") + ")";
+                weaponProcessed = true;
             }
 
             if (toAdd.equals(""))
