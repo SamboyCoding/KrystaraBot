@@ -27,7 +27,6 @@ public class QuizHandler
     private QuizQuestionTimer quizQuestionTimer = null;
 
     private QuizQuestion currentQ = null;
-    private QuizQuestion.Difficulty currentDifficulty = null;
 
     LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
     Top10Command.ValueComparator comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
@@ -104,7 +103,7 @@ public class QuizHandler
     
     public void abort()
     {
-        Thread runningThread = null;
+        Thread runningThread;
         
         synchronized (this)
         {
@@ -135,12 +134,11 @@ public class QuizHandler
         }
     }
     
-    public void setQuestion(QuizQuestion q, QuizQuestion.Difficulty difficulty)
+    public void setQuestion(QuizQuestion q)
     {
         synchronized (this)
         {
             currentQ = q;
-            currentDifficulty = difficulty;
         }
     }
 
@@ -196,10 +194,10 @@ public class QuizHandler
             case Incorrect:
                 break;
             case Correct:
-                scoreDelta = currentDifficulty.getPoints();
+                scoreDelta = theQ.getDifficulty().getPoints();
                 break;
             case FirstCorrect:
-                scoreDelta = currentDifficulty.getPoints() + 1;
+                scoreDelta = theQ.getDifficulty().getPoints() + 1;
                 break;
             case AlreadyAnswered:
                 break;

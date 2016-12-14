@@ -37,6 +37,11 @@ public class QuizCommand extends QuestionCommand {
             args = parseArguments(arguments, chnl, 10);
         }
         
+        if (args == null)
+        {
+            return;
+        }
+
         main.quizH.initializeQuiz(chnl.getGuild(), sdr, chnl, args.questionCount, args.difficulty, args.questionType, args.randomSeed);
     }
 

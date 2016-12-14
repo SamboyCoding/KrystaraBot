@@ -213,7 +213,7 @@ public class QuizQuestionTimer implements Runnable
                 QuizQuestion question = getQuestion(random, difficulty, questionLog);
 
                 // Send the question
-                questionMessage = sendQuestion(difficulty, iQuestion, question, quizLog);
+                questionMessage = sendQuestion(question, iQuestion, quizLog);
 
                 // Send the associated image, if any
                 imageMessage = sendImage(question);
@@ -241,7 +241,7 @@ public class QuizQuestionTimer implements Runnable
                 choicesMessage = null;
                 
                 // Show answers and scores
-                answerMessage = sendAnswerAndResults(question, difficulty, quizLog);
+                answerMessage = sendAnswerAndResults(question, quizLog);
             }
 
             synchronized (this)
@@ -321,7 +321,8 @@ public class QuizQuestionTimer implements Runnable
         }
     }
 
-    private QuizQuestion.Difficulty getDifficultyForQuestion(ArrayList<QuizQuestion.Difficulty> questionDifficulties, int iQuestion) {
+    private QuizQuestion.Difficulty getDifficultyForQuestion(ArrayList<QuizQuestion.Difficulty> questionDifficulties, int iQuestion)
+    {
         QuizQuestion.Difficulty difficulty;
         if (difficultyFilter != null)
         {
@@ -355,16 +356,18 @@ public class QuizQuestionTimer implements Runnable
         synchronized (this)
         {
             q = question;
-            qh.setQuestion(q, difficulty);
+            qh.setQuestion(q);
             submissions.clear();
         }
         questionLog.add(new QuestionLogEntry(difficulty, seed));
         return question;
     }
 
-    private IMessage sendQuestion(QuizQuestion.Difficulty difficulty, int iQuestion, QuizQuestion question, ArrayList<String> quizLog) throws MissingPermissionsException, DiscordException, RateLimitException {
+    private IMessage sendQuestion(QuizQuestion question, int iQuestion, ArrayList<String> quizLog) 
+            throws MissingPermissionsException, DiscordException, RateLimitException
+    {
         IMessage questionMessage;
-        String pointString = getPointString(difficulty, false);
+        String pointString = getPointString(question.getDifficulty(), false);
         String questionText = "**Question #" + (iQuestion+1) + ":**\n\n" + question.getQuestionText() +
                 " (" + pointString + ")\n";
         String questionSecondaryText = question.getQuestionSecondaryText();
@@ -399,7 +402,7 @@ public class QuizQuestionTimer implements Runnable
         return imageMessage;
     }
 
-    private IMessage sendAnswerAndResults(QuizQuestion question, QuizQuestion.Difficulty difficulty, ArrayList<String> quizLog)
+    private IMessage sendAnswerAndResults(QuizQuestion question, ArrayList<String> quizLog)
             throws RateLimitException, MissingPermissionsException, DiscordException
     {
         IMessage msg;
@@ -407,7 +410,7 @@ public class QuizQuestionTimer implements Runnable
         String number = Integer.toString(pos + 1);
         String answerBody = "\nThe correct answer was: "
                 + "\n\n" + number + ") **" + question.getAnswerText(question.getCorrectAnswerIndex())
-                + "**\n\n" + getCorrectUserText(difficulty)
+                + "**\n\n" + getCorrectUserText(question.getDifficulty())
                 + "\n" + Utilities.repeatString("-", 40);
         quizLog.add(answerBody + "\n");
         msg = chnl.sendMessage(answerBody);
@@ -466,12 +469,6 @@ public class QuizQuestionTimer implements Runnable
             String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();;
             
             main.databaseHandler.increaseUserQuizScore(u, chnl.getGuild(), score);
-            if (score > 0)
-            {
-                u.getOrCreatePMChannel().sendMessage("You scored " + score + " points on the quiz! You now have a total of " +
-                        main.databaseHandler.getQuizScore(u, chnl.getGuild()) + " points.");
-                sleepFor(500);
-            }
             if (numDone <= 10)
             {
                 scores += "\n" + nameOfUser + Utilities.repeatString(" ", 50 - nameOfUser.length()) + score;
@@ -486,7 +483,9 @@ public class QuizQuestionTimer implements Runnable
         chnl.sendMessage(scores);
         
         sleepFor(1000);
-        chnl.sendMessage("Thanks for playing! To play again, use the command `?quiz` in any channel.");
+        chnl.sendMessage("Thanks for playing!\n" +
+                "To play again, use the command `?quiz` in any channel.\n" +
+                "To see your total lifetime score, use the command `?userstats`.");
         
         if (IDReference.Environment != IDReference.RuntimeEnvironment.Live)
         {
