@@ -1,6 +1,7 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -63,19 +64,19 @@ public class Top10Command extends KrystaraCommand
         ValueComparator comp = new ValueComparator((Map<IUser, Integer>) unordered);
         TreeMap<IUser, Integer> ordered = new TreeMap<>(comp);
 
+        // Ignore bot and bot-dev IDs
+        ArrayList<String> ignoreIds = new ArrayList<>(Arrays.asList(
+                IDReference.MYID, "190663943260340224", "102450956045668352", "234202516676542464"
+                ));
+
         switch (operation)
         {
             case "messages":
 
-                main.databaseHandler.getUserIDList(chnl.getGuild()).stream().filter((id) -> !(id.equals(IDReference.MYID))).filter((id) -> !(id.equals("190663943260340224"))).filter((id) -> !(id.equals("102450956045668352"))).map((id) -> chnl.getGuild().getUserByID(id)).forEach((current)
-                        -> 
-                        {
-                            //Skip the bot.
-                            //Skip MrSnake
-                            //Skip Samboy
-
-                            unordered.put(current, main.databaseHandler.getMessageCountForUser(current, chnl.getGuild()));
-                });
+                main.databaseHandler.getUserIDList(chnl.getGuild()).stream().filter((id) -> 
+                        !(ignoreIds.contains(id))).map((id) -> 
+                        chnl.getGuild().getUserByID(id)).forEach((current)
+                        -> { unordered.put(current, main.databaseHandler.getMessageCountForUser(current, chnl.getGuild())); });
 
                 ordered.putAll(unordered); //Now it's sorted, by values
 
@@ -105,11 +106,8 @@ public class Top10Command extends KrystaraCommand
                         -> 
                         {
                             //Skip the bot.
-                            //Skip MrSnake
-                            //Skip Samboy
-
                             unordered.put(current, main.databaseHandler.getQuizScore(current, chnl.getGuild()));
-                });
+                        });
 
                 ordered.putAll(unordered); //Now it's sorted, by values
 
