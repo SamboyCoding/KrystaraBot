@@ -78,21 +78,24 @@ public class QuizHandler
         synchronized (this)
         {
             quizQuestionTimer = new QuizQuestionTimer(this, quizChannel, questionCount, 10,
-                difficulty, questionType, randomSeed);
+                    difficulty, questionType, randomSeed);
             quizThread = new Thread(quizQuestionTimer, "Quiz question timer");
             quizThread.start();
         }
 
         IChannel globalChannel = srv.getChannelByID(IDReference.GLOBALCHANNEL);
         String quizAnnounceText = "A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.";
-        
+
         globalChannel.sendMessage(quizAnnounceText);
         if (source != globalChannel)
         {
-            source.sendMessage(quizAnnounceText);
+            if (!source.isDeleted())
+            {
+                source.sendMessage(quizAnnounceText);
+            }
         }
     }
-    
+
     public void handleQuestionTimerComplete()
     {
         synchronized (this)
@@ -100,11 +103,11 @@ public class QuizHandler
             quizThread = null;
         }
     }
-    
+
     public void abort()
     {
         Thread runningThread;
-        
+
         synchronized (this)
         {
             if (quizQuestionTimer != null)
@@ -113,7 +116,7 @@ public class QuizHandler
             }
             runningThread = quizThread;
         }
-        
+
         if (runningThread != null)
         {
             try
@@ -122,18 +125,18 @@ public class QuizHandler
                 {
                     runningThread.wait();
                 }
+            } catch (InterruptedException e)
+            {
             }
-            catch (InterruptedException e)
-            {}
         }
-        
+
         synchronized (this)
         {
             quizQuestionTimer = null;
             quizThread = null;
         }
     }
-    
+
     public void setQuestion(QuizQuestion q)
     {
         synchronized (this)
@@ -175,7 +178,7 @@ public class QuizHandler
             timer.addChatterMessage(msg);
             return;
         }
-        
+
         msg.delete();
 
         int currentScore = 0;
