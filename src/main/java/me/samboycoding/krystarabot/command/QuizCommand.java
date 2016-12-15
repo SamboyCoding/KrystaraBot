@@ -25,30 +25,33 @@ public class QuizCommand extends QuestionCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
+        synchronized (this)
         {
-            chnl.sendMessage("Unfortunately, the data is loaded yet. Please try again later, and if the problem persists, ask a bot dev to do `?reload-data`. Thanks!");
-            return;
+            if (!GameData.dataLoaded)
+            {
+                chnl.sendMessage("Unfortunately, the data is loaded yet. Please try again later, and if the problem persists, ask a bot dev to do `?reload-data`. Thanks!");
+                return;
+            }
+
+            Arguments args;
+
+            if (!Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+            {
+                // Assume default quiz arguments
+                args = new Arguments(10, -1, null, null);
+            } else
+            {
+                // Allow admins to configure arguments
+                args = parseArguments(arguments, chnl, 10);
+            }
+
+            if (args == null)
+            {
+                return;
+            }
+
+            main.quizH.initializeQuiz(chnl.getGuild(), sdr, chnl, args.questionCount, args.difficulty, args.questionType, args.randomSeed);
         }
-
-        Arguments args;
-
-        if (!Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
-        {
-            // Assume default quiz arguments
-            args = new Arguments(10, -1, null, null);
-        } else
-        {
-            // Allow admins to configure arguments
-            args = parseArguments(arguments, chnl, 10);
-        }
-
-        if (args == null)
-        {
-            return;
-        }
-
-        main.quizH.initializeQuiz(chnl.getGuild(), sdr, chnl, args.questionCount, args.difficulty, args.questionType, args.randomSeed);
     }
 
     @Override

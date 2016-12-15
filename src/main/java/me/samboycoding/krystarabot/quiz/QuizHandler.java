@@ -50,48 +50,51 @@ public class QuizHandler
     public void initializeQuiz(IGuild srv, IUser sdr, IChannel source,
             int questionCount, QuizQuestion.Difficulty difficulty, QuizQuestionFactory.QuestionType questionType, long randomSeed) throws Exception
     {
-        if (isQuizRunning())
-        {
-            source.sendMessage("There is a quiz in progress.  Please wait for it to finish before starting a new quiz. You can join it here: " + quizChannel.mention());
-            return;
-        }
-
-        List<IChannel> quizChannels = srv.getChannelsByName("quiz");
-        if (quizChannels.isEmpty())
-        {
-            quizChannel = srv.createChannel("quiz");
-        } else
-        {
-            quizChannel = quizChannels.get(0);
-            quizChannel.delete();
-
-            quizChannel = srv.createChannel("quiz");
-        }
-
-        //quizChannel is now set
-        unordered = new LinkedHashMap<>();
-        comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
-        ordered = new TreeMap<>(comp);
-
-        unordered.put(sdr, new Integer(0));
-
         synchronized (this)
         {
-            quizQuestionTimer = new QuizQuestionTimer(this, quizChannel, questionCount, 10,
-                    difficulty, questionType, randomSeed);
-            quizThread = new Thread(quizQuestionTimer, "Quiz question timer");
-            quizThread.start();
-        }
-
-        IChannel globalChannel = srv.getChannelByID(IDReference.GLOBALCHANNEL);
-        String quizAnnounceText = "A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.";
-
-        globalChannel.sendMessage(quizAnnounceText);
-        if (source != globalChannel)
-        {
-            if (!source.isDeleted())
+            if (isQuizRunning())
             {
-                source.sendMessage(quizAnnounceText);
+                source.sendMessage("There is a quiz in progress.  Please wait for it to finish before starting a new quiz. You can join it here: " + quizChannel.mention());
+                return;
+            }
+
+            List<IChannel> quizChannels = srv.getChannelsByName("quiz");
+            if (quizChannels.isEmpty())
+            {
+                quizChannel = srv.createChannel("quiz");
+            } else
+            {
+                quizChannel = quizChannels.get(0);
+                quizChannel.delete();
+
+                quizChannel = srv.createChannel("quiz");
+            }
+
+            //quizChannel is now set
+            unordered = new LinkedHashMap<>();
+            comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
+            ordered = new TreeMap<>(comp);
+
+            unordered.put(sdr, new Integer(0));
+
+            synchronized (this)
+            {
+                quizQuestionTimer = new QuizQuestionTimer(this, quizChannel, questionCount, 10,
+                        difficulty, questionType, randomSeed);
+                quizThread = new Thread(quizQuestionTimer, "Quiz question timer");
+                quizThread.start();
+            }
+
+            IChannel globalChannel = srv.getChannelByID(IDReference.GLOBALCHANNEL);
+            String quizAnnounceText = "A new quiz is starting in " + quizChannel.mention() + "!  Enter the channel to join in.";
+
+            globalChannel.sendMessage(quizAnnounceText);
+            if (source != globalChannel)
+            {
+                if (!source.isDeleted())
+                {
+                    source.sendMessage(quizAnnounceText);
+                }
             }
         }
     }
