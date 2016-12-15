@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
-import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import org.json.JSONArray;
 import org.json.JSONException;

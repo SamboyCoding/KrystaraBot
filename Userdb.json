@@ -1,10 +1,10 @@
 {"247393304151326721": {
     "102450956045668352": {
-        "QuizScore": 327,
+        "QuizScore": 2501,
         "name": "SamboyGaming",
-        "messages": 1908,
+        "messages": 1918,
         "ReceivesCodes": true,
-        "commands": 470
+        "commands": 474
     },
     "248365334636003328": {
         "QuizScore": 24,
@@ -142,7 +142,7 @@
     "179201142708895744": {
         "QuizScore": 108,
         "name": "yonizaf",
-        "messages": 9,
+        "messages": 10,
         "ReceivesCodes": false,
         "commands": 1
     }

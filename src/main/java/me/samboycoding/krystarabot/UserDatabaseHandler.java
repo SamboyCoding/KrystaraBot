@@ -4,11 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 /**
  * Handles the MessageCounter JSON file
@@ -137,8 +142,11 @@ public class UserDatabaseHandler
      * @param server The guild
      * @param amount The amount to increment by
      * @throws IOException If the changes cannot be written to the file.
+     * @throws sx.blah.discord.util.MissingPermissionsException If the bot cannot add roles, but needs too
+     * @throws sx.blah.discord.util.RateLimitException If the bot is rate limited
+     * @throws sx.blah.discord.util.DiscordException If something else does wrong
      */
-    public void increaseUserQuizScore(IUser usr, IGuild server, int amount) throws IOException
+    public void increaseUserQuizScore(IUser usr, IGuild server, int amount) throws IOException, MissingPermissionsException, RateLimitException, DiscordException
     {
         if (!userDBJSON.has(server.getID()))
         {
@@ -162,6 +170,17 @@ public class UserDatabaseHandler
             int current = currentUser.getInt("QuizScore");
             current += amount;
             currentUser.put("QuizScore", current);
+            if(current > 2500)
+            {
+                //Quiz Master!
+                IRole qMaster = server.getRoleByID(IDReference.QUIZMASTERROLE);
+                List<IRole> currentRoles = usr.getRolesForGuild(server);
+                if(!currentRoles.contains(qMaster))
+                {
+                    usr.addRole(qMaster);
+                    server.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("Congratulations to " + usr.mention() + " on reaching 2500 points! You are now a quiz master!");
+                }
+            }
         }
         FileUtils.writeStringToFile(userDb, userDBJSON.toString(4), Charset.defaultCharset());
     }

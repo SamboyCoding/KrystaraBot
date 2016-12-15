@@ -17,7 +17,7 @@ public class IDReference
     public static final RuntimeEnvironment Environment = RuntimeEnvironment.Dev;
     
     public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL;
-    public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE;
+    public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE;
     public static String SERVERID;
     public static String MYTOKEN; //Set in main method.
     public static String MYID; //Gets set once readyevent done.
@@ -42,6 +42,7 @@ public class IDReference
                 STREAMERROLE = "240689877325185024";
                 PCMOBILEROLE = "237500925982277634";
                 CONSOLEROLE = "237500960576897024";
+                QUIZMASTERROLE = "258958497012645888";
 
                 SERVERID = "236897364697284618";
                 break;
@@ -61,6 +62,7 @@ public class IDReference
                 STREAMERROLE = "247395963243593728";
                 PCMOBILEROLE = "247395991127457792";
                 CONSOLEROLE = "247396031422005248";
+                QUIZMASTERROLE = "258958152815345674";
 
                 SERVERID = "247393304151326721";
                 break;
@@ -80,6 +82,7 @@ public class IDReference
                 STREAMERROLE = "257921850913456128";
                 PCMOBILEROLE = "257921732491476993";
                 CONSOLEROLE = "257921797888933890";
+                QUIZMASTERROLE = "LYYAFILLMEIN"; //TODO: Lyya, fill this in.
 
                 SERVERID = "257915045487443981";
                 break;
