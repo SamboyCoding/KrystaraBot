@@ -46,6 +46,8 @@ public class QuizQuestionTimer implements Runnable
     private final ArrayList<IMessage> chatterMessages = new ArrayList<>();
     private final ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
 
+    private final Utilities.WaitCallback waitCallback;
+    
     public enum QuizPhase
     {
         Introduction,
@@ -88,6 +90,8 @@ public class QuizQuestionTimer implements Runnable
         difficultyFilter = difficulty;
         questionTypeFilter = questionType;
         randomSeed = seed;
+        
+        waitCallback = () -> sleepFor(500);
     }
     
     private static class QuestionLogEntry
@@ -125,11 +129,13 @@ public class QuizQuestionTimer implements Runnable
         return msg;
     }
     
-    private void sendLargeMessage(Iterable<String> messageParts) 
+    private void safeDeleteMessage(IMessage message) 
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
-        Utilities.sendLargeMessage(chnl, messageParts, () -> 
-            { try { sleepFor(1000); } catch (InterruptedException e) {} });
+        if (message != null)
+        {
+            Utilities.safeDeleteMessage(message, waitCallback);
+        }
     }
     
     @Override
@@ -156,34 +162,20 @@ public class QuizQuestionTimer implements Runnable
             for (int iQuestion = 0; iQuestion < questionDifficulties.size(); iQuestion++)
             {
                 // Count down to the next question
-                sendCountdownMessage("Next question: %1$d seconds", 10).delete();
+                safeDeleteMessage(sendCountdownMessage("Next question: %1$d seconds", 10));
 
-                // Remove any old question, choice, and answer from the view
+                // Start accepting answers
                 synchronized (this)
                 {
+                    phase = QuizPhase.WaitingForAnswers;
                     clearChatterMessages();
                 }
-                
-                if (answerMessage != null)
-                {
-                    answerMessage.delete();
-                    answerMessage = null;
-                }
-                if (choicesMessage != null)
-                {
-                    choicesMessage.delete();
-                    choicesMessage = null;
-                }
-                if (imageMessage != null)
-                {
-                    imageMessage.delete();
-                    imageMessage = null;
-                }
-                if (questionMessage != null)
-                {
-                    questionMessage.delete();
-                    questionMessage = null;
-                }
+
+                // Remove any old question, choice, and answer from the view
+                safeDeleteMessage(answerMessage);
+                safeDeleteMessage(choicesMessage);
+                safeDeleteMessage(imageMessage);
+                safeDeleteMessage(questionMessage);
                 
                 // Determine question difficulty
                 QuizQuestion.Difficulty difficulty = getDifficultyForQuestion(questionDifficulties, iQuestion);
@@ -200,14 +192,8 @@ public class QuizQuestionTimer implements Runnable
                 // Send the associated choices
                 choicesMessage = sendChoices(question, quizLog);
 
-                // Start accepting answers
-                synchronized (this)
-                {
-                    phase = QuizPhase.WaitingForAnswers;
-                }
-
                 // Wait for a bit for answers
-                sendCountdownMessage("Time remaining: %1$d seconds", qTimeSeconds).delete();
+                safeDeleteMessage(sendCountdownMessage("Time remaining: %1$d seconds", qTimeSeconds));
 
                 // Stop accepting answers
                 synchronized (this)
@@ -216,7 +202,7 @@ public class QuizQuestionTimer implements Runnable
                 }
 
                 // Remove choices from the view
-                choicesMessage.delete();
+                safeDeleteMessage(choicesMessage);
                 choicesMessage = null;
                 
                 // Show answers and scores
@@ -228,23 +214,11 @@ public class QuizQuestionTimer implements Runnable
                 phase = QuizPhase.Completed;
             }
             
-            sendCountdownMessage("Results: %1$d seconds", 5).delete();
-            if (answerMessage != null)
-            {
-                answerMessage.delete();
-            }
-            if (choicesMessage != null)
-            {
-                choicesMessage.delete();
-            }
-            if (imageMessage != null)
-            {
-                imageMessage.delete();
-            }
-            if (questionMessage != null)
-            {
-                questionMessage.delete();
-            }
+            safeDeleteMessage(sendCountdownMessage("Results: %1$d seconds", 5));
+            safeDeleteMessage(answerMessage);
+            safeDeleteMessage(choicesMessage);
+            safeDeleteMessage(imageMessage);
+            safeDeleteMessage(questionMessage);
 
             sendResults(quizLog, questionLog);
             
@@ -277,7 +251,7 @@ public class QuizQuestionTimer implements Runnable
         {
             try
             {
-                chnl.sendMessage("Quiz was stopped.");
+                Utilities.safeSendMessage(chnl, "Quiz was stopped.", waitCallback);
             }
             catch (Exception e)
             {
@@ -355,7 +329,7 @@ public class QuizQuestionTimer implements Runnable
             questionText += questionSecondaryText + "\n";
         }
         quizLog.add(questionText);
-        questionMessage = chnl.sendMessage(questionText);
+        questionMessage = Utilities.safeSendMessage(chnl, questionText, waitCallback);
         return questionMessage;
     }
 
@@ -370,12 +344,12 @@ public class QuizQuestionTimer implements Runnable
             {
                 InputStream imageStream = imageUrl.openStream();
                 String imageName = "image." + FilenameUtils.getExtension(imageUrl.getPath());
-                imageMessage = chnl.sendFile("", false, imageStream, imageName);
+                imageMessage = Utilities.safeSendFile(chnl, "", false, imageStream, imageName, waitCallback);
             }
             catch (IOException e)
             {
                 e.printStackTrace();
-                imageMessage = chnl.sendMessage(imageUrl.toString());
+                imageMessage = Utilities.safeSendMessage(chnl, imageUrl.toString(), waitCallback);
             }
         }
         return imageMessage;
@@ -392,7 +366,7 @@ public class QuizQuestionTimer implements Runnable
                 + "**\n\n" + getCorrectUserText(question.getDifficulty())
                 + "\n" + Utilities.repeatString("-", 40);
         quizLog.add(answerBody + "\n");
-        msg = chnl.sendMessage(answerBody);
+        msg = Utilities.safeSendMessage(chnl, answerBody, waitCallback);
         return msg;
     }
 
@@ -406,7 +380,7 @@ public class QuizQuestionTimer implements Runnable
             questionBody += (i+1) + ") " + question.getAnswerText(i) + "\n";
         }
         quizLog.add(questionBody);
-        msg = chnl.sendMessage(questionBody);
+        msg = Utilities.safeSendMessage(chnl, questionBody, waitCallback);
         return msg;
     }
 
@@ -434,7 +408,7 @@ public class QuizQuestionTimer implements Runnable
     {
         quizLog.add("\nThe quiz is over! And the winner is...");
         
-        sendLargeMessage(quizLog);
+        Utilities.sendLargeMessage(chnl, quizLog, waitCallback);
         sleepFor(1000);
         
         main.quizH.ordered.putAll(main.quizH.unordered); //Sort.
@@ -459,7 +433,7 @@ public class QuizQuestionTimer implements Runnable
         
         sleepFor(1500);
         
-        chnl.sendMessage(scores);
+        Utilities.safeSendMessage(chnl, scores, waitCallback);
         
         sleepFor(1000);
         chnl.sendMessage("Thanks for playing!\n" +
@@ -482,7 +456,7 @@ public class QuizQuestionTimer implements Runnable
 
     private void sendIntro() throws InterruptedException, MissingPermissionsException, RateLimitException, DiscordException
     {
-        sendCountdownMessage("Quiz will start in %1$d seconds...", 10).delete();
+        safeDeleteMessage(sendCountdownMessage("Quiz will start in %1$d seconds...", 10));
 
         chnl.sendMessage("Welcome to the GoW Discord quiz!");
         sleepFor(2500);
@@ -532,7 +506,7 @@ public class QuizQuestionTimer implements Runnable
             }
             else
             {
-                chatterMessage.delete();
+                safeDeleteMessage(chatterMessage);
             }
         }
     }
@@ -540,13 +514,17 @@ public class QuizQuestionTimer implements Runnable
     private void clearChatterMessages() 
             throws RateLimitException, MissingPermissionsException, DiscordException
     {
+        ArrayList<IMessage> chatterMessagesCopy;
+        
         synchronized (this)
         {
-            for (IMessage chatterMessage : chatterMessages)
-            {
-                chatterMessage.delete();
-            }
+            chatterMessagesCopy = new ArrayList<>(chatterMessages);
             chatterMessages.clear();
+        }
+        
+        for (IMessage chatterMessage : chatterMessagesCopy)
+        {
+            safeDeleteMessage(chatterMessage);
         }
     }
 

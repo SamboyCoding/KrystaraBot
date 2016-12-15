@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.utilities;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -63,6 +64,65 @@ public class Utilities
         main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", bldr.build(), false);
     }
     
+    @FunctionalInterface
+    public interface WaitCallback
+    {
+        public void run() throws InterruptedException;
+    }
+    
+    @FunctionalInterface
+    private interface SafeOperation
+    {
+        public IMessage run() throws MissingPermissionsException, RateLimitException, DiscordException;
+    }
+    
+    private static IMessage doSafeOperation(SafeOperation op, WaitCallback waitCallback)
+            throws MissingPermissionsException, RateLimitException, DiscordException
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            try
+            {
+                return op.run();
+            }
+            catch (RateLimitException e)
+            {
+                try
+                {
+                    // We're rate-limited; wait and try again
+                    waitCallback.run();
+                }
+                catch (InterruptedException e2)
+                {}
+            }
+        }
+        
+        // One last hail-Mary!  Let this throw if we're still rate-limited
+        return op.run();
+    }
+    
+    public static IMessage safeSendMessage(IChannel channel, String messageBody, WaitCallback waitCallback)
+            throws MissingPermissionsException, RateLimitException, DiscordException
+    {
+        return doSafeOperation(() -> channel.sendMessage(messageBody), waitCallback);
+    }
+    
+    public static IMessage safeSendFile(IChannel channel, String content, boolean tts, InputStream file, String fileName, WaitCallback waitCallback)
+            throws MissingPermissionsException, RateLimitException, DiscordException
+    {
+        return doSafeOperation(() -> channel.sendFile(content, tts, file, fileName), waitCallback);
+    }
+ 
+    public static void safeDeleteMessage(IMessage message, WaitCallback waitCallback) 
+            throws MissingPermissionsException, RateLimitException, DiscordException
+    {
+        doSafeOperation(() -> 
+            {
+                message.delete();
+                return null;
+            }, waitCallback);
+    }
+    
     /**
      * Sends the specified message to the specified channel, splitting it up if
      * necessary to get it below the 2000 char limit
@@ -75,7 +135,7 @@ public class Utilities
      * @throws MissingPermissionsException If the bot is missing the
      * SENDMESSAGES permission
      */
-    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts, Runnable waitCallback) 
+    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts, WaitCallback waitCallback) 
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         final int CHUNK_MAX_LENGTH = 2000;
@@ -88,13 +148,15 @@ public class Utilities
             String nextMsg = messageIterator.next();
             if ((chunk.length() + nextMsg.length()) > CHUNK_MAX_LENGTH)
             {
-                channel.sendMessage(chunk);
+                safeSendMessage(channel, chunk, waitCallback);
                 chunk = "";
                 
-                if (waitCallback != null)
+                try
                 {
                     waitCallback.run();
                 }
+                catch (InterruptedException e)
+                {}
             }
 
             chunk += nextMsg + "\n";
@@ -102,7 +164,7 @@ public class Utilities
 
         if (!chunk.isEmpty())
         {
-            channel.sendMessage(chunk);
+            safeSendMessage(channel, chunk, waitCallback);
         }
     }
 
@@ -120,7 +182,7 @@ public class Utilities
     public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts) 
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
-        sendLargeMessage(channel, messageParts, null);
+        sendLargeMessage(channel, messageParts, () -> {});
     }
 
     /**
