@@ -123,6 +123,19 @@ public class Utilities
             }, waitCallback);
     }
     
+    public static IMessage sendDisambiguationMessage(IChannel channel, String prefix, Iterable<String> candidates) 
+            throws MissingPermissionsException, RateLimitException, DiscordException
+    {
+        Iterator<String> iterator = candidates.iterator();
+        String candidateText = prefix + " Possible results:\n\n";
+        while (iterator.hasNext())
+        {
+            candidateText += "    - " + iterator.next() + "\n";
+        }
+        candidateText += "\nPlease refine your search.";
+        return channel.sendMessage(candidateText);
+    }
+    
     /**
      * Sends the specified message to the specified channel, splitting it up if
      * necessary to get it below the 2000 char limit

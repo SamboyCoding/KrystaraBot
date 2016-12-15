@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Stream;
 import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
@@ -152,21 +153,22 @@ public class TraitstoneCommand extends KrystaraCommand
         }
         
         ArrayList<Traitstone> traitstones = parseArguments(arguments);
+        String searchTerm = String.join(" ", arguments);
         
         if (traitstones.isEmpty())
         {
-            chnl.sendMessage("No traitstone `" + String.join(" ", arguments) + "` found, " + sdr.mention());
+            chnl.sendMessage("No traitstone `" + searchTerm + "` found, " + sdr.mention());
             return;
         }
 
-        ArrayList<String> output = new ArrayList<>();
-        
-        for (Traitstone traitstone : traitstones)
+        if (traitstones.size() > 1)
         {
-            output.add(getTraitstoneInfoText(traitstone, chnl));
+            Stream<String> str = traitstones.stream().map(t -> t.toString());
+            Utilities.sendDisambiguationMessage(chnl, "Search term \"" + searchTerm + "\" is ambiguous.", str::iterator);
+            return;
         }
-        
-        Utilities.sendLargeMessage(chnl, output);
+
+        chnl.sendMessage(getTraitstoneInfoText(traitstones.get(0), chnl));
     }
 
     /**
@@ -191,7 +193,10 @@ public class TraitstoneCommand extends KrystaraCommand
             {
                 if (color.name().toLowerCase().equals(arg))
                 {
-                    colorArgs.add(color);
+                    if (!colorArgs.contains(color))
+                    {
+                        colorArgs.add(color);
+                    }
                     found = true;
                     break;
                 }
@@ -392,7 +397,7 @@ public class TraitstoneCommand extends KrystaraCommand
     @Override
     public String getHelpText()
     {
-        return "Shows information for the specified traitstone.";
+        return "Shows information for the specified traitstone.  Search can be for a name (e.g, \"rage\") or color (e.g. \"blue brown\").";
     }
 
     @Override

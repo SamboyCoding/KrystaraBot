@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.utilities.Utilities;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -53,12 +54,12 @@ public class TroopCommand extends KrystaraCommand
             }
             if (results.size() > 5)
             {
-                chnl.sendMessage("Search term is far too broad (" + results.size() + " results) - please refine it.");
-                return;
+               chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
+               return;
             }
             if (results.size() > 1)
             {
-                chnl.sendMessage("Search term \"" + troopName + "\" is too ambiguous. Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
+                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + troopName + "\" is ambiguous.", results);
                 return;
             }
 

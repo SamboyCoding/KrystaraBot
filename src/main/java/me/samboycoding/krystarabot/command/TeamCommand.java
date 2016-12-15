@@ -8,6 +8,7 @@ import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
+import me.samboycoding.krystarabot.utilities.Utilities;
 import org.json.JSONObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -102,12 +103,12 @@ public class TeamCommand extends KrystaraCommand
 
             if (results.size() > 5)
             {
-                chnl.sendMessage("Search term: \"" + thing + "\" is too broad (" + results.size() + " results). Please refine.");
+                chnl.sendMessage("Search term \"" + thing + "\" is ambiguous (" + results.size() + " results). Please refine your search.");
                 return;
             }
             if (results.size() > 1)
             {
-                chnl.sendMessage("Ambigous troop/weapon name \"" + thing + "\". Possible results:\n\n\t\t-" + results.toString().replace("[", "").replace("]", "").replace(", ", "\n\t\t-") + "\n\nPlease refine the search term.");
+                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + thing + "\" is ambiguous.", results);
                 return;
             }
             if (results.isEmpty())
@@ -162,12 +163,12 @@ public class TeamCommand extends KrystaraCommand
             ArrayList<String> banners = main.data.searchForBanner(things.get(4));
             if (banners.size() > 5)
             {
-                chnl.sendMessage("Search term: \"" + bannerName2 + "\" is too broad (" + banners.size() + " results). Please refine.");
+                chnl.sendMessage("Search term \"" + bannerName2 + "\" is ambiguous (" + banners.size() + " results). Please refine your search.");
                 return;
             }
             if (banners.size() > 1)
             {
-                chnl.sendMessage("Ambigous banner/kingdom name \"" + bannerName2 + "\". Possible results:\n" + banners.toString().replace("[", "").replace("]", "").replace(", ", ",\n") + "\nPlease refine the search term.");
+                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + bannerName2 + "\" is ambiguous.", banners);
                 return;
             }
             if (banners.isEmpty())
