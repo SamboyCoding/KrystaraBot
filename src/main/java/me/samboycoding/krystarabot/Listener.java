@@ -13,6 +13,7 @@ import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
+import sx.blah.discord.handle.impl.events.MentionEvent;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.NickNameChangeEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -47,7 +48,7 @@ public class Listener
         try
         {
             main.logToBoth("Attempting to change username, please wait...");
-            if (IDReference.Environment == IDReference.RuntimeEnvironment.Live)
+            if (IDReference.ENVIRONMENT == IDReference.RuntimeEnvironment.Live)
             {
                 main.logToBoth("Logging in to LIVE server.");
                 cl.changeUsername("Krystara");
@@ -248,6 +249,14 @@ public class Listener
         {
             //Ignore.
         }
+    }
+    
+    @EventSubscriber
+    public void talk(MentionEvent e) throws Exception
+    {
+        String message = e.getMessage().getContent().replace(main.getClient(null).getOurUser().mention() + " ", "");
+        
+        e.getMessage().getChannel().sendMessage(main.cleverBot.think(message));
     }
 
     @EventSubscriber

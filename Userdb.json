@@ -2,9 +2,9 @@
     "102450956045668352": {
         "QuizScore": 2501,
         "name": "SamboyGaming",
-        "messages": 1934,
+        "messages": 1988,
         "ReceivesCodes": true,
-        "commands": 484
+        "commands": 485
     },
     "248365334636003328": {
         "QuizScore": 24,
@@ -30,9 +30,9 @@
     "190663943260340224": {
         "QuizScore": 144,
         "name": "MrSnake",
-        "messages": 431,
+        "messages": 441,
         "ReceivesCodes": true,
-        "commands": 59
+        "commands": 60
     },
     "243103269805621249": {
         "QuizScore": 1,
@@ -58,7 +58,7 @@
     "234202516676542464": {
         "QuizScore": 308,
         "name": "Naga",
-        "messages": 816,
+        "messages": 829,
         "ReceivesCodes": false,
         "commands": 130
     },

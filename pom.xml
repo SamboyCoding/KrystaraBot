@@ -41,6 +41,11 @@
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
+        <dependency>
+            <groupId>ca.pjer</groupId>
+            <artifactId>chatter-bot-api</artifactId>
+            <version>1.4.3</version>
+        </dependency>
 
     </dependencies>
     <build>

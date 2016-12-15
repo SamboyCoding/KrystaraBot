@@ -14,7 +14,7 @@ public class IDReference
         Lyya
     }
     
-    public static final RuntimeEnvironment Environment = RuntimeEnvironment.Dev;
+    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.Live;
     
     public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL;
     public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE;
@@ -24,7 +24,7 @@ public class IDReference
     
     public IDReference()
     {
-        switch (Environment)
+        switch (ENVIRONMENT)
         {
             case Live:
                 //Channels

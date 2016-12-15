@@ -1,23 +1,23 @@
 package me.samboycoding.krystarabot;
 
+import com.google.code.chatterbotapi.ChatterBot;
+import com.google.code.chatterbotapi.ChatterBotFactory;
+import com.google.code.chatterbotapi.ChatterBotSession;
+import com.google.code.chatterbotapi.ChatterBotType;
 import java.io.File;
 import me.samboycoding.krystarabot.utilities.IDReference;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
-import me.samboycoding.krystarabot.quiz.QuizQuestionFactory;
 import me.samboycoding.krystarabot.quiz.QuizHandler;
 import org.apache.commons.io.FileUtils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.RateLimitException;
 
 /**
  * Main class
@@ -34,6 +34,7 @@ public class main
     public static UserDatabaseHandler databaseHandler = new UserDatabaseHandler();
     public static File logFile;
     public static QuizHandler quizH = new QuizHandler();
+    public static ChatterBotSession cleverBot;
 
     public static IDiscordClient getClient(String token)
     {
@@ -63,7 +64,7 @@ public class main
     }
 
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
-    public static void main(String[] args) throws DiscordException, RateLimitException, IOException
+    public static void main(String[] args) throws Exception
     {
         new File("logs/").mkdir();
         logFile = new File("logs/output-" + getTimestamp("dd-MM-yyyy") + ".log");
@@ -75,11 +76,17 @@ public class main
         cl = getClient(IDReference.MYTOKEN);
         cl.getDispatcher().registerListener(new Listener());
         logToBoth("Logged in and listener registered.");
-        //data.importData();
         new Thread(new GameDataLoaderThread(), "GameData Loading Thread").start();
         codes.loadJSON();
         new IDReference(); //Init
         databaseHandler.loadJSON();
+        logToBoth("Initializing Intelligent Talking...");
+        ChatterBotFactory factory = new ChatterBotFactory();
+
+        ChatterBot bot1 = factory.create(ChatterBotType.CLEVERBOT);
+        cleverBot = bot1.createSession();
+        
+        logToBoth("Intelligent talking loaded!");
     }
     
     public static void registerCommand(KrystaraCommand c)

@@ -440,7 +440,7 @@ public class QuizQuestionTimer implements Runnable
                 "To play again, use the command `?quiz` in any channel.\n" +
                 "To see your total lifetime score, use the command `?userstats`.");
         
-        if (IDReference.Environment != IDReference.RuntimeEnvironment.Live)
+        if (IDReference.ENVIRONMENT != IDReference.RuntimeEnvironment.Live)
         {
             String questionLogText = "Debug info (dev-server only):\n";
             int i = 0;
