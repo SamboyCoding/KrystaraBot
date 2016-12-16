@@ -134,12 +134,21 @@ public class Listener
         IMessage msg = e.getMessage();
         IUser sdr = msg.getAuthor();
         IChannel chnl = msg.getChannel();
-        
+
         try
         {
-            if (e.getMessage().getChannel().isPrivate())
+            if (chnl.isPrivate())
             {
-                e.getMessage().getChannel().sendMessage("Sorry, the bot doesn't support PM commands. Please re-enter the command in a server.");
+                if (msg.getContent().startsWith("?"))
+                {
+                    chnl.sendMessage("Sorry, the bot doesn't support PM commands. Please re-enter the command in a server.");
+                } else
+                {
+                    chnl.setTypingStatus(true);
+                    String result = main.cleverBot.think(msg.getContent());
+                    chnl.setTypingStatus(false);
+                    chnl.sendMessage(result);
+                }
                 return;
             }
             if (e.getMessage().getAuthor().getID().equals(IDReference.MYID))
@@ -190,7 +199,7 @@ public class Listener
             main.logToBoth("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
 
             TreeMap<String, KrystaraCommand> commands = main.getCommands();
-            
+
             if (commands.containsKey(command))
             {
                 commands.get(command).handleCommand(sdr, chnl, msg, arguments, argumentsFull);
@@ -250,13 +259,29 @@ public class Listener
             //Ignore.
         }
     }
-    
+
     @EventSubscriber
     public void talk(MentionEvent e) throws Exception
     {
-        String message = e.getMessage().getContent().replace(main.getClient(null).getOurUser().mention() + " ", "");
-        
-        e.getMessage().getChannel().sendMessage(main.cleverBot.think(message));
+        if (e.getMessage().getChannel().getID().equals(IDReference.BOTCOMMANDSCHANNEL))
+        {
+            //Message sent in bot-commands
+            String message = e.getMessage().getContent().replace(main.getClient(null).getOurUser().mention() + " ", "");
+
+            e.getMessage().getChannel().setTypingStatus(true);
+            String result = main.cleverBot.think(message);
+            e.getMessage().getChannel().setTypingStatus(false);
+            e.getMessage().getChannel().sendMessage(result);
+        } else if(!e.getMessage().getChannel().isPrivate())
+        {
+            //Message sent in a channel that's not bot-commands
+            e.getMessage().delete();
+            e.getMessage().getAuthor().getOrCreatePMChannel().sendMessage("Sorry, I don't talk in any channel apart from #bot-commands. Alternatively you can talk to me here, in PM, but don't @mention me... I don't need it in here.");
+        } else
+        {
+            //@Mentioned in a PM
+            e.getMessage().getChannel().sendMessage("Don't @mention me in PM! I don't like it. Just say what you want to say. ;(");
+        }
     }
 
     @EventSubscriber
