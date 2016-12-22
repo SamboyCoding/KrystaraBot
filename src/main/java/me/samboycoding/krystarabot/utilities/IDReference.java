@@ -9,12 +9,12 @@ public class IDReference
 {
     public static enum RuntimeEnvironment
     {
-        Live,
-        Dev,
-        Lyya
+        LIVE,
+        DEV,
+        LYYA
     }
     
-    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.Live;
+    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.DEV;
     
     public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL;
     public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE;
@@ -26,7 +26,7 @@ public class IDReference
     {
         switch (ENVIRONMENT)
         {
-            case Live:
+            case LIVE:
                 //Channels
                 LOGSCHANNEL = "237546188994379776";
                 CODESCHANNEL = "237455339857903617";
@@ -47,7 +47,7 @@ public class IDReference
                 SERVERID = "236897364697284618";
                 break;
                 
-            case Dev:
+            case DEV:
                 //Channels
                 LOGSCHANNEL = "247394226319392768";
                 CODESCHANNEL = "247394202844004363";
@@ -67,7 +67,7 @@ public class IDReference
                 SERVERID = "247393304151326721";
                 break;
                 
-            case Lyya:
+            case LYYA:
                 //Channels
                 LOGSCHANNEL = "257917868811878402";
                 CODESCHANNEL = "247394202844004363";
