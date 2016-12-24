@@ -29,7 +29,18 @@ public class GemsQueryRunner
         {
             if (queryRunner == null)
             {
-                String userData = FileUtils.readFileToString(new File("../gems.user"), Charset.defaultCharset());
+                String userData = null;
+                
+                // Look for a password file
+                try
+                {
+                    userData = FileUtils.readFileToString(new File("../gems.user"), Charset.defaultCharset());
+                }
+                catch (IOException e)
+                {
+                    userData = FileUtils.readFileToString(new File("./gems.user"), Charset.defaultCharset());
+                }
+                
                 String[] creds = userData.split(":");
 
                 BasicDataSource basicDataSource = new BasicDataSource();
