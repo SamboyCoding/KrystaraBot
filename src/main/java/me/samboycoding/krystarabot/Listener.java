@@ -73,7 +73,6 @@ public class Listener
 
             main.registerCommand(new BanCommand());
             main.registerCommand(new BuildcacheCommand());
-            main.registerCommand(new ClassCommand());
             main.registerCommand(new ClearCommand());
             main.registerCommand(new ClearcacheCommand());
             main.registerCommand(new ReigsterCodeCommand());
@@ -91,17 +90,30 @@ public class Listener
             main.registerCommand(new ReloadDataCommand());
             main.registerCommand(new SearchCommand());
             main.registerCommand(new ServerstatsCommand());
-            main.registerCommand(new SpellCommand());
             main.registerCommand(new StopQuizCommand());
             main.registerCommand(new TeamCommand());
             main.registerCommand(new Top10Command());
-            main.registerCommand(new TraitCommand());
             main.registerCommand(new TraitstoneCommand());
-            main.registerCommand(new TroopCommand());
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
-            main.registerCommand(new WeaponCommand());
-
+            
+            if (IDReference.ENVIRONMENT == IDReference.RuntimeEnvironment.LYYA)
+            {
+                main.registerCommand(new SqlClassCommand());
+                main.registerCommand(new SqlSpellCommand());
+                main.registerCommand(new SqlTraitCommand());
+                main.registerCommand(new SqlTroopCommand());
+                main.registerCommand(new SqlWeaponCommand());
+            }
+            else
+            {
+                main.registerCommand(new ClassCommand());
+                main.registerCommand(new SpellCommand());
+                main.registerCommand(new TraitCommand());
+                main.registerCommand(new TroopCommand());
+                main.registerCommand(new WeaponCommand());
+            }
+            
             String timestamp = "";
             Calendar now = main.getNow();
             timestamp += now.get(Calendar.DATE) + " of ";

@@ -14,7 +14,7 @@ public class IDReference
         LYYA
     }
     
-    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.DEV;
+    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.LYYA;
     
     public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL;
     public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE;

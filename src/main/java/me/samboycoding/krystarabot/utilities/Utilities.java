@@ -126,11 +126,24 @@ public class Utilities
     public static IMessage sendDisambiguationMessage(IChannel channel, String prefix, Iterable<String> candidates) 
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
+        final int MAX_CANDIDATES = 10;
+        
         Iterator<String> iterator = candidates.iterator();
         String candidateText = prefix + " Possible results:\n\n";
+        int i = 0;
         while (iterator.hasNext())
         {
-            candidateText += "    - " + iterator.next() + "\n";
+            String thisText = iterator.next();
+            
+            if (i < MAX_CANDIDATES)
+            {
+                candidateText += "    - " + thisText + "\n";
+            }
+            i++;
+        }
+        if (i > MAX_CANDIDATES)
+        {
+            candidateText += "    *(+" + (i - MAX_CANDIDATES) + " more)*\n";
         }
         candidateText += "\nPlease refine your search.";
         return channel.sendMessage(candidateText);
