@@ -25,7 +25,7 @@ public class PlatformCommand extends KrystaraCommand
     {
         if(!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
-            sdr.getOrCreatePMChannel().sendMessage("To reduce spam, platform can only be used in the #bot-commands channel. Thanks!");
+            sdr.getOrCreatePMChannel().sendMessage("To reduce spam, 'platform' can only be used in the #bot-commands channel. Thanks!");
             return;
         }
         

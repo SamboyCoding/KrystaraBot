@@ -16,8 +16,8 @@ public class IDReference
     
     public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.LYYA;
     
-    public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL;
-    public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE;
+    public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL, CHATFRENCH, CHATGERMAN, CHATSPANISH;
+    public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE, FRENCHROLE, GERMANROLE, SPANISHROLE;
     public static String SERVERID;
     public static String MYTOKEN; //Set in main method.
     public static String MYID; //Gets set once readyevent done.
@@ -33,8 +33,10 @@ public class IDReference
                 BOTCOMMANDSCHANNEL = "237500381880516609";
                 TEAMSCHANNEL = "236904343859757057";
                 GLOBALCHANNEL = "237788799982239745";
-
-
+                CHATFRENCH = "262240512268959745";
+                CHATGERMAN = "262240429435650048";
+                CHATSPANISH = "262240467989561354";
+                
                 //Roles
                 ADMINROLE = "236897540262330370";
                 DEVROLE = "237461438548017154";
@@ -43,6 +45,9 @@ public class IDReference
                 PCMOBILEROLE = "237500925982277634";
                 CONSOLEROLE = "237500960576897024";
                 QUIZMASTERROLE = "258958497012645888";
+                FRENCHROLE = "";
+                GERMANROLE = "";
+                SPANISHROLE = "";
 
                 SERVERID = "236897364697284618";
                 break;
