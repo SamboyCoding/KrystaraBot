@@ -35,10 +35,12 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.io.FileUtils;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  *
@@ -148,17 +150,24 @@ public class SqlClassCommand extends QuestionCommand
             String[] traitNames = traits.stream().map(t -> t.getName()).toArray(String[]::new);
             String[] perkNames = perks.stream().map(p -> p.getName() + " (" + p.getPerkType() + ")").toArray(String[]::new);
             
-            String info = "**" + heroClass.getName() + "**\n";
-            info += "From " + heroClass.getKingdomName() + ", Type: " + heroClass.getType() + "\n";
-            info += "Traits: " + String.join(", ", traitNames) + "\n";
-            info += "Perks: " + String.join(", ", perkNames) + "\n\n";
+            String info = "";
+            info += "_" + heroClass.getKingdomName() + "_ " + heroClass.getType() + "\n";
+            info += "(" + String.join(", ", traitNames) + ")\n";
+            info += "One of: " + String.join(", ", perkNames) + "\n\n";
             info += "**Class Weapon**";
             info += "\n" + heroClass.getSpellName() + " (" + heroClass.getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc;
             info += "\n";
 
-            chnl.sendMessage(info);
-            chnl.sendFile("", false, url.openStream(), heroClass.getFileBase() + ".png");
+            EmbedObject o = new EmbedBuilder()
+                .withDesc(info)
+                .withTitle(heroClass.getName())
+                .withUrl("http://ashtender.com/gems/classes/" + heroClass.getId())
+                .withThumbnail("http://ashtender.com/gems/assets/classes/" + heroClass.getId() + ".png")
+                .build();
+
+            chnl.sendMessage("", o, false);
         }
+
         catch (IOException e)
         {
             chnl.sendMessage("Credentials file could not be found.");

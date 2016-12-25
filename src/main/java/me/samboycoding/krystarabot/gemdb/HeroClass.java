@@ -29,6 +29,7 @@ public class HeroClass implements java.io.Serializable
     private int spellCost = 0;
     private String kingdomName = null;
     private String weaponName = null;
+    private int traitstonesRequired = 0;
     
     public HeroClass()
     {
@@ -81,4 +82,7 @@ public class HeroClass implements java.io.Serializable
     
     public void setWeaponName(String value) { this.weaponName = value; }
     public String getWeaponName() { return this.weaponName; }
+    
+    public void setTraitstonesRequired(int value) { this.traitstonesRequired = value; }
+    public int getTraitstonesRequired() { return this.traitstonesRequired; }
 }

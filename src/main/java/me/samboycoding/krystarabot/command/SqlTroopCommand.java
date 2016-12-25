@@ -5,6 +5,7 @@
  */
 package me.samboycoding.krystarabot.command;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -33,10 +34,12 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.io.FileUtils;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  *
@@ -104,8 +107,6 @@ public class SqlTroopCommand extends QuestionCommand
                 troop.getId()
                 );
 
-            URL url = new URL("http://ashtender.com/gems/assets/cards/" + troop.getFileBase() + ".jpg");
-
             String spellDesc = troop.getSpellDescription();
             String spellMagicScalingText = troop.getSpellMagicScalingText();
             if (spellMagicScalingText != null)
@@ -138,18 +139,22 @@ public class SqlTroopCommand extends QuestionCommand
 
             String[] traitNames = traits.stream().map(t -> t.getName()).toArray(String[]::new);
             
-            String info = "**" + troop.getName() + "** (" + troop.getDescription() + ")\n";
-            info += troop.getRarity() + " from " + troop.getKingdomName() + ", Type: " + troop.getType() + "\n";
-            info += "Traits: " + String.join(", ", traitNames) + "\n\n";
-            info += "**Spell**";
-            info += "\n" + troop.getSpellName() + " (" + troop.getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc;
+            String info = "";
+            info += troop.getRarity() + " _" + troop.getKingdomName() + "_ " + troop.getType() + "\n";
+            info += "(" + String.join(", ", traitNames) + ")\n\n";
+            info += "_" + troop.getSpellName() + "_ (" + troop.getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc + "\n\n";
 
-            info += "\n\n**Stats**";
-            info += "\nLevel 20: " + emojiArmor + " " + troop.getMaxArmor() + "    " + emojiLife + " " + troop.getMaxLife() + 
-                "    " + emojiAttack + " " + troop.getMaxAttack() + "    " + emojiMagic + " " + troop.getMaxMagic();
+            info += emojiArmor + troop.getMaxArmor() + "   " + emojiLife + troop.getMaxLife() + 
+                "   " + emojiAttack + troop.getMaxAttack() + "   " + emojiMagic + troop.getMaxMagic() + "\n";
+            info += "_" + troop.getDescription() + "_";
 
-            chnl.sendMessage(info);
-            chnl.sendFile("", false, url.openStream(), troop.getFileBase() + ".jpg");
+            EmbedObject o = new EmbedBuilder()
+                .withDesc(info)
+                .withTitle(troop.getName())
+                .withUrl("http://ashtender.com/gems/troops/" + troop.getId())
+                .withThumbnail("http://ashtender.com/gems/assets/cards/" + troop.getFileBase() + ".jpg")
+                .build();
+            chnl.sendMessage("", o, false);
         }
         catch (IOException e)
         {

@@ -34,6 +34,7 @@ public class Troop implements java.io.Serializable
     private String spellMagicScalingText = null;
     private int spellCost = 0;
     private String kingdomName = null;
+    private int traitstonesRequired = 0;
     
     public Troop()
     {
@@ -101,4 +102,7 @@ public class Troop implements java.io.Serializable
     
     public void setKingdomName(String value) { this.kingdomName = value; }
     public String getKingdomName() { return this.kingdomName; }
+    
+    public void setTraitstonesRequired(int value) { this.traitstonesRequired = value; }
+    public int getTraitstonesRequired() { return this.traitstonesRequired; }
 }
