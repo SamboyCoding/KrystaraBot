@@ -10,8 +10,8 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * Represents the ?platform command
- * @author r3byass
+ * Represents the ?language command
+ * @author MrSnake
  */
 public class LanguageCommand extends KrystaraCommand
 {
