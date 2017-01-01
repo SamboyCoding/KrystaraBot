@@ -44,11 +44,6 @@ public class SqlTraitCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
-        {
-            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
-            return;
-        }
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need to specify a name to search for!");
