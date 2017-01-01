@@ -11,7 +11,7 @@ import java.sql.Date;
  *
  * @author Emily Ash
  */
-public class Troop implements java.io.Serializable
+public class Troop implements TeamMember, java.io.Serializable
 {
     private int id = 0;
     private String language = null;
@@ -40,13 +40,19 @@ public class Troop implements java.io.Serializable
     {
     }
     
+    @Override
     public void setId(int value) { this.id = value; }
+    @Override
     public int getId() { return this.id; }
     
+    @Override
     public void setLanguage(String value) { this.language = value; }
+    @Override
     public String getLanguage() { return this.language; }
     
+    @Override
     public void setName(String value) { this.name = value; }
+    @Override
     public String getName() { return this.name; }
     
     public void setRarity(String value) { this.rarity = value; }
@@ -70,7 +76,9 @@ public class Troop implements java.io.Serializable
     public void setRarityId(int value) { this.rarityId = value; }
     public int getRarityId() { return this.rarityId; }
 
+    @Override
     public void setLastModified(Date value) { this.lastModified = value; }
+    @Override
     public Date getLastModified() { return this.lastModified; }
     
     public void setMaxArmor(int value) { this.maxArmor = value; }
@@ -85,19 +93,29 @@ public class Troop implements java.io.Serializable
     public void setMaxMagic(int value) { this.maxMagic = value; }
     public int getMaxMagic() { return this.maxMagic; }
     
+    @Override
     public void setSpellName(String value) { this.spellName = value; }
+    @Override
     public String getSpellName() { return this.spellName; }
     
+    @Override
     public void setSpellDescription(String value) { this.spellDescription = value; }
+    @Override
     public String getSpellDescription() { return this.spellDescription; }
     
+    @Override
     public void setSpellCost(int value) { this.spellCost = value; }
+    @Override
     public int getSpellCost() { return this.spellCost; }
     
+    @Override
     public void setSpellBoostRatioText(String value) { this.spellBoostRatioText = value; }
+    @Override
     public String getSpellBoostRatioText() { return this.spellBoostRatioText; }
     
+    @Override
     public void setSpellMagicScalingText(String value) { this.spellMagicScalingText = value; }
+    @Override
     public String getSpellMagicScalingText() { return this.spellMagicScalingText; }
     
     public void setKingdomName(String value) { this.kingdomName = value; }
