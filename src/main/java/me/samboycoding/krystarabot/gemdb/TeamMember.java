@@ -38,4 +38,7 @@ public interface TeamMember {
     
     public void setSpellMagicScalingText(String value);
     public String getSpellMagicScalingText();
+    
+    public void setColors(int value);
+    public int getColors();
 }

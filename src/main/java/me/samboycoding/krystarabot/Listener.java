@@ -89,7 +89,6 @@ public class Listener
             main.registerCommand(new ReloadDataCommand());
             main.registerCommand(new ServerstatsCommand());
             main.registerCommand(new StopQuizCommand());
-            main.registerCommand(new TeamCommand());
             main.registerCommand(new Top10Command());
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
@@ -100,6 +99,7 @@ public class Listener
                 main.registerCommand(new SqlKingdomCommand());
                 main.registerCommand(new SqlSearchCommand());
                 main.registerCommand(new SqlSpellCommand());
+                main.registerCommand(new SqlTeamCommand());
                 main.registerCommand(new SqlTraitCommand());
                 main.registerCommand(new SqlTraitstoneCommand());
                 main.registerCommand(new SqlTroopCommand());
@@ -111,6 +111,7 @@ public class Listener
                 main.registerCommand(new KingdomCommand());
                 main.registerCommand(new SearchCommand());
                 main.registerCommand(new SpellCommand());
+                main.registerCommand(new TeamCommand());
                 main.registerCommand(new TraitCommand());
                 main.registerCommand(new TraitstoneCommand());
                 main.registerCommand(new TroopCommand());

@@ -61,7 +61,9 @@ public class Troop implements TeamMember, java.io.Serializable
     public void setType(String value) { this.type = value; }
     public String getType() { return this.type; }
     
+    @Override
     public void setColors(int value) { this.colors = value; }
+    @Override
     public int getColors() { return this.colors; }
     
     public void setReleaseDate(Date value) { this.releaseDate = value; }
