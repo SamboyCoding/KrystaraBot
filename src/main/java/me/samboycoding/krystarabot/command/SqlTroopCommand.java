@@ -70,9 +70,9 @@ public class SqlTroopCommand extends QuestionCommand
         try
         {
             String troopName = String.join(" ", arguments);
-            QueryRunner run = GemsQueryRunner.getQueryRunner();
-            ResultSetHandler<List<Troop>> troopHandler = new BeanListHandler<>(Troop.class);
-            List<Troop> troops = run.query("SELECT TroopStats.*, Kingdoms.Name AS KingdomName, "
+            Troop troop = GemsQueryRunner.runQueryForSingleResultByName(
+                chnl, 
+                "SELECT TroopStats.*, Kingdoms.Name AS KingdomName, "
                 + "     Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
                 + "     Spells.BoostRatioText AS SpellBoostRatioText, Spells.MagicScalingText AS SpellMagicScalingText, "
                 + "     Spells.Cost AS SpellCost, Troops.*"
@@ -81,24 +81,18 @@ public class SqlTroopCommand extends QuestionCommand
                 + "INNER JOIN Kingdoms ON Kingdoms.Id=Troops.KingdomId AND Kingdoms.Language=Troops.Language "
                 + "INNER JOIN Spells ON Spells.Id=Troops.SpellId AND Spells.Language=Troops.Language "
                 + "WHERE Troops.Language='en-US' AND Troops.Name LIKE ? AND Troops.ReleaseDate<NOW() "
-                + "ORDER BY Troops.Name", troopHandler,
-                troopName + "%"
+                + "ORDER BY Troops.Name", 
+                "troop", 
+                Troop.class, 
+                troopName
                 );
-
-            if (troops.isEmpty())
+            
+            if (troop == null)
             {
-                chnl.sendMessage("No troop `" + troopName + "` found.");
-                return;
-            }
-            else if ((troops.size() > 1) && (!troops.get(0).getName().toLowerCase().equals(troopName.toLowerCase())))
-            {
-                Stream<String> str = troops.stream().map(t -> t.getName());
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + troopName + "\" is ambiguous.", str::iterator);
                 return;
             }
             
-            Troop troop = troops.get(0);
-            
+            QueryRunner run = GemsQueryRunner.getQueryRunner();
             ResultSetHandler<List<Trait>> traitHandler = new BeanListHandler<>(Trait.class);
             List<Trait> traits = run.query("SELECT Traits.* FROM TroopTraits "
                 + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code "

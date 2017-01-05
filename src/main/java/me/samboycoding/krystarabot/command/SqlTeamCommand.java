@@ -60,9 +60,6 @@ public class SqlTeamCommand extends KrystaraCommand
 
         QueryRunner run = GemsQueryRunner.getQueryRunner();
 
-        ResultSetHandler<List<Troop>> troopHandler = new BeanListHandler<>(Troop.class);
-        ResultSetHandler<List<Weapon>> weaponHandler = new BeanListHandler<>(Weapon.class);
-
         ArrayList<TeamMember> teamMembers = new ArrayList<>();
         Kingdom kingdom = null;
         Boolean hasWeapon = false;
@@ -71,48 +68,26 @@ public class SqlTeamCommand extends KrystaraCommand
         {
             String thing = things.get(i);
 
-            List<Troop> troops = run.query("SELECT Troops.Id, Troops.Name, Troops.Colors FROM Troops "
-                + "WHERE Troops.Language='en-US' AND Troops.ReleaseDate<NOW() AND Troops.Name LIKE ? "
-                + "ORDER BY Troops.Name", troopHandler,
-                thing + "%"
+            TeamMember teamMember = GemsQueryRunner.runQueryForSingleResultByName(
+                chnl,
+                "SELECT TeamMembers.Id, TeamMembers.Name, TeamMembers.Colors, TeamMembers.Kind FROM ( "
+                + "    SELECT Id, Name, Colors, ReleaseDate, Language, 'Troop' AS Kind FROM Troops "
+                + "    UNION ALL "
+                + "    SELECT Id, Name, Colors, ReleaseDate, Language, 'Weapon' AS Kind FROM Weapons "
+                + ") TeamMembers "
+                + "WHERE TeamMembers.Language='en-US' AND TeamMembers.ReleaseDate<NOW() AND TeamMembers.Name LIKE ? "
+                + "ORDER BY TeamMembers.Name", 
+                "troop or weapon",
+                TeamMember.class,
+                thing
                 );
-            List<Weapon> weapons = run.query("SELECT Weapons.Id, Weapons.Name, Weapons.Colors FROM Weapons "
-                + "WHERE Weapons.Language='en-US' AND Weapons.ReleaseDate<NOW() AND Weapons.Name LIKE ? "
-                + "ORDER BY Weapons.Name", weaponHandler,
-                thing + "%"
-                );
-            ArrayList<TeamMember> candidates = new ArrayList<>();
-            candidates.addAll(troops);
-            candidates.addAll(weapons);
             
-            if (candidates.isEmpty())
+            if (teamMember == null)
             {
-                chnl.sendMessage("No troop or weapon `" + thing + "` found.");
                 return;
             }
 
-            TeamMember teamMember = null;
-            if (!troops.isEmpty() && troops.get(0).getName().toLowerCase().equals(thing.toLowerCase()))
-            {
-                teamMember = troops.get(0);
-            }
-            else if (!weapons.isEmpty() && weapons.get(0).getName().toLowerCase().equals(thing.toLowerCase()))
-            {
-                teamMember = weapons.get(0);
-            }
-            else if (candidates.size() == 1)
-            {
-                teamMember = candidates.get(0);
-            }
-            else
-            {
-                // Ambiguity
-                Stream<String> str = candidates.stream().map(t -> t.getName());
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + thing + "\" is ambiguous.", str::iterator);
-                return;
-            }
-            
-            Boolean isWeapon = teamMember instanceof Weapon;
+            Boolean isWeapon = teamMember.getKind().equals("Weapon");
             if (hasWeapon && isWeapon)
             {
                 chnl.sendMessage("You cannot have two weapons on one team!");
@@ -127,27 +102,21 @@ public class SqlTeamCommand extends KrystaraCommand
             String kingdomName = things.get(4);
             
             // Search for a kingdom by name or banner name
-            ResultSetHandler<List<Kingdom>> kingdomHandler = new BeanListHandler<>(Kingdom.class);
-            List<Kingdom> kingdoms = run.query("SELECT Kingdoms.Id, Kingdoms.Name, Kingdoms.BannerName, Kingdoms.BannerDescription FROM Kingdoms "
+            kingdom = GemsQueryRunner.runQueryForSingleResultByName(
+                chnl,
+                "SELECT Kingdoms.Id, Kingdoms.Name, Kingdoms.BannerName, Kingdoms.BannerDescription FROM Kingdoms "
                 + "WHERE Kingdoms.Language='en-US' AND Kingdoms.IsUsed AND Kingdoms.IsFullKingdom AND "
                     + "((Kingdoms.Name LIKE ?) OR (Kingdoms.BannerName LIKE ?)) "
-                + "ORDER BY Kingdoms.Name", kingdomHandler,
-                "%" + kingdomName + "%",
-                "%" + kingdomName + "%"
-                );
+                + "ORDER BY Kingdoms.Name", 
+                "kingdom or banner",
+                Kingdom.class,
+                kingdomName
+                );            
             
-            if (kingdoms.isEmpty())
+            if (kingdom == null)
             {
-                chnl.sendMessage("No kingdom or banner `" + kingdomName + "` found.");
                 return;
             }
-            else if ((kingdoms.size() > 1) && (!kingdoms.get(0).getName().toLowerCase().equals(kingdomName.toLowerCase())))
-            {
-                Stream<String> str = kingdoms.stream().map(t -> t.getName());
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + kingdomName + "\" is ambiguous.", str::iterator);
-                return;
-            }
-            kingdom = kingdoms.get(0);
         }
         
         int colors = 0;

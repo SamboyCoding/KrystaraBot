@@ -50,30 +50,23 @@ public class SqlSpellCommand extends KrystaraCommand
         try
         {
             String spellName = String.join(" ", arguments);
-            QueryRunner run = GemsQueryRunner.getQueryRunner();
-            ResultSetHandler<List<Spell>> spellHandler = new BeanListHandler<>(Spell.class);
-            List<Spell> spells = run.query("SELECT Spells.*, Troops.Name AS TroopName, COALESCE(GREATEST(Troops.Colors, Weapons.Colors), Troops.Colors, Weapons.Colors) AS Colors "
+            Spell spell = GemsQueryRunner.runQueryForSingleResultByName(
+                chnl, 
+                "SELECT Spells.*, Troops.Name AS TroopName, COALESCE(GREATEST(Troops.Colors, Weapons.Colors), Troops.Colors, Weapons.Colors) AS Colors "
                 + "FROM Spells "
                 + "LEFT JOIN Troops ON Troops.SpellId=Spells.Id AND Troops.Language=Spells.Language AND Troops.ReleaseDate<NOW() "
                 + "LEFT JOIN Weapons ON Weapons.SpellId=Spells.Id AND Weapons.Language=Spells.Language AND Weapons.ReleaseDate<NOW() "
                 + "WHERE Spells.Language='en-US' AND Spells.Name LIKE ?"
-                + "ORDER BY Spells.Name", spellHandler,
-                spellName + "%"
+                + "ORDER BY Spells.Name", 
+                "spell",
+                Spell.class,
+                spellName
                 );
-
-            if (spells.isEmpty())
-            {
-                chnl.sendMessage("No spell `" + spellName + "` found.");
-                return;
-            }
-            else if ((spells.size() > 1) && (!spells.get(0).getName().toLowerCase().equals(spellName.toLowerCase())))
-            {
-                Stream<String> str = spells.stream().map(t -> t.getName());
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + spellName + "\" is ambiguous.", str::iterator);
-                return;
-            }
             
-            Spell spell = spells.get(0);
+            if (spell == null)
+            {
+                return;
+            }
 
             String spellDesc = spell.getDescription();
             String spellMagicScalingText = spell.getMagicScalingText();

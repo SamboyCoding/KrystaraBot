@@ -13,6 +13,7 @@ import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.gemdb.GemColor;
 import me.samboycoding.krystarabot.gemdb.GemsQueryRunner;
 import me.samboycoding.krystarabot.gemdb.HeroClass;
+import me.samboycoding.krystarabot.gemdb.Kingdom;
 import me.samboycoding.krystarabot.gemdb.Spell;
 import me.samboycoding.krystarabot.gemdb.Trait;
 import me.samboycoding.krystarabot.gemdb.Troop;
@@ -53,23 +54,31 @@ public class SqlTraitCommand extends KrystaraCommand
         try
         {
             String traitName = String.join(" ", arguments);
-            QueryRunner run = GemsQueryRunner.getQueryRunner();
-            ResultSetHandler<List<Trait>> traitHandler = new BeanListHandler<>(Trait.class);
-            List<Trait> traits = run.query("SELECT Traits.* "
+            Trait trait = GemsQueryRunner.runQueryForSingleResultByName(
+                chnl, 
+                "SELECT Traits.* "
                 + "FROM Traits "
                 + "WHERE Traits.Language='en-US' AND Traits.Name LIKE ? "
-                + "ORDER BY Traits.Name", traitHandler,
-                traitName + "%"
+                + "ORDER BY Traits.Name", 
+                "trait",
+                Trait.class, 
+                traitName
                 );
-
+            
+            if (trait == null)
+            {
+                return;
+            }
+            
+            QueryRunner run = GemsQueryRunner.getQueryRunner();
             ResultSetHandler<List<Troop>> troopHandler = new BeanListHandler<>(Troop.class);
             List<Troop> troops = run.query("SELECT Troops.Name "
                 + "FROM Troops "
                 + "INNER JOIN TroopTraits ON TroopTraits.TroopId=Troops.Id AND TroopTraits.CostIndex=0 "
                 + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code AND Traits.Language=Troops.Language "
-                + "WHERE Troops.Language='en-US' AND Traits.Name LIKE ? "
+                + "WHERE Troops.Language='en-US' AND Traits.Code=? "
                 + "ORDER BY Troops.Name", troopHandler,
-                traitName + "%"
+                trait.getCode()
                 );
                         
             ResultSetHandler<List<HeroClass>> heroClassHandler = new BeanListHandler<>(HeroClass.class);
@@ -77,25 +86,11 @@ public class SqlTraitCommand extends KrystaraCommand
                 + "FROM Classes "
                 + "INNER JOIN TroopTraits ON TroopTraits.TroopId=Classes.Id AND TroopTraits.CostIndex=0 "
                 + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code AND Traits.Language=Classes.Language "
-                + "WHERE Classes.Language='en-US' AND Traits.Name LIKE ? "
+                + "WHERE Classes.Language='en-US' AND Traits.Code=? "
                 + "ORDER BY Classes.Name", heroClassHandler,
-                traitName + "%"
+                trait.getCode()
                 );
                         
-            if (traits.isEmpty())
-            {
-                chnl.sendMessage("No trait `" + traitName + "` found.");
-                return;
-            }
-            else if ((traits.size() > 1) && (!traits.get(0).getName().toLowerCase().equals(traitName.toLowerCase())))
-            {
-                Stream<String> str = traits.stream().map(t -> t.getName());
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + traitName + "\" is ambiguous.", str::iterator);
-                return;
-            }
-            
-            Trait trait = traits.get(0);
-
             String info = "**" + trait.getName() + ":** " + trait.getDescription() + "\n";
             if (!troops.isEmpty())
             {

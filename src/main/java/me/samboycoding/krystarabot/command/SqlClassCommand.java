@@ -71,9 +71,9 @@ public class SqlClassCommand extends QuestionCommand
         try
         {
             String heroClassName = String.join(" ", arguments);
-            QueryRunner run = GemsQueryRunner.getQueryRunner();
-            ResultSetHandler<List<HeroClass>> classHandler = new BeanListHandler<>(HeroClass.class);
-            List<HeroClass> heroClasses = run.query("SELECT Kingdoms.Name AS KingdomName, "
+            HeroClass heroClass = GemsQueryRunner.runQueryForSingleResultByName(
+                chnl, 
+                "SELECT Kingdoms.Name AS KingdomName, "
                 + "     Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
                 + "     Spells.BoostRatioText AS SpellBoostRatioText, Spells.MagicScalingText AS SpellMagicScalingText, "
                 + "     Spells.Cost AS SpellCost, Weapons.Name AS WeaponName, Classes.*"
@@ -82,24 +82,18 @@ public class SqlClassCommand extends QuestionCommand
                 + "INNER JOIN Kingdoms ON Kingdoms.Id=Classes.KingdomId AND Kingdoms.Language=Classes.Language "
                 + "INNER JOIN Spells ON Spells.Id=Weapons.SpellId AND Spells.Language=Weapons.Language "
                 + "WHERE Classes.Language='en-US' AND Classes.Name LIKE ? AND Classes.ReleaseDate<NOW() "
-                + "ORDER BY Classes.Name", classHandler,
-                heroClassName + "%"
+                + "ORDER BY Classes.Name",
+                "class",
+                HeroClass.class,
+                heroClassName
                 );
-
-            if (heroClasses.isEmpty())
+            
+            if (heroClass == null)
             {
-                chnl.sendMessage("No class `" + heroClassName + "` found.");
-                return;
-            }
-            else if ((heroClasses.size() > 1) && (!heroClasses.get(0).getName().toLowerCase().equals(heroClassName.toLowerCase())))
-            {
-                Stream<String> str = heroClasses.stream().map(t -> t.getName());
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + heroClassName + "\" is ambiguous.", str::iterator);
                 return;
             }
             
-            HeroClass heroClass = heroClasses.get(0);
-            
+            QueryRunner run = GemsQueryRunner.getQueryRunner();
             ResultSetHandler<List<Trait>> traitHandler = new BeanListHandler<>(Trait.class);
             List<Trait> traits = run.query("SELECT Traits.* FROM TroopTraits "
                 + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code "

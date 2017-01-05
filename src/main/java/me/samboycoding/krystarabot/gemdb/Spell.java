@@ -11,7 +11,7 @@ import java.sql.Date;
  *
  * @author Emily Ash
  */
-public class Spell implements java.io.Serializable
+public class Spell implements Nameable, java.io.Serializable
 {
     private int id = 0;
     private String name = null;
@@ -30,7 +30,9 @@ public class Spell implements java.io.Serializable
     public void setId(int value) { this.id = value; }
     public int getId() { return this.id; }
     
+    @Override
     public void setName(String value) { this.name = value; }
+    @Override
     public String getName() { return this.name; }
     
     public void setDescription(String value) { this.description = value; }

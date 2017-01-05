@@ -9,7 +9,7 @@ package me.samboycoding.krystarabot.gemdb;
  *
  * @author julians
  */
-public class Trait implements java.io.Serializable
+public class Trait implements Nameable, java.io.Serializable
 {
     private String code = null;
     private String language = null;

@@ -63,30 +63,25 @@ public class SqlKingdomCommand extends KrystaraCommand
         try
         {
             String kingdomName = String.join(" ", arguments);
-            QueryRunner run = GemsQueryRunner.getQueryRunner();
-            ResultSetHandler<List<Kingdom>> kingdomHandler = new BeanListHandler<>(Kingdom.class);
-            List<Kingdom> kingdoms = run.query("SELECT Kingdoms.*, Traitstones.Name AS ExploreTraitstoneName, Traitstones.Colors AS ExploreTraitstoneColors FROM Kingdoms "
+            Kingdom kingdom = GemsQueryRunner.runQueryForSingleResultByName(
+                chnl, 
+                "SELECT Kingdoms.*, Traitstones.Name AS ExploreTraitstoneName, Traitstones.Colors AS ExploreTraitstoneColors FROM Kingdoms "
                 + "LEFT JOIN Traitstones ON Kingdoms.ExploreTraitstoneId=Traitstones.Id AND Traitstones.Language=Kingdoms.Language "
                 + "WHERE Kingdoms.Language='en-US' AND Kingdoms.Name LIKE ? AND Kingdoms.IsUsed "
-                + "ORDER BY Kingdoms.Name", kingdomHandler,
-                kingdomName + "%"
+                + "ORDER BY Kingdoms.Name", 
+                "kingdom", 
+                Kingdom.class, 
+                kingdomName
                 );
-
-            if (kingdoms.isEmpty())
-            {
-                chnl.sendMessage("No troop `" + kingdomName + "` found.");
-                return;
-            }
-            else if ((kingdoms.size() > 1) && (!kingdoms.get(0).getName().toLowerCase().equals(kingdomName.toLowerCase())))
-            {
-                Stream<String> str = kingdoms.stream().map(t -> t.getName());
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + kingdomName + "\" is ambiguous.", str::iterator);
-                return;
-            }
             
-            Kingdom kingdom = kingdoms.get(0);
+            if (kingdom == null)
+            {
+                return;
+            }
+
             boolean isFullKingdom = kingdom.getIsFullKingdom();
             
+            QueryRunner run = GemsQueryRunner.getQueryRunner();
             ResultSetHandler<List<Troop>> troopHandler = new BeanListHandler<>(Troop.class);
             List<Troop> troops = run.query("SELECT Troops.Name FROM Troops "
                 + "WHERE Troops.Language='en-US' AND Troops.KingdomId=? AND Troops.ReleaseDate<NOW() "

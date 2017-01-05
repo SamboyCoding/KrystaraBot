@@ -11,7 +11,7 @@ import java.sql.Date;
  *
  * @author Emily Ash
  */
-public class HeroClass implements java.io.Serializable
+public class HeroClass implements Nameable, java.io.Serializable
 {
     private int id = 0;
     private String language = null;
@@ -41,7 +41,9 @@ public class HeroClass implements java.io.Serializable
     public void setLanguage(String value) { this.language = value; }
     public String getLanguage() { return this.language; }
     
+    @Override
     public void setName(String value) { this.name = value; }
+    @Override
     public String getName() { return this.name; }
     
     public void setType(String value) { this.type = value; }

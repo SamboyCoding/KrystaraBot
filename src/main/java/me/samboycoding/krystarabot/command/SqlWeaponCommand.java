@@ -11,6 +11,7 @@ import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.GemColor;
 import me.samboycoding.krystarabot.gemdb.GemsQueryRunner;
+import me.samboycoding.krystarabot.gemdb.HeroClass;
 import me.samboycoding.krystarabot.gemdb.Trait;
 import me.samboycoding.krystarabot.gemdb.Troop;
 import me.samboycoding.krystarabot.gemdb.Weapon;
@@ -57,31 +58,24 @@ public class SqlWeaponCommand extends KrystaraCommand
         try
         {
             String weaponName = String.join(" ", arguments);
-            QueryRunner run = GemsQueryRunner.getQueryRunner();
-            ResultSetHandler<List<Weapon>> weaponHandler = new BeanListHandler<>(Weapon.class);
-            List<Weapon> weapons = run.query("SELECT Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
+            Weapon weapon = GemsQueryRunner.runQueryForSingleResultByName(
+                chnl, 
+                "SELECT Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
                 + "     Spells.BoostRatioText AS SpellBoostRatioText, Spells.MagicScalingText AS SpellMagicScalingText, "
                 + "     Spells.Cost AS SpellCost, Spells.Id AS SpellId, Weapons.*"
                 + "FROM Weapons "
                 + "INNER JOIN Spells ON Spells.Id=Weapons.SpellId AND Spells.Language=Weapons.Language "
                 + "WHERE Weapons.Language='en-US' AND Weapons.Name LIKE ? AND Weapons.ReleaseDate<NOW() "
-                + "ORDER BY Weapons.Name", weaponHandler,
-                weaponName + "%"
+                + "ORDER BY Weapons.Name", 
+                "weapon",
+                Weapon.class,
+                weaponName
                 );
-
-            if (weapons.isEmpty())
-            {
-                chnl.sendMessage("No weapon `" + weaponName + "` found.");
-                return;
-            }
-            else if ((weapons.size() > 1) && (!weapons.get(0).getName().toLowerCase().equals(weaponName.toLowerCase())))
-            {
-                Stream<String> str = weapons.stream().map(t -> t.getName());
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + weaponName + "\" is ambiguous.", str::iterator);
-                return;
-            }
             
-            Weapon weapon = weapons.get(0);
+            if (weapon == null)
+            {
+                return;
+            }
 
             String spellDesc = weapon.getSpellDescription();
             String spellMagicScalingText = weapon.getSpellMagicScalingText();
