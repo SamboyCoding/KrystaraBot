@@ -74,12 +74,12 @@ public class SqlTeamCommand extends KrystaraCommand
             List<Troop> troops = run.query("SELECT Troops.Id, Troops.Name, Troops.Colors FROM Troops "
                 + "WHERE Troops.Language='en-US' AND Troops.ReleaseDate<NOW() AND Troops.Name LIKE ? "
                 + "ORDER BY Troops.Name", troopHandler,
-                "%" + thing + "%"
+                thing + "%"
                 );
             List<Weapon> weapons = run.query("SELECT Weapons.Id, Weapons.Name, Weapons.Colors FROM Weapons "
                 + "WHERE Weapons.Language='en-US' AND Weapons.ReleaseDate<NOW() AND Weapons.Name LIKE ? "
                 + "ORDER BY Weapons.Name", weaponHandler,
-                "%" + thing + "%"
+                thing + "%"
                 );
             ArrayList<TeamMember> candidates = new ArrayList<>();
             candidates.addAll(troops);
@@ -163,7 +163,7 @@ public class SqlTeamCommand extends KrystaraCommand
         String[] troopNames = teamMembers.stream().map(m -> {
             GemColor[] gemColorsThis = GemColor.fromInteger(m.getColors());
             String[] gemColorEmojisThis = Arrays.stream(gemColorsThis).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
-            return "    - " + m.getName() + " " + String.join(" ", gemColorEmojisThis);
+            return "    - " + String.join(" ", gemColorEmojisThis) + " " + m.getName();
         }).toArray(String[]::new);
         String manaColors = "This team uses the following colors: " + String.join(" ", gemColorEmojis);
 
@@ -181,7 +181,8 @@ public class SqlTeamCommand extends KrystaraCommand
         teamString += String.join("\n", troopNames);
         teamString += "\n\n" + bannerString + manaColors + "\n\n" + url;
 
-        chnl.sendMessage("Team posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
+        chnl.sendMessage(teamString);
+        chnl.sendMessage("Also posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
         chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage(teamString);
     }
 
