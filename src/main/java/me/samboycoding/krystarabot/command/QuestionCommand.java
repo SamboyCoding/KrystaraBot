@@ -64,23 +64,23 @@ public class QuestionCommand extends KrystaraCommand
         ArrayList<String> messageStrings = new ArrayList<>();
         URL lastImageUrl = null;
         
-        for (int rep = 0; rep < args.questionCount; rep++)
+        QuizQuestion[] qs = null;
+        if (args.difficulty != null)
         {
-            QuizQuestion q;
+            qs = main.quizQuestionFactory.getQuestions(args.questionCount, r, args.difficulty);
+        }
+        else if (args.questionType != null)
+        {
+            qs = main.quizQuestionFactory.getQuestions(args.questionCount, r, args.questionType);
+        }
+        else 
+        {
+            qs = main.quizQuestionFactory.getQuestions(args.questionCount, r);
+        }
+        
+        for (QuizQuestion q : qs)
+        {
             URL imageUrl = null;
-
-            if (args.difficulty != null)
-            {
-                q = main.quizQuestionFactory.getQuestion(r, args.difficulty);
-            }
-            else if (args.questionType != null)
-            {
-                q = main.quizQuestionFactory.getQuestion(r, args.questionType);
-            }
-            else 
-            {
-                q = main.quizQuestionFactory.getQuestion(r);
-            }
 
             imageUrl = q.getQuestionImageUrl();
             if (imageUrl != null)
@@ -101,7 +101,7 @@ public class QuestionCommand extends KrystaraCommand
             }
             messageStrings.add("Question: " + q.getQuestionText() + " (" + seed + ")\n" + secondaryText + answerString + "\n");
             
-            seed = Utilities.getSeed(r);
+            seed = q.getRandomSeed();
         }
  
         Utilities.sendLargeMessage(chnl, messageStrings);

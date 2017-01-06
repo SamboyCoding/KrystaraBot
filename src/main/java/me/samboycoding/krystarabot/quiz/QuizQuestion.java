@@ -51,6 +51,7 @@ public abstract class QuizQuestion
     public abstract String getAnswerText(int index);
     public abstract int getCorrectAnswerIndex();
     public abstract Difficulty getDifficulty();
+    public abstract long getRandomSeed();
 
     public String getQuestionSecondaryText()
     {

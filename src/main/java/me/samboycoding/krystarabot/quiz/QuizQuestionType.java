@@ -53,9 +53,6 @@ public enum QuizQuestionType
     SpellArtToTroop("Which troop has the pictured spell?", 
         QuizQuestion.Difficulty.Easy),
 
-    CardArtToTroop("Which troop is pictured?", 
-        QuizQuestion.Difficulty.Unused),
-
     TrueDamageTroop("Which of these troops does true damage?", 
         QuizQuestion.Difficulty.Easy),
 
@@ -108,6 +105,8 @@ public enum QuizQuestionType
     ShieldArtToKingdom("Which kingdom has the pictured shield?", 
         QuizQuestion.Difficulty.Moderate),
 
+    CardArtToTroop("Which troop is pictured?", 
+        QuizQuestion.Difficulty.Unused),
 
     ClassToBonusColor("Which bonus color does this class give?", 
         QuizQuestion.Difficulty.Unused),

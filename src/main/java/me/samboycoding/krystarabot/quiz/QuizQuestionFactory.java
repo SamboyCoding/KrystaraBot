@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public interface QuizQuestionFactory
 {
-    public QuizQuestion getQuestion(Random r, QuizQuestionType type) throws Exception;
-    public QuizQuestion getQuestion(Random r, QuizQuestion.Difficulty difficulty) throws Exception;
-    public QuizQuestion getQuestion(Random r) throws Exception;
+    public QuizQuestion[] getQuestions(int count, Random r, QuizQuestionType type) throws Exception;
+    public QuizQuestion[] getQuestions(int count, Random r, QuizQuestion.Difficulty difficulty) throws Exception;
+    public QuizQuestion[] getQuestions(int count, Random r) throws Exception;
 }

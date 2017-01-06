@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.function.BiFunction;
 import me.samboycoding.krystarabot.GameData;
+import me.samboycoding.krystarabot.utilities.Utilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -28,12 +29,14 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         protected JSONObject correctAnswer;
         protected ArrayList<JSONObject> answers;
         protected Random random;
-        protected int mySeed;
+        protected long seed;
+        protected int myRand;
         
         public QuizQuestion_RandomBase(Random r, QuizQuestionType t)
         { 
             random = r;
-            mySeed = random.nextInt();
+            seed = Utilities.getSeed(random);
+            myRand = random.nextInt();
             type = t;
         }
         
@@ -120,7 +123,13 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         public int getCorrectAnswerIndex()
         {
             return answers.indexOf(correctAnswer);
-        }        
+        }
+        
+        @Override
+        public long getRandomSeed()
+        {
+            return seed;
+        }
     }
 
     /**
@@ -132,12 +141,14 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         protected JSONObject correctAnswer;
         protected ArrayList<JSONObject> answers;
         protected Random random;
-        protected int mySeed;
+        protected long seed;
+        protected int myRand;
                 
         public QuizQuestion_TroopsFiltered(Random r, QuizQuestionType t)
         { 
             random = r;
-            mySeed = random.nextInt();
+            seed = Utilities.getSeed(random);
+            myRand = random.nextInt();
             type = t;
         }
 
@@ -192,6 +203,12 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         public int getCorrectAnswerIndex()
         {
             return answers.indexOf(correctAnswer);
+        }
+        
+        @Override
+        public long getRandomSeed()
+        {
+            return seed;
         }
     }
     
@@ -1463,9 +1480,14 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      * @return A new question of the specified type.
      */
     @Override
-    public QuizQuestion getQuestion(Random r, QuizQuestionType type)
+    public QuizQuestion[] getQuestions(int count, Random r, QuizQuestionType type)
     {
-        return CREATOR_MAP.get(type).create(r, type);
+        QuizQuestion[] questions = new QuizQuestion[count];
+        for (int i = 0; i < count; i++)
+        {
+            questions[i] = CREATOR_MAP.get(type).create(r, type);
+        }
+        return questions;
     }
     
     /**
@@ -1475,11 +1497,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      * @return A new question of the specified type.
      */
     @Override
-    public QuizQuestion getQuestion(Random r, QuizQuestion.Difficulty difficulty)
+    public QuizQuestion[] getQuestions(int count, Random r, QuizQuestion.Difficulty difficulty)
     {
         ArrayList<QuizQuestionType> types = getTypesForDifficulty(difficulty);
         QuizQuestionType type = types.get(r.nextInt(types.size()));
-        return getQuestion(r, type);
+        return getQuestions(count, r, type);
     }
 
     /**
@@ -1488,12 +1510,12 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      * @return A new question of the specified type.
      */
     @Override
-    public QuizQuestion getQuestion(Random r)
+    public QuizQuestion[] getQuestions(int count, Random r)
     {
         ArrayList<QuizQuestionType> types = getTypesForDifficulty(QuizQuestion.Difficulty.Easy);
         types.addAll(getTypesForDifficulty(QuizQuestion.Difficulty.Moderate));
         types.addAll(getTypesForDifficulty(QuizQuestion.Difficulty.Hard));
         QuizQuestionType type = types.get(r.nextInt(types.size()));
-        return getQuestion(r, type);
+        return getQuestions(count, r, type);
     }
 }

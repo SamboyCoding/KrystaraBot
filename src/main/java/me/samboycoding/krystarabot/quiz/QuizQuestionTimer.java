@@ -293,18 +293,17 @@ public class QuizQuestionTimer implements Runnable
         return difficulty;
     }
 
-    private QuizQuestion getQuestion(Random random, QuizQuestion.Difficulty difficulty, ArrayList<QuestionLogEntry> questionLog)
+    private QuizQuestion getQuestion(Random random, QuizQuestion.Difficulty difficulty, ArrayList<QuestionLogEntry> questionLog) throws Exception
     {
         // Get a new question
         QuizQuestion question;
-        long seed = Utilities.getSeed(random);
         if (questionTypeFilter != null)
         {
-            question = factory.getQuestion(random, questionTypeFilter);
+            question = factory.getQuestions(1, random, questionTypeFilter)[0];
         }
         else
         {
-            question = factory.getQuestion(random, difficulty);
+            question = factory.getQuestions(1, random, difficulty)[0];
         }
         
         synchronized (this)
@@ -313,7 +312,7 @@ public class QuizQuestionTimer implements Runnable
             qh.setQuestion(q);
             submissions.clear();
         }
-        questionLog.add(new QuestionLogEntry(difficulty, seed));
+        questionLog.add(new QuestionLogEntry(difficulty, question.getRandomSeed()));
         return question;
     }
 

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.TreeMap;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
 import me.samboycoding.krystarabot.gemdb.GemsQueryRunner;
+import me.samboycoding.krystarabot.quiz.AshQuizQuestionFactory;
 import me.samboycoding.krystarabot.quiz.JsonQuizQuestionFactory;
 import me.samboycoding.krystarabot.quiz.QuizHandler;
 import me.samboycoding.krystarabot.quiz.QuizQuestionFactory;
@@ -50,6 +51,9 @@ public class main
             switch (IDReference.ENVIRONMENT)
             {
                 case LYYA:
+                    quizQuestionFactory = new AshQuizQuestionFactory();
+                    break;
+
                 default:
                     quizQuestionFactory = new JsonQuizQuestionFactory();
                     break;

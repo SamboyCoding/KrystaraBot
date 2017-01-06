@@ -17,6 +17,7 @@ import me.samboycoding.krystarabot.gemdb.GemsQueryRunner;
 import me.samboycoding.krystarabot.gemdb.HeroClass;
 import me.samboycoding.krystarabot.gemdb.Kingdom;
 import me.samboycoding.krystarabot.gemdb.Troop;
+import me.samboycoding.krystarabot.utilities.Utilities;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -45,12 +46,14 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
         protected ArrayList<T> answers;
         protected T correctAnswer;
         protected Random random;
-        protected int mySeed;
+        protected long seed;
+        protected int myRand;
         
         public QuizQuestion_RandomBase(Random r, QueryRunner run, QuizQuestionType t, Class<T> ct)
         { 
             random = r;
-            mySeed = random.nextInt();
+            seed = Utilities.getSeed(r);
+            myRand = random.nextInt();
             type = t;
             runner = run;
             classType = ct;
@@ -67,7 +70,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 correctAnswer = null;
                 
                 // Call back for the "answers" query
-                String queryString = getAnswersQuery() + " ORDER BY RAND(" + mySeed + ") LIMIT " + ANSWER_COUNT;
+                String queryString = getAnswersQuery() + " ORDER BY RAND(" + myRand + ") LIMIT " + ANSWER_COUNT;
                 ResultSetHandler<List<T>> handler = new BeanListHandler<>(classType);
                 List<T> results = runner.query(queryString, handler);
                 
@@ -90,7 +93,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                     throw new SQLException("Couldn't find enough unique answers!");
                 }
 
-                mySeed = random.nextInt();
+                myRand = random.nextInt();
             }
             while (!areAnswersValid());
 
@@ -104,6 +107,12 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
         public Difficulty getDifficulty()
         {
             return type.difficulty;
+        }
+
+        @Override
+        public long getRandomSeed()
+        {
+            return seed;
         }
 
         protected abstract String getAnswersQuery();
@@ -130,12 +139,14 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
         protected ArrayList<T> answers;
         protected T correctAnswer;
         protected Random random;
-        protected int mySeed;
+        protected long seed;
+        protected int myRand;
                 
         public QuizQuestion_FilteredBase(Random r, QueryRunner run, QuizQuestionType t, Class<T> ct)
         { 
             random = r;
-            mySeed = random.nextInt();
+            seed = Utilities.getSeed(random);
+            myRand = random.nextInt();
             type = t;
             runner = run;
             classType = ct;
@@ -148,7 +159,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 answers = new ArrayList<>();
 
                 // Call back for the "answers" query
-                String queryString = getCorrectAnswersQuery() + " ORDER BY RAND(" + mySeed + ")";
+                String queryString = getCorrectAnswersQuery() + " ORDER BY RAND(" + myRand + ")";
                 ResultSetHandler<List<T>> handler = new BeanListHandler<>(classType);
                 List<T> correctAnswers = runner.query(queryString, handler);
                 
@@ -168,7 +179,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 answers.add(correctAnswer);
                 
                 // Call back for the "incorrect answers" query
-                queryString = getIncorrectAnswersQuery(correctAnswers) + " ORDER BY RAND(" + mySeed + ") LIMIT " + (ANSWER_COUNT-1);
+                queryString = getIncorrectAnswersQuery(correctAnswers) + " ORDER BY RAND(" + myRand + ") LIMIT " + (ANSWER_COUNT-1);
                 List<T> incorrectAnswers = runner.query(queryString, handler);
                 
                 for (T answer : incorrectAnswers)
@@ -185,7 +196,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                     throw new SQLException("Couldn't find enough unique answers!");
                 }
 
-                mySeed = random.nextInt();
+                myRand = random.nextInt();
             }
             while (!areAnswersValid());
 
@@ -202,6 +213,12 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
         public Difficulty getDifficulty()
         {
             return type.difficulty;
+        }
+
+        @Override
+        public long getRandomSeed()
+        {
+            return seed;
         }
 
         protected Boolean areAnswersValid()
@@ -308,7 +325,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 "FROM Troops " +
                 "INNER JOIN Kingdoms ON Kingdoms.Id=Troops.KingdomId AND Kingdoms.Language=Troops.Language " +
                 "WHERE Troops.ReleaseDate<NOW() AND Troops.Language='en-US' " +
-                "ORDER BY RAND(" + mySeed + ") " +
+                "ORDER BY RAND(" + myRand + ") " +
                 ") Troops " +
                 "GROUP BY Troops.KingdomId";
         }
@@ -481,7 +498,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 "SELECT Troops.Name, Troops.Id, Troops.Type " +
                     "FROM Troops " +
                     "WHERE Troops.ReleaseDate<NOW() AND Troops.Language='en-US' AND Troops.Name!=Troops.Type " +
-                    "ORDER BY RAND(" + mySeed + ") " +
+                    "ORDER BY RAND(" + myRand + ") " +
                 ") Troops " +
             "GROUP BY Troops.Type";
         }
@@ -561,7 +578,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                     "INNER JOIN Traits T1 ON T1.Code=TT1.Code AND T1.Language=Troops.Language " +
                     "INNER JOIN Traits T2 ON T2.Code=TT2.Code AND T2.Language=Troops.Language " +
                     "WHERE Troops.ReleaseDate<NOW() AND Troops.Language='en-US'" +
-                    "ORDER BY RAND(" + mySeed + ") " +
+                    "ORDER BY RAND(" + myRand + ") " +
                 ") Troops " +
             "GROUP BY TraitName" + traitIndex;
         }
@@ -633,7 +650,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 "SELECT Troops.Name, Troops.Id, Troops.Colors " +
                 "FROM Troops " +
                 "WHERE Troops.ReleaseDate<NOW() AND Troops.Language='en-US'" +
-                "ORDER BY RAND(" + mySeed + ") " +
+                "ORDER BY RAND(" + myRand + ") " +
             ") Troops " +
             "GROUP BY Troops.Colors";
         }
@@ -693,7 +710,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 "SELECT Troops.Name, Troops.Id, Troops.Rarity " +
                     "FROM Troops " +
                     "WHERE Troops.ReleaseDate<NOW() AND Troops.Language='en-US'" +
-                    "ORDER BY RAND(" + mySeed + ") " +
+                    "ORDER BY RAND(" + myRand + ") " +
                  ") Troops " +
             "GROUP BY Troops.Rarity";
         }
@@ -1079,7 +1096,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 "FROM Kingdoms " +
                 "LEFT JOIN Traitstones ON Traitstones.Id=Kingdoms.ExploreTraitstoneId AND Traitstones.Language=Kingdoms.Language " +
                 "WHERE Kingdoms.Language='en-US' AND Kingdoms.IsUsed AND Kingdoms.IsFullKingdom " +
-                "ORDER BY RAND(" + mySeed + ") " +
+                "ORDER BY RAND(" + myRand + ") " +
             ") Kingdoms " +
             "GROUP BY Kingdoms.ExploreTraitstoneId";
         }
@@ -1131,7 +1148,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 "SELECT Kingdoms.Name, Kingdoms.Id, Kingdoms.LevelStat " +
                 "FROM Kingdoms " +
                 "WHERE Kingdoms.Language='en-US' AND Kingdoms.IsFullKingdom AND Kingdoms.IsUsed " +
-                "ORDER BY RAND(" + mySeed + ") " +
+                "ORDER BY RAND(" + myRand + ") " +
             ") Kingdoms " +
             "GROUP BY Kingdoms.LevelStat";
         }
@@ -1263,7 +1280,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                 "SELECT Classes.Name, Classes.Id, Classes.Colors " +
                     "FROM Classes " +
                     "WHERE Classes.ReleaseDate<NOW() AND Classes.Language='en-US'" +
-                    "ORDER BY RAND(" + mySeed + ") " +
+                    "ORDER BY RAND(" + myRand + ") " +
                  ") Classes " +
             "GROUP BY Classes.Rarity";
         }
@@ -1340,7 +1357,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
                     "INNER JOIN Traits T1 ON T1.Code=TT1.Code AND T1.Language=Classes.Language " +
                     "INNER JOIN Traits T2 ON T2.Code=TT2.Code AND T2.Language=Classes.Language " +
                     "WHERE Classes.ReleaseDate<NOW() AND Classes.Language='en-US'" +
-                    "ORDER BY RAND(" + mySeed + ") " +
+                    "ORDER BY RAND(" + myRand + ") " +
                 ") Classes " +
             "GROUP BY TraitName" + traitIndex;
         }
@@ -1498,16 +1515,21 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
     }
  
     /**
-     * Generates a random question of the specified type.
+     * Generates random questions of the specified type.
      * @param r The random number generator to use.
      * @param type The type of question to create.
      * @return A new question of the specified type.
      * @throws java.sql.SQLException
      */
     @Override
-    public QuizQuestion getQuestion(Random r, QuizQuestionType type) throws SQLException
+    public QuizQuestion[] getQuestions(int count, Random r, QuizQuestionType type) throws SQLException
     {
-        return CREATOR_MAP.get(type).create(r, runner, type);
+        QuizQuestion[] questions = new QuizQuestion[count];
+        for (int i = 0; i < count; i++)
+        {
+            questions[i] = CREATOR_MAP.get(type).create(r, runner, type);
+        }
+        return questions;
     }
     
     /**
@@ -1517,11 +1539,11 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
      * @return A new question of the specified type.
      */
     @Override
-    public QuizQuestion getQuestion(Random r, QuizQuestion.Difficulty difficulty) throws SQLException
+    public QuizQuestion[] getQuestions(int count, Random r, QuizQuestion.Difficulty difficulty) throws SQLException
     {
         ArrayList<QuizQuestionType> types = getTypesForDifficulty(difficulty);
         QuizQuestionType type = types.get(r.nextInt(types.size()));
-        return getQuestion(r, type);
+        return getQuestions(count, r, type);
     }
 
     /**
@@ -1530,12 +1552,12 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
      * @return A new question of the specified type.
      */
     @Override
-    public QuizQuestion getQuestion(Random r) throws SQLException
+    public QuizQuestion[] getQuestions(int count, Random r) throws SQLException
     {
         ArrayList<QuizQuestionType> types = getTypesForDifficulty(QuizQuestion.Difficulty.Easy);
         types.addAll(getTypesForDifficulty(QuizQuestion.Difficulty.Moderate));
         types.addAll(getTypesForDifficulty(QuizQuestion.Difficulty.Hard));
         QuizQuestionType type = types.get(r.nextInt(types.size()));
-        return getQuestion(r, type);
+        return getQuestions(count, r, type);
     }
 }
