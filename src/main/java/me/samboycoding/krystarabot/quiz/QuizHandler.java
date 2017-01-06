@@ -31,9 +31,11 @@ public class QuizHandler
     LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
     Top10Command.ValueComparator comp = new Top10Command.ValueComparator((Map<IUser, Integer>) unordered);
     TreeMap<IUser, Integer> ordered = new TreeMap<>(comp);
+    QuizQuestionFactory factory;
 
-    public QuizHandler()
+    public QuizHandler(QuizQuestionFactory f)
     {
+        factory = f;
     }
 
     public boolean isQuizRunning()
@@ -48,7 +50,7 @@ public class QuizHandler
 
     @SuppressWarnings("UnnecessaryBoxing")
     public void initializeQuiz(IGuild srv, IUser sdr, IChannel source,
-            int questionCount, QuizQuestion.Difficulty difficulty, QuizQuestionFactory.QuestionType questionType, long randomSeed) throws Exception
+            int questionCount, QuizQuestion.Difficulty difficulty, QuizQuestionType questionType, long randomSeed) throws Exception
     {
         synchronized (this)
         {
@@ -80,7 +82,7 @@ public class QuizHandler
             synchronized (this)
             {
                 quizQuestionTimer = new QuizQuestionTimer(this, quizChannel, questionCount, 10,
-                        difficulty, questionType, randomSeed);
+                        factory, difficulty, questionType, randomSeed);
                 quizThread = new Thread(quizQuestionTimer, "Quiz question timer");
                 quizThread.start();
             }
@@ -176,7 +178,7 @@ public class QuizHandler
             answer = (answerChar - '0') - 1;
         }
 
-        if (answer < 0 || answer >= QuizQuestion.AnswerCount)
+        if (answer < 0 || answer >= QuizQuestion.ANSWER_COUNT)
         {
             timer.addChatterMessage(msg);
             return;

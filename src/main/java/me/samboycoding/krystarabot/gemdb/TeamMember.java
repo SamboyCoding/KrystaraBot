@@ -17,6 +17,7 @@ public class TeamMember implements Nameable {
     private String name = null;
     private int colors = 0;
     private Date lastModified;
+    private int spellId = 0;
     private String spellName = null;
     private String spellDescription = null;
     private String spellBoostRatioText = null;
@@ -41,6 +42,9 @@ public class TeamMember implements Nameable {
     public void setLastModified(Date value) { this.lastModified = value; }
     public Date getLastModified() { return this.lastModified; }
     
+    public void setSpellId(int value) { this.spellId = value; }
+    public int getSpellId() { return this.spellId; }
+
     public void setSpellName(String value) { this.spellName = value; }
     public String getSpellName() { return this.spellName; }
     

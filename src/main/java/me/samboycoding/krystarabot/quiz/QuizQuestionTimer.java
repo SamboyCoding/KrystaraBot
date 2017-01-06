@@ -28,18 +28,18 @@ import sx.blah.discord.util.RateLimitException;
  */
 public class QuizQuestionTimer implements Runnable
 {
-
     IChannel chnl;
 
     private QuizQuestion q;
     private QuizPhase phase;
+    private QuizQuestionFactory factory;
 
     private boolean isAborted = false;
     private final Object abortSignal = new Object();
     private final int qCount;
     private final int qTimeSeconds;
     private final QuizQuestion.Difficulty difficultyFilter;
-    private final QuizQuestionFactory.QuestionType questionTypeFilter;
+    private final QuizQuestionType questionTypeFilter;
     private final long randomSeed;
     private final QuizHandler qh;
     
@@ -80,10 +80,11 @@ public class QuizQuestionTimer implements Runnable
     }
 
     public QuizQuestionTimer(QuizHandler handler, IChannel c, int questionCount, int questionTimeInSeconds,
-            QuizQuestion.Difficulty difficulty, QuizQuestionFactory.QuestionType questionType, long seed)
+            QuizQuestionFactory f, QuizQuestion.Difficulty difficulty, QuizQuestionType questionType, long seed)
     {
         chnl = c;
         phase = QuizPhase.Introduction;
+        factory = f;
         qh = handler;
         qCount = questionCount;
         qTimeSeconds = questionTimeInSeconds;
@@ -299,11 +300,11 @@ public class QuizQuestionTimer implements Runnable
         long seed = Utilities.getSeed(random);
         if (questionTypeFilter != null)
         {
-            question = QuizQuestionFactory.getQuestion(random, questionTypeFilter);
+            question = factory.getQuestion(random, questionTypeFilter);
         }
         else
         {
-            question = QuizQuestionFactory.getQuestion(random, difficulty);
+            question = factory.getQuestion(random, difficulty);
         }
         
         synchronized (this)
@@ -375,7 +376,7 @@ public class QuizQuestionTimer implements Runnable
     {
         IMessage msg;
         String questionBody = "\n";
-        for (int i = 0; i < QuizQuestion.AnswerCount; i++)
+        for (int i = 0; i < QuizQuestion.ANSWER_COUNT; i++)
         {
             questionBody += (i+1) + ") " + question.getAnswerText(i) + "\n";
         }
@@ -467,7 +468,7 @@ public class QuizQuestionTimer implements Runnable
                 " first correct answer is worth 1 extra point.");
         sleepFor(2500);
         chnl.sendMessage("Submit only the _number_ of the answer you think is correct (1-" +
-                QuizQuestion.AnswerCount + "). All other answers will not be counted.");
+                QuizQuestion.ANSWER_COUNT + "). All other answers will not be counted.");
         sleepFor(2500);
         chnl.sendMessage("The person with the most points after " + qCount + " questions wins!\n\n" +
                 Utilities.repeatString("-", 40));

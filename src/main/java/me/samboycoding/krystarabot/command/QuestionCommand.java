@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
+import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.quiz.QuizQuestion;
-import me.samboycoding.krystarabot.quiz.QuizQuestionFactory;
+import me.samboycoding.krystarabot.quiz.JsonQuizQuestionFactory;
+import me.samboycoding.krystarabot.quiz.QuizQuestionType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import org.apache.commons.io.FilenameUtils;
 import sx.blah.discord.handle.obj.IChannel;
@@ -30,9 +32,9 @@ public class QuestionCommand extends KrystaraCommand
         public final int questionCount;
         public final long randomSeed;
         public final QuizQuestion.Difficulty difficulty;
-        public final QuizQuestionFactory.QuestionType questionType;
+        public final QuizQuestionType questionType;
         
-        public Arguments(int qCount, long rSeed, QuizQuestion.Difficulty d, QuizQuestionFactory.QuestionType type)
+        public Arguments(int qCount, long rSeed, QuizQuestion.Difficulty d, QuizQuestionType type)
         {
             questionCount = qCount;
             randomSeed = rSeed;
@@ -69,15 +71,15 @@ public class QuestionCommand extends KrystaraCommand
 
             if (args.difficulty != null)
             {
-                q = QuizQuestionFactory.getQuestion(r, args.difficulty);
+                q = main.quizQuestionFactory.getQuestion(r, args.difficulty);
             }
             else if (args.questionType != null)
             {
-                q = QuizQuestionFactory.getQuestion(r, args.questionType);
+                q = main.quizQuestionFactory.getQuestion(r, args.questionType);
             }
             else 
             {
-                q = QuizQuestionFactory.getQuestion(r);
+                q = main.quizQuestionFactory.getQuestion(r);
             }
 
             imageUrl = q.getQuestionImageUrl();
@@ -86,7 +88,7 @@ public class QuestionCommand extends KrystaraCommand
                 lastImageUrl = imageUrl;
             }
             String answerString = "";
-            for (int i = 0; i < QuizQuestion.AnswerCount; i++)
+            for (int i = 0; i < QuizQuestion.ANSWER_COUNT; i++)
             {
                 String boldStr = (q.getCorrectAnswerIndex() == i) ? "**" : "";
                 answerString += Integer.toString(i+1) + ") " + boldStr + q.getAnswerText(i) + boldStr + "\n";
@@ -147,7 +149,7 @@ public class QuestionCommand extends KrystaraCommand
         int questionCount = defaultCount;
         long seed = -1;
         QuizQuestion.Difficulty difficulty = null;
-        QuizQuestionFactory.QuestionType type = null;
+        QuizQuestionType type = null;
         
         if (arguments.size() > 0)
         {
@@ -172,7 +174,7 @@ public class QuestionCommand extends KrystaraCommand
                         try
                         {
                             // Try to get the question as a string from the enum values
-                            type = QuizQuestionFactory.QuestionType.fromString(arguments.get(0));
+                            type = QuizQuestionType.fromString(arguments.get(0));
                         }
                         catch (Exception e2)
                         {}
@@ -184,7 +186,7 @@ public class QuestionCommand extends KrystaraCommand
                         {
                             // Try to get the question as an integer as a last resort
                             int iType = Integer.parseInt(arguments.get(0));
-                            type = QuizQuestionFactory.QuestionType.fromInteger(iType);
+                            type = QuizQuestionType.fromInteger(iType);
                         }
                         catch (Exception e3)
                         {}
@@ -199,14 +201,14 @@ public class QuestionCommand extends KrystaraCommand
                         {
                             difficultyStrings.add(QuizQuestion.Difficulty.fromInteger(i).name());
                         }
-                        for (int i = 0; i < QuizQuestionFactory.QuestionType.Count; i++)
+                        for (int i = 0; i < QuizQuestionType.Count; i++)
                         {
-                            typeStrings.add(QuizQuestionFactory.QuestionType.fromInteger(i).name());
+                            typeStrings.add(QuizQuestionType.fromInteger(i).name());
                         }
                         chnl.sendMessage("Invalid question type.  Valid values are:" +
                                 "\n**any, all:** Generate a question of any type" +
                                 "\n**" + String.join(", ", difficultyStrings) + ":** Generate a question of the specified difficulty" +
-                                "\n**0, 1, ..., " + (QuizQuestionFactory.QuestionType.Count-1) + ":** Generate a question of the specified index" +
+                                "\n**0, 1, ..., " + (QuizQuestionType.Count-1) + ":** Generate a question of the specified index" +
                                 "\n**" + String.join(", ", typeStrings) + ":** Generate a question of the specified type");
                         return null;
                     }

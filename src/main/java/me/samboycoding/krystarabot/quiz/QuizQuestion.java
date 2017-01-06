@@ -5,7 +5,6 @@ import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Random;
-import org.json.JSONObject;
 
 /**
  * Base class of questions for the quiz.
@@ -46,23 +45,13 @@ public abstract class QuizQuestion
         }
     }
 
-    protected ArrayList<JSONObject> answers;
-    protected JSONObject correctAnswer;
-    protected Random random;
+    public final static int ANSWER_COUNT = 4;
     
-    public final static int AnswerCount = 4;
-    
-    public QuizQuestion(Random r)
-    {
-        answers = new ArrayList<>();
-        random = r;
-    }
-    
-    public String getQuestionText()
-    {
-        return "";
-    }
-    
+    public abstract String getQuestionText();
+    public abstract String getAnswerText(int index);
+    public abstract int getCorrectAnswerIndex();
+    public abstract Difficulty getDifficulty();
+
     public String getQuestionSecondaryText()
     {
         return "";
@@ -71,20 +60,5 @@ public abstract class QuizQuestion
     public URL getQuestionImageUrl()
     {
         return null;
-    }
-    
-    public String getAnswerText(int index)
-    {
-        return "";
-    }
-    
-    public int getCorrectAnswerIndex()
-    {
-        return answers.indexOf(correctAnswer);
-    }
-    
-    public Difficulty getDifficulty()
-    {
-        return Difficulty.Easy;
     }
 }

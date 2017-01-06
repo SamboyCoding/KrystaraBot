@@ -30,6 +30,7 @@ public class HeroClass implements Nameable, java.io.Serializable
     private String kingdomName = null;
     private String weaponName = null;
     private int traitstonesRequired = 0;
+    private String[] traitNames = new String[3];
     
     public HeroClass()
     {
@@ -87,4 +88,9 @@ public class HeroClass implements Nameable, java.io.Serializable
     
     public void setTraitstonesRequired(int value) { this.traitstonesRequired = value; }
     public int getTraitstonesRequired() { return this.traitstonesRequired; }
+
+    public void setTraitName0(String value) { this.traitNames[0] = value; }
+    public void setTraitName1(String value) { this.traitNames[1] = value; }
+    public void setTraitName2(String value) { this.traitNames[2] = value; }
+    public String getTraitName(int index) { return this.traitNames[index]; }
 }

@@ -7,13 +7,19 @@ import com.google.code.chatterbotapi.ChatterBotType;
 import java.io.File;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
+import me.samboycoding.krystarabot.gemdb.GemsQueryRunner;
+import me.samboycoding.krystarabot.quiz.JsonQuizQuestionFactory;
 import me.samboycoding.krystarabot.quiz.QuizHandler;
+import me.samboycoding.krystarabot.quiz.QuizQuestionFactory;
+import me.samboycoding.krystarabot.quiz.SqlQuizQuestionFactory;
+import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.io.FileUtils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -33,8 +39,29 @@ public class main
     public static CodesHandler codes = new CodesHandler();
     public static UserDatabaseHandler databaseHandler = new UserDatabaseHandler();
     public static File logFile;
-    public static QuizHandler quizH = new QuizHandler();
+    public static QuizHandler quizH;
+    public static QuizQuestionFactory quizQuestionFactory;
     public static ChatterBotSession cleverBot;
+    
+    static 
+    {
+        try
+        {
+            switch (IDReference.ENVIRONMENT)
+            {
+                case LYYA:
+                default:
+                    quizQuestionFactory = new JsonQuizQuestionFactory();
+                    break;
+            }
+            
+            quizH = new QuizHandler(quizQuestionFactory);
+        }
+        catch (Exception e)
+        {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     public static IDiscordClient getClient(String token)
     {
