@@ -279,6 +279,11 @@ public class Listener
     @EventSubscriber
     public void talk(MentionEvent e) throws Exception
     {
+        if(e.getMessage().getContent().contains(e.getMessage().getGuild().getEveryoneRole().mention()))
+        {
+            //@everyone mentioned, not me personally.
+            return;
+        }
         if (e.getMessage().getChannel().getID().equals(IDReference.BOTCOMMANDSCHANNEL))
         {
             //Message sent in bot-commands
