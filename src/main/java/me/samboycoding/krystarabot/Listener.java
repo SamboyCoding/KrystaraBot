@@ -78,6 +78,7 @@ public class Listener
             main.registerCommand(new ReigsterCodeCommand());
             main.registerCommand(new HelpCommand());
             main.registerCommand(new KickCommand());
+            main.registerCommand(new LanguageCommand());
             main.registerCommand(new ListQuestionsCommand());
             main.registerCommand(new PingCommand());
             main.registerCommand(new PlatformCommand());
