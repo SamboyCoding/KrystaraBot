@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;

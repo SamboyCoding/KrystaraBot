@@ -90,7 +90,7 @@ public class Listener
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
 
-            if (IDReference.ENVIRONMENT == IDReference.RuntimeEnvironment.LYYA)
+            if (IDReference.ENVIRONMENT != IDReference.RuntimeEnvironment.LIVE)
             {
                 main.registerCommand(new SqlClassCommand());
                 main.registerCommand(new SqlKingdomCommand());
