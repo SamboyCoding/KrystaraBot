@@ -63,7 +63,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
             classType = ct;
         }
 
-        public QuizQuestion_RandomBase initialize() throws SQLException
+        public QuizQuestion_RandomBase<T> initialize() throws SQLException
         {
             HashMap<Object, Object> keyMap = new HashMap<>();
             ArrayList<Object> keys;
@@ -157,7 +157,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
             classType = ct;
         }
 
-        public QuizQuestion_FilteredBase initialize() throws SQLException
+        public QuizQuestion_FilteredBase<T> initialize() throws SQLException
         {
             do
             {

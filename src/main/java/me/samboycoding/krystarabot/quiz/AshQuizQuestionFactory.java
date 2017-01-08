@@ -60,6 +60,7 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
             return question.getLong("Seed");
         }
 
+        @Override
         public String getQuestionSecondaryText()
         {
             if (!question.has("QuestionSecondaryText"))
@@ -70,6 +71,7 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
             return question.getString("QuestionSecondaryText");
         }
 
+        @Override
         public URL getQuestionImageUrl()
         {
             if (!question.has("QuestionImage"))
@@ -136,10 +138,11 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
     /**
      * Generates a random question of the specified type.
      *
+     * @param count
      * @param r The random number generator to use.
      * @param type The type of question to create.
      * @return A new question of the specified type.
-     * @throws java.sql.SQLException
+     * @throws java.net.MalformedURLException
      */
     @Override
     public QuizQuestion[] getQuestions(int count, Random r, QuizQuestionType type) throws MalformedURLException, IOException
@@ -152,9 +155,11 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
      * Generates a random question of the specified difficulty, and a random
      * type.
      *
+     * @param count The number of questions to get
      * @param r The random number generator to use.
      * @param difficulty The difficulty of question to create.
      * @return A new question of the specified type.
+     * @throws java.net.MalformedURLException
      */
     @Override
     public QuizQuestion[] getQuestions(int count, Random r, QuizQuestion.Difficulty difficulty) throws MalformedURLException, IOException
@@ -167,8 +172,11 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
      * Generates a random question of a random type (and thereby a random
      * difficulty).
      *
+     * @param count The number of questions to get
      * @param r The random number generator to use.
      * @return A new question of the specified type.
+     * @throws java.net.MalformedURLException
+     * @throws java.io.IOException
      */
     @Override
     public QuizQuestion[] getQuestions(int count, Random r) throws MalformedURLException, IOException

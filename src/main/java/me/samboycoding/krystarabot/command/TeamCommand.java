@@ -36,14 +36,7 @@ public class TeamCommand extends KrystaraCommand
             return;
         }
         ArrayList<String> things = new ArrayList<>();
-        Arrays.asList(argsFull.split(",")).forEach(new Consumer<String>()
-        {
-            @Override
-            public void accept(String t)
-            {
-                things.add(t.trim());
-            }
-        });
+        Arrays.asList(argsFull.split(",")).forEach(new ConsumerImpl(things));
 
         if (things.size() < 4)
         {
@@ -324,6 +317,23 @@ public class TeamCommand extends KrystaraCommand
     public CommandType getCommandType()
     {
         return GOW;
+    }
+
+    private static class ConsumerImpl implements Consumer<String>
+    {
+
+        private final ArrayList<String> things;
+
+        public ConsumerImpl(ArrayList<String> things)
+        {
+            this.things = things;
+        }
+
+        @Override
+        public void accept(String t)
+        {
+            things.add(t.trim());
+        }
     }
 
 }

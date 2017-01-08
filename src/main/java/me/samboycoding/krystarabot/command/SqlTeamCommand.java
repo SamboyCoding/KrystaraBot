@@ -43,14 +43,7 @@ public class SqlTeamCommand extends KrystaraCommand
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
         ArrayList<String> things = new ArrayList<>();
-        Arrays.asList(argsFull.split(",")).forEach(new Consumer<String>()
-        {
-            @Override
-            public void accept(String t)
-            {
-                things.add(t.trim());
-            }
-        });
+        Arrays.asList(argsFull.split(",")).forEach(new ConsumerImpl<>(things));
 
         if (things.size() < 4)
         {
@@ -184,6 +177,28 @@ public class SqlTeamCommand extends KrystaraCommand
     public CommandType getCommandType()
     {
         return GOW;
+    }
+
+    /**
+     * Enhanced consumer
+     *
+     * @author Sam
+     */
+    private static class ConsumerImpl<T> implements Consumer<T>
+    {
+
+        private final ArrayList<T> things;
+
+        public ConsumerImpl(ArrayList<T> things)
+        {
+            this.things = things;
+        }
+
+        @Override
+        public void accept(T t)
+        {
+            things.add(t);
+        }
     }
 
 }
