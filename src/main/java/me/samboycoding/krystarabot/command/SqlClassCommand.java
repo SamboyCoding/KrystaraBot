@@ -48,12 +48,13 @@ import sx.blah.discord.util.EmbedBuilder;
  */
 public class SqlClassCommand extends QuestionCommand
 {
+
     public SqlClassCommand()
     {
         commandName = "class";
 
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -67,48 +68,48 @@ public class SqlClassCommand extends QuestionCommand
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
-        
+
         try
         {
             String heroClassName = String.join(" ", arguments);
             HeroClass heroClass = GemsQueryRunner.runQueryForSingleResultByName(
-                chnl, 
-                "SELECT Kingdoms.Name AS KingdomName, "
-                + "     Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
-                + "     Spells.BoostRatioText AS SpellBoostRatioText, Spells.MagicScalingText AS SpellMagicScalingText, "
-                + "     Spells.Cost AS SpellCost, Weapons.Name AS WeaponName, Classes.*"
-                + "FROM Classes "
-                + "INNER JOIN Weapons ON Weapons.OwnerId=Classes.Id AND Weapons.Language=Classes.Language "
-                + "INNER JOIN Kingdoms ON Kingdoms.Id=Classes.KingdomId AND Kingdoms.Language=Classes.Language "
-                + "INNER JOIN Spells ON Spells.Id=Weapons.SpellId AND Spells.Language=Weapons.Language "
-                + "WHERE Classes.Language='en-US' AND Classes.Name LIKE ? AND Classes.ReleaseDate<NOW() "
-                + "ORDER BY Classes.Name",
-                "class",
-                HeroClass.class,
-                heroClassName
-                );
-            
+                    chnl,
+                    "SELECT Kingdoms.Name AS KingdomName, "
+                    + "     Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
+                    + "     Spells.BoostRatioText AS SpellBoostRatioText, Spells.MagicScalingText AS SpellMagicScalingText, "
+                    + "     Spells.Cost AS SpellCost, Weapons.Name AS WeaponName, Classes.*"
+                    + "FROM Classes "
+                    + "INNER JOIN Weapons ON Weapons.OwnerId=Classes.Id AND Weapons.Language=Classes.Language "
+                    + "INNER JOIN Kingdoms ON Kingdoms.Id=Classes.KingdomId AND Kingdoms.Language=Classes.Language "
+                    + "INNER JOIN Spells ON Spells.Id=Weapons.SpellId AND Spells.Language=Weapons.Language "
+                    + "WHERE Classes.Language='en-US' AND Classes.Name LIKE ? AND Classes.ReleaseDate<NOW() "
+                    + "ORDER BY Classes.Name",
+                    "class",
+                    HeroClass.class,
+                    heroClassName
+            );
+
             if (heroClass == null)
             {
                 return;
             }
-            
+
             QueryRunner run = GemsQueryRunner.getQueryRunner();
             ResultSetHandler<List<Trait>> traitHandler = new BeanListHandler<>(Trait.class);
             List<Trait> traits = run.query("SELECT Traits.* FROM TroopTraits "
-                + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code "
-                + "WHERE Traits.Language='en-US' AND TroopTraits.TroopId=? AND TroopTraits.CostIndex=0 "
-                + "ORDER BY TraitIndex", traitHandler,
-                heroClass.getId()
-                );
+                    + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code "
+                    + "WHERE Traits.Language='en-US' AND TroopTraits.TroopId=? AND TroopTraits.CostIndex=0 "
+                    + "ORDER BY TraitIndex", traitHandler,
+                    heroClass.getId()
+            );
 
             ResultSetHandler<List<HeroClassPerk>> perkHandler = new BeanListHandler<>(HeroClassPerk.class);
             List<HeroClassPerk> perks = run.query("SELECT ClassPerks.* FROM ClassPerks "
-                + "WHERE ClassPerks.Language='en-US' AND ClassPerks.ClassId=? "
-                + "ORDER BY PerkIndex", perkHandler,
-                heroClass.getId()
-                );
-            
+                    + "WHERE ClassPerks.Language='en-US' AND ClassPerks.ClassId=? "
+                    + "ORDER BY PerkIndex", perkHandler,
+                    heroClass.getId()
+            );
+
             URL url = new URL("http://ashtender.com/gems/assets/classes/" + heroClass.getId() + ".png");
 
             String spellDesc = heroClass.getSpellDescription();
@@ -118,8 +119,7 @@ public class SqlClassCommand extends QuestionCommand
                 if (!spellDesc.contains("{2}"))
                 {
                     spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
-                }
-                else
+                } else
                 {
                     spellDesc = spellDesc.replace("{1}", "(half)");
                     spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
@@ -137,13 +137,13 @@ public class SqlClassCommand extends QuestionCommand
             String emojiLife = g.getEmojiByName("gow_life").toString();
             String emojiAttack = g.getEmojiByName("gow_attack").toString();
             String emojiMagic = g.getEmojiByName("gow_magic").toString();
-            
+
             GemColor[] gemColors = GemColor.fromInteger(heroClass.getColors());
             String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
-            
+
             String[] traitNames = traits.stream().map(t -> t.getName()).toArray(String[]::new);
             String[] perkNames = perks.stream().map(p -> p.getName() + " (" + p.getPerkType() + ")").toArray(String[]::new);
-            
+
             String info = "";
             info += "_" + heroClass.getKingdomName() + "_ " + heroClass.getType() + "\n";
             info += "(" + String.join(", ", traitNames) + ")\n";
@@ -153,21 +153,18 @@ public class SqlClassCommand extends QuestionCommand
             info += "\n";
 
             EmbedObject o = new EmbedBuilder()
-                .withDesc(info)
-                .withTitle(heroClass.getName())
-                .withUrl("http://ashtender.com/gems/classes/" + heroClass.getId())
-                .withThumbnail("http://ashtender.com/gems/assets/classes/" + heroClass.getId() + ".png")
-                .build();
+                    .withDesc(info)
+                    .withTitle(heroClass.getName())
+                    .withUrl("http://ashtender.com/gems/classes/" + heroClass.getId())
+                    .withThumbnail("http://ashtender.com/gems/assets/classes/" + heroClass.getId() + ".png")
+                    .build();
 
             chnl.sendMessage("", o, false);
-        }
-
-        catch (IOException e)
+        } catch (IOException e)
         {
             chnl.sendMessage("Credentials file could not be found.");
             throw e;
-        }
-        catch (SQLException e2)
+        } catch (SQLException e2)
         {
             chnl.sendMessage("Database query failed.");
             throw e2;

@@ -25,7 +25,7 @@ public class ClassCommand extends KrystaraCommand
     {
         commandName = "class";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -34,32 +34,32 @@ public class ClassCommand extends KrystaraCommand
             chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
             return;
         }
-        
+
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
-        
+
         String className = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
         ArrayList<String> results = main.data.searchForClass(className);
-        
-        if(results.isEmpty())
+
+        if (results.isEmpty())
         {
             chnl.sendMessage("No hero class `" + className + "` found, " + sdr.mention());
             return;
         }
-        if(results.size() > 5)
+        if (results.size() > 5)
         {
             chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
             return;
         }
-        if(results.size() > 1)
+        if (results.size() > 1)
         {
             Utilities.sendDisambiguationMessage(chnl, "Search term \"" + className + "\" is ambiguous.", results);
             return;
         }
-        
+
         JSONObject classInfo = main.data.getClassInfo(results.get(0));
 
         className = classInfo.getString("Name");

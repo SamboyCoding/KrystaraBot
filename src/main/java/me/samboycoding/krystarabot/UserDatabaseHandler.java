@@ -85,9 +85,9 @@ public class UserDatabaseHandler
         {
             String jsonRaw = FileUtils.readFileToString(userDb, Charset.defaultCharset());
             userDBJSON = new JSONObject(jsonRaw);
-            
+
             JSONObject server = userDBJSON.getJSONObject(IDReference.SERVERID);
-            
+
             for (String id : server.keySet())
             {
                 JSONObject usr = server.getJSONObject(id);
@@ -102,9 +102,9 @@ public class UserDatabaseHandler
             }
             userDBJSON.remove(IDReference.SERVERID);
             userDBJSON.put(IDReference.SERVERID, server);
-            
+
             FileUtils.writeStringToFile(userDb, userDBJSON.toString(4), Charset.defaultCharset(), false);
-            
+
             main.logToBoth("Succesfully loaded user database from file!");
         } catch (IOException ex)
         {
@@ -112,9 +112,10 @@ public class UserDatabaseHandler
             ex.printStackTrace();
         }
     }
-    
+
     /**
      * Gets a user's quiz score.
+     *
      * @param usr The user
      * @param server The guild
      * @return The score
@@ -135,16 +136,21 @@ public class UserDatabaseHandler
             return serverJSON.getJSONObject(usr.getID()).getInt("QuizScore");
         }
     }
-    
+
     /**
-     * Increases the specified users quiz score by the specified amount in the specified server.
+     * Increases the specified users quiz score by the specified amount in the
+     * specified server.
+     *
      * @param usr The user
      * @param server The guild
      * @param amount The amount to increment by
      * @throws IOException If the changes cannot be written to the file.
-     * @throws sx.blah.discord.util.MissingPermissionsException If the bot cannot add roles, but needs too
-     * @throws sx.blah.discord.util.RateLimitException If the bot is rate limited
-     * @throws sx.blah.discord.util.DiscordException If something else does wrong
+     * @throws sx.blah.discord.util.MissingPermissionsException If the bot
+     * cannot add roles, but needs too
+     * @throws sx.blah.discord.util.RateLimitException If the bot is rate
+     * limited
+     * @throws sx.blah.discord.util.DiscordException If something else does
+     * wrong
      */
     public void increaseUserQuizScore(IUser usr, IGuild server, int amount) throws IOException, MissingPermissionsException, RateLimitException, DiscordException
     {
@@ -152,7 +158,7 @@ public class UserDatabaseHandler
         {
             userDBJSON.put(server.getID(), new JSONObject());
         }
-        
+
         JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
         if (serverJSON.isNull(usr.getID()))
         {
@@ -170,12 +176,12 @@ public class UserDatabaseHandler
             int current = currentUser.getInt("QuizScore");
             current += amount;
             currentUser.put("QuizScore", current);
-            if(current > 5000)
+            if (current > 5000)
             {
                 //Quiz Master!
                 IRole qMaster = server.getRoleByID(IDReference.QUIZMASTERROLE);
                 List<IRole> currentRoles = usr.getRolesForGuild(server);
-                if(!currentRoles.contains(qMaster))
+                if (!currentRoles.contains(qMaster))
                 {
                     usr.addRole(qMaster);
                     server.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("Congratulations to " + usr.mention() + " on reaching 5000 points! You are now a quiz master!");

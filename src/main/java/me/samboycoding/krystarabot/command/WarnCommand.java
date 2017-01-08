@@ -15,7 +15,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class WarnCommand extends KrystaraCommand
 {
-    
+
     public WarnCommand()
     {
         commandName = "warn";
@@ -25,7 +25,7 @@ public class WarnCommand extends KrystaraCommand
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
         String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
-        
+
         if (arguments.size() < 2)
         {
             chnl.sendMessage("You need a minimum of an @mention and a message to send. (That's a minimum of two arguments)");
@@ -39,10 +39,9 @@ public class WarnCommand extends KrystaraCommand
                 chnl.sendMessage("Invaild @mention!");
                 return;
             }
-            
+
             String nameOfUser = usr.getNicknameForGuild(msg.getGuild()).isPresent() ? usr.getNicknameForGuild(msg.getGuild()).get() : usr.getName();
-            
-            
+
             @SuppressWarnings("unchecked")
             ArrayList<String> messageArray = (ArrayList<String>) arguments.clone();
 
@@ -50,7 +49,7 @@ public class WarnCommand extends KrystaraCommand
             String message = messageArray.toString().replace("[", "").replace("]", "").replace(",", "");
 
             usr.getOrCreatePMChannel().sendMessage("Warning from user **" + nameOfSender + "** in channel **" + chnl.getName() + "**. Text:```\n" + message + "```");
-            
+
             Utilities.logEvent(LogType.WARN, "**" + nameOfUser + "** was warned by **" + nameOfSender + "**. Message: ```\n" + message + "```");
             msg.delete();
         } else

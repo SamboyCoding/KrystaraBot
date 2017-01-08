@@ -19,6 +19,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class BanCommand extends KrystaraCommand
 {
+
     public BanCommand()
     {
         commandName = "ban";
@@ -28,7 +29,7 @@ public class BanCommand extends KrystaraCommand
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
         String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
-        
+
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need an @mention of a user to ban!");
@@ -38,17 +39,17 @@ public class BanCommand extends KrystaraCommand
         {
             String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
             IUser usr = chnl.getGuild().getUserByID(id);
-            
+
             if (usr == null)
             {
                 chnl.sendMessage("Invaild @mention!");
                 return;
             }
-            
+
             String nameOfUser = usr.getNicknameForGuild(msg.getGuild()).isPresent() ? usr.getNicknameForGuild(msg.getGuild()).get() : usr.getName();
-            
+
             chnl.getGuild().banUser(usr);
-            
+
             Utilities.logEvent(LogType.BAN, "**" + nameOfSender + "** banned user **" + nameOfUser + "**");
             chnl.sendMessage("User \"" + nameOfUser + "\" banned.");
             msg.delete();

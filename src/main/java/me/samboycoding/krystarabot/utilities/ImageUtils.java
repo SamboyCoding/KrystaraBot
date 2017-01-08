@@ -42,7 +42,7 @@ public class ImageUtils
         //Fill everything in transparent.
         drawer.setComposite(AlphaComposite.Clear);
         drawer.fillRect(0, 0, 2 * width, height);
-        
+
         drawer.setComposite(AlphaComposite.Src);
         drawer.drawImage(leftImage, 0, 0, null); //Draw the left image
         drawer.drawImage(rightImage, width, 0, null); //Draw the right image

@@ -1,11 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.samboycoding.krystarabot.gemdb;
-
-import java.sql.Date;
 
 /**
  *
@@ -13,6 +6,9 @@ import java.sql.Date;
  */
 public class Kingdom implements Nameable, java.io.Serializable
 {
+
+    private static final long serialVersionUID = 1L;
+
     private int id = 0;
     private String language = null;
     private String name = null;
@@ -30,61 +26,180 @@ public class Kingdom implements Nameable, java.io.Serializable
     private String exploreTraitstoneName = null;
     private boolean isUsed = false;
     private boolean isFullKingdom = false;
-    
+
     public Kingdom()
     {
     }
-    
-    public void setId(int value) { this.id = value; }
-    public int getId() { return this.id; }
-    
-    public void setLanguage(String value) { this.language = value; }
-    public String getLanguage() { return this.language; }
-    
+
+    public void setId(int value)
+    {
+        this.id = value;
+    }
+
+    public int getId()
+    {
+        return this.id;
+    }
+
+    public void setLanguage(String value)
+    {
+        this.language = value;
+    }
+
+    public String getLanguage()
+    {
+        return this.language;
+    }
+
     @Override
-    public void setName(String value) { this.name = value; }
+    public void setName(String value)
+    {
+        this.name = value;
+    }
+
     @Override
-    public String getName() { return this.name; }
-    
-    public void setByLine(String value) { this.byLine = value; }
-    public String getByLine() { return this.byLine; }
-    
-    public void setDescription(String value) { this.description = value; }
-    public String getDescription() { return this.description; }
-    
-    public void setFileBase(String value) { this.fileBase = value; }
-    public String getFileBase() { return this.fileBase; }
-    
-    public void setBannerName(String value) { this.bannerName = value; }
-    public String getBannerName() { return this.bannerName; }
-    
-    public void setBannerDescription(String value) { this.bannerDescription = value; }
-    public String getBannerDescription() { return this.bannerDescription; }
-    
-    public void setTributeGold(int value) { this.tributeGold = value; }
-    public int getTributeGold() { return this.tributeGold; }
-    
-    public void setTributeGlory(int value) { this.tributeGlory = value; }
-    public int getTributeGlory() { return this.tributeGlory; }
-    
-    public void setTributeSouls(int value) { this.tributeSouls = value; }
-    public int getTributeSouls() { return this.tributeSouls; }
-    
-    public void setLevelManaColor(int value) { this.levelManaColor = value; }
-    public int getLevelManaColor() { return this.levelManaColor; }
+    public String getName()
+    {
+        return this.name;
+    }
 
-    public void setLevelStat(String value) { this.levelStat = value; }
-    public String getLevelStat() { return this.levelStat; }
+    public void setByLine(String value)
+    {
+        this.byLine = value;
+    }
 
-    public void setExploreTraitstoneName(String value) { this.exploreTraitstoneName = value; }
-    public String getExploreTraitstoneName() { return this.exploreTraitstoneName; }
-    
-    public void setExploreTraitstoneColors(int value) { this.exploreTraitstoneColors = value; }
-    public int getExploreTraitstoneColors() { return this.exploreTraitstoneColors; }
+    public String getByLine()
+    {
+        return this.byLine;
+    }
 
-    public void setIsUsed(boolean value) { this.isUsed = value; }
-    public boolean getIsUsed() { return this.isUsed; }
-    
-    public void setIsFullKingdom(boolean value) { this.isFullKingdom = value; }
-    public boolean getIsFullKingdom() { return this.isFullKingdom; }
+    public void setDescription(String value)
+    {
+        this.description = value;
+    }
+
+    public String getDescription()
+    {
+        return this.description;
+    }
+
+    public void setFileBase(String value)
+    {
+        this.fileBase = value;
+    }
+
+    public String getFileBase()
+    {
+        return this.fileBase;
+    }
+
+    public void setBannerName(String value)
+    {
+        this.bannerName = value;
+    }
+
+    public String getBannerName()
+    {
+        return this.bannerName;
+    }
+
+    public void setBannerDescription(String value)
+    {
+        this.bannerDescription = value;
+    }
+
+    public String getBannerDescription()
+    {
+        return this.bannerDescription;
+    }
+
+    public void setTributeGold(int value)
+    {
+        this.tributeGold = value;
+    }
+
+    public int getTributeGold()
+    {
+        return this.tributeGold;
+    }
+
+    public void setTributeGlory(int value)
+    {
+        this.tributeGlory = value;
+    }
+
+    public int getTributeGlory()
+    {
+        return this.tributeGlory;
+    }
+
+    public void setTributeSouls(int value)
+    {
+        this.tributeSouls = value;
+    }
+
+    public int getTributeSouls()
+    {
+        return this.tributeSouls;
+    }
+
+    public void setLevelManaColor(int value)
+    {
+        this.levelManaColor = value;
+    }
+
+    public int getLevelManaColor()
+    {
+        return this.levelManaColor;
+    }
+
+    public void setLevelStat(String value)
+    {
+        this.levelStat = value;
+    }
+
+    public String getLevelStat()
+    {
+        return this.levelStat;
+    }
+
+    public void setExploreTraitstoneName(String value)
+    {
+        this.exploreTraitstoneName = value;
+    }
+
+    public String getExploreTraitstoneName()
+    {
+        return this.exploreTraitstoneName;
+    }
+
+    public void setExploreTraitstoneColors(int value)
+    {
+        this.exploreTraitstoneColors = value;
+    }
+
+    public int getExploreTraitstoneColors()
+    {
+        return this.exploreTraitstoneColors;
+    }
+
+    public void setIsUsed(boolean value)
+    {
+        this.isUsed = value;
+    }
+
+    public boolean getIsUsed()
+    {
+        return this.isUsed;
+    }
+
+    public void setIsFullKingdom(boolean value)
+    {
+        this.isFullKingdom = value;
+    }
+
+    public boolean getIsFullKingdom()
+    {
+        return this.isFullKingdom;
+    }
 }

@@ -23,7 +23,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class BuildcacheCommand extends KrystaraCommand
 {
-    
+
     public BuildcacheCommand()
     {
         commandName = "buildcache";
@@ -157,7 +157,6 @@ public class BuildcacheCommand extends KrystaraCommand
         return "buildcache";
     }
 
-    
     @Override
     public CommandType getCommandType()
     {

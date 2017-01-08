@@ -14,7 +14,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class ReigsterCodeCommand extends KrystaraCommand
 {
-    
+
     public ReigsterCodeCommand()
     {
         commandName = "registercode";
@@ -23,19 +23,19 @@ public class ReigsterCodeCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if(arguments.size() < 1)
+        if (arguments.size() < 1)
         {
             chnl.sendMessage("Use `?registercode yes` to register or `?registercode no` to unregister.");
             return;
         }
         String arg = arguments.get(0);
-        
-        if(!arg.equals("yes") && !arg.equals("no"))
+
+        if (!arg.equals("yes") && !arg.equals("no"))
         {
             chnl.sendMessage("Use `?registercode yes` to register or `?registercode no` to unregister.");
             return;
         }
-        
+
         main.databaseHandler.setReceivesCodes(chnl.getGuild(), sdr, arg.equals("yes"));
         sdr.getOrCreatePMChannel().sendMessage("Successfully " + (arg.equals("yes") ? "registered" : "unregistered") + " for PM codes.");
         msg.delete();

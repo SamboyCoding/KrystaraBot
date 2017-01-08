@@ -37,7 +37,7 @@ public class SqlSpellCommand extends KrystaraCommand
     {
         commandName = "spell";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -46,23 +46,23 @@ public class SqlSpellCommand extends KrystaraCommand
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
-        
+
         try
         {
             String spellName = String.join(" ", arguments);
             Spell spell = GemsQueryRunner.runQueryForSingleResultByName(
-                chnl, 
-                "SELECT Spells.*, Troops.Name AS TroopName, COALESCE(GREATEST(Troops.Colors, Weapons.Colors), Troops.Colors, Weapons.Colors) AS Colors "
-                + "FROM Spells "
-                + "LEFT JOIN Troops ON Troops.SpellId=Spells.Id AND Troops.Language=Spells.Language AND Troops.ReleaseDate<NOW() "
-                + "LEFT JOIN Weapons ON Weapons.SpellId=Spells.Id AND Weapons.Language=Spells.Language AND Weapons.ReleaseDate<NOW() "
-                + "WHERE Spells.Language='en-US' AND Spells.Name LIKE ?"
-                + "ORDER BY Spells.Name", 
-                "spell",
-                Spell.class,
-                spellName
-                );
-            
+                    chnl,
+                    "SELECT Spells.*, Troops.Name AS TroopName, COALESCE(GREATEST(Troops.Colors, Weapons.Colors), Troops.Colors, Weapons.Colors) AS Colors "
+                    + "FROM Spells "
+                    + "LEFT JOIN Troops ON Troops.SpellId=Spells.Id AND Troops.Language=Spells.Language AND Troops.ReleaseDate<NOW() "
+                    + "LEFT JOIN Weapons ON Weapons.SpellId=Spells.Id AND Weapons.Language=Spells.Language AND Weapons.ReleaseDate<NOW() "
+                    + "WHERE Spells.Language='en-US' AND Spells.Name LIKE ?"
+                    + "ORDER BY Spells.Name",
+                    "spell",
+                    Spell.class,
+                    spellName
+            );
+
             if (spell == null)
             {
                 return;
@@ -75,8 +75,7 @@ public class SqlSpellCommand extends KrystaraCommand
                 if (!spellDesc.contains("{2}"))
                 {
                     spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
-                }
-                else
+                } else
                 {
                     spellDesc = spellDesc.replace("{1}", "(half)");
                     spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
@@ -90,7 +89,7 @@ public class SqlSpellCommand extends KrystaraCommand
 
             //Emojis
             IGuild g = chnl.getGuild();
-            
+
             GemColor[] gemColors = GemColor.fromInteger(spell.getColors());
             String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
 
@@ -100,13 +99,11 @@ public class SqlSpellCommand extends KrystaraCommand
                 info += "Used by: " + spell.getTroopName() + "\n";
             }
             chnl.sendMessage(info);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             chnl.sendMessage("Credentials file could not be found.");
             throw e;
-        }
-        catch (SQLException e2)
+        } catch (SQLException e2)
         {
             chnl.sendMessage("Database query failed.");
             throw e2;

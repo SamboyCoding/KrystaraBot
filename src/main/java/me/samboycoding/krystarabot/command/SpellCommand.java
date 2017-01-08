@@ -22,7 +22,7 @@ public class SpellCommand extends KrystaraCommand
     {
         commandName = "spell";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -38,23 +38,23 @@ public class SpellCommand extends KrystaraCommand
         }
         String spellName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
         ArrayList<String> results = main.data.searchForSpell(spellName);
-        
-        if(results.isEmpty())
+
+        if (results.isEmpty())
         {
             chnl.sendMessage("No spell `" + spellName + "` found, " + sdr.mention());
             return;
         }
-        if(results.size() > 5)
+        if (results.size() > 5)
         {
             chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
             return;
         }
-        if(results.size() > 1)
+        if (results.size() > 1)
         {
             Utilities.sendDisambiguationMessage(chnl, "Search term \"" + spellName + "\" is ambiguous.", results);
             return;
         }
-        
+
         JSONObject spellInfo = main.data.getSpellInfo(results.get(0));
 
         spellName = spellInfo.getString("Name");

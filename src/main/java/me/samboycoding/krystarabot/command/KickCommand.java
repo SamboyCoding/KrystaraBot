@@ -20,7 +20,7 @@ public class KickCommand extends KrystaraCommand
     {
         commandName = "kick";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -35,17 +35,17 @@ public class KickCommand extends KrystaraCommand
         {
             String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
             IUser usr = chnl.getGuild().getUserByID(id);
-            
+
             if (usr == null)
             {
                 chnl.sendMessage("Invaild @mention!");
                 return;
             }
-            
+
             String nameOfUser = usr.getNicknameForGuild(msg.getGuild()).isPresent() ? usr.getNicknameForGuild(msg.getGuild()).get() : usr.getName();
-            
+
             chnl.getGuild().kickUser(usr);
-            
+
             Utilities.logEvent(LogType.KICK, "**" + nameOfSender + "** kicked user **" + nameOfUser + "**");
             chnl.sendMessage("User \"" + nameOfUser + "\" kicked.");
             msg.delete();

@@ -17,21 +17,21 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class ListQuestionsCommand extends KrystaraCommand
 {
-    
+
     public ListQuestionsCommand()
     {
         commandName = "listquestions";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
         ArrayList<QuizQuestionType> qTypes = new ArrayList<>(Arrays.asList(QuizQuestionType.values()));
-        
+
         String questionTypes = "";
-        
+
         int num = 0;
-        for(QuizQuestionType qt : qTypes)
+        for (QuizQuestionType qt : qTypes)
         {
             if (qt.difficulty != QuizQuestion.Difficulty.Unused)
             {
@@ -39,7 +39,7 @@ public class ListQuestionsCommand extends KrystaraCommand
                 questionTypes += "\n\t" + num + ") " + qt.description + " (" + qt.difficulty + ")";
             }
         }
-        
+
         questionTypes = "There are " + num + " questions defined. Full List (in no particular order): \n" + questionTypes;
         sdr.getOrCreatePMChannel().sendMessage(questionTypes);
     }

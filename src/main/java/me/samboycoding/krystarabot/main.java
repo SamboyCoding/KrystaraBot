@@ -32,9 +32,10 @@ import sx.blah.discord.util.DiscordException;
  * @author Sam
  */
 public class main
-{    
+{
+
     private static final TreeMap<String, KrystaraCommand> commands = new TreeMap<>();
-    
+
     private static IDiscordClient cl;
     public static GameData data = new GameData();
     public static CodesHandler codes = new CodesHandler();
@@ -43,8 +44,8 @@ public class main
     public static QuizHandler quizH;
     public static QuizQuestionFactory quizQuestionFactory;
     public static ChatterBotSession cleverBot;
-    
-    static 
+
+    static
     {
         try
         {
@@ -58,10 +59,9 @@ public class main
                     quizQuestionFactory = new JsonQuizQuestionFactory();
                     break;
             }
-            
+
             quizH = new QuizHandler(quizQuestionFactory);
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             throw new ExceptionInInitializerError(e);
         }
@@ -116,21 +116,21 @@ public class main
 
         ChatterBot bot1 = factory.create(ChatterBotType.CLEVERBOT);
         cleverBot = bot1.createSession();
-        
+
         logToBoth("Intelligent talking loaded!");
     }
-    
+
     public static void registerCommand(KrystaraCommand c)
     {
         logToBoth("Registering" + (c.requiresAdmin() ? " ADMIN" : "") + " command ?" + c.getCommand());
         commands.put(c.getCommand(), c);
     }
-    
+
     @SuppressWarnings("unchecked")
     public static TreeMap<String, KrystaraCommand> getCommands()
     {
         return (TreeMap<String, KrystaraCommand>) commands.clone();
-    }    
+    }
 
     public static void logToBoth(String msg)
     {
@@ -144,7 +144,7 @@ public class main
             //Ignore - cannot write to file.
         }
     }
-    
+
     public static void logToFile(String msg)
     {
         String logEntry = "****" + getTimestamp("[dd/MM/yy | HH:mm:ss] ") + " [BOT MAIN]          " + msg;
@@ -164,7 +164,7 @@ public class main
         String timestamp = df.format(dateobj);
         return timestamp;
     }
-    
+
     public static Calendar getNow()
     {
         Calendar cal = Calendar.getInstance();

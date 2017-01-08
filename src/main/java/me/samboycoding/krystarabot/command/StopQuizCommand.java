@@ -18,7 +18,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class StopQuizCommand extends KrystaraCommand
 {
-    
+
     public StopQuizCommand()
     {
         commandName = "stopquiz";
@@ -37,8 +37,7 @@ public class StopQuizCommand extends KrystaraCommand
         {
             main.quizH.abort();
             chnl.sendMessage("Stopped the quiz.");
-        }
-        else
+        } else
         {
             chnl.sendMessage("No quiz is in progress.");
         }

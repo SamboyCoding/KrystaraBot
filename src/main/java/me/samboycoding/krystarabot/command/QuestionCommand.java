@@ -21,19 +21,20 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class QuestionCommand extends KrystaraCommand
 {
-    
+
     public QuestionCommand()
     {
         commandName = "question";
     }
-    
+
     protected class Arguments
     {
+
         public final int questionCount;
         public final long randomSeed;
         public final QuizQuestion.Difficulty difficulty;
         public final QuizQuestionType questionType;
-        
+
         public Arguments(int qCount, long rSeed, QuizQuestion.Difficulty d, QuizQuestionType type)
         {
             questionCount = qCount;
@@ -51,33 +52,31 @@ public class QuestionCommand extends KrystaraCommand
             msg.delete();
             return;
         }
-        
+
         Arguments args = parseArguments(arguments, chnl, 1);
         if (args == null)
         {
             return;
         }
-        
+
         long seed = args.randomSeed;
         Random r = new Random(seed);
 
         ArrayList<String> messageStrings = new ArrayList<>();
         URL lastImageUrl = null;
-        
+
         QuizQuestion[] qs = null;
         if (args.difficulty != null)
         {
             qs = main.quizQuestionFactory.getQuestions(args.questionCount, r, args.difficulty);
-        }
-        else if (args.questionType != null)
+        } else if (args.questionType != null)
         {
             qs = main.quizQuestionFactory.getQuestions(args.questionCount, r, args.questionType);
-        }
-        else 
+        } else
         {
             qs = main.quizQuestionFactory.getQuestions(args.questionCount, r);
         }
-        
+
         for (QuizQuestion q : qs)
         {
             URL imageUrl = null;
@@ -91,21 +90,21 @@ public class QuestionCommand extends KrystaraCommand
             for (int i = 0; i < QuizQuestion.ANSWER_COUNT; i++)
             {
                 String boldStr = (q.getCorrectAnswerIndex() == i) ? "**" : "";
-                answerString += Integer.toString(i+1) + ") " + boldStr + q.getAnswerText(i) + boldStr + "\n";
+                answerString += Integer.toString(i + 1) + ") " + boldStr + q.getAnswerText(i) + boldStr + "\n";
             }
-            
+
             String secondaryText = q.getQuestionSecondaryText();
             if (!secondaryText.isEmpty())
             {
                 secondaryText += "\n";
             }
             messageStrings.add("Question: " + q.getQuestionText() + " (" + seed + ")\n" + secondaryText + answerString + "\n");
-            
+
             seed = q.getRandomSeed();
         }
- 
+
         Utilities.sendLargeMessage(chnl, messageStrings);
-        
+
         if (lastImageUrl != null)
         {
             InputStream stream = lastImageUrl.openStream();
@@ -150,7 +149,7 @@ public class QuestionCommand extends KrystaraCommand
         long seed = -1;
         QuizQuestion.Difficulty difficulty = null;
         QuizQuestionType type = null;
-        
+
         if (arguments.size() > 0)
         {
             switch (arguments.get(0).toLowerCase())
@@ -159,27 +158,27 @@ public class QuestionCommand extends KrystaraCommand
                 case "any":
                 case "all":
                     break;
-                    
+
                 default:
                     try
                     {
                         // Try to get the difficulty as a string from the enum values
                         difficulty = QuizQuestion.Difficulty.fromString(arguments.get(0));
+                    } catch (Exception e1)
+                    {
                     }
-                    catch (Exception e1)
-                    {}
-                    
+
                     if (difficulty == null)
                     {
                         try
                         {
                             // Try to get the question as a string from the enum values
                             type = QuizQuestionType.fromString(arguments.get(0));
+                        } catch (Exception e2)
+                        {
                         }
-                        catch (Exception e2)
-                        {}
                     }
-                    
+
                     if ((difficulty == null) && (type == null))
                     {
                         try
@@ -187,11 +186,11 @@ public class QuestionCommand extends KrystaraCommand
                             // Try to get the question as an integer as a last resort
                             int iType = Integer.parseInt(arguments.get(0));
                             type = QuizQuestionType.fromInteger(iType);
+                        } catch (Exception e3)
+                        {
                         }
-                        catch (Exception e3)
-                        {}
                     }
-                    
+
                     if ((difficulty == null) && (type == null))
                     {
                         ArrayList<String> difficultyStrings = new ArrayList<>();
@@ -205,43 +204,41 @@ public class QuestionCommand extends KrystaraCommand
                         {
                             typeStrings.add(QuizQuestionType.fromInteger(i).name());
                         }
-                        chnl.sendMessage("Invalid question type.  Valid values are:" +
-                                "\n**any, all:** Generate a question of any type" +
-                                "\n**" + String.join(", ", difficultyStrings) + ":** Generate a question of the specified difficulty" +
-                                "\n**0, 1, ..., " + (QuizQuestionType.Count-1) + ":** Generate a question of the specified index" +
-                                "\n**" + String.join(", ", typeStrings) + ":** Generate a question of the specified type");
+                        chnl.sendMessage("Invalid question type.  Valid values are:"
+                                + "\n**any, all:** Generate a question of any type"
+                                + "\n**" + String.join(", ", difficultyStrings) + ":** Generate a question of the specified difficulty"
+                                + "\n**0, 1, ..., " + (QuizQuestionType.Count - 1) + ":** Generate a question of the specified index"
+                                + "\n**" + String.join(", ", typeStrings) + ":** Generate a question of the specified type");
                         return null;
                     }
                     break;
             }
         }
-        
+
         if (arguments.size() > 1)
         {
             try
             {
                 questionCount = Math.min(30, Math.max(1, Integer.parseInt(arguments.get(1))));
-            } 
-            catch (NumberFormatException e)
+            } catch (NumberFormatException e)
             {
                 chnl.sendMessage("Repeat count argument must be a whole number!");
                 return null;
             }
         }
-        
+
         if (arguments.size() > 2)
         {
             try
             {
                 seed = Long.parseLong(arguments.get(2));
-            }
-            catch (NumberFormatException e)
+            } catch (NumberFormatException e)
             {
                 chnl.sendMessage("Seed argument must be a whole number!");
                 return null;
             }
         }
-        
+
         if (seed < 0)
         {
             seed = System.currentTimeMillis() % 10000;

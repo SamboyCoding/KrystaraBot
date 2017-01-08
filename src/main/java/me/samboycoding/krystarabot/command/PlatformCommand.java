@@ -11,10 +11,12 @@ import sx.blah.discord.handle.obj.IUser;
 
 /**
  * Represents the ?platform command
+ *
  * @author r3byass
  */
 public class PlatformCommand extends KrystaraCommand
 {
+
     public PlatformCommand()
     {
         commandName = "platform";
@@ -23,14 +25,14 @@ public class PlatformCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if(!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             sdr.getOrCreatePMChannel().sendMessage("To reduce spam, 'platform' can only be used in the #bot-commands channel. Thanks!");
             return;
         }
-        
+
         String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
-        
+
         if (arguments.size() < 1)
         {
             chnl.sendMessage("Please specify a platform.");

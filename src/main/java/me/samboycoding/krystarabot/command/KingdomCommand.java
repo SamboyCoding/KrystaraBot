@@ -22,7 +22,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class KingdomCommand extends KrystaraCommand
 {
-    
+
     public KingdomCommand()
     {
         commandName = "kingdom";
@@ -43,23 +43,23 @@ public class KingdomCommand extends KrystaraCommand
         }
         String kingdomName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
         ArrayList<String> results = main.data.searchForKingdom(kingdomName);
-        
-        if(results.isEmpty())
+
+        if (results.isEmpty())
         {
             chnl.sendMessage("No kingdom `" + kingdomName + "` found, " + sdr.mention());
             return;
         }
-        if(results.size() > 5)
+        if (results.size() > 5)
         {
             chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
             return;
         }
-        if(results.size() > 1)
+        if (results.size() > 1)
         {
             Utilities.sendDisambiguationMessage(chnl, "Search term \"" + kingdomName + "\" is ambiguous.", results);
             return;
         }
-        
+
         JSONObject kingdomInfo = main.data.getKingdomInfo(results.get(0));
 
         kingdomName = kingdomInfo.getString("Name");
@@ -100,7 +100,7 @@ public class KingdomCommand extends KrystaraCommand
         ArrayList<String> troopNames = new ArrayList<>();
         for (Object oTroopName : kingdomInfo.getJSONArray("Troops"))
         {
-            String troopName = (String)oTroopName;
+            String troopName = (String) oTroopName;
             troopNames.add(troopName);
         }
         troopNames.sort((s1, s2) -> s1.compareTo(s2));

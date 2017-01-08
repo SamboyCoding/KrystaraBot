@@ -7,21 +7,22 @@ package me.samboycoding.krystarabot.utilities;
  */
 public class IDReference
 {
+
     public static enum RuntimeEnvironment
     {
         LIVE,
         DEV,
         LYYA
     }
-    
+
     public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.LYYA;
-    
+
     public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL, CHATFRENCH, CHATGERMAN, CHATSPANISH;
     public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE, FRENCHROLE, GERMANROLE, SPANISHROLE;
     public static String SERVERID;
     public static String MYTOKEN; //Set in main method.
     public static String MYID; //Gets set once readyevent done.
-    
+
     public IDReference()
     {
         switch (ENVIRONMENT)
@@ -36,7 +37,7 @@ public class IDReference
                 CHATFRENCH = "262240512268959745";
                 CHATGERMAN = "262240429435650048";
                 CHATSPANISH = "262240467989561354";
-                
+
                 //Roles
                 ADMINROLE = "236897540262330370";
                 DEVROLE = "237461438548017154";
@@ -51,7 +52,7 @@ public class IDReference
 
                 SERVERID = "236897364697284618";
                 break;
-                
+
             case DEV:
                 //Channels
                 LOGSCHANNEL = "247394226319392768";
@@ -71,7 +72,7 @@ public class IDReference
 
                 SERVERID = "247393304151326721";
                 break;
-                
+
             case LYYA:
                 //Channels
                 LOGSCHANNEL = "257917868811878402";

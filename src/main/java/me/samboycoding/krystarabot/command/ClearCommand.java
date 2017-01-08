@@ -20,12 +20,12 @@ public class ClearCommand extends KrystaraCommand
     {
         commandName = "clear";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
         String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
-        
+
         try
         {
             MessageList msgs = chnl.getMessages();
@@ -47,7 +47,7 @@ public class ClearCommand extends KrystaraCommand
                 //Cannot delete one with .bulkDelete()
                 msgs.get(0).delete(); //Again, ignore index 0, as it's the command
                 Utilities.cleanupMessage(chnl.sendMessage("1 message deleted. This message will self-destruct in 3 seconds..."), 3000);
-                
+
                 Utilities.logEvent(LogType.MESSAGEDELETE, "**" + nameOfSender + "** cleared 1 message from channel **" + chnl.getName() + "**");
                 msg.delete();
                 return;
@@ -69,7 +69,7 @@ public class ClearCommand extends KrystaraCommand
             {
                 msgs.bulkDelete(toDelete);
                 Utilities.cleanupMessage(chnl.sendMessage(toDelete.size() + " messages deleted (out of " + amount + " requested). This message will self-destruct in 10 seconds..."), 10000);
-                
+
                 Utilities.logEvent(LogType.MESSAGEDELETE, "**" + nameOfSender + "** cleared " + toDelete.size() + " messages from channel **" + chnl.getName() + "**");
             } else
             {

@@ -54,70 +54,70 @@ public class CodesHandler
             ex.printStackTrace();
         }
     }
-    
+
     public Boolean isCodePresent(String code)
     {
         return codesJSON.has(code.toUpperCase());
     }
-    
+
     public ArrayList<String> getLiveCodes()
     {
         ArrayList<String> res = new ArrayList<>();
-        
-        for(String code : codesJSON.keySet())
+
+        for (String code : codesJSON.keySet())
         {
-            if(!codesJSON.getBoolean(code))
+            if (!codesJSON.getBoolean(code))
             {
                 res.add(code);
             }
         }
-        
+
         return res;
     }
-    
+
     public ArrayList<String> getDeadCodes()
     {
         ArrayList<String> res = new ArrayList<>();
-        
-        for(String code : codesJSON.keySet())
+
+        for (String code : codesJSON.keySet())
         {
-            if(codesJSON.getBoolean(code))
+            if (codesJSON.getBoolean(code))
             {
                 res.add(code);
             }
         }
-        
+
         return res;
     }
-    
+
     public Boolean isCodeAlive(String code)
     {
         return getLiveCodes().contains(code.toUpperCase());
     }
-    
+
     public Boolean isCodeDead(String code)
     {
         return getDeadCodes().contains(code.toUpperCase());
     }
-    
+
     public void addCode(String code) throws IOException
     {
         codesJSON.put(code.toUpperCase(), false);
         FileUtils.writeStringToFile(codes, codesJSON.toString(4), Charset.defaultCharset());
     }
-    
+
     public void makeCodeDead(String code) throws IOException
     {
-        if(!isCodePresent(code))
+        if (!isCodePresent(code))
         {
             throw new IllegalArgumentException("Tried to make a code dead that wasn't present!");
         }
-        
-        if(isCodeDead(code))
+
+        if (isCodeDead(code))
         {
             return;
         }
-        
+
         codesJSON.remove(code.toUpperCase());
         codesJSON.put(code.toUpperCase(), true);
         FileUtils.writeStringToFile(codes, codesJSON.toString(4), Charset.defaultCharset());

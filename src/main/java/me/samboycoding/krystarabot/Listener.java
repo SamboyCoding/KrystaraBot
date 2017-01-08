@@ -92,7 +92,7 @@ public class Listener
             main.registerCommand(new Top10Command());
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
-            
+
             if (IDReference.ENVIRONMENT == IDReference.RuntimeEnvironment.LYYA)
             {
                 main.registerCommand(new SqlClassCommand());
@@ -104,8 +104,7 @@ public class Listener
                 main.registerCommand(new SqlTraitstoneCommand());
                 main.registerCommand(new SqlTroopCommand());
                 main.registerCommand(new SqlWeaponCommand());
-            }
-            else
+            } else
             {
                 main.registerCommand(new ClassCommand());
                 main.registerCommand(new KingdomCommand());
@@ -117,7 +116,7 @@ public class Listener
                 main.registerCommand(new TroopCommand());
                 main.registerCommand(new WeaponCommand());
             }
-            
+
             String timestamp = "";
             Calendar now = main.getNow();
             timestamp += now.get(Calendar.DATE) + " of ";
@@ -279,7 +278,7 @@ public class Listener
     @EventSubscriber
     public void talk(MentionEvent e) throws Exception
     {
-        if(e.getMessage().getContent().contains(e.getMessage().getGuild().getEveryoneRole().mention()))
+        if (e.getMessage().getContent().contains(e.getMessage().getGuild().getEveryoneRole().mention()))
         {
             //@everyone mentioned, not me personally.
             return;
@@ -293,7 +292,7 @@ public class Listener
             String result = main.cleverBot.think(message);
             e.getMessage().getChannel().setTypingStatus(false);
             e.getMessage().getChannel().sendMessage(result);
-        } else if(!e.getMessage().getChannel().isPrivate())
+        } else if (!e.getMessage().getChannel().isPrivate())
         {
             //Message sent in a channel that's not bot-commands
             e.getMessage().delete();

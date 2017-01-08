@@ -23,6 +23,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class TraitstoneCommand extends KrystaraCommand
 {
+
     /**
      * Represents the rarity of a given traitstone.
      */
@@ -34,86 +35,201 @@ public class TraitstoneCommand extends KrystaraCommand
         Arcane,
         Celestial
     }
-        
+
     /**
-     * Represents a traitstone type.
-     * The order is important; do not modify.
+     * Represents a traitstone type. The order is important; do not modify.
      */
     private static enum Traitstone
     {
-        MinorWater("Minor Water Traitstone",        Rarity.Minor,     new GemColor[] { GemColor.Blue }),
-        MinorNature("Minor Nature Traitstone",      Rarity.Minor,     new GemColor[] { GemColor.Green }),
-        MinorFire("Minor Fire Traitstone",          Rarity.Minor,     new GemColor[] { GemColor.Red }),
-        MinorWind("Minor Wind Traitstone",          Rarity.Minor,     new GemColor[] { GemColor.Yellow }),
-        MinorMagic("Minor Magic Traitstone",        Rarity.Minor,     new GemColor[] { GemColor.Purple }),
-        MinorEarth("Minor Earth Traitstone",        Rarity.Minor,     new GemColor[] { GemColor.Brown }),
-        
-        MajorWater("Major Water Traitstone",        Rarity.Major,     new GemColor[] { GemColor.Blue }),
-        MajorNature("Major Nature Traitstone",      Rarity.Major,     new GemColor[] { GemColor.Green }),
-        MajorFire("Major Fire Traitstone",          Rarity.Major,     new GemColor[] { GemColor.Red }),
-        MajorWind("Major Wind Traitstone",          Rarity.Major,     new GemColor[] { GemColor.Yellow }),
-        MajorMagic("Major Magic Traitstone",        Rarity.Major,     new GemColor[] { GemColor.Purple }),
-        MajorEarth("Major Earth Traitstone",        Rarity.Major,     new GemColor[] { GemColor.Brown }),
-        
-        RunicWater("Runic Water Traitstone",        Rarity.Runic,     new GemColor[] { GemColor.Blue }),
-        RunicNature("Runic Nature Traitstone",      Rarity.Runic,     new GemColor[] { GemColor.Green }),
-        RunicFire("Runic Fire Traitstone",          Rarity.Runic,     new GemColor[] { GemColor.Red }),
-        RunicWind("Runic Wind Traitstone",          Rarity.Runic,     new GemColor[] { GemColor.Yellow }),
-        RunicMagic("Runic Magic Traitstone",        Rarity.Runic,     new GemColor[] { GemColor.Purple }),
-        RunicEarth("Runic Earth Traitstone",        Rarity.Runic,     new GemColor[] { GemColor.Brown }),
-        
-        ArcaneStoic("Arcane Stoic Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Blue }),
-        ArcaneSwamp("Arcane Swamp Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Blue, GemColor.Green }),
-        ArcaneBlood("Arcane Blood Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Blue, GemColor.Red }),
-        ArcaneBlade("Arcane Blade Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Blue, GemColor.Yellow }),
-        ArcaneSpirit("Arcane Spirit Traitstone",    Rarity.Arcane,    new GemColor[] { GemColor.Blue, GemColor.Purple }),
-        ArcaneShield("Arcane Shield Traitstone",    Rarity.Arcane,    new GemColor[] { GemColor.Blue, GemColor.Brown }),
-        ArcaneStealth("Arcane Stealth Traitstone",  Rarity.Arcane,    new GemColor[] { GemColor.Green }),
-        ArcaneBeast("Arcane Beast Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Green, GemColor.Red }),
-        ArcaneLight("Arcane Light Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Green, GemColor.Yellow }),
-        ArcaneVenom("Arcane Venom Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Green, GemColor.Purple }),
-        ArcaneForest("Arcane Forest Traitstone",    Rarity.Arcane,    new GemColor[] { GemColor.Green, GemColor.Brown }),
-        ArcaneRage("Arcane Rage Traitstone",        Rarity.Arcane,    new GemColor[] { GemColor.Red }),
-        ArcaneStorm("Arcane Storm Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Red, GemColor.Yellow }),
-        ArcaneDark("Arcane Dark Traitstone",        Rarity.Arcane,    new GemColor[] { GemColor.Red, GemColor.Purple }),
-        ArcaneLava("Arcane Lava Traitstone",        Rarity.Arcane,    new GemColor[] { GemColor.Red, GemColor.Brown }),
-        ArcaneSummer("Arcane Summer Traitstone",    Rarity.Arcane,    new GemColor[] { GemColor.Yellow }),
-        ArcanePlains("Arcane Plains Traitstone",    Rarity.Arcane,    new GemColor[] { GemColor.Yellow, GemColor.Purple }),
-        ArcaneMountain("Arcane Mountain Traitstone", Rarity.Arcane,   new GemColor[] { GemColor.Yellow, GemColor.Brown }),
-        ArcaneDeath("Arcane Death Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Purple }),
-        ArcaneSkull("Arcane Skull Traitstone",      Rarity.Arcane,    new GemColor[] { GemColor.Purple, GemColor.Brown }),
-        ArcaneDeep("Arcane Deep Traitstone",        Rarity.Arcane,    new GemColor[] { GemColor.Brown }),
-        
-        Celestial("Celestial Traitstone",           Rarity.Celestial, new GemColor[] { GemColor.Blue, GemColor.Green, GemColor.Red, GemColor.Yellow, GemColor.Purple, GemColor.Brown });
-        
+        MinorWater("Minor Water Traitstone", Rarity.Minor, new GemColor[]
+        {
+            GemColor.Blue
+        }),
+        MinorNature("Minor Nature Traitstone", Rarity.Minor, new GemColor[]
+        {
+            GemColor.Green
+        }),
+        MinorFire("Minor Fire Traitstone", Rarity.Minor, new GemColor[]
+        {
+            GemColor.Red
+        }),
+        MinorWind("Minor Wind Traitstone", Rarity.Minor, new GemColor[]
+        {
+            GemColor.Yellow
+        }),
+        MinorMagic("Minor Magic Traitstone", Rarity.Minor, new GemColor[]
+        {
+            GemColor.Purple
+        }),
+        MinorEarth("Minor Earth Traitstone", Rarity.Minor, new GemColor[]
+        {
+            GemColor.Brown
+        }),
+        MajorWater("Major Water Traitstone", Rarity.Major, new GemColor[]
+        {
+            GemColor.Blue
+        }),
+        MajorNature("Major Nature Traitstone", Rarity.Major, new GemColor[]
+        {
+            GemColor.Green
+        }),
+        MajorFire("Major Fire Traitstone", Rarity.Major, new GemColor[]
+        {
+            GemColor.Red
+        }),
+        MajorWind("Major Wind Traitstone", Rarity.Major, new GemColor[]
+        {
+            GemColor.Yellow
+        }),
+        MajorMagic("Major Magic Traitstone", Rarity.Major, new GemColor[]
+        {
+            GemColor.Purple
+        }),
+        MajorEarth("Major Earth Traitstone", Rarity.Major, new GemColor[]
+        {
+            GemColor.Brown
+        }),
+        RunicWater("Runic Water Traitstone", Rarity.Runic, new GemColor[]
+        {
+            GemColor.Blue
+        }),
+        RunicNature("Runic Nature Traitstone", Rarity.Runic, new GemColor[]
+        {
+            GemColor.Green
+        }),
+        RunicFire("Runic Fire Traitstone", Rarity.Runic, new GemColor[]
+        {
+            GemColor.Red
+        }),
+        RunicWind("Runic Wind Traitstone", Rarity.Runic, new GemColor[]
+        {
+            GemColor.Yellow
+        }),
+        RunicMagic("Runic Magic Traitstone", Rarity.Runic, new GemColor[]
+        {
+            GemColor.Purple
+        }),
+        RunicEarth("Runic Earth Traitstone", Rarity.Runic, new GemColor[]
+        {
+            GemColor.Brown
+        }),
+        ArcaneStoic("Arcane Stoic Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Blue
+        }),
+        ArcaneSwamp("Arcane Swamp Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Blue, GemColor.Green
+        }),
+        ArcaneBlood("Arcane Blood Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Blue, GemColor.Red
+        }),
+        ArcaneBlade("Arcane Blade Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Blue, GemColor.Yellow
+        }),
+        ArcaneSpirit("Arcane Spirit Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Blue, GemColor.Purple
+        }),
+        ArcaneShield("Arcane Shield Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Blue, GemColor.Brown
+        }),
+        ArcaneStealth("Arcane Stealth Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Green
+        }),
+        ArcaneBeast("Arcane Beast Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Green, GemColor.Red
+        }),
+        ArcaneLight("Arcane Light Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Green, GemColor.Yellow
+        }),
+        ArcaneVenom("Arcane Venom Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Green, GemColor.Purple
+        }),
+        ArcaneForest("Arcane Forest Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Green, GemColor.Brown
+        }),
+        ArcaneRage("Arcane Rage Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Red
+        }),
+        ArcaneStorm("Arcane Storm Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Red, GemColor.Yellow
+        }),
+        ArcaneDark("Arcane Dark Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Red, GemColor.Purple
+        }),
+        ArcaneLava("Arcane Lava Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Red, GemColor.Brown
+        }),
+        ArcaneSummer("Arcane Summer Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Yellow
+        }),
+        ArcanePlains("Arcane Plains Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Yellow, GemColor.Purple
+        }),
+        ArcaneMountain("Arcane Mountain Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Yellow, GemColor.Brown
+        }),
+        ArcaneDeath("Arcane Death Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Purple
+        }),
+        ArcaneSkull("Arcane Skull Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Purple, GemColor.Brown
+        }),
+        ArcaneDeep("Arcane Deep Traitstone", Rarity.Arcane, new GemColor[]
+        {
+            GemColor.Brown
+        }),
+        Celestial("Celestial Traitstone", Rarity.Celestial, new GemColor[]
+        {
+            GemColor.Blue, GemColor.Green, GemColor.Red, GemColor.Yellow, GemColor.Purple, GemColor.Brown
+        });
+
         public final String prettyName;
         public final Rarity rarity;
         public final GemColor[] colors;
-        
+
         private Traitstone(String name, Rarity r, GemColor[] c)
         {
             prettyName = name;
             rarity = r;
             colors = c;
         }
-        
+
         @Override
         public String toString()
         {
             return prettyName;
         }
-        
+
         public int getId()
         {
             return ordinal();
         }
     }
-    
+
     public TraitstoneCommand()
     {
         commandName = "traitstone";
     }
-        
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -127,10 +243,10 @@ public class TraitstoneCommand extends KrystaraCommand
             chnl.sendMessage("You need to specify a name or color to search for!");
             return;
         }
-        
+
         ArrayList<Traitstone> traitstones = parseArguments(arguments);
         String searchTerm = String.join(" ", arguments);
-        
+
         if (traitstones.isEmpty())
         {
             chnl.sendMessage("No traitstone `" + searchTerm + "` found, " + sdr.mention());
@@ -149,6 +265,7 @@ public class TraitstoneCommand extends KrystaraCommand
 
     /**
      * Parses the arguments list for a list of traitstones that match.
+     *
      * @param arguments User-supplied arguments.
      * @return The list of traitstones that match the arguments.
      */
@@ -163,7 +280,7 @@ public class TraitstoneCommand extends KrystaraCommand
         {
             boolean found = false;
             arg = arg.toLowerCase();
-            
+
             // If the argument exactly matches a color, track that color
             for (GemColor color : GemColor.values())
             {
@@ -177,7 +294,7 @@ public class TraitstoneCommand extends KrystaraCommand
                     break;
                 }
             }
-            
+
             // If the argument exactly matches a rarity, and we don't already
             // have a rarity, track that rarity
             if (!found && (rarityArg == null))
@@ -192,20 +309,20 @@ public class TraitstoneCommand extends KrystaraCommand
                     }
                 }
             }
-            
+
             // If neither is the case, assume the string is a name match
             if (!found)
             {
                 nameArgs.add(arg);
             }
         }
-        
+
         // If no rarity was specified, assume one
         if (rarityArg == null)
         {
             rarityArg = Rarity.Arcane;
         }
-        
+
         // Sort the user's color choices
         colorArgs.sort((c1, c2) -> c1.compareTo(c2));
 
@@ -217,7 +334,7 @@ public class TraitstoneCommand extends KrystaraCommand
             {
                 continue;
             }
-            
+
             boolean found = true;
 
             // Match text in the name
@@ -230,7 +347,7 @@ public class TraitstoneCommand extends KrystaraCommand
                     break;
                 }
             }
-            
+
             if (found)
             {
                 if (!colorArgs.isEmpty())
@@ -243,7 +360,7 @@ public class TraitstoneCommand extends KrystaraCommand
                     }
                 }
             }
-            
+
             if (found)
             {
                 // Passed all criteria, so add the traitstone
@@ -252,9 +369,10 @@ public class TraitstoneCommand extends KrystaraCommand
         }
         return traitstones;
     }
-    
+
     /**
      * Gets the informational text associated with this traitstone.
+     *
      * @param traitstone The traitstone to get text for.
      * @param channel The current channel.
      * @return The informational text.
@@ -263,18 +381,18 @@ public class TraitstoneCommand extends KrystaraCommand
     {
         int id = traitstone.getId();
         ArrayList<String> kingdomNames = new ArrayList<>();
-        
+
         // Look for kingdoms that have this traitstone set as their ExploreRune
         for (Object oKingdom : GameData.arrayKingdoms)
         {
-            JSONObject kingdom = (JSONObject)oKingdom;
+            JSONObject kingdom = (JSONObject) oKingdom;
             if (kingdom.has("ExploreRune") && !kingdom.isNull("ExploreRune") && kingdom.getInt("ExploreRune") == id)
             {
                 // Found one, add the name to the list
                 kingdomNames.add(kingdom.getString("Name"));
             }
         }
-        
+
         // Look for troops and classes that have this traitstone as a cost, and accumulate costs
         HashMap<JSONObject, Integer> troopNeededMap = getTraitstoneNeededMap(GameData.arrayTroops, id);
         int totalTroopAmountNeeded = getTraitstoneNeededCount(troopNeededMap);
@@ -283,7 +401,7 @@ public class TraitstoneCommand extends KrystaraCommand
         HashMap<JSONObject, Integer> classNeededMap = getTraitstoneNeededMap(GameData.arrayClasses, id);
         int totalClassAmountNeeded = getTraitstoneNeededCount(classNeededMap);
         ArrayList<String> classNeededNames = getTraitstoneNeededNames(classNeededMap);
-        
+
         String result = "";
 
         result += "**" + traitstone.prettyName + "** ";
@@ -293,7 +411,6 @@ public class TraitstoneCommand extends KrystaraCommand
         String[] colors = Arrays.stream(traitstone.colors).map(c -> guild.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
         result += String.join(" ", colors) + "\n";
 
-        
         // Add relevant output if found
         if (!kingdomNames.isEmpty())
         {
@@ -303,7 +420,7 @@ public class TraitstoneCommand extends KrystaraCommand
         {
             final int LIMIT = 50;
             int size = troopNeededNames.size();
-            
+
             if (size > LIMIT)
             {
                 String extraText = "... (" + (size - LIMIT) + " more)";
@@ -326,7 +443,7 @@ public class TraitstoneCommand extends KrystaraCommand
         ArrayList<String> troopNeededNames = new ArrayList<>();
         for (Object oTroop : troopNeededMap.keySet())
         {
-            JSONObject troop = (JSONObject)oTroop;
+            JSONObject troop = (JSONObject) oTroop;
             int amountNeeded = troopNeededMap.get(troop);
             troopNeededNames.add(troop.getString("Name") + " (" + amountNeeded + ")");
         }
@@ -349,14 +466,14 @@ public class TraitstoneCommand extends KrystaraCommand
         HashMap<JSONObject, Integer> troopNeededMap = new HashMap<>();
         for (Object oTroop : troops)
         {
-            JSONObject troop = (JSONObject)oTroop;
+            JSONObject troop = (JSONObject) oTroop;
             JSONArray traitTable = troop.getJSONObject("TraitTable").getJSONArray("Runes");
             for (Object oTraitCosts : traitTable)
             {
-                JSONArray traitCosts = (JSONArray)oTraitCosts;
+                JSONArray traitCosts = (JSONArray) oTraitCosts;
                 for (Object oTraitCost : traitCosts)
                 {
-                    JSONObject traitCost = (JSONObject)oTraitCost;
+                    JSONObject traitCost = (JSONObject) oTraitCost;
                     if (traitCost.getInt("Id") == id)
                     {
                         // Add the trait's costs to the running total
@@ -393,7 +510,7 @@ public class TraitstoneCommand extends KrystaraCommand
     {
         return "traitstone";
     }
-    
+
     @Override
     public CommandType getCommandType()
     {

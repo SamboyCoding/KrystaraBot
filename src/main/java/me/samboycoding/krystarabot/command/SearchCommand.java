@@ -15,6 +15,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class SearchCommand extends KrystaraCommand
 {
+
     public SearchCommand()
     {
         commandName = "search";

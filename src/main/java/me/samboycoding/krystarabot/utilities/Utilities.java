@@ -63,19 +63,21 @@ public class Utilities
 
         main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", bldr.build(), false);
     }
-    
+
     @FunctionalInterface
     public interface WaitCallback
     {
+
         public void run() throws InterruptedException;
     }
-    
+
     @FunctionalInterface
     private interface SafeOperation
     {
+
         public IMessage run() throws MissingPermissionsException, RateLimitException, DiscordException;
     }
-    
+
     private static IMessage doSafeOperation(SafeOperation op, WaitCallback waitCallback)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
@@ -84,57 +86,56 @@ public class Utilities
             try
             {
                 return op.run();
-            }
-            catch (RateLimitException e)
+            } catch (RateLimitException e)
             {
                 try
                 {
                     // We're rate-limited; wait and try again
                     waitCallback.run();
+                } catch (InterruptedException e2)
+                {
                 }
-                catch (InterruptedException e2)
-                {}
             }
         }
-        
+
         // One last hail-Mary!  Let this throw if we're still rate-limited
         return op.run();
     }
-    
+
     public static IMessage safeSendMessage(IChannel channel, String messageBody, WaitCallback waitCallback)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         return doSafeOperation(() -> channel.sendMessage(messageBody), waitCallback);
     }
-    
+
     public static IMessage safeSendFile(IChannel channel, String content, boolean tts, InputStream file, String fileName, WaitCallback waitCallback)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         return doSafeOperation(() -> channel.sendFile(content, tts, file, fileName), waitCallback);
     }
- 
-    public static void safeDeleteMessage(IMessage message, WaitCallback waitCallback) 
+
+    public static void safeDeleteMessage(IMessage message, WaitCallback waitCallback)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
-        doSafeOperation(() -> 
-            {
-                message.delete();
-                return null;
-            }, waitCallback);
+        doSafeOperation(() ->
+        {
+            message.delete();
+            return null;
+        }, waitCallback);
     }
-    
-    public static IMessage sendDisambiguationMessage(IChannel channel, String prefix, Iterable<String> candidates) 
+
+    public static IMessage sendDisambiguationMessage(IChannel channel, String prefix, Iterable<String> candidates)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         final int MAX_CANDIDATES = 10;
-        
+
         Iterator<String> iterator = candidates.iterator();
         String candidateText = prefix + " Possible results:\n\n";
         int i = 0;
         while (iterator.hasNext())
         {
             String thisText = iterator.next();
-            
+
             if (i < MAX_CANDIDATES)
             {
                 candidateText += "    - " + thisText + "\n";
@@ -148,27 +149,28 @@ public class Utilities
         candidateText += "\nPlease refine your search.";
         return channel.sendMessage(candidateText);
     }
-    
+
     /**
      * Sends the specified message to the specified channel, splitting it up if
      * necessary to get it below the 2000 char limit
      *
      * @param channel The channel to send it to
      * @param messageParts The parts of the message to send
-     * @param waitCallback The method to be called to wait between messages, if any
+     * @param waitCallback The method to be called to wait between messages, if
+     * any
      * @throws DiscordException If there is a miscellaneous error during sending
      * @throws RateLimitException If the bot is rate-limited
      * @throws MissingPermissionsException If the bot is missing the
      * SENDMESSAGES permission
      */
-    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts, WaitCallback waitCallback) 
+    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts, WaitCallback waitCallback)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         final int CHUNK_MAX_LENGTH = 2000;
 
         String chunk = "";
         Iterator<String> messageIterator = messageParts.iterator();
-        
+
         while (messageIterator.hasNext())
         {
             String nextMsg = messageIterator.next();
@@ -176,13 +178,13 @@ public class Utilities
             {
                 safeSendMessage(channel, chunk, waitCallback);
                 chunk = "";
-                
+
                 try
                 {
                     waitCallback.run();
+                } catch (InterruptedException e)
+                {
                 }
-                catch (InterruptedException e)
-                {}
             }
 
             chunk += nextMsg + "\n";
@@ -205,10 +207,12 @@ public class Utilities
      * @throws MissingPermissionsException If the bot is missing the
      * SENDMESSAGES permission
      */
-    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts) 
+    public static void sendLargeMessage(IChannel channel, Iterable<String> messageParts)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
-        sendLargeMessage(channel, messageParts, () -> {});
+        sendLargeMessage(channel, messageParts, () ->
+        {
+        });
     }
 
     /**
@@ -305,9 +309,11 @@ public class Utilities
     }
 
     /**
-     * Very complicated function to get the seed from a random. Thanks StackExchange!
+     * Very complicated function to get the seed from a random. Thanks
+     * StackExchange!
+     *
      * @param random The random to get the seed for
-     * @return  The seed for the random.
+     * @return The seed for the random.
      */
     public static long getSeed(Random random)
     {

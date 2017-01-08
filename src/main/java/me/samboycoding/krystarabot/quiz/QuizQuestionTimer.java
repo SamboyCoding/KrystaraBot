@@ -28,6 +28,7 @@ import sx.blah.discord.util.RateLimitException;
  */
 public class QuizQuestionTimer implements Runnable
 {
+
     IChannel chnl;
 
     private QuizQuestion q;
@@ -42,12 +43,12 @@ public class QuizQuestionTimer implements Runnable
     private final QuizQuestionType questionTypeFilter;
     private final long randomSeed;
     private final QuizHandler qh;
-    
+
     private final ArrayList<IMessage> chatterMessages = new ArrayList<>();
     private final ArrayList<QuizSubmitEntry> submissions = new ArrayList<>();
 
     private final Utilities.WaitCallback waitCallback;
-    
+
     public enum QuizPhase
     {
         Introduction,
@@ -91,23 +92,24 @@ public class QuizQuestionTimer implements Runnable
         difficultyFilter = difficulty;
         questionTypeFilter = questionType;
         randomSeed = seed;
-        
+
         waitCallback = () -> sleepFor(500);
     }
-    
+
     private static class QuestionLogEntry
     {
+
         public final QuizQuestion.Difficulty difficulty;
         public final long seed;
-        
+
         public QuestionLogEntry(QuizQuestion.Difficulty d, long s)
         {
             difficulty = d;
             seed = s;
         }
     }
-    
-    private IMessage sendCountdownMessage(String formatString, int seconds) 
+
+    private IMessage sendCountdownMessage(String formatString, int seconds)
             throws MissingPermissionsException, RateLimitException, DiscordException, InterruptedException
     {
         String messageString = String.format(formatString, seconds);
@@ -116,12 +118,12 @@ public class QuizQuestionTimer implements Runnable
         {
             sleepFor(1000);
             seconds--;
-            
+
             try
             {
                 messageString = String.format(formatString, seconds);
                 msg.edit(messageString);
-            } catch(RateLimitException e)
+            } catch (RateLimitException e)
             {
                 sleepFor(500);
                 //Ignore and move on, with an extra 1/2 second wait.
@@ -129,8 +131,8 @@ public class QuizQuestionTimer implements Runnable
         }
         return msg;
     }
-    
-    private void safeDeleteMessage(IMessage message) 
+
+    private void safeDeleteMessage(IMessage message)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         if (message != null)
@@ -138,18 +140,18 @@ public class QuizQuestionTimer implements Runnable
             Utilities.safeDeleteMessage(message, waitCallback);
         }
     }
-    
+
     @Override
     public void run()
     {
         try
         {
             sendIntro();
-            
+
             ArrayList<QuizQuestion.Difficulty> questionDifficulties = getQuestionDifficulties();
             ArrayList<QuestionLogEntry> questionLog = new ArrayList<>();
             ArrayList<String> quizLog = new ArrayList<>();
-            
+
             IMessage questionMessage = null;
             IMessage imageMessage = null;
             IMessage choicesMessage = null;
@@ -159,7 +161,7 @@ public class QuizQuestionTimer implements Runnable
             {
                 random.setSeed(randomSeed);
             }
-            
+
             for (int iQuestion = 0; iQuestion < questionDifficulties.size(); iQuestion++)
             {
                 // Count down to the next question
@@ -177,7 +179,7 @@ public class QuizQuestionTimer implements Runnable
                 safeDeleteMessage(choicesMessage);
                 safeDeleteMessage(imageMessage);
                 safeDeleteMessage(questionMessage);
-                
+
                 // Determine question difficulty
                 QuizQuestion.Difficulty difficulty = getDifficultyForQuestion(questionDifficulties, iQuestion);
 
@@ -205,7 +207,7 @@ public class QuizQuestionTimer implements Runnable
                 // Remove choices from the view
                 safeDeleteMessage(choicesMessage);
                 choicesMessage = null;
-                
+
                 // Show answers and scores
                 answerMessage = sendAnswerAndResults(question, quizLog);
             }
@@ -214,7 +216,7 @@ public class QuizQuestionTimer implements Runnable
             {
                 phase = QuizPhase.Completed;
             }
-            
+
             safeDeleteMessage(sendCountdownMessage("Results: %1$d seconds", 5));
             safeDeleteMessage(answerMessage);
             safeDeleteMessage(choicesMessage);
@@ -222,15 +224,15 @@ public class QuizQuestionTimer implements Runnable
             safeDeleteMessage(questionMessage);
 
             sendResults(quizLog, questionLog);
-            
+
         } catch (RateLimitException rle)
         {
             //Attempt to provide a meaningful error.
-            
+
             StackTraceElement[] st = rle.getStackTrace();
 
             boolean success = false;
-            
+
             for (StackTraceElement el : st)
             {
                 if (el.getClassName().equals(QuizQuestionTimer.class.getName()))
@@ -239,22 +241,20 @@ public class QuizQuestionTimer implements Runnable
                     success = true;
                 }
             }
-            
-            
-            if(!success)
+
+            if (!success)
             {
                 //Failed to provide meaningful error.
                 main.logToBoth("Rate limited, but not us, but happening in us?! For: " + rle.getRetryDelay() + ". Stacktrace: ");
                 rle.printStackTrace();
             }
-            
+
         } catch (InterruptedException ie)
         {
             try
             {
                 Utilities.safeSendMessage(chnl, "Quiz was stopped.", waitCallback);
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 e.printStackTrace();
             }
@@ -267,7 +267,7 @@ public class QuizQuestionTimer implements Runnable
             {
                 phase = QuizPhase.Completed;
             }
-            
+
             if (!isAborted)
             {
                 qh.handleQuestionTimerComplete();
@@ -281,12 +281,10 @@ public class QuizQuestionTimer implements Runnable
         if (difficultyFilter != null)
         {
             difficulty = difficultyFilter;
-        }
-        else if (questionTypeFilter != null)
+        } else if (questionTypeFilter != null)
         {
             difficulty = questionTypeFilter.difficulty;
-        }
-        else
+        } else
         {
             difficulty = questionDifficulties.get(iQuestion);
         }
@@ -300,12 +298,11 @@ public class QuizQuestionTimer implements Runnable
         if (questionTypeFilter != null)
         {
             question = factory.getQuestions(1, random, questionTypeFilter)[0];
-        }
-        else
+        } else
         {
             question = factory.getQuestions(1, random, difficulty)[0];
         }
-        
+
         synchronized (this)
         {
             q = question;
@@ -316,13 +313,13 @@ public class QuizQuestionTimer implements Runnable
         return question;
     }
 
-    private IMessage sendQuestion(QuizQuestion question, int iQuestion, ArrayList<String> quizLog) 
+    private IMessage sendQuestion(QuizQuestion question, int iQuestion, ArrayList<String> quizLog)
             throws MissingPermissionsException, DiscordException, RateLimitException
     {
         IMessage questionMessage;
         String pointString = getPointString(question.getDifficulty(), false);
-        String questionText = "**Question #" + (iQuestion+1) + ":**\n\n" + question.getQuestionText() +
-                " (" + pointString + ")\n";
+        String questionText = "**Question #" + (iQuestion + 1) + ":**\n\n" + question.getQuestionText()
+                + " (" + pointString + ")\n";
         String questionSecondaryText = question.getQuestionSecondaryText();
         if (!questionSecondaryText.isEmpty())
         {
@@ -333,7 +330,7 @@ public class QuizQuestionTimer implements Runnable
         return questionMessage;
     }
 
-    private IMessage sendImage(QuizQuestion question) 
+    private IMessage sendImage(QuizQuestion question)
             throws RateLimitException, DiscordException, MissingPermissionsException
     {
         IMessage imageMessage = null;
@@ -345,8 +342,7 @@ public class QuizQuestionTimer implements Runnable
                 InputStream imageStream = imageUrl.openStream();
                 String imageName = "image." + FilenameUtils.getExtension(imageUrl.getPath());
                 imageMessage = Utilities.safeSendFile(chnl, "", false, imageStream, imageName, waitCallback);
-            }
-            catch (IOException e)
+            } catch (IOException e)
             {
                 e.printStackTrace();
                 imageMessage = Utilities.safeSendMessage(chnl, imageUrl.toString(), waitCallback);
@@ -370,14 +366,14 @@ public class QuizQuestionTimer implements Runnable
         return msg;
     }
 
-    private IMessage sendChoices(QuizQuestion question, ArrayList<String> quizLog) 
+    private IMessage sendChoices(QuizQuestion question, ArrayList<String> quizLog)
             throws MissingPermissionsException, DiscordException, InterruptedException, RateLimitException
     {
         IMessage msg;
         String questionBody = "\n";
         for (int i = 0; i < QuizQuestion.ANSWER_COUNT; i++)
         {
-            questionBody += (i+1) + ") " + question.getAnswerText(i) + "\n";
+            questionBody += (i + 1) + ") " + question.getAnswerText(i) + "\n";
         }
         quizLog.add(questionBody);
         msg = Utilities.safeSendMessage(chnl, questionBody, waitCallback);
@@ -403,16 +399,16 @@ public class QuizQuestionTimer implements Runnable
         return questionDifficulties;
     }
 
-    private void sendResults(ArrayList<String> quizLog, ArrayList<QuestionLogEntry> questionLog) 
+    private void sendResults(ArrayList<String> quizLog, ArrayList<QuestionLogEntry> questionLog)
             throws IOException, MissingPermissionsException, RateLimitException, InterruptedException, DiscordException
     {
         quizLog.add("\nThe quiz is over! And the winner is...");
-        
+
         Utilities.sendLargeMessage(chnl, quizLog, waitCallback);
         sleepFor(1000);
-        
+
         main.quizH.ordered.putAll(main.quizH.unordered); //Sort.
-        
+
         String scores = "```\nName" + Utilities.repeatString(" ", 46) + "Score"
                 + "\n" + Utilities.repeatString("-", 80);
         int numDone = 0;
@@ -420,7 +416,7 @@ public class QuizQuestionTimer implements Runnable
         {
             Integer score = main.quizH.unordered.get(u);
             String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();;
-            
+
             main.databaseHandler.increaseUserQuizScore(u, chnl.getGuild(), score);
             if (numDone <= 10)
             {
@@ -428,18 +424,18 @@ public class QuizQuestionTimer implements Runnable
                 numDone++;
             }
         }
-        
+
         scores += "\n```";
-        
+
         sleepFor(1500);
-        
+
         Utilities.safeSendMessage(chnl, scores, waitCallback);
-        
+
         sleepFor(1000);
-        chnl.sendMessage("Thanks for playing!\n" +
-                "To play again, use the command `?quiz` in any channel.\n" +
-                "To see your total lifetime score, use the command `?userstats`.");
-        
+        chnl.sendMessage("Thanks for playing!\n"
+                + "To play again, use the command `?quiz` in any channel.\n"
+                + "To see your total lifetime score, use the command `?userstats`.");
+
         if (IDReference.ENVIRONMENT != IDReference.RuntimeEnvironment.LIVE)
         {
             String questionLogText = "Debug info (dev-server only):\n";
@@ -460,20 +456,20 @@ public class QuizQuestionTimer implements Runnable
 
         chnl.sendMessage("Welcome to the GoW Discord quiz!");
         sleepFor(2500);
-        chnl.sendMessage("You will be asked " + qCount + " questions, and will have " + qTimeSeconds +
-                " seconds to answer each question.");
+        chnl.sendMessage("You will be asked " + qCount + " questions, and will have " + qTimeSeconds
+                + " seconds to answer each question.");
         sleepFor(2500);
-        chnl.sendMessage("Questions are worth 1-3 points according to difficulty, and the" +
-                " first correct answer is worth 1 extra point.");
+        chnl.sendMessage("Questions are worth 1-3 points according to difficulty, and the"
+                + " first correct answer is worth 1 extra point.");
         sleepFor(2500);
-        chnl.sendMessage("Submit only the _number_ of the answer you think is correct (1-" +
-                QuizQuestion.ANSWER_COUNT + "). All other answers will not be counted.");
+        chnl.sendMessage("Submit only the _number_ of the answer you think is correct (1-"
+                + QuizQuestion.ANSWER_COUNT + "). All other answers will not be counted.");
         sleepFor(2500);
-        chnl.sendMessage("The person with the most points after " + qCount + " questions wins!\n\n" +
-                Utilities.repeatString("-", 40));
+        chnl.sendMessage("The person with the most points after " + qCount + " questions wins!\n\n"
+                + Utilities.repeatString("-", 40));
         sleepFor(2000);
     }
-    
+
     private void sleepFor(int timeout) throws InterruptedException
     {
         synchronized (abortSignal)
@@ -485,7 +481,7 @@ public class QuizQuestionTimer implements Runnable
             }
         }
     }
-    
+
     public void abort()
     {
         synchronized (abortSignal)
@@ -494,7 +490,7 @@ public class QuizQuestionTimer implements Runnable
             abortSignal.notify();
         }
     }
-    
+
     public void addChatterMessage(IMessage chatterMessage)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
@@ -503,31 +499,29 @@ public class QuizQuestionTimer implements Runnable
             if ((phase == QuizPhase.Pausing) || (phase == QuizPhase.Completed))
             {
                 chatterMessages.add(chatterMessage);
-            }
-            else
+            } else
             {
                 safeDeleteMessage(chatterMessage);
             }
         }
     }
-    
-    private void clearChatterMessages() 
+
+    private void clearChatterMessages()
             throws RateLimitException, MissingPermissionsException, DiscordException
     {
         ArrayList<IMessage> chatterMessagesCopy;
-        
+
         synchronized (this)
         {
             chatterMessagesCopy = new ArrayList<>(chatterMessages);
             chatterMessages.clear();
         }
-        
+
         for (IMessage chatterMessage : chatterMessagesCopy)
         {
             safeDeleteMessage(chatterMessage);
         }
     }
-
 
     public QuizSubmitResult submitAnswer(QuizQuestion question, IUser user, int answer)
     {
@@ -536,8 +530,7 @@ public class QuizQuestionTimer implements Runnable
             if (phase == QuizQuestionTimer.QuizPhase.Introduction)
             {
                 return QuizQuestionTimer.QuizSubmitResult.TooEarly;
-            }
-            else
+            } else
             {
                 if ((phase == QuizQuestionTimer.QuizPhase.Pausing) || (phase == QuizQuestionTimer.QuizPhase.Completed)
                         || (q != question))
@@ -572,14 +565,14 @@ public class QuizQuestionTimer implements Runnable
             return result;
         }
     }
-    
+
     private String getPointString(QuizQuestion.Difficulty difficulty, boolean wasFirst)
     {
         int points = difficulty.getPoints() + (wasFirst ? 1 : 0);
         String plural = (points > 1) ? "s" : "";
         return points + " pt" + plural;
     }
-    
+
     private String getCorrectUserText(QuizQuestion.Difficulty difficulty)
     {
         ArrayList<String> correctUserNames = new ArrayList<>();
@@ -588,7 +581,7 @@ public class QuizQuestionTimer implements Runnable
         String firstPointText = getPointString(difficulty, true);
         String pointText = getPointString(difficulty, false);
         String result;
-        
+
         synchronized (this)
         {
             for (QuizSubmitEntry entry : submissions)
@@ -602,21 +595,19 @@ public class QuizQuestionTimer implements Runnable
                     if (entry.result == QuizSubmitResult.FirstCorrect)
                     {
                         firstCorrectUserName = name;
-                    }
-                    else
+                    } else
                     {
                         correctUserNames.add(name);
                     }
                 }
             }
         }
-        
+
         if (firstCorrectUserName == null)
         {
             // Nobody got it correct
             result = "Correct answers: **Nobody!**";
-        }
-        else
+        } else
         {
             result = "Correct answers: **" + firstCorrectUserName + "** (" + firstPointText + ")";
             if (correctUserNames.size() > 0)

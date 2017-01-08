@@ -47,6 +47,7 @@ import sx.blah.discord.util.EmbedBuilder;
  */
 public class SqlTroopCommand extends QuestionCommand
 {
+
     public SqlTroopCommand()
     {
         commandName = "troop";
@@ -66,40 +67,40 @@ public class SqlTroopCommand extends QuestionCommand
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
-        
+
         try
         {
             String troopName = String.join(" ", arguments);
             Troop troop = GemsQueryRunner.runQueryForSingleResultByName(
-                chnl, 
-                "SELECT TroopStats.*, Kingdoms.Name AS KingdomName, "
-                + "     Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
-                + "     Spells.BoostRatioText AS SpellBoostRatioText, Spells.MagicScalingText AS SpellMagicScalingText, "
-                + "     Spells.Cost AS SpellCost, Troops.*"
-                + "FROM Troops "
-                + "INNER JOIN TroopStats ON TroopStats.TroopId=Troops.Id "
-                + "INNER JOIN Kingdoms ON Kingdoms.Id=Troops.KingdomId AND Kingdoms.Language=Troops.Language "
-                + "INNER JOIN Spells ON Spells.Id=Troops.SpellId AND Spells.Language=Troops.Language "
-                + "WHERE Troops.Language='en-US' AND Troops.Name LIKE ? AND Troops.ReleaseDate<NOW() "
-                + "ORDER BY Troops.Name", 
-                "troop", 
-                Troop.class, 
-                troopName
-                );
-            
+                    chnl,
+                    "SELECT TroopStats.*, Kingdoms.Name AS KingdomName, "
+                    + "     Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
+                    + "     Spells.BoostRatioText AS SpellBoostRatioText, Spells.MagicScalingText AS SpellMagicScalingText, "
+                    + "     Spells.Cost AS SpellCost, Troops.*"
+                    + "FROM Troops "
+                    + "INNER JOIN TroopStats ON TroopStats.TroopId=Troops.Id "
+                    + "INNER JOIN Kingdoms ON Kingdoms.Id=Troops.KingdomId AND Kingdoms.Language=Troops.Language "
+                    + "INNER JOIN Spells ON Spells.Id=Troops.SpellId AND Spells.Language=Troops.Language "
+                    + "WHERE Troops.Language='en-US' AND Troops.Name LIKE ? AND Troops.ReleaseDate<NOW() "
+                    + "ORDER BY Troops.Name",
+                    "troop",
+                    Troop.class,
+                    troopName
+            );
+
             if (troop == null)
             {
                 return;
             }
-            
+
             QueryRunner run = GemsQueryRunner.getQueryRunner();
             ResultSetHandler<List<Trait>> traitHandler = new BeanListHandler<>(Trait.class);
             List<Trait> traits = run.query("SELECT Traits.* FROM TroopTraits "
-                + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code "
-                + "WHERE Traits.Language='en-US' AND TroopTraits.TroopId=? AND TroopTraits.CostIndex=0 "
-                + "ORDER BY TraitIndex", traitHandler,
-                troop.getId()
-                );
+                    + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code "
+                    + "WHERE Traits.Language='en-US' AND TroopTraits.TroopId=? AND TroopTraits.CostIndex=0 "
+                    + "ORDER BY TraitIndex", traitHandler,
+                    troop.getId()
+            );
 
             String spellDesc = troop.getSpellDescription();
             String spellMagicScalingText = troop.getSpellMagicScalingText();
@@ -108,8 +109,7 @@ public class SqlTroopCommand extends QuestionCommand
                 if (!spellDesc.contains("{2}"))
                 {
                     spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
-                }
-                else
+                } else
                 {
                     spellDesc = spellDesc.replace("{1}", "(half)");
                     spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
@@ -127,35 +127,33 @@ public class SqlTroopCommand extends QuestionCommand
             String emojiLife = g.getEmojiByName("gow_life").toString();
             String emojiAttack = g.getEmojiByName("gow_attack").toString();
             String emojiMagic = g.getEmojiByName("gow_magic").toString();
-            
+
             GemColor[] gemColors = GemColor.fromInteger(troop.getColors());
             String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
 
             String[] traitNames = traits.stream().map(t -> t.getName()).toArray(String[]::new);
-            
+
             String info = "";
             info += troop.getRarity() + " _" + troop.getKingdomName() + "_ " + troop.getType() + "\n";
             info += "(" + String.join(", ", traitNames) + ")\n\n";
             info += "_" + troop.getSpellName() + "_ (" + troop.getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc + "\n\n";
 
-            info += emojiArmor + troop.getMaxArmor() + "   " + emojiLife + troop.getMaxLife() + 
-                "   " + emojiAttack + troop.getMaxAttack() + "   " + emojiMagic + troop.getMaxMagic() + "\n";
+            info += emojiArmor + troop.getMaxArmor() + "   " + emojiLife + troop.getMaxLife()
+                    + "   " + emojiAttack + troop.getMaxAttack() + "   " + emojiMagic + troop.getMaxMagic() + "\n";
             info += "_" + troop.getDescription() + "_";
 
             EmbedObject o = new EmbedBuilder()
-                .withDesc(info)
-                .withTitle(troop.getName())
-                .withUrl("http://ashtender.com/gems/troops/" + troop.getId())
-                .withThumbnail("http://ashtender.com/gems/assets/cards/" + troop.getFileBase() + ".jpg")
-                .build();
+                    .withDesc(info)
+                    .withTitle(troop.getName())
+                    .withUrl("http://ashtender.com/gems/troops/" + troop.getId())
+                    .withThumbnail("http://ashtender.com/gems/assets/cards/" + troop.getFileBase() + ".jpg")
+                    .build();
             chnl.sendMessage("", o, false);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             chnl.sendMessage("Credentials file could not be found.");
             throw e;
-        }
-        catch (SQLException e2)
+        } catch (SQLException e2)
         {
             chnl.sendMessage("Database query failed.");
             throw e2;

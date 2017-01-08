@@ -31,10 +31,10 @@ public class HelpCommand extends KrystaraCommand
         TreeMap<String, KrystaraCommand> cmdList = main.getCommands();
 
         ArrayList<String> helpText = new ArrayList<>();
-        
+
         helpText.add("Every command must start with '**?**' followed by the command name. Some commands have required or optional parameters shown in square brackets.\n\n"
                 + "Here is a list of all commands you can use:\n\n");
-        
+
         for (CommandType c : CommandType.values())
         {
             String cmdTypeHelp = "```\n";
@@ -60,7 +60,7 @@ public class HelpCommand extends KrystaraCommand
             cmdTypeHelp += "```\n";
             helpText.add(cmdTypeHelp);
         }
-        
+
         Utilities.sendLargeMessage(sdr.getOrCreatePMChannel(), helpText);
 
         //helpText += Utilities.repeatString("-", 60) + "```";

@@ -41,7 +41,7 @@ public class SqlTraitCommand extends KrystaraCommand
     {
         commandName = "trait";
     }
-        
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -50,47 +50,47 @@ public class SqlTraitCommand extends KrystaraCommand
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
-        
+
         try
         {
             String traitName = String.join(" ", arguments);
             Trait trait = GemsQueryRunner.runQueryForSingleResultByName(
-                chnl, 
-                "SELECT Traits.* "
-                + "FROM Traits "
-                + "WHERE Traits.Language='en-US' AND Traits.Name LIKE ? "
-                + "ORDER BY Traits.Name", 
-                "trait",
-                Trait.class, 
-                traitName
-                );
-            
+                    chnl,
+                    "SELECT Traits.* "
+                    + "FROM Traits "
+                    + "WHERE Traits.Language='en-US' AND Traits.Name LIKE ? "
+                    + "ORDER BY Traits.Name",
+                    "trait",
+                    Trait.class,
+                    traitName
+            );
+
             if (trait == null)
             {
                 return;
             }
-            
+
             QueryRunner run = GemsQueryRunner.getQueryRunner();
             ResultSetHandler<List<Troop>> troopHandler = new BeanListHandler<>(Troop.class);
             List<Troop> troops = run.query("SELECT Troops.Name "
-                + "FROM Troops "
-                + "INNER JOIN TroopTraits ON TroopTraits.TroopId=Troops.Id AND TroopTraits.CostIndex=0 "
-                + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code AND Traits.Language=Troops.Language "
-                + "WHERE Troops.Language='en-US' AND Traits.Code=? "
-                + "ORDER BY Troops.Name", troopHandler,
-                trait.getCode()
-                );
-                        
+                    + "FROM Troops "
+                    + "INNER JOIN TroopTraits ON TroopTraits.TroopId=Troops.Id AND TroopTraits.CostIndex=0 "
+                    + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code AND Traits.Language=Troops.Language "
+                    + "WHERE Troops.Language='en-US' AND Traits.Code=? "
+                    + "ORDER BY Troops.Name", troopHandler,
+                    trait.getCode()
+            );
+
             ResultSetHandler<List<HeroClass>> heroClassHandler = new BeanListHandler<>(HeroClass.class);
             List<HeroClass> heroClasses = run.query("SELECT Classes.Name "
-                + "FROM Classes "
-                + "INNER JOIN TroopTraits ON TroopTraits.TroopId=Classes.Id AND TroopTraits.CostIndex=0 "
-                + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code AND Traits.Language=Classes.Language "
-                + "WHERE Classes.Language='en-US' AND Traits.Code=? "
-                + "ORDER BY Classes.Name", heroClassHandler,
-                trait.getCode()
-                );
-                        
+                    + "FROM Classes "
+                    + "INNER JOIN TroopTraits ON TroopTraits.TroopId=Classes.Id AND TroopTraits.CostIndex=0 "
+                    + "INNER JOIN Traits ON Traits.Code=TroopTraits.Code AND Traits.Language=Classes.Language "
+                    + "WHERE Classes.Language='en-US' AND Traits.Code=? "
+                    + "ORDER BY Classes.Name", heroClassHandler,
+                    trait.getCode()
+            );
+
             String info = "**" + trait.getName() + ":** " + trait.getDescription() + "\n";
             if (!troops.isEmpty())
             {
@@ -103,13 +103,11 @@ public class SqlTraitCommand extends KrystaraCommand
                 info += "Used by: " + String.join(", ", heroClassNames) + "\n";
             }
             chnl.sendMessage(info);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             chnl.sendMessage("Credentials file could not be found.");
             throw e;
-        }
-        catch (SQLException e2)
+        } catch (SQLException e2)
         {
             chnl.sendMessage("Database query failed.");
             throw e2;
@@ -140,7 +138,7 @@ public class SqlTraitCommand extends KrystaraCommand
     {
         return "trait";
     }
-    
+
     @Override
     public CommandType getCommandType()
     {

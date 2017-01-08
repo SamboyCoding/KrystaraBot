@@ -54,24 +54,24 @@ public class SqlWeaponCommand extends KrystaraCommand
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
-        
+
         try
         {
             String weaponName = String.join(" ", arguments);
             Weapon weapon = GemsQueryRunner.runQueryForSingleResultByName(
-                chnl, 
-                "SELECT Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
-                + "     Spells.BoostRatioText AS SpellBoostRatioText, Spells.MagicScalingText AS SpellMagicScalingText, "
-                + "     Spells.Cost AS SpellCost, Spells.Id AS SpellId, Weapons.*"
-                + "FROM Weapons "
-                + "INNER JOIN Spells ON Spells.Id=Weapons.SpellId AND Spells.Language=Weapons.Language "
-                + "WHERE Weapons.Language='en-US' AND Weapons.Name LIKE ? AND Weapons.ReleaseDate<NOW() "
-                + "ORDER BY Weapons.Name", 
-                "weapon",
-                Weapon.class,
-                weaponName
-                );
-            
+                    chnl,
+                    "SELECT Spells.Name AS SpellName, Spells.Description AS SpellDescription, "
+                    + "     Spells.BoostRatioText AS SpellBoostRatioText, Spells.MagicScalingText AS SpellMagicScalingText, "
+                    + "     Spells.Cost AS SpellCost, Spells.Id AS SpellId, Weapons.*"
+                    + "FROM Weapons "
+                    + "INNER JOIN Spells ON Spells.Id=Weapons.SpellId AND Spells.Language=Weapons.Language "
+                    + "WHERE Weapons.Language='en-US' AND Weapons.Name LIKE ? AND Weapons.ReleaseDate<NOW() "
+                    + "ORDER BY Weapons.Name",
+                    "weapon",
+                    Weapon.class,
+                    weaponName
+            );
+
             if (weapon == null)
             {
                 return;
@@ -84,8 +84,7 @@ public class SqlWeaponCommand extends KrystaraCommand
                 if (!spellDesc.contains("{2}"))
                 {
                     spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
-                }
-                else
+                } else
                 {
                     spellDesc = spellDesc.replace("{1}", "(half)");
                     spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
@@ -99,7 +98,7 @@ public class SqlWeaponCommand extends KrystaraCommand
 
             //Emojis
             IGuild g = chnl.getGuild();
-            
+
             GemColor[] gemColors = GemColor.fromInteger(weapon.getColors());
             String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
 
@@ -108,20 +107,18 @@ public class SqlWeaponCommand extends KrystaraCommand
             info += weapon.getSpellName() + " (" + weapon.getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc;
 
             EmbedObject o = new EmbedBuilder()
-                .withDesc(info)
-                .withTitle(weapon.getName())
-                .withUrl("http://ashtender.com/gems/weapons/" + weapon.getId())
-                .withThumbnail("http://ashtender.com/gems/assets/spells/" + weapon.getSpellId() + ".jpg")
-                .build();
+                    .withDesc(info)
+                    .withTitle(weapon.getName())
+                    .withUrl("http://ashtender.com/gems/weapons/" + weapon.getId())
+                    .withThumbnail("http://ashtender.com/gems/assets/spells/" + weapon.getSpellId() + ".jpg")
+                    .build();
             chnl.sendMessage("", o, false);
-            
-        }
-        catch (IOException e)
+
+        } catch (IOException e)
         {
             chnl.sendMessage("Credentials file could not be found.");
             throw e;
-        }
-        catch (SQLException e2)
+        } catch (SQLException e2)
         {
             chnl.sendMessage("Database query failed.");
             throw e2;

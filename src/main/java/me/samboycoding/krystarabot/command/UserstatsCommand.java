@@ -24,16 +24,16 @@ public class UserstatsCommand extends KrystaraCommand
     {
         commandName = "userstats";
     }
-        
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if(!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             sdr.getOrCreatePMChannel().sendMessage("To reduce spam, userstats can only be used in the #bot-commands channel. Thanks!");
             return;
         }
-        
+
         IUser userstatsUsr;
         if (arguments.isEmpty())
         {
@@ -42,7 +42,7 @@ public class UserstatsCommand extends KrystaraCommand
         {
             String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
             userstatsUsr = chnl.getGuild().getUserByID(id);
-            if(userstatsUsr == null)
+            if (userstatsUsr == null)
             {
                 chnl.sendMessage("Invalid @mention! Please @mention a valid user!");
                 return;

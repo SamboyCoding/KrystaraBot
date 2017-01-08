@@ -28,6 +28,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class SqlSearchCommand extends KrystaraCommand
 {
+
     public SqlSearchCommand()
     {
         commandName = "search";
@@ -55,51 +56,51 @@ public class SqlSearchCommand extends KrystaraCommand
 
             ResultSetHandler<List<Troop>> troopHandler = new BeanListHandler<>(Troop.class);
             List<Troop> troops = run.query("SELECT Troops.Name FROM Troops "
-                + "WHERE Troops.Language='en-US' AND Troops.ReleaseDate<NOW() AND ((Troops.Name LIKE ?) OR (Troops.Name SOUNDS LIKE ?)) "
-                + "ORDER BY Troops.Name", troopHandler,
-                searchTerm + "%",
-                searchTerm
-                );
+                    + "WHERE Troops.Language='en-US' AND Troops.ReleaseDate<NOW() AND ((Troops.Name LIKE ?) OR (Troops.Name SOUNDS LIKE ?)) "
+                    + "ORDER BY Troops.Name", troopHandler,
+                    searchTerm + "%",
+                    searchTerm
+            );
             ResultSetHandler<List<Trait>> traitHandler = new BeanListHandler<>(Trait.class);
-            List<Trait> traits = run.query("SELECT Traits.Name, CONCAT_WS(', ', GROUP_CONCAT(Troops.Name ORDER BY Troops.Name SEPARATOR ', '), GROUP_CONCAT(Classes.Name ORDER BY Classes.Name SEPARATOR ', ')) AS Description FROM Traits " +
-                "LEFT JOIN TroopTraits ON TroopTraits.Code=Traits.Code AND TroopTraits.CostIndex=0 " +
-                "LEFT JOIN Troops ON Troops.Language=Traits.Language AND Troops.ReleaseDate<NOW() AND Troops.Id=TroopTraits.TroopId " +
-                "LEFT JOIN Classes ON Classes.Language=Traits.Language AND Classes.ReleaseDate<NOW() AND Classes.Id=TroopTraits.TroopId " +
-                "WHERE Traits.Language='en-US' AND ((Traits.Name LIKE ?) OR (Traits.Name SOUNDS LIKE ?))" +
-                "GROUP BY Traits.Code " +
-                "ORDER BY Traits.Name", traitHandler,
-                searchTerm + "%",
-                searchTerm
-                );
+            List<Trait> traits = run.query("SELECT Traits.Name, CONCAT_WS(', ', GROUP_CONCAT(Troops.Name ORDER BY Troops.Name SEPARATOR ', '), GROUP_CONCAT(Classes.Name ORDER BY Classes.Name SEPARATOR ', ')) AS Description FROM Traits "
+                    + "LEFT JOIN TroopTraits ON TroopTraits.Code=Traits.Code AND TroopTraits.CostIndex=0 "
+                    + "LEFT JOIN Troops ON Troops.Language=Traits.Language AND Troops.ReleaseDate<NOW() AND Troops.Id=TroopTraits.TroopId "
+                    + "LEFT JOIN Classes ON Classes.Language=Traits.Language AND Classes.ReleaseDate<NOW() AND Classes.Id=TroopTraits.TroopId "
+                    + "WHERE Traits.Language='en-US' AND ((Traits.Name LIKE ?) OR (Traits.Name SOUNDS LIKE ?))"
+                    + "GROUP BY Traits.Code "
+                    + "ORDER BY Traits.Name", traitHandler,
+                    searchTerm + "%",
+                    searchTerm
+            );
             ResultSetHandler<List<Spell>> spellHandler = new BeanListHandler<>(Spell.class);
             List<Spell> spells = run.query("SELECT Spells.Name, Troops.Name AS Description FROM Spells "
-                + "INNER JOIN Troops ON Troops.Language=Spells.Language AND Troops.SpellId=Spells.Id "
-                + "WHERE Spells.Language='en-US' AND Troops.ReleaseDate<NOW() AND ((Spells.Name LIKE ?) OR (Spells.Name SOUNDS LIKE ?)) "
-                + "ORDER BY Spells.Name", spellHandler,
-                searchTerm + "%",
-                searchTerm
-                );
+                    + "INNER JOIN Troops ON Troops.Language=Spells.Language AND Troops.SpellId=Spells.Id "
+                    + "WHERE Spells.Language='en-US' AND Troops.ReleaseDate<NOW() AND ((Spells.Name LIKE ?) OR (Spells.Name SOUNDS LIKE ?)) "
+                    + "ORDER BY Spells.Name", spellHandler,
+                    searchTerm + "%",
+                    searchTerm
+            );
             ResultSetHandler<List<Kingdom>> kingdomHandler = new BeanListHandler<>(Kingdom.class);
             List<Kingdom> kingdoms = run.query("SELECT Kingdoms.Name FROM Kingdoms "
-                + "WHERE Kingdoms.Language='en-US' AND Kingdoms.IsUsed AND ((Kingdoms.Name LIKE ?) OR (Kingdoms.Name SOUNDS LIKE ?)) "
-                + "ORDER BY Kingdoms.Name", kingdomHandler,
-                searchTerm + "%",
-                searchTerm
-                );
+                    + "WHERE Kingdoms.Language='en-US' AND Kingdoms.IsUsed AND ((Kingdoms.Name LIKE ?) OR (Kingdoms.Name SOUNDS LIKE ?)) "
+                    + "ORDER BY Kingdoms.Name", kingdomHandler,
+                    searchTerm + "%",
+                    searchTerm
+            );
             ResultSetHandler<List<HeroClass>> heroClassHandler = new BeanListHandler<>(HeroClass.class);
             List<HeroClass> heroClasses = run.query("SELECT Classes.Name FROM Classes "
-                + "WHERE Classes.Language='en-US' AND Classes.ReleaseDate<NOW() AND ((Classes.Name LIKE ?) OR (Classes.Name SOUNDS LIKE ?)) "
-                + "ORDER BY Classes.Name", heroClassHandler,
-                searchTerm + "%",
-                searchTerm
-                );
+                    + "WHERE Classes.Language='en-US' AND Classes.ReleaseDate<NOW() AND ((Classes.Name LIKE ?) OR (Classes.Name SOUNDS LIKE ?)) "
+                    + "ORDER BY Classes.Name", heroClassHandler,
+                    searchTerm + "%",
+                    searchTerm
+            );
             ResultSetHandler<List<Weapon>> weaponHandler = new BeanListHandler<>(Weapon.class);
             List<Weapon> weapons = run.query("SELECT Weapons.Name FROM Weapons "
-                + "WHERE Weapons.Language='en-US' AND Weapons.ReleaseDate<NOW() AND ((Weapons.Name LIKE ?) OR (Weapons.Name SOUNDS LIKE ?)) "
-                + "ORDER BY Weapons.Name", weaponHandler,
-                searchTerm + "%",
-                searchTerm
-                );
+                    + "WHERE Weapons.Language='en-US' AND Weapons.ReleaseDate<NOW() AND ((Weapons.Name LIKE ?) OR (Weapons.Name SOUNDS LIKE ?)) "
+                    + "ORDER BY Weapons.Name", weaponHandler,
+                    searchTerm + "%",
+                    searchTerm
+            );
             String[] troopNames = troops.stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
             String[] traitNames = traits.stream().map(t -> "    - " + t.getName() + " (" + t.getDescription() + ")").toArray(String[]::new);
             String[] spellNames = spells.stream().map(t -> "    - " + t.getName() + " (" + t.getDescription() + ")").toArray(String[]::new);
@@ -133,13 +134,11 @@ public class SqlSearchCommand extends KrystaraCommand
             }
 
             chnl.sendMessage(searchOutput);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             chnl.sendMessage("Credentials file could not be found.");
             throw e;
-        }
-        catch (SQLException e2)
+        } catch (SQLException e2)
         {
             chnl.sendMessage("Database query failed.");
             throw e2;

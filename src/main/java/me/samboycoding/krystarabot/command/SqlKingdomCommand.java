@@ -40,7 +40,7 @@ import sx.blah.discord.util.EmbedBuilder;
  */
 public class SqlKingdomCommand extends KrystaraCommand
 {
-    
+
     public SqlKingdomCommand()
     {
         commandName = "kingdom";
@@ -59,42 +59,42 @@ public class SqlKingdomCommand extends KrystaraCommand
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
-        
+
         try
         {
             String kingdomName = String.join(" ", arguments);
             Kingdom kingdom = GemsQueryRunner.runQueryForSingleResultByName(
-                chnl, 
-                "SELECT Kingdoms.*, Traitstones.Name AS ExploreTraitstoneName, Traitstones.Colors AS ExploreTraitstoneColors FROM Kingdoms "
-                + "LEFT JOIN Traitstones ON Kingdoms.ExploreTraitstoneId=Traitstones.Id AND Traitstones.Language=Kingdoms.Language "
-                + "WHERE Kingdoms.Language='en-US' AND Kingdoms.Name LIKE ? AND Kingdoms.IsUsed "
-                + "ORDER BY Kingdoms.Name", 
-                "kingdom", 
-                Kingdom.class, 
-                kingdomName
-                );
-            
+                    chnl,
+                    "SELECT Kingdoms.*, Traitstones.Name AS ExploreTraitstoneName, Traitstones.Colors AS ExploreTraitstoneColors FROM Kingdoms "
+                    + "LEFT JOIN Traitstones ON Kingdoms.ExploreTraitstoneId=Traitstones.Id AND Traitstones.Language=Kingdoms.Language "
+                    + "WHERE Kingdoms.Language='en-US' AND Kingdoms.Name LIKE ? AND Kingdoms.IsUsed "
+                    + "ORDER BY Kingdoms.Name",
+                    "kingdom",
+                    Kingdom.class,
+                    kingdomName
+            );
+
             if (kingdom == null)
             {
                 return;
             }
 
             boolean isFullKingdom = kingdom.getIsFullKingdom();
-            
+
             QueryRunner run = GemsQueryRunner.getQueryRunner();
             ResultSetHandler<List<Troop>> troopHandler = new BeanListHandler<>(Troop.class);
             List<Troop> troops = run.query("SELECT Troops.Name FROM Troops "
-                + "WHERE Troops.Language='en-US' AND Troops.KingdomId=? AND Troops.ReleaseDate<NOW() "
-                + "ORDER BY Name", troopHandler,
-                kingdom.getId()
-                );
+                    + "WHERE Troops.Language='en-US' AND Troops.KingdomId=? AND Troops.ReleaseDate<NOW() "
+                    + "ORDER BY Name", troopHandler,
+                    kingdom.getId()
+            );
 
             ResultSetHandler<List<Bonus>> bonusHandler = new BeanListHandler<>(Bonus.class);
             List<Bonus> bonuses = run.query("SELECT Bonuses.* FROM Bonuses "
-                + "WHERE Bonuses.Language='en-US' AND Bonuses.KingdomId=? "
-                + "ORDER BY TroopCount", bonusHandler,
-                kingdom.getId()
-                );
+                    + "WHERE Bonuses.Language='en-US' AND Bonuses.KingdomId=? "
+                    + "ORDER BY TroopCount", bonusHandler,
+                    kingdom.getId()
+            );
 
             //Emojis
             IGuild g = chnl.getGuild();
@@ -110,12 +110,12 @@ public class SqlKingdomCommand extends KrystaraCommand
             {
                 emojiLevelStat = g.getEmojiByName("gow_" + kingdom.getLevelStat()).toString();
             }
-            
+
             GemColor[] gemColors = GemColor.fromInteger(kingdom.getExploreTraitstoneColors());
             String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
 
             String[] troopNames = troops.stream().map(t -> t.getName()).toArray(String[]::new);
-            
+
             String info = "";
             info += "Troops (" + troopNames.length + "): " + String.join(", ", troopNames) + "\n";
             if (isFullKingdom)
@@ -150,26 +150,24 @@ public class SqlKingdomCommand extends KrystaraCommand
             {
                 info += "\n";
                 info += "**Tribute**\n";
-                info += emojiGold + kingdom.getTributeGold() + "   " + emojiSouls + kingdom.getTributeSouls() + "   " +
-                    emojiGlory + kingdom.getTributeGlory() + "\n\n";
+                info += emojiGold + kingdom.getTributeGold() + "   " + emojiSouls + kingdom.getTributeSouls() + "   "
+                        + emojiGlory + kingdom.getTributeGlory() + "\n\n";
                 info += "Kingdom level 10 grants +1" + emojiLevelStat + " to all troops.\n";
                 info += "Exploration traitstone: " + kingdom.getExploreTraitstoneName() + " (" + String.join(" ", gemColorEmojis) + ")\n";
             }
 
             EmbedObject o = new EmbedBuilder()
-                .withDesc(info)
-                .withTitle(kingdom.getName())
-                .withUrl("http://ashtender.com/gems/kingdoms/" + kingdom.getId())
-                .withThumbnail("http://ashtender.com/gems/assets/shields/" + kingdom.getFileBase() + ".png")
-                .build();
+                    .withDesc(info)
+                    .withTitle(kingdom.getName())
+                    .withUrl("http://ashtender.com/gems/kingdoms/" + kingdom.getId())
+                    .withThumbnail("http://ashtender.com/gems/assets/shields/" + kingdom.getFileBase() + ".png")
+                    .build();
             chnl.sendMessage("", o, false);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             chnl.sendMessage("Credentials file could not be found.");
             throw e;
-        }
-        catch (SQLException e2)
+        } catch (SQLException e2)
         {
             chnl.sendMessage("Database query failed.");
             throw e2;

@@ -17,6 +17,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class NewcodeCommand extends KrystaraCommand
 {
+
     public NewcodeCommand()
     {
         commandName = "newcode";
@@ -25,12 +26,12 @@ public class NewcodeCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if(!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             sdr.getOrCreatePMChannel().sendMessage("To reduce spam, newcode can only be used in the #bot-commands channel. Thanks!");
             return;
         }
-        
+
         String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
         if (arguments.size() < 1)
         {
@@ -47,10 +48,10 @@ public class NewcodeCommand extends KrystaraCommand
             }
             main.codes.addCode(code);
             Utilities.logEvent(LogType.NEWCODE, "**" + nameOfSender + "** posted '" + code + "' as new code.");
-            
-            for(IUser usr : chnl.getGuild().getUsers())
+
+            for (IUser usr : chnl.getGuild().getUsers())
             {
-                if(main.databaseHandler.getReceivesCodes(chnl.getGuild(), usr))
+                if (main.databaseHandler.getReceivesCodes(chnl.getGuild(), usr))
                 {
                     usr.getOrCreatePMChannel().sendMessage("New code: `" + code + "`");
                 }

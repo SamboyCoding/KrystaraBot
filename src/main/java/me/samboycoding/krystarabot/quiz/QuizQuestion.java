@@ -13,20 +13,21 @@ import java.util.Random;
  */
 public abstract class QuizQuestion
 {
+
     public static enum Difficulty
     {
         Easy,
         Moderate,
         Hard,
         Unused;
-        
+
         public static final int Count = values().length;
-        
+
         public static Difficulty fromInteger(int x)
         {
             return values()[x];
         }
-        
+
         public static Difficulty fromString(String s)
         {
             for (Difficulty d : values())
@@ -46,18 +47,22 @@ public abstract class QuizQuestion
     }
 
     public final static int ANSWER_COUNT = 4;
-    
+
     public abstract String getQuestionText();
+
     public abstract String getAnswerText(int index);
+
     public abstract int getCorrectAnswerIndex();
+
     public abstract Difficulty getDifficulty();
+
     public abstract long getRandomSeed();
 
     public String getQuestionSecondaryText()
     {
         return "";
     }
-    
+
     public URL getQuestionImageUrl()
     {
         return null;

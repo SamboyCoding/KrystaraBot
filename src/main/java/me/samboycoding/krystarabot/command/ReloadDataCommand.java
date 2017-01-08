@@ -17,7 +17,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class ReloadDataCommand extends KrystaraCommand
 {
-    
+
     public ReloadDataCommand()
     {
         commandName = "reload-data";

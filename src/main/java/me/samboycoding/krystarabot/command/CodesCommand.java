@@ -16,7 +16,7 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class CodesCommand extends KrystaraCommand
 {
-    
+
     public CodesCommand()
     {
         commandName = "codes";
@@ -39,8 +39,8 @@ public class CodesCommand extends KrystaraCommand
         }
         msg.delete();
         sdr.getOrCreatePMChannel().sendMessage("Currently \"Alive\" codes: `" + codes.toString().replace("[", "").replace("]", "").replace("\"", "") + "`.");
-        */
-        
+         */
+
         sdr.getOrCreatePMChannel().sendMessage("As part of a recent update, `?codes` and `?dead` have been removed. This was MrSnake's decision as admin of the server, and you must now register your interest in receiving codes by doing `?coderegister yes`. Dead code alerts have been removed - they felt too cheaty. Thanks!");
         msg.delete();
     }

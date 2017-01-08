@@ -54,8 +54,8 @@ public class TroopCommand extends KrystaraCommand
             }
             if (results.size() > 5)
             {
-               chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
-               return;
+                chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
+                return;
             }
             if (results.size() > 1)
             {

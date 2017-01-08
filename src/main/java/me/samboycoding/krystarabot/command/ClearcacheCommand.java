@@ -21,7 +21,7 @@ public class ClearcacheCommand extends KrystaraCommand
     {
         commandName = "clearcache";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {

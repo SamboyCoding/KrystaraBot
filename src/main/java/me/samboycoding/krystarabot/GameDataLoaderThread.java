@@ -141,7 +141,7 @@ public class GameDataLoaderThread implements Runnable
                         {
                             found = true;
                             trp2.put("Kingdom", kngdom.getString("Name"));
-                            
+
                             //Add the troop to the kingdom
                             if (!kngdom.has("Troops"))
                             {
@@ -297,15 +297,15 @@ public class GameDataLoaderThread implements Runnable
             int numSpellsBeforeWeapons = newSpells.length();
             GameData.arraySpells = newSpells;
             main.logToBoth("[Game Data Loader] Loaded " + GameData.arraySpells.length() + " spells");
-            
+
             JSONArray weapons = rawData.getJSONArray("Weapons");
             JSONArray newWeapons = new JSONArray();
-            
-            for(Object w : weapons)
+
+            for (Object w : weapons)
             {
                 JSONObject weapon = (JSONObject) w;
                 JSONObject newWeapon = new JSONObject();
-                
+
                 newWeapon.put("Name", weapon.getString("Name"));
                 newWeapon.put("Id", weapon.getInt("Id"));
                 newWeapon.put("ManaColors", weapon.getJSONObject("ManaColors"));
@@ -313,20 +313,20 @@ public class GameDataLoaderThread implements Runnable
                 newWeapon.put("Spell", weapon.getJSONObject("Spell"));
                 newWeapon.put("WeaponRarity", weapon.getString("WeaponRarity"));
                 newWeapon.put("IsWeapon", true);
-                
+
                 JSONObject weaponSpell = new JSONObject();
-                
+
                 weaponSpell.put("Name", weapon.getJSONObject("Spell").getString("Name"));
                 weaponSpell.put("Description", getMagicValue(weapon, "Magic"));
                 weaponSpell.put("Cost", weapon.getJSONObject("Spell").getInt("Cost"));
-                
+
                 GameData.arraySpells.put(weaponSpell);
-                
+
                 newWeapons.put(newWeapon);
             }
-            
+
             GameData.arrayWeapons = newWeapons;
-            
+
             main.logToBoth("[Game Data Loader] Loaded " + GameData.arrayWeapons.length() + " weapons.");
             main.logToBoth("[Game Data Loader] Loaded an additional " + (GameData.arraySpells.length() - numSpellsBeforeWeapons) + " spells from weapon data.");
 

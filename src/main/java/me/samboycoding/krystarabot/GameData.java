@@ -25,8 +25,10 @@ public class GameData
 
     /**
      * Entry point for data importing by other classes.
+     *
      * @throws IOException If the file could not be read.
-     * @deprecated Should be handled by {@link me.samboycoding.krystarabot.GameDataLoaderThread} instead.
+     * @deprecated Should be handled by
+     * {@link me.samboycoding.krystarabot.GameDataLoaderThread} instead.
      */
     @Deprecated
     public void importData() throws IOException
@@ -59,7 +61,9 @@ public class GameData
     }
 
     /**
-     * Gets the value for whatever property passed at level 20, using the original value specified, plus the increases + any acensions
+     * Gets the value for whatever property passed at level 20, using the
+     * original value specified, plus the increases + any acensions
+     *
      * @param original The original value for the property (at level 1)
      * @param increases The increases array for the property
      * @param ascensions The ascensions array for the property
@@ -91,9 +95,11 @@ public class GameData
         }
         return res;
     }
-    
+
     /**
-     * Gets the value for whatever property passed at level 10, using the original value specified, plus the increases up to level 10
+     * Gets the value for whatever property passed at level 10, using the
+     * original value specified, plus the increases up to level 10
+     *
      * @param original The original value for the property (at level 1)
      * @param increases The increases array for the property
      * @return The value for the property at level 20.
@@ -150,7 +156,7 @@ public class GameData
         }
         return troop;
     }
-    
+
     public JSONObject getTroopById(int id)
     {
         for (Iterator<Object> it = arrayTroops.iterator(); it.hasNext();)
@@ -163,7 +169,7 @@ public class GameData
         }
         return null;
     }
-    
+
     public JSONObject getWeaponById(int id)
     {
         for (Iterator<Object> it = arrayWeapons.iterator(); it.hasNext();)
@@ -176,7 +182,7 @@ public class GameData
         }
         return null;
     }
-    
+
     public JSONObject getWeaponByName(String traitName)
     {
         for (Iterator<Object> it = arrayWeapons.iterator(); it.hasNext();)
@@ -238,7 +244,7 @@ public class GameData
         for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
         {
             JSONObject checkKingdom = (JSONObject) it.next();
-            if(checkKingdom.isNull("Name"))
+            if (checkKingdom.isNull("Name"))
             {
                 main.logToBoth("[Warning] Ignoring kingdom with null name; it's reference name is " + checkKingdom.getString("ReferenceName"));
                 continue;
@@ -266,7 +272,7 @@ public class GameData
 
         return res;
     }
-    
+
     public ArrayList<String> searchForWeapon(String searchTerm)
     {
         ArrayList<String> res = new ArrayList<>();
@@ -282,20 +288,20 @@ public class GameData
 
         return res;
     }
-    
+
     public JSONObject getKingdomFromBanner(String searchTerm)
     {
         for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
         {
             JSONObject kingdom = (JSONObject) it.next();
             String bannerName = kingdom.getString("BannerName");
-            
+
             if (bannerName.toLowerCase().equals(searchTerm.toLowerCase()))
             {
                 return kingdom;
             }
         }
-        
+
         return null;
     }
 
@@ -314,33 +320,34 @@ public class GameData
 
         return res;
     }
-    
+
     /**
      * Searches for a banner, EITHER BY BANNER NAME OR KINGDOM NAME.
+     *
      * @param searchTerm The banner/kingdom name to search for.
      * @return An arraylist containing all results.
      */
     public ArrayList<String> searchForBanner(String searchTerm)
     {
         ArrayList<String> res = new ArrayList<>();
-        
+
         for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
         {
             JSONObject kingdom = (JSONObject) it.next();
-            if(kingdom.isNull("BannerName") || kingdom.isNull("Name"))
+            if (kingdom.isNull("BannerName") || kingdom.isNull("Name"))
             {
                 main.logToBoth("[Warning] Ignoring kingdom with null name; it's reference name is " + kingdom.getString("ReferenceName"));
                 continue;
             }
-            
+
             String bannerName = kingdom.getString("BannerName");
             String kingdomName = kingdom.getString("Name");
-            if(bannerName.toLowerCase().contains(searchTerm.toLowerCase()) || kingdomName.toLowerCase().replace("'", "").contains(searchTerm.toLowerCase().replace("'", "")))
+            if (bannerName.toLowerCase().contains(searchTerm.toLowerCase()) || kingdomName.toLowerCase().replace("'", "").contains(searchTerm.toLowerCase().replace("'", "")))
             {
                 res.add(bannerName);
             }
         }
-        
+
         return res;
     }
 
@@ -383,7 +390,7 @@ public class GameData
         for (Iterator<Object> it = arrayKingdoms.iterator(); it.hasNext();)
         {
             JSONObject obj = (JSONObject) it.next();
-            if(obj.isNull("Name"))
+            if (obj.isNull("Name"))
             {
                 main.logToBoth("[Warning] Ignoring kingdom with null name; it's reference name is " + obj.getString("ReferenceName"));
                 continue;

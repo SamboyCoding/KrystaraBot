@@ -16,35 +16,39 @@ import org.json.JSONObject;
 
 /**
  * Alternative question factory for the quiz
+ *
  * @author Emily Ash
  */
 public class JsonQuizQuestionFactory implements QuizQuestionFactory
 {
+
     /**
-     * Base class for most questions that use random items in the world data (or features of troops) as answers.
+     * Base class for most questions that use random items in the world data (or
+     * features of troops) as answers.
      */
     private static abstract class QuizQuestion_RandomBase extends QuizQuestion
     {
+
         private final QuizQuestionType type;
         protected JSONObject correctAnswer;
         protected ArrayList<JSONObject> answers;
         protected Random random;
         protected long seed;
         protected int myRand;
-        
+
         public QuizQuestion_RandomBase(Random r, QuizQuestionType t)
-        { 
+        {
             random = r;
             seed = Utilities.getSeed(random);
             myRand = random.nextInt();
             type = t;
         }
-        
+
         public QuizQuestion_RandomBase initialize()
         {
             HashMap<Object, Object> keyMap = new HashMap<>();
             ArrayList<Object> keys;
-            
+
             answers = new ArrayList<>();
 
             // Choose an answer at random as the "correct answer"
@@ -53,8 +57,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             {
                 correctAnswer = getRandomAnswer();
                 keys = getKeys(correctAnswer);
-            }
-            while (!addKeysToKeyMap(keys, correctAnswer, keyMap));
+            } while (!addKeysToKeyMap(keys, correctAnswer, keyMap));
 
             answers.add(correctAnswer);
 
@@ -82,7 +85,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
 
             // Shuffle the answers once we're done
             Collections.shuffle(answers, random);
-            
+
             return this;
         }
 
@@ -95,7 +98,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         protected abstract ArrayList<Object> getKeys(JSONObject obj);
 
         protected abstract JSONObject getRandomAnswer();
-        
+
         private static boolean addKeysToKeyMap(Iterable<Object> keys, Object obj, HashMap<Object, Object> keyMap)
         {
             if (keys == null)
@@ -118,13 +121,13 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
 
             return true;
         }
-        
+
         @Override
         public int getCorrectAnswerIndex()
         {
             return answers.indexOf(correctAnswer);
         }
-        
+
         @Override
         public long getRandomSeed()
         {
@@ -133,19 +136,21 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
     }
 
     /**
-     * Base class for most questions that want troops with a specific feature as answers.
+     * Base class for most questions that want troops with a specific feature as
+     * answers.
      */
     private static abstract class QuizQuestion_TroopsFiltered extends QuizQuestion
     {
+
         private QuizQuestionType type;
         protected JSONObject correctAnswer;
         protected ArrayList<JSONObject> answers;
         protected Random random;
         protected long seed;
         protected int myRand;
-                
+
         public QuizQuestion_TroopsFiltered(Random r, QuizQuestionType t)
-        { 
+        {
             random = r;
             seed = Utilities.getSeed(random);
             myRand = random.nextInt();
@@ -155,7 +160,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         public QuizQuestion_TroopsFiltered initialize()
         {
             answers = new ArrayList<>();
-            
+
             // Choose a troop at random as the "correct answer" until we find one that
             // satisfies the criteria
             // TODO: Does this need to be more performant for cases where only a few
@@ -163,8 +168,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             do
             {
                 correctAnswer = getRandomTroop();
-            }
-            while (!matchesFilter(correctAnswer));
+            } while (!matchesFilter(correctAnswer));
 
             answers.add(correctAnswer);
 
@@ -182,7 +186,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
 
             // Shuffle the answers once we're done
             Collections.shuffle(answers, random);
-            
+
             return this;
         }
 
@@ -193,31 +197,36 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         }
 
         protected abstract boolean matchesFilter(JSONObject obj);
-        
+
         protected JSONObject getRandomTroop()
         {
             return GameData.arrayTroops.getJSONObject(random.nextInt(GameData.arrayTroops.length()));
         }
-        
+
         @Override
         public int getCorrectAnswerIndex()
         {
             return answers.indexOf(correctAnswer);
         }
-        
+
         @Override
         public long getRandomSeed()
         {
             return seed;
         }
     }
-    
+
     /**
-     * Base class for most questions that want troops with a specific effect in their spell.
+     * Base class for most questions that want troops with a specific effect in
+     * their spell.
      */
     private static abstract class QuizQuestion_TroopsSpellFiltered extends QuizQuestion_TroopsFiltered
     {
-        public QuizQuestion_TroopsSpellFiltered(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TroopsSpellFiltered(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         // Returns true if any part of the troop's spell has any one of the types specified in the
         // stepTypes array.
@@ -249,11 +258,16 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
     }
 
     /**
-     * Base class for most questions that use troops (or features of troops) as answers.
+     * Base class for most questions that use troops (or features of troops) as
+     * answers.
      */
     private static abstract class QuizQuestion_Troops extends QuizQuestion_RandomBase
     {
-        public QuizQuestion_Troops(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_Troops(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         protected JSONObject getRandomAnswer()
@@ -268,18 +282,23 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
     }
 
     /**
-     * Base class for most questions that use kingdoms (or features of kingdoms) as answers.
+     * Base class for most questions that use kingdoms (or features of kingdoms)
+     * as answers.
      */
     private static abstract class QuizQuestion_Kingdoms extends QuizQuestion_RandomBase
     {
-        public QuizQuestion_Kingdoms(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_Kingdoms(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         protected JSONObject getRandomAnswer()
         {
             return getRandomKingdom();
         }
-    
+
         protected JSONObject getRandomKingdom()
         {
             return GameData.arrayKingdoms.getJSONObject(random.nextInt(GameData.arrayKingdoms.length()));
@@ -287,18 +306,23 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
     }
 
     /**
-     * Base class for most questions that use classes (or features of classes) as answers.
+     * Base class for most questions that use classes (or features of classes)
+     * as answers.
      */
     private static abstract class QuizQuestion_Classes extends QuizQuestion_RandomBase
     {
-        public QuizQuestion_Classes(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_Classes(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         protected JSONObject getRandomAnswer()
         {
             return getRandomClass();
         }
-    
+
         protected JSONObject getRandomClass()
         {
             return GameData.arrayClasses.getJSONObject(random.nextInt(GameData.arrayClasses.length()));
@@ -310,7 +334,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_TroopToKingdom extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToKingdom(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TroopToKingdom(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -331,13 +359,13 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             JSONObject kingdom = getKingdomForTroop(obj);
             return new ArrayList<>(Arrays.asList(kingdom));
         }
-        
+
         protected JSONObject getKingdomForTroop(JSONObject troop)
         {
             int myId = troop.getInt("Id");
             for (Object oKingdom : GameData.arrayKingdoms)
             {
-                JSONObject kingdom = (JSONObject)oKingdom;
+                JSONObject kingdom = (JSONObject) oKingdom;
                 JSONArray troopIds = kingdom.getJSONArray("TroopIds");
                 for (int i = 0; i < troopIds.length(); i++)
                 {
@@ -358,7 +386,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_KingdomToTroop extends QuizQuestion_TroopToKingdom
     {
-        public QuizQuestion_KingdomToTroop(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_KingdomToTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -373,13 +405,17 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             return answers.get(index).getString("Name");
         }
     }
-    
+
     /**
      * Asks a user to identify a troop's spell.
      */
     private static class QuizQuestion_TroopToSpell extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToSpell(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TroopToSpell(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -405,7 +441,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_SpellToTroop extends QuizQuestion_TroopToSpell
     {
-        public QuizQuestion_SpellToTroop(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_SpellToTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -425,23 +465,27 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_SpellArtToTroop extends QuizQuestion_TroopToSpell
     {
-        public QuizQuestion_SpellArtToTroop(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_SpellArtToTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
         {
             return "What **troop's spell** is pictured below?";
         }
-        
+
         @Override
         public URL getQuestionImageUrl()
         {
             try
             {
                 return new URL("http://ashtender.com/gems/assets/spells/" + correctAnswer.getJSONObject("Spell").getInt("Id") + "_small.jpg");
+            } catch (MalformedURLException e)
+            {
             }
-            catch (MalformedURLException e)
-            {}
             return null;
         }
 
@@ -457,23 +501,27 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_CardArtToTroop extends QuizQuestion_TroopToSpell
     {
-        public QuizQuestion_CardArtToTroop(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_CardArtToTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
         {
             return "What **troop** is pictured below?";
         }
-        
+
         @Override
         public URL getQuestionImageUrl()
         {
             try
             {
                 return new URL("http://ashtender.com/gems/assets/cards/" + correctAnswer.getString("FileBase") + "_small.jpg");
+            } catch (MalformedURLException e)
+            {
             }
-            catch (MalformedURLException e)
-            {}
             return null;
         }
 
@@ -489,7 +537,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_TroopToType extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToType(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TroopToType(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -520,7 +572,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_TypeToTroop extends QuizQuestion_TroopToType
     {
-        public QuizQuestion_TypeToTroop(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TypeToTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -550,9 +606,10 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_TroopToTrait extends QuizQuestion_Troops
     {
+
         protected final int traitIndex;
-        
-        public QuizQuestion_TroopToTrait(Random r, QuizQuestionType t) 
+
+        public QuizQuestion_TroopToTrait(Random r, QuizQuestionType t)
         {
             super(r, t);
             traitIndex = r.nextInt(3);
@@ -589,7 +646,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_TraitToTroop extends QuizQuestion_TroopToTrait
     {
-        public QuizQuestion_TraitToTroop(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TraitToTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -603,13 +664,17 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             return answers.get(index).getString("Name");
         }
     }
-    
+
     /**
      * Asks a user to identify a troop's color.
      */
     private static class QuizQuestion_TroopToColor extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToColor(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TroopToColor(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -628,7 +693,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         {
             return new ArrayList<>(Arrays.asList(getTroopColors(obj)));
         }
-        
+
         protected String getTroopColors(JSONObject obj)
         {
             JSONObject manaColors = obj.getJSONObject("ManaColors");
@@ -671,7 +736,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_ColorToTroop extends QuizQuestion_TroopToColor
     {
-        public QuizQuestion_ColorToTroop(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_ColorToTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -684,14 +753,18 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         {
             return answers.get(index).getString("Name");
         }
-    }   
-    
+    }
+
     /**
      * Asks a user to identify a troop's rarity.
      */
     private static class QuizQuestion_TroopToRarity extends QuizQuestion_Troops
     {
-        public QuizQuestion_TroopToRarity(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TroopToRarity(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -717,7 +790,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_RarityToTroop extends QuizQuestion_TroopToRarity
     {
-        public QuizQuestion_RarityToTroop(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_RarityToTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -730,21 +807,25 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         {
             return answers.get(index).getString("Name");
         }
-    }   
+    }
 
-        /**
+    /**
      * Asks a user to identify a troop from its flavor text.
      */
     private static class QuizQuestion_FlavorTextToTroop extends QuizQuestion_Troops
     {
-        public QuizQuestion_FlavorTextToTroop(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_FlavorTextToTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
         {
             return "What **troop** is this?";
         }
-        
+
         @Override
         public String getQuestionSecondaryText()
         {
@@ -772,7 +853,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             }
             return new ArrayList<>(Arrays.asList(flavorText));
         }
-        
+
         private String getTroopFlavorText(JSONObject troop)
         {
             String flavorText = troop.getString("Description");
@@ -788,24 +869,28 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
                     case '?':
                     case '!':
                         break;
-                        
+
                     default:
                         flavorText += ".";
                         break;
                 }
             }
-            
+
             return flavorText;
         }
     }
-    
+
     /**
      * Asks a user to identify which troop causes true damage.
      */
     private static class QuizQuestion_TrueDamageTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_TrueDamageTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_TrueDamageTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -824,8 +909,12 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_CreateGemsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_CreateGemsTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_CreateGemsTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -844,8 +933,12 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_ConvertGemsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_ConvertGemsTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_ConvertGemsTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -858,14 +951,18 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             return hasSpellStep(obj, new ArrayList<>(Arrays.asList("ConvertGems")));
         }
     }
-    
+
     /**
      * Asks a user to identify which troop destroys, removes, or explodes gems.
      */
     private static class QuizQuestion_DestroyGemsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_DestroyGemsTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_DestroyGemsTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -875,7 +972,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         @Override
         protected boolean matchesFilter(JSONObject obj)
         {
-            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("DestroyGems", "DestroyColor", "DestroyRow", 
+            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("DestroyGems", "DestroyColor", "DestroyRow",
                     "ExplodeGems", "ExplodeColor", "RemoveGems", "RemoveColor")));
         }
     }
@@ -885,8 +982,12 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_IncreaseStatsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_IncreaseStatsTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_IncreaseStatsTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -896,19 +997,23 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         @Override
         protected boolean matchesFilter(JSONObject obj)
         {
-            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("Heal", "IncreaseHealth", "IncreaseArmor", 
-                    "IncreaseAttack", "IncreaseSpellPower", "IncreaseRandom", "IncreaseAllStats", "StealRandomStat", 
+            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("Heal", "IncreaseHealth", "IncreaseArmor",
+                    "IncreaseAttack", "IncreaseSpellPower", "IncreaseRandom", "IncreaseAllStats", "StealRandomStat",
                     "StealAttack", "StealArmor", "StealLife", "StealMagic", "Consume", "ConsumeConditional")));
         }
     }
-    
+
     /**
      * Asks a user to identify which troop decreases stats.
      */
     private static class QuizQuestion_DecreaseStatsTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_DecreaseStatsTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_DecreaseStatsTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -918,19 +1023,23 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         @Override
         protected boolean matchesFilter(JSONObject obj)
         {
-            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("DecreaseRandom", "DecreaseAttack", 
-                    "DecreaseSpellPower", "DecreaseArmor", "DecreaseAllStats", "StealRandomStat", "StealAttack", 
+            return hasSpellStep(obj, new ArrayList<>(Arrays.asList("DecreaseRandom", "DecreaseAttack",
+                    "DecreaseSpellPower", "DecreaseArmor", "DecreaseAllStats", "StealRandomStat", "StealAttack",
                     "StealArmor", "StealLife", "StealMagic")));
         }
     }
-    
+
     /**
      * Asks a user to identify which troop gives resources (Gold, Souls, Maps).
      */
     private static class QuizQuestion_GiveResourcesTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_GiveResourcesTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_GiveResourcesTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -949,8 +1058,12 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_GiveExtraTurnTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_GiveExtraTurnTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_GiveExtraTurnTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -969,8 +1082,12 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_SummonTransformTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_SummonTransformTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_SummonTransformTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -984,14 +1101,18 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
                     "SummoningTypeConditional", "Transform", "TransformType", "TransformTypeConditional", "TransformEnemy")));
         }
     }
-    
+
     /**
      * Asks a user to identify which troop drains mana.
      */
     private static class QuizQuestion_DrainManaTroop extends QuizQuestion_TroopsSpellFiltered
     {
-        public QuizQuestion_DrainManaTroop(Random r, QuizQuestionType t) { super(r, t); }
-        
+
+        public QuizQuestion_DrainManaTroop(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
+
         @Override
         public String getQuestionText()
         {
@@ -1010,14 +1131,16 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_EffectsTroop extends QuizQuestion_TroopsSpellFiltered
     {
+
         private final EffectEntry effectEntry;
-        
+
         private static class EffectEntry
         {
+
             public final String effectName;
             public final String effectSpellStepType;
             public final boolean isDebuff;
-            
+
             public EffectEntry(String n, String t, boolean d)
             {
                 effectName = n;
@@ -1025,7 +1148,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
                 isDebuff = d;
             }
         }
-        
+
         private static final EffectEntry[] EffectTable =
         {
             new EffectEntry("Barrier", "CauseBarrier", false),
@@ -1041,13 +1164,13 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             new EffectEntry("Web", "CauseWeb", true)
         };
 
-        public QuizQuestion_EffectsTroop(Random r, QuizQuestionType t) 
+        public QuizQuestion_EffectsTroop(Random r, QuizQuestionType t)
         {
             super(r, t);
-            
+
             effectEntry = EffectTable[r.nextInt(EffectTable.length)];
         }
-        
+
         @Override
         public String getQuestionText()
         {
@@ -1066,13 +1189,18 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             return hasSpellStep(obj, effects);
         }
     }
-    
+
     /**
-     * Asks a user to identify which traitstone can be found in the specified kingdom.
+     * Asks a user to identify which traitstone can be found in the specified
+     * kingdom.
      */
     private static class QuizQuestion_KingdomToTraitstone extends QuizQuestion_Kingdoms
     {
-        public QuizQuestion_KingdomToTraitstone(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_KingdomToTraitstone(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -1096,13 +1224,17 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             return new ArrayList<>(Arrays.asList(obj.getString("ExploreRuneName")));
         }
     }
-    
+
     /**
      * Asks a user to identify which kingdom has the specified traitstone.
      */
     private static class QuizQuestion_TraitstoneToKingdom extends QuizQuestion_KingdomToTraitstone
     {
-        public QuizQuestion_TraitstoneToKingdom(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TraitstoneToKingdom(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -1118,11 +1250,16 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
     }
 
     /**
-     * Asks a user to identify which stat can be increased in the specified kingdom.
+     * Asks a user to identify which stat can be increased in the specified
+     * kingdom.
      */
     private static class QuizQuestion_KingdomToStat extends QuizQuestion_Kingdoms
     {
-        public QuizQuestion_KingdomToStat(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_KingdomToStat(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -1145,20 +1282,24 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             }
             return new ArrayList<>(Arrays.asList(getStatForKingdom(obj)));
         }
-        
+
         protected String getStatForKingdom(JSONObject obj)
         {
             String statName = obj.getJSONObject("LevelData").getString("Stat");
             return statName.substring(0, 1).toUpperCase() + statName.substring(1);
         }
     }
-    
+
     /**
      * Asks a user to identify which kingdom has the specified stat increase.
      */
     private static class QuizQuestion_StatToKingdom extends QuizQuestion_KingdomToStat
     {
-        public QuizQuestion_StatToKingdom(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_StatToKingdom(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -1178,23 +1319,27 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_BannerArtToKingdom extends QuizQuestion_Kingdoms
     {
-        public QuizQuestion_BannerArtToKingdom(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_BannerArtToKingdom(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
         {
             return "What **kingdom's banner** is pictured below?";
         }
-        
+
         @Override
         public URL getQuestionImageUrl()
         {
             try
             {
                 return new URL("http://ashtender.com/gems/assets/banners/" + correctAnswer.getString("FileBase") + "_small.png");
+            } catch (MalformedURLException e)
+            {
             }
-            catch (MalformedURLException e)
-            {}
             return null;
         }
 
@@ -1214,29 +1359,33 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             return new ArrayList<>(Arrays.asList(obj));
         }
     }
-    
+
     /**
      * Asks a user to identify a kingdom by its shield art.
      */
     private static class QuizQuestion_ShieldArtToKingdom extends QuizQuestion_Kingdoms
     {
-        public QuizQuestion_ShieldArtToKingdom(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_ShieldArtToKingdom(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
         {
             return "What **kingdom's shield** is pictured below?";
         }
-        
+
         @Override
         public URL getQuestionImageUrl()
         {
             try
             {
                 return new URL("http://ashtender.com/gems/assets/shields/" + correctAnswer.getString("FileBase") + "_small.png");
+            } catch (MalformedURLException e)
+            {
             }
-            catch (MalformedURLException e)
-            {}
             return null;
         }
 
@@ -1252,13 +1401,18 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             return new ArrayList<>(Arrays.asList(obj));
         }
     }
-    
+
     /**
-     * Asks a user to identify which color weapons have affinity with a given class.
+     * Asks a user to identify which color weapons have affinity with a given
+     * class.
      */
     private static class QuizQuestion_ClassToBonusColor extends QuizQuestion_Classes
     {
-        public QuizQuestion_ClassToBonusColor(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_ClassToBonusColor(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -1277,7 +1431,7 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         {
             return new ArrayList<>(Arrays.asList(getBonusColorForClass(obj)));
         }
-        
+
         protected String getBonusColorForClass(JSONObject obj)
         {
             String colorName = obj.getString("BonusWeapon");
@@ -1290,7 +1444,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_BonusColorToClass extends QuizQuestion_ClassToBonusColor
     {
-        public QuizQuestion_BonusColorToClass(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_BonusColorToClass(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -1310,9 +1468,10 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_ClassToTrait extends QuizQuestion_Classes
     {
+
         protected final int traitIndex;
-        
-        public QuizQuestion_ClassToTrait(Random r, QuizQuestionType t) 
+
+        public QuizQuestion_ClassToTrait(Random r, QuizQuestionType t)
         {
             super(r, t);
             traitIndex = r.nextInt(3);
@@ -1343,14 +1502,17 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             return new ArrayList<>(Arrays.asList(traits));
         }
     }
-    
 
     /**
      * Asks a user to identify which class has the specified trait.
      */
     private static class QuizQuestion_TraitToClass extends QuizQuestion_ClassToTrait
     {
-        public QuizQuestion_TraitToClass(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_TraitToClass(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
@@ -1370,23 +1532,27 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
      */
     private static class QuizQuestion_ClassArtToClass extends QuizQuestion_Classes
     {
-        public QuizQuestion_ClassArtToClass(Random r, QuizQuestionType t) { super(r, t); }
+
+        public QuizQuestion_ClassArtToClass(Random r, QuizQuestionType t)
+        {
+            super(r, t);
+        }
 
         @Override
         public String getQuestionText()
         {
             return "What **class** is pictured below?";
         }
-        
+
         @Override
         public URL getQuestionImageUrl()
         {
             try
             {
                 return new URL("http://ashtender.com/gems/assets/classes/" + correctAnswer.getInt("Id") + "_small.png");
+            } catch (MalformedURLException e)
+            {
             }
-            catch (MalformedURLException e)
-            {}
             return null;
         }
 
@@ -1402,11 +1568,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
             return new ArrayList<>(Arrays.asList(obj));
         }
     }
-    
+
     private static ArrayList<QuizQuestionType> getTypesForDifficulty(QuizQuestion.Difficulty difficulty)
     {
         ArrayList<QuizQuestionType> result = new ArrayList<>();
-        
+
         for (int i = 0; i < QuizQuestionType.Count; i++)
         {
             QuizQuestionType type = QuizQuestionType.fromInteger(i);
@@ -1415,66 +1581,68 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
                 result.add(type);
             }
         }
-        
+
         return result;
     }
 
     @FunctionalInterface
     interface QuestionCreator
     {
+
         QuizQuestion create(Random r, QuizQuestionType t);
     }
-    
+
     private final static HashMap<QuizQuestionType, QuestionCreator> CREATOR_MAP = initCreatorMap();
-    
+
     private static HashMap<QuizQuestionType, QuestionCreator> initCreatorMap()
     {
         HashMap<QuizQuestionType, QuestionCreator> map = new HashMap<>();
-        map.put(QuizQuestionType.TroopToKingdom,    (r, t) -> new QuizQuestion_TroopToKingdom(r, t).initialize());
-        map.put(QuizQuestionType.KingdomToTroop,    (r, t) -> new QuizQuestion_KingdomToTroop(r, t).initialize());
-        map.put(QuizQuestionType.TroopToSpell,      (r, t) -> new QuizQuestion_TroopToSpell(r, t).initialize());
-        map.put(QuizQuestionType.SpellToTroop,      (r, t) -> new QuizQuestion_SpellToTroop(r, t).initialize());
-        map.put(QuizQuestionType.TroopToType,       (r, t) -> new QuizQuestion_TroopToType(r, t).initialize());
-        map.put(QuizQuestionType.TypeToTroop,       (r, t) -> new QuizQuestion_TypeToTroop(r, t).initialize());
-        map.put(QuizQuestionType.TroopToColor,      (r, t) -> new QuizQuestion_TroopToColor(r, t).initialize());
-        map.put(QuizQuestionType.ColorToTroop,      (r, t) -> new QuizQuestion_ColorToTroop(r, t).initialize());
-        map.put(QuizQuestionType.TroopToRarity,     (r, t) -> new QuizQuestion_TroopToRarity(r, t).initialize());
-        map.put(QuizQuestionType.RarityToTroop,     (r, t) -> new QuizQuestion_RarityToTroop(r, t).initialize());
-        map.put(QuizQuestionType.TroopToTrait,      (r, t) -> new QuizQuestion_TroopToTrait(r, t).initialize());
-        map.put(QuizQuestionType.TraitToTroop,      (r, t) -> new QuizQuestion_TraitToTroop(r, t).initialize());
+        map.put(QuizQuestionType.TroopToKingdom, (r, t) -> new QuizQuestion_TroopToKingdom(r, t).initialize());
+        map.put(QuizQuestionType.KingdomToTroop, (r, t) -> new QuizQuestion_KingdomToTroop(r, t).initialize());
+        map.put(QuizQuestionType.TroopToSpell, (r, t) -> new QuizQuestion_TroopToSpell(r, t).initialize());
+        map.put(QuizQuestionType.SpellToTroop, (r, t) -> new QuizQuestion_SpellToTroop(r, t).initialize());
+        map.put(QuizQuestionType.TroopToType, (r, t) -> new QuizQuestion_TroopToType(r, t).initialize());
+        map.put(QuizQuestionType.TypeToTroop, (r, t) -> new QuizQuestion_TypeToTroop(r, t).initialize());
+        map.put(QuizQuestionType.TroopToColor, (r, t) -> new QuizQuestion_TroopToColor(r, t).initialize());
+        map.put(QuizQuestionType.ColorToTroop, (r, t) -> new QuizQuestion_ColorToTroop(r, t).initialize());
+        map.put(QuizQuestionType.TroopToRarity, (r, t) -> new QuizQuestion_TroopToRarity(r, t).initialize());
+        map.put(QuizQuestionType.RarityToTroop, (r, t) -> new QuizQuestion_RarityToTroop(r, t).initialize());
+        map.put(QuizQuestionType.TroopToTrait, (r, t) -> new QuizQuestion_TroopToTrait(r, t).initialize());
+        map.put(QuizQuestionType.TraitToTroop, (r, t) -> new QuizQuestion_TraitToTroop(r, t).initialize());
         map.put(QuizQuestionType.FlavorTextToTroop, (r, t) -> new QuizQuestion_FlavorTextToTroop(r, t).initialize());
-        map.put(QuizQuestionType.SpellArtToTroop,   (r, t) -> new QuizQuestion_SpellArtToTroop(r, t).initialize());
-        map.put(QuizQuestionType.CardArtToTroop,    (r, t) -> new QuizQuestion_CardArtToTroop(r, t).initialize());
-        map.put(QuizQuestionType.TrueDamageTroop,   (r, t) -> new QuizQuestion_TrueDamageTroop(r, t).initialize());
-        map.put(QuizQuestionType.CreateGemsTroop,   (r, t) -> new QuizQuestion_CreateGemsTroop(r, t).initialize());
-        map.put(QuizQuestionType.ConvertGemsTroop,  (r, t) -> new QuizQuestion_ConvertGemsTroop(r, t).initialize());
-        map.put(QuizQuestionType.DestroyGemsTroop,  (r, t) -> new QuizQuestion_DestroyGemsTroop(r, t).initialize());
+        map.put(QuizQuestionType.SpellArtToTroop, (r, t) -> new QuizQuestion_SpellArtToTroop(r, t).initialize());
+        map.put(QuizQuestionType.CardArtToTroop, (r, t) -> new QuizQuestion_CardArtToTroop(r, t).initialize());
+        map.put(QuizQuestionType.TrueDamageTroop, (r, t) -> new QuizQuestion_TrueDamageTroop(r, t).initialize());
+        map.put(QuizQuestionType.CreateGemsTroop, (r, t) -> new QuizQuestion_CreateGemsTroop(r, t).initialize());
+        map.put(QuizQuestionType.ConvertGemsTroop, (r, t) -> new QuizQuestion_ConvertGemsTroop(r, t).initialize());
+        map.put(QuizQuestionType.DestroyGemsTroop, (r, t) -> new QuizQuestion_DestroyGemsTroop(r, t).initialize());
         map.put(QuizQuestionType.IncreaseStatsTroop, (r, t) -> new QuizQuestion_IncreaseStatsTroop(r, t).initialize());
         map.put(QuizQuestionType.DecreaseStatsTroop, (r, t) -> new QuizQuestion_DecreaseStatsTroop(r, t).initialize());
         map.put(QuizQuestionType.GiveResourcesTroop, (r, t) -> new QuizQuestion_GiveResourcesTroop(r, t).initialize());
         map.put(QuizQuestionType.GiveExtraTurnTroop, (r, t) -> new QuizQuestion_GiveExtraTurnTroop(r, t).initialize());
         map.put(QuizQuestionType.SummonTransformTroop, (r, t) -> new QuizQuestion_SummonTransformTroop(r, t).initialize());
-        map.put(QuizQuestionType.DrainManaTroop,    (r, t) -> new QuizQuestion_DrainManaTroop(r, t).initialize());
-        map.put(QuizQuestionType.EffectsTroop,      (r, t) -> new QuizQuestion_EffectsTroop(r, t).initialize());
+        map.put(QuizQuestionType.DrainManaTroop, (r, t) -> new QuizQuestion_DrainManaTroop(r, t).initialize());
+        map.put(QuizQuestionType.EffectsTroop, (r, t) -> new QuizQuestion_EffectsTroop(r, t).initialize());
 
         map.put(QuizQuestionType.KingdomToTraitstone, (r, t) -> new QuizQuestion_KingdomToTraitstone(r, t).initialize());
         map.put(QuizQuestionType.TraitstoneToKingdom, (r, t) -> new QuizQuestion_TraitstoneToKingdom(r, t).initialize());
-        map.put(QuizQuestionType.KingdomToStat,     (r, t) -> new QuizQuestion_KingdomToStat(r, t).initialize());
-        map.put(QuizQuestionType.StatToKingdom,     (r, t) -> new QuizQuestion_StatToKingdom(r, t).initialize());
+        map.put(QuizQuestionType.KingdomToStat, (r, t) -> new QuizQuestion_KingdomToStat(r, t).initialize());
+        map.put(QuizQuestionType.StatToKingdom, (r, t) -> new QuizQuestion_StatToKingdom(r, t).initialize());
         map.put(QuizQuestionType.BannerArtToKingdom, (r, t) -> new QuizQuestion_BannerArtToKingdom(r, t).initialize());
         map.put(QuizQuestionType.ShieldArtToKingdom, (r, t) -> new QuizQuestion_ShieldArtToKingdom(r, t).initialize());
 
         map.put(QuizQuestionType.ClassToBonusColor, (r, t) -> new QuizQuestion_ClassToBonusColor(r, t).initialize());
         map.put(QuizQuestionType.BonusColorToClass, (r, t) -> new QuizQuestion_BonusColorToClass(r, t).initialize());
-        map.put(QuizQuestionType.ClassToTrait,      (r, t) -> new QuizQuestion_ClassToTrait(r, t).initialize());
-        map.put(QuizQuestionType.TraitToClass,      (r, t) -> new QuizQuestion_TraitToClass(r, t).initialize());
-        map.put(QuizQuestionType.ClassArtToClass,   (r, t) -> new QuizQuestion_ClassArtToClass(r, t).initialize());
+        map.put(QuizQuestionType.ClassToTrait, (r, t) -> new QuizQuestion_ClassToTrait(r, t).initialize());
+        map.put(QuizQuestionType.TraitToClass, (r, t) -> new QuizQuestion_TraitToClass(r, t).initialize());
+        map.put(QuizQuestionType.ClassArtToClass, (r, t) -> new QuizQuestion_ClassArtToClass(r, t).initialize());
 
         return map;
     }
-    
+
     /**
      * Generates a random question of the specified type.
+     *
      * @param r The random number generator to use.
      * @param type The type of question to create.
      * @return A new question of the specified type.
@@ -1489,9 +1657,11 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
         }
         return questions;
     }
-    
+
     /**
-     * Generates a random question of the specified difficulty, and a random type.
+     * Generates a random question of the specified difficulty, and a random
+     * type.
+     *
      * @param r The random number generator to use.
      * @param difficulty The difficulty of question to create.
      * @return A new question of the specified type.
@@ -1505,7 +1675,9 @@ public class JsonQuizQuestionFactory implements QuizQuestionFactory
     }
 
     /**
-     * Generates a random question of a random type (and thereby a random difficulty).
+     * Generates a random question of a random type (and thereby a random
+     * difficulty).
+     *
      * @param r The random number generator to use.
      * @return A new question of the specified type.
      */

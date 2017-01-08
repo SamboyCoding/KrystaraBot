@@ -11,10 +11,12 @@ import sx.blah.discord.handle.obj.IUser;
 
 /**
  * Represents the ?language command
+ *
  * @author MrSnake
  */
 public class LanguageCommand extends KrystaraCommand
 {
+
     public LanguageCommand()
     {
         commandName = "language";
@@ -23,21 +25,22 @@ public class LanguageCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if(!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             sdr.getOrCreatePMChannel().sendMessage("To reduce spam, 'language' can only be used in the #bot-commands channel. Thanks!");
             return;
         }
-        
+
         String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
-        
+
         if (arguments.size() < 1)
         {
             chnl.sendMessage("Please specify a language. [french|german|spanish]");
             return;
         }
         String lang = arguments.get(0).toLowerCase();
-        switch(lang){
+        switch (lang)
+        {
             case "french":
                 sdr.addRole(chnl.getGuild().getRoleByID(IDReference.FRENCHROLE));
                 chnl.sendMessage(sdr.mention() + ", you joined **French**");

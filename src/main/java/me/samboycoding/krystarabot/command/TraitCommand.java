@@ -25,7 +25,7 @@ public class TraitCommand extends KrystaraCommand
     {
         commandName = "trait";
     }
-        
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -54,18 +54,18 @@ public class TraitCommand extends KrystaraCommand
         HashSet<JSONObject> troopMap = new HashSet<>();
         for (Object oTroop : GameData.arrayTroops)
         {
-            JSONObject troop = (JSONObject)oTroop;
+            JSONObject troop = (JSONObject) oTroop;
             JSONArray traitTable = troop.getJSONArray("ParsedTraits");
             for (Object oSearchTrait : traitTable)
             {
-                JSONObject searchTrait = (JSONObject)oSearchTrait;
+                JSONObject searchTrait = (JSONObject) oSearchTrait;
                 if (searchTrait.getString("Code").equals(traitInfo.getString("Code")))
                 {
                     troopMap.add(troop);
                 }
             }
         }
-        
+
         if (!troopMap.isEmpty())
         {
             JSONObject[] oTroops = troopMap.toArray(new JSONObject[0]);
@@ -74,7 +74,7 @@ public class TraitCommand extends KrystaraCommand
             String[] troopNames = troops.stream().map(t -> t.getString("Name")).toArray(String[]::new);
             result += "Used by: " + String.join(", ", troopNames) + "\n";
         }
-        
+
         chnl.sendMessage(result);
     }
 
@@ -101,7 +101,7 @@ public class TraitCommand extends KrystaraCommand
     {
         return "trait";
     }
-    
+
     @Override
     public CommandType getCommandType()
     {

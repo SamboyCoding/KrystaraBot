@@ -1,8 +1,6 @@
-
 package me.samboycoding.krystarabot.gemdb;
 
 import java.util.ArrayList;
-
 
 /**
  * Represents the color of a given traitstone.
@@ -27,7 +25,7 @@ public enum GemColor
         emoji = e;
         flag = f;
     }
-    
+
     public static GemColor[] fromInteger(int i)
     {
         ArrayList<GemColor> colors = new ArrayList<>();
@@ -40,7 +38,7 @@ public enum GemColor
         }
         return colors.toArray(new GemColor[0]);
     }
-    
+
     public static int toInteger(Iterable<GemColor> colors)
     {
         int i = 0;

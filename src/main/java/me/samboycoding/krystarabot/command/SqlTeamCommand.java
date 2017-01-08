@@ -69,19 +69,19 @@ public class SqlTeamCommand extends KrystaraCommand
             String thing = things.get(i);
 
             TeamMember teamMember = GemsQueryRunner.runQueryForSingleResultByName(
-                chnl,
-                "SELECT TeamMembers.Id, TeamMembers.Name, TeamMembers.Colors, TeamMembers.Kind FROM ( "
-                + "    SELECT Id, Name, Colors, ReleaseDate, Language, 'Troop' AS Kind FROM Troops "
-                + "    UNION ALL "
-                + "    SELECT Id, Name, Colors, ReleaseDate, Language, 'Weapon' AS Kind FROM Weapons "
-                + ") TeamMembers "
-                + "WHERE TeamMembers.Language='en-US' AND TeamMembers.ReleaseDate<NOW() AND TeamMembers.Name LIKE ? "
-                + "ORDER BY TeamMembers.Name", 
-                "troop or weapon",
-                TeamMember.class,
-                thing
-                );
-            
+                    chnl,
+                    "SELECT TeamMembers.Id, TeamMembers.Name, TeamMembers.Colors, TeamMembers.Kind FROM ( "
+                    + "    SELECT Id, Name, Colors, ReleaseDate, Language, 'Troop' AS Kind FROM Troops "
+                    + "    UNION ALL "
+                    + "    SELECT Id, Name, Colors, ReleaseDate, Language, 'Weapon' AS Kind FROM Weapons "
+                    + ") TeamMembers "
+                    + "WHERE TeamMembers.Language='en-US' AND TeamMembers.ReleaseDate<NOW() AND TeamMembers.Name LIKE ? "
+                    + "ORDER BY TeamMembers.Name",
+                    "troop or weapon",
+                    TeamMember.class,
+                    thing
+            );
+
             if (teamMember == null)
             {
                 return;
@@ -96,29 +96,29 @@ public class SqlTeamCommand extends KrystaraCommand
             hasWeapon = hasWeapon || isWeapon;
             teamMembers.add(teamMember);
         }
-        
+
         if (things.size() > 4)
         {
             String kingdomName = things.get(4);
-            
+
             // Search for a kingdom by name or banner name
             kingdom = GemsQueryRunner.runQueryForSingleResultByName(
-                chnl,
-                "SELECT Kingdoms.Id, Kingdoms.Name, Kingdoms.BannerName, Kingdoms.BannerDescription FROM Kingdoms "
-                + "WHERE Kingdoms.Language='en-US' AND Kingdoms.IsUsed AND Kingdoms.IsFullKingdom AND "
+                    chnl,
+                    "SELECT Kingdoms.Id, Kingdoms.Name, Kingdoms.BannerName, Kingdoms.BannerDescription FROM Kingdoms "
+                    + "WHERE Kingdoms.Language='en-US' AND Kingdoms.IsUsed AND Kingdoms.IsFullKingdom AND "
                     + "((Kingdoms.Name LIKE ?) OR (Kingdoms.BannerName LIKE ?)) "
-                + "ORDER BY Kingdoms.Name", 
-                "kingdom or banner",
-                Kingdom.class,
-                kingdomName
-                );            
-            
+                    + "ORDER BY Kingdoms.Name",
+                    "kingdom or banner",
+                    Kingdom.class,
+                    kingdomName
+            );
+
             if (kingdom == null)
             {
                 return;
             }
         }
-        
+
         int colors = 0;
         for (TeamMember teamMember : teamMembers)
         {
@@ -129,7 +129,8 @@ public class SqlTeamCommand extends KrystaraCommand
         GemColor[] gemColors = GemColor.fromInteger(colors);
         String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
         String[] troopIds = teamMembers.stream().map(m -> Integer.toString(m.getId())).toArray(String[]::new);
-        String[] troopNames = teamMembers.stream().map(m -> {
+        String[] troopNames = teamMembers.stream().map(m ->
+        {
             GemColor[] gemColorsThis = GemColor.fromInteger(m.getColors());
             String[] gemColorEmojisThis = Arrays.stream(gemColorsThis).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
             return "    - " + String.join(" ", gemColorEmojisThis) + " " + m.getName();

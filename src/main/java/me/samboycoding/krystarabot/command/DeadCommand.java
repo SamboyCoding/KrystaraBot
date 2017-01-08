@@ -20,7 +20,7 @@ public class DeadCommand extends KrystaraCommand
     {
         commandName = "dead";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -52,8 +52,8 @@ public class DeadCommand extends KrystaraCommand
         {
             chnl.sendMessage("Please check your code - it has to be 10 characters long, and yours is " + code2.length() + "!");
         }
-        */
-        
+         */
+
         sdr.getOrCreatePMChannel().sendMessage("As part of a recent update, `?codes` and `?dead` have been removed. This was MrSnake's decision as admin of the server, and you must now register your interest in receiving codes by doing `?coderegister yes`. Dead code alerts have been removed - they felt too cheaty. Thanks!");
         msg.delete();
     }
