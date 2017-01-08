@@ -2,7 +2,6 @@ package me.samboycoding.krystarabot.quiz;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.InvalidParameterException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,10 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.function.BiFunction;
-import me.samboycoding.krystarabot.GameData;
 import me.samboycoding.krystarabot.gemdb.GemColor;
-import me.samboycoding.krystarabot.gemdb.GemsQueryRunner;
 import me.samboycoding.krystarabot.gemdb.HeroClass;
 import me.samboycoding.krystarabot.gemdb.Kingdom;
 import me.samboycoding.krystarabot.gemdb.Troop;
@@ -30,7 +26,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 public class SqlQuizQuestionFactory implements QuizQuestionFactory
 {
 
-    private QueryRunner runner;
+    private final QueryRunner runner;
 
     public SqlQuizQuestionFactory(QueryRunner run)
     {
@@ -125,6 +121,7 @@ public class SqlQuizQuestionFactory implements QuizQuestionFactory
             return true;
         }
 
+        @Override
         public int getCorrectAnswerIndex()
         {
             return answers.indexOf(correctAnswer);
