@@ -95,7 +95,7 @@ public class Listener
             {
                 main.registerCommand(new SqlClassCommand());
                 main.registerCommand(new SqlKingdomCommand());
-                main.registerCommand(new SqlSearchCommand());
+                main.registerCommand(new AshSearchCommand());
                 main.registerCommand(new SqlSpellCommand());
                 main.registerCommand(new SqlTeamCommand());
                 main.registerCommand(new SqlTraitCommand());
