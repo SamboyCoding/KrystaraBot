@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.TreeMap;
 import me.samboycoding.krystarabot.command.*;
+import static me.samboycoding.krystarabot.utilities.IDReference.RuntimeEnvironment.DEV;
 import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.api.IDiscordClient;
@@ -48,14 +49,20 @@ public class Listener
         try
         {
             main.logToBoth("Attempting to change username, please wait...");
-            if (IDReference.ENVIRONMENT == IDReference.RuntimeEnvironment.LIVE)
+            switch (IDReference.ENVIRONMENT)
             {
-                main.logToBoth("Logging in to LIVE server.");
-                cl.changeUsername("Krystara");
-            } else
-            {
-                main.logToBoth("Logging in to TESTING server.");
-                cl.changeUsername("Krystara *Testing*");
+                case LIVE:
+                    main.logToBoth("Logging in to LIVE server.");
+                    cl.changeUsername("Krystara");
+                    break;
+                case DEV:
+                    main.logToBoth("Logging in to TESTING server.");
+                    cl.changeUsername("Krystara *Testing*");
+                    break;
+                default:
+                    main.logToBoth("Logging in to LYYATESTING server.");
+                    cl.changeUsername("Krystara *LyyaTesting*");
+                    break;
             }
             main.logToBoth("Changing image...");
             cl.changeAvatar(Image.forUrl("png", "http://repo.samboycoding.me/static/krystarabot_icon.png"));
