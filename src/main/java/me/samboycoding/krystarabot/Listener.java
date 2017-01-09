@@ -99,7 +99,7 @@ public class Listener
                 main.registerCommand(new AshSpellCommand());
                 main.registerCommand(new SqlTeamCommand());
                 main.registerCommand(new AshTraitCommand());
-                main.registerCommand(new SqlTraitstoneCommand());
+                main.registerCommand(new AshTraitstoneCommand());
                 main.registerCommand(new AshTroopCommand());
                 main.registerCommand(new AshWeaponCommand());
             } else
