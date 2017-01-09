@@ -1,12 +1,15 @@
 package me.samboycoding.krystarabot.gemdb;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  * @author Emily Ash
  */
 public class Kingdom implements Nameable, java.io.Serializable
 {
-
     private static final long serialVersionUID = 1L;
 
     private int id = 0;
@@ -26,6 +29,10 @@ public class Kingdom implements Nameable, java.io.Serializable
     private String exploreTraitstoneName = null;
     private boolean isUsed = false;
     private boolean isFullKingdom = false;
+    private String pageUrl = null;
+    private String imageUrl = null;
+    private ArrayList<Bonus> bonuses = new ArrayList<>();
+    private ArrayList<Troop> troops = new ArrayList<>();
 
     public Kingdom()
     {
@@ -200,5 +207,25 @@ public class Kingdom implements Nameable, java.io.Serializable
     public boolean getIsFullKingdom()
     {
         return this.isFullKingdom;
+    }
+
+    public String getPageUrl()
+    {
+        return this.pageUrl;
+    }
+
+    public String getImageUrl()
+    {
+        return this.imageUrl;
+    }
+
+    public List<Bonus> getBonuses()
+    {
+        return Collections.unmodifiableList(this.bonuses);
+    }
+
+    public List<Troop> getTroops()
+    {
+        return Collections.unmodifiableList(this.troops);
     }
 }

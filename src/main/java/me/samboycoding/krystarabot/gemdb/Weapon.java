@@ -15,6 +15,8 @@ public class Weapon extends TeamMember implements java.io.Serializable
     private String fileBase = null;
     private int rarityId = 0;
     private String ownerName = null;
+    private String pageUrl = null;
+    private String imageUrl = null;
 
     public Weapon()
     {
@@ -68,5 +70,15 @@ public class Weapon extends TeamMember implements java.io.Serializable
     public String getOwnerName()
     {
         return this.ownerName;
+    }
+
+    public String getPageUrl()
+    {
+        return this.pageUrl;
+    }
+
+    public String getImageUrl()
+    {
+        return this.imageUrl;
     }
 }

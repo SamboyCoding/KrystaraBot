@@ -1,29 +1,14 @@
 package me.samboycoding.krystarabot.command;
 
-import java.io.IOException;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
-import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
-import me.samboycoding.krystarabot.gemdb.GemsQueryRunner;
-import me.samboycoding.krystarabot.gemdb.HeroClass;
 import me.samboycoding.krystarabot.gemdb.Search;
-import me.samboycoding.krystarabot.gemdb.Trait;
-import me.samboycoding.krystarabot.gemdb.Troop;
 import me.samboycoding.krystarabot.gemdb.Weapon;
-import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.Utilities;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.json.JSONObject;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -104,8 +89,8 @@ public class AshWeaponCommand extends KrystaraCommand
         EmbedObject o = new EmbedBuilder()
                 .withDesc(info)
                 .withTitle(weapon.getName())
-                .withUrl("http://ashtender.com/gems/weapons/" + weapon.getId())
-                .withThumbnail("http://ashtender.com/gems/assets/spells/" + weapon.getSpellId() + ".jpg")
+                .withUrl(weapon.getPageUrl())
+                .withThumbnail(weapon.getImageUrl())
                 .build();
         chnl.sendMessage("", o, false);
     }

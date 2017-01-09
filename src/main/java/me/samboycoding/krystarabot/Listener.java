@@ -94,7 +94,7 @@ public class Listener
             if (IDReference.ENVIRONMENT != IDReference.RuntimeEnvironment.LIVE)
             {
                 main.registerCommand(new AshClassCommand());
-                main.registerCommand(new SqlKingdomCommand());
+                main.registerCommand(new AshKingdomCommand());
                 main.registerCommand(new AshSearchCommand());
                 main.registerCommand(new SqlSpellCommand());
                 main.registerCommand(new SqlTeamCommand());

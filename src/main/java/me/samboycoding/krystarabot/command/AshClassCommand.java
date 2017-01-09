@@ -94,8 +94,8 @@ public class AshClassCommand extends QuestionCommand
         EmbedObject o = new EmbedBuilder()
                 .withDesc(info)
                 .withTitle(heroClass.getName())
-                .withUrl("http://ashtender.com/gems/classes/" + heroClass.getId())
-                .withThumbnail("http://ashtender.com/gems/assets/classes/" + heroClass.getId() + ".png")
+                .withUrl(heroClass.getPageUrl())
+                .withThumbnail(heroClass.getImageUrl())
                 .build();
 
         chnl.sendMessage("", o, false);
