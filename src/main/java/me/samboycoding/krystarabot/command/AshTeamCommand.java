@@ -7,16 +7,12 @@ import java.util.function.Consumer;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
-import me.samboycoding.krystarabot.gemdb.GemsQueryRunner;
 import me.samboycoding.krystarabot.gemdb.Kingdom;
 import me.samboycoding.krystarabot.gemdb.Search;
 import me.samboycoding.krystarabot.gemdb.TeamMember;
 import me.samboycoding.krystarabot.gemdb.Troop;
 import me.samboycoding.krystarabot.gemdb.Weapon;
 import me.samboycoding.krystarabot.utilities.IDReference;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.util.StringUtil;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -48,8 +44,6 @@ public class AshTeamCommand extends KrystaraCommand
             chnl.sendMessage("Usage: `?team [troop1],[troop2],[troop3],[troop4],[banner (optional)],[name (optional)]`");
             return;
         }
-
-        QueryRunner run = GemsQueryRunner.getQueryRunner();
 
         ArrayList<TeamMember> teamMembers = new ArrayList<>();
         Kingdom kingdom = null;

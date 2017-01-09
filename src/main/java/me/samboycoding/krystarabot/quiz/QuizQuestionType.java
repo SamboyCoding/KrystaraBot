@@ -1,9 +1,6 @@
 package me.samboycoding.krystarabot.quiz;
 
 import java.security.InvalidParameterException;
-import java.sql.SQLException;
-import java.util.Random;
-import org.apache.commons.dbutils.QueryRunner;
 
 /**
  *

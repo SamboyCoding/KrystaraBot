@@ -47,8 +47,6 @@ public class main
             switch (IDReference.ENVIRONMENT)
             {
                 case LYYA:
-                    quizQuestionFactory = new AshQuizQuestionFactory();
-                    break;
                 case DEV:
                     quizQuestionFactory = new AshQuizQuestionFactory();
                     break;

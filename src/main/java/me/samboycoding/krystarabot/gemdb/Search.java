@@ -41,7 +41,7 @@ public class Search implements java.io.Serializable
         public List<Troop> getTroops() { return Collections.unmodifiableList(this.troops); }
     }
 
-    public static class Trait
+    public static class Trait implements Nameable
     {
         private String code;
         private String name;
