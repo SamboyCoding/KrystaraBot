@@ -11,10 +11,12 @@ import me.samboycoding.krystarabot.gemdb.Search;
 import me.samboycoding.krystarabot.gemdb.Spell;
 import me.samboycoding.krystarabot.gemdb.Troop;
 import me.samboycoding.krystarabot.gemdb.Weapon;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  * Represents the ?spell command
@@ -73,14 +75,22 @@ public class AshSpellCommand extends KrystaraCommand {
         GemColor[] gemColors = GemColor.fromInteger(spell.getColors());
         String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
 
-        String info = "**" + spell.getName() + "** (" + spell.getCost() + " " + String.join(" ", gemColorEmojis) + "): " + spellDesc + "\n";
-        if (!spell.getTroops().isEmpty()) {
+        String info = "(" + spell.getCost() + " " + String.join(" ", gemColorEmojis) + "): " + spellDesc + "\n";
+        if (!spell.getTroops().isEmpty())
+        {
             info += "Used by troops: " + getTroopListAsString(spell.getTroops()) + "\n";
         }
-        if (!spell.getWeapons().isEmpty()) {
+        if (!spell.getWeapons().isEmpty())
+        {
             info += "Used by weapons: " + getWeaponListAsString(spell.getWeapons()) + "\n";
         }
-        chnl.sendMessage(info);
+
+        EmbedObject o = new EmbedBuilder()
+            .withDesc(info)
+            .withTitle(spell.getName())
+            .withThumbnail(spell.getImageUrl())
+            .build();
+        chnl.sendMessage("", o, false);
     }
 
     @Override

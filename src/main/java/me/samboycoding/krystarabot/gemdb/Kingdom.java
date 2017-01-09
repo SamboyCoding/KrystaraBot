@@ -31,6 +31,7 @@ public class Kingdom implements Nameable, java.io.Serializable
     private boolean isFullKingdom = false;
     private String pageUrl = null;
     private String imageUrl = null;
+    private String bannerImageUrl = null;
     private ArrayList<Bonus> bonuses = new ArrayList<>();
     private ArrayList<Troop> troops = new ArrayList<>();
 
@@ -217,6 +218,11 @@ public class Kingdom implements Nameable, java.io.Serializable
     public String getImageUrl()
     {
         return this.imageUrl;
+    }
+
+    public String getBannerImageUrl()
+    {
+        return this.bannerImageUrl;
     }
 
     public List<Bonus> getBonuses()

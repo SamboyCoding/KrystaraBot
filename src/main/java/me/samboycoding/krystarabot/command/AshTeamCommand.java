@@ -1,29 +1,34 @@
 package me.samboycoding.krystarabot.command;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
+import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
-import me.samboycoding.krystarabot.gemdb.GemsQueryRunner;
 import me.samboycoding.krystarabot.gemdb.Kingdom;
+import me.samboycoding.krystarabot.gemdb.Search;
 import me.samboycoding.krystarabot.gemdb.TeamMember;
+import me.samboycoding.krystarabot.gemdb.Troop;
+import me.samboycoding.krystarabot.gemdb.Weapon;
 import me.samboycoding.krystarabot.utilities.IDReference;
-import org.apache.commons.dbutils.QueryRunner;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  * Represent the ?team command
  *
  * @author Sam
  */
-public class SqlTeamCommand extends KrystaraCommand
+public class AshTeamCommand extends KrystaraCommand
 {
 
-    public SqlTeamCommand()
+    public AshTeamCommand()
     {
         commandName = "team";
     }
@@ -36,68 +41,82 @@ public class SqlTeamCommand extends KrystaraCommand
 
         if (things.size() < 4)
         {
-            chnl.sendMessage("Usage: `?team [troop1],[troop2],[troop3],[troop4],[banner (optional)]`");
+            chnl.sendMessage("Usage: `?team [troop1],[troop2],[troop3],[troop4],[banner (optional)],[name (optional)]`");
             return;
         }
-
-        QueryRunner run = GemsQueryRunner.getQueryRunner();
 
         ArrayList<TeamMember> teamMembers = new ArrayList<>();
         Kingdom kingdom = null;
         Boolean hasWeapon = false;
+        String teamName = null;
 
         for (int i = 0; i < 4; i++)
         {
-            String thing = things.get(i);
+            String thing = things.get(i).trim();
 
-            TeamMember teamMember = GemsQueryRunner.runQueryForSingleResultByName(
-                    chnl,
-                    "SELECT TeamMembers.Id, TeamMembers.Name, TeamMembers.Colors, TeamMembers.Kind FROM ( "
-                    + "    SELECT Id, Name, Colors, ReleaseDate, Language, 'Troop' AS Kind FROM Troops "
-                    + "    UNION ALL "
-                    + "    SELECT Id, Name, Colors, ReleaseDate, Language, 'Weapon' AS Kind FROM Weapons "
-                    + ") TeamMembers "
-                    + "WHERE TeamMembers.Language='en-US' AND TeamMembers.ReleaseDate<NOW() AND TeamMembers.Name LIKE ? "
-                    + "ORDER BY TeamMembers.Name",
-                    "troop or weapon",
-                    TeamMember.class,
-                    thing
-            );
-
-            if (teamMember == null)
+            // Search for the thing
+            Search search = AshClient.query("searches/all?term=" + URLEncoder.encode(thing, "UTF-8"), Search.class);
+            ArrayList<Search.SearchResult> searchResults = new ArrayList<>();
+            searchResults.addAll(search.getTroops());
+            searchResults.addAll(search.getWeapons());
+            Search.SearchResult searchTeamMember = AshClient.getSingleResult(chnl, searchResults, "troop or weapon", thing, Search.SearchResult.class);
+            if (searchTeamMember == null)
             {
                 return;
             }
 
-            Boolean isWeapon = teamMember.getKind().equals("Weapon");
+            Boolean isWeapon = (searchTeamMember instanceof Search.Weapon);
             if (hasWeapon && isWeapon)
             {
                 chnl.sendMessage("You cannot have two weapons on one team!");
                 return;
             }
             hasWeapon = hasWeapon || isWeapon;
+            TeamMember teamMember;
+            if (isWeapon)
+            {
+                teamMember = AshClient.query("weapons/" + searchTeamMember.getId() + "/details", Weapon.class);
+            }
+            else
+            {
+                teamMember = AshClient.query("troops/" + searchTeamMember.getId() + "/details", Troop.class);
+            }
             teamMembers.add(teamMember);
         }
 
         if (things.size() > 4)
         {
-            String kingdomName = things.get(4);
+            String kingdomName = things.get(4).trim();
 
             // Search for a kingdom by name or banner name
-            kingdom = GemsQueryRunner.runQueryForSingleResultByName(
-                    chnl,
-                    "SELECT Kingdoms.Id, Kingdoms.Name, Kingdoms.BannerName, Kingdoms.BannerDescription FROM Kingdoms "
-                    + "WHERE Kingdoms.Language='en-US' AND Kingdoms.IsUsed AND Kingdoms.IsFullKingdom AND "
-                    + "((Kingdoms.Name LIKE ?) OR (Kingdoms.BannerName LIKE ?)) "
-                    + "ORDER BY Kingdoms.Name",
-                    "kingdom or banner",
-                    Kingdom.class,
-                    kingdomName
-            );
-
-            if (kingdom == null)
+            Search search = AshClient.query("searches/kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"), Search.class);
+            Search.Kingdom searchKingdom = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName, Search.Kingdom.class);
+            if (searchKingdom == null)
             {
-                return;
+                chnl.sendMessage("Using for team name instead.");
+                teamName = kingdomName;
+            }
+            else
+            {
+                kingdom = AshClient.query("kingdoms/" + searchKingdom.getId() + "/details", Kingdom.class);
+                if (!kingdom.getIsFullKingdom())
+                {
+                    chnl.sendMessage("The kingdom \"" + kingdom.getName() + "\" has no banner.");
+                    return;
+                }
+            }
+        }
+        
+        if (teamName == null)
+        {
+            if (things.size() > 5)
+            {
+                teamName = things.get(5).trim();
+            }
+            else
+            {
+                String[] teamTroopNames = teamMembers.stream().map(m -> m.getName()).toArray(String[]::new);
+                teamName = String.join(", ", teamTroopNames);
             }
         }
 
@@ -133,9 +152,20 @@ public class SqlTeamCommand extends KrystaraCommand
         teamString += String.join("\n", troopNames);
         teamString += "\n\n" + bannerString + manaColors + "\n\n" + url;
 
-        chnl.sendMessage(teamString);
+        EmbedBuilder b = new EmbedBuilder()
+            .withDesc(teamString)
+            .withTitle(teamName)
+            .withUrl(url);
+        
+        if (kingdom != null)
+        {
+            b = b.withThumbnail(kingdom.getBannerImageUrl());
+        }
+        
+        EmbedObject o = b.build();
+        chnl.sendMessage("", o, false);
         chnl.sendMessage("Also posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
-        chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage(teamString);
+        chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage("", o, false);
     }
 
     @Override
@@ -153,7 +183,7 @@ public class SqlTeamCommand extends KrystaraCommand
     @Override
     public String getUsage()
     {
-        return "?team [troop1],[troop2],[troop3],[troop4],[banner (optional)]";
+        return "?team [troop1],[troop2],[troop3],[troop4],[banner (optional)],[name (optional)]";
     }
 
     @Override

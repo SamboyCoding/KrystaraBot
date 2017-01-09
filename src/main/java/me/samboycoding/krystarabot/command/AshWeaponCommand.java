@@ -82,11 +82,11 @@ public class AshWeaponCommand extends KrystaraCommand
         info += weapon.getSpellName() + " (" + weapon.getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc;
 
         EmbedObject o = new EmbedBuilder()
-                .withDesc(info)
-                .withTitle(weapon.getName())
-                .withUrl(weapon.getPageUrl())
-                .withThumbnail(weapon.getImageUrl())
-                .build();
+            .withDesc(info)
+            .withTitle(weapon.getName())
+            .withUrl(weapon.getPageUrl())
+            .withThumbnail(weapon.getImageUrl())
+            .build();
         chnl.sendMessage("", o, false);
     }
 
