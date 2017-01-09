@@ -92,11 +92,11 @@ public class AshClassCommand extends QuestionCommand
         info += "\n";
 
         EmbedObject o = new EmbedBuilder()
-                .withDesc(info)
-                .withTitle(heroClass.getName())
-                .withUrl(heroClass.getPageUrl())
-                .withThumbnail(heroClass.getImageUrl())
-                .build();
+            .withDesc(info)
+            .withTitle(heroClass.getName())
+            .withUrl(heroClass.getPageUrl())
+            .withThumbnail(heroClass.getImageUrl())
+            .build();
 
         chnl.sendMessage("", o, false);
     }
