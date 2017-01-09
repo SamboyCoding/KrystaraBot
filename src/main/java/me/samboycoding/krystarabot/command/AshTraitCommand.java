@@ -47,12 +47,12 @@ public class AshTraitCommand extends KrystaraCommand
         if (!trait.getTroops().isEmpty())
         {
             String[] troopNames = trait.getTroops().stream().map(t -> t.getName()).toArray(String[]::new);
-            info += "Used by: " + String.join(", ", troopNames) + "\n";
+            info += "Used by troops: " + String.join(", ", troopNames) + "\n";
         }
         if (!trait.getHeroClasses().isEmpty())
         {
             String[] heroClassNames = trait.getHeroClasses().stream().map(c -> c.getName()).toArray(String[]::new);
-            info += "Used by: " + String.join(", ", heroClassNames) + "\n";
+            info += "Used by classes: " + String.join(", ", heroClassNames) + "\n";
         }
 
         EmbedObject o = new EmbedBuilder()
