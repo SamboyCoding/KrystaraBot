@@ -52,11 +52,6 @@ public class AshWeaponCommand extends KrystaraCommand
         }
         Weapon weapon = AshClient.query("weapons/" + searchWeapon.getId() + "/details", Weapon.class);
 
-        if (weapon == null)
-        {
-            return;
-        }
-
         String spellDesc = weapon.getSpellDescription();
         String spellMagicScalingText = weapon.getSpellMagicScalingText();
         if (spellMagicScalingText != null)

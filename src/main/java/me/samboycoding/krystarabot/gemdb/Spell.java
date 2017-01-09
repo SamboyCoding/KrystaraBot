@@ -1,5 +1,9 @@
 package me.samboycoding.krystarabot.gemdb;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  * @author Emily Ash
@@ -17,6 +21,9 @@ public class Spell implements Nameable, java.io.Serializable
     private int colors = 0;
     private String troopName = null;
     private String weaponName = null;
+    private String imageUrl = null;
+    private ArrayList<Troop> troops = new ArrayList<>();
+    private ArrayList<Weapon> weapons = new ArrayList<>();
 
     public Spell()
     {
@@ -111,5 +118,20 @@ public class Spell implements Nameable, java.io.Serializable
     public String getWeaponName()
     {
         return this.weaponName;
+    }
+
+    public String getImageUrl()
+    {
+        return this.imageUrl;
+    }
+
+    public List<Weapon> getWeapons()
+    {
+        return Collections.unmodifiableList(this.weapons);
+    }
+
+    public List<Troop> getTroops()
+    {
+        return Collections.unmodifiableList(this.troops);
     }
 }
