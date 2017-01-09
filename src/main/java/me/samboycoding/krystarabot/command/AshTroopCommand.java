@@ -94,11 +94,11 @@ public class AshTroopCommand extends QuestionCommand
         info += "_" + troop.getDescription() + "_";
 
         EmbedObject o = new EmbedBuilder()
-                .withDesc(info)
-                .withTitle(troop.getName())
-                .withUrl(troop.getPageUrl())
-                .withThumbnail(troop.getImageUrl())
-                .build();
+            .withDesc(info)
+            .withTitle(troop.getName())
+            .withUrl(troop.getPageUrl())
+            .withThumbnail(troop.getImageUrl())
+            .build();
         chnl.sendMessage("", o, false);
     }
 

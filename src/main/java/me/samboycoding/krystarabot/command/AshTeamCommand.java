@@ -93,25 +93,31 @@ public class AshTeamCommand extends KrystaraCommand
             Search.Kingdom searchKingdom = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName, Search.Kingdom.class);
             if (searchKingdom == null)
             {
-                return;
+                chnl.sendMessage("Using for team name instead.");
+                teamName = kingdomName;
             }
-            
-            kingdom = AshClient.query("kingdoms/" + searchKingdom.getId() + "/details", Kingdom.class);
-            if (!kingdom.getIsFullKingdom())
+            else
             {
-                chnl.sendMessage("The kingdom \"" + kingdom.getName() + "\" has no banner.");
-                return;
+                kingdom = AshClient.query("kingdoms/" + searchKingdom.getId() + "/details", Kingdom.class);
+                if (!kingdom.getIsFullKingdom())
+                {
+                    chnl.sendMessage("The kingdom \"" + kingdom.getName() + "\" has no banner.");
+                    return;
+                }
             }
         }
         
-        if (things.size() > 5)
+        if (teamName == null)
         {
-            teamName = things.get(5).trim();
-        }
-        else
-        {
-            String[] teamTroopNames = teamMembers.stream().map(m -> m.getName()).toArray(String[]::new);
-            teamName = String.join(", ", teamTroopNames);
+            if (things.size() > 5)
+            {
+                teamName = things.get(5).trim();
+            }
+            else
+            {
+                String[] teamTroopNames = teamMembers.stream().map(m -> m.getName()).toArray(String[]::new);
+                teamName = String.join(", ", teamTroopNames);
+            }
         }
 
         int colors = 0;

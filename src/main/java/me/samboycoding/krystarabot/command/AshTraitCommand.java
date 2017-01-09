@@ -6,9 +6,11 @@ import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.Search;
 import me.samboycoding.krystarabot.gemdb.Trait;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  * Represents the ?trait command
@@ -36,7 +38,7 @@ public class AshTraitCommand extends KrystaraCommand {
         }
         Trait trait = AshClient.query("traits/" + searchTrait.getCode() + "/details", Trait.class);
 
-        String info = "**" + trait.getName() + ":** " + trait.getDescription() + "\n";
+        String info = trait.getDescription() + "\n";
         if (!trait.getTroops().isEmpty()) {
             String[] troopNames = trait.getTroops().stream().map(t -> t.getName()).toArray(String[]::new);
             info += "Used by: " + String.join(", ", troopNames) + "\n";
@@ -45,7 +47,12 @@ public class AshTraitCommand extends KrystaraCommand {
             String[] heroClassNames = trait.getHeroClasses().stream().map(c -> c.getName()).toArray(String[]::new);
             info += "Used by: " + String.join(", ", heroClassNames) + "\n";
         }
-        chnl.sendMessage(info);
+
+        EmbedObject o = new EmbedBuilder()
+            .withDesc(info)
+            .withTitle(trait.getName())
+            .build();
+        chnl.sendMessage("", o, false);
     }
 
     @Override

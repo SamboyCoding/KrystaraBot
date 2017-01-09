@@ -264,10 +264,10 @@ public class AshTraitstoneCommand extends KrystaraCommand
         String info = getTraitstoneInfoText(traitstone, chnl);
         
         EmbedObject o = new EmbedBuilder()
-                .withDesc(info)
-                .withTitle(traitstone.getName())
-                .withThumbnail(traitstone.getImageUrl())
-                .build();
+            .withDesc(info)
+            .withTitle(traitstone.getName())
+            .withThumbnail(traitstone.getImageUrl())
+            .build();
         chnl.sendMessage("", o, false);
     }
 
