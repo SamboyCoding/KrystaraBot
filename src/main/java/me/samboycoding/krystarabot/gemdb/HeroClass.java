@@ -1,6 +1,9 @@
 package me.samboycoding.krystarabot.gemdb;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -8,6 +11,23 @@ import java.sql.Date;
  */
 public class HeroClass implements Nameable, java.io.Serializable
 {
+    public static class Trait implements Nameable
+    {
+        private String code;
+        private String name;
+        
+        public String getCode() { return this.code; }
+        public String getName() { return this.name; }
+    }
+    
+    public static class Perk implements Nameable
+    {
+        private String name;
+        private String perkType;
+        
+        public String getName() { return this.name; }
+        public String getPerkType() { return this.perkType; }
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -29,6 +49,11 @@ public class HeroClass implements Nameable, java.io.Serializable
     private String weaponName = null;
     private int traitstonesRequired = 0;
     private String[] traitNames = new String[3];
+    private String pageUrl = null;
+    private String imageUrl = null;
+    private ArrayList<Trait> traits = new ArrayList<>();
+    private ArrayList<Perk> perks = new ArrayList<>();
+    private Weapon weapon = null;
 
     public HeroClass()
     {
@@ -223,5 +248,30 @@ public class HeroClass implements Nameable, java.io.Serializable
     public String getTraitName(int index)
     {
         return this.traitNames[index];
+    }
+    
+    public String getPageUrl()
+    {
+        return this.pageUrl;
+    }
+
+    public String getImageUrl()
+    {
+        return this.imageUrl;
+    }
+
+    public List<Trait> getTraits()
+    {
+        return Collections.unmodifiableList(this.traits);
+    }
+
+    public List<Perk> getPerks()
+    {
+        return Collections.unmodifiableList(this.perks);
+    }
+    
+    public Weapon getWeapon()
+    {
+        return this.weapon;
     }
 }

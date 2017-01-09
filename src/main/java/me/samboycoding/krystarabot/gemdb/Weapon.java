@@ -14,7 +14,6 @@ public class Weapon extends TeamMember implements java.io.Serializable
     private Date releaseDate;
     private String fileBase = null;
     private int rarityId = 0;
-    private int spellId = 0;
     private String ownerName = null;
 
     public Weapon()
@@ -59,16 +58,6 @@ public class Weapon extends TeamMember implements java.io.Serializable
     public int getRarityId()
     {
         return this.rarityId;
-    }
-
-    public void setSpellId(int value)
-    {
-        this.spellId = value;
-    }
-
-    public int getSpellId()
-    {
-        return this.spellId;
     }
 
     public void setOwnerName(String value)
