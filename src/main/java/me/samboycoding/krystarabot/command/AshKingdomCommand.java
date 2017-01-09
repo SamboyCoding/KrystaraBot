@@ -21,15 +21,19 @@ import sx.blah.discord.util.EmbedBuilder;
  *
  * @author r3byass
  */
-public class AshKingdomCommand extends KrystaraCommand {
+public class AshKingdomCommand extends KrystaraCommand
+{
 
-    public AshKingdomCommand() {
+    public AshKingdomCommand()
+    {
         commandName = "kingdom";
     }
 
     @Override
-    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception {
-        if (arguments.size() < 1) {
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        if (arguments.size() < 1)
+        {
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
@@ -37,7 +41,8 @@ public class AshKingdomCommand extends KrystaraCommand {
         String kingdomName = String.join(" ", arguments);
         Search search = AshClient.query("searches/kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"), Search.class);
         Search.Kingdom searchKingdom = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName, Search.Kingdom.class);
-        if (searchKingdom == null) {
+        if (searchKingdom == null)
+        {
             return;
         }
         Kingdom kingdom = AshClient.query("kingdoms/" + searchKingdom.getId() + "/details", Kingdom.class);
@@ -54,7 +59,8 @@ public class AshKingdomCommand extends KrystaraCommand {
         String emojiSouls = g.getEmojiByName("gow_soul").toString();
         String emojiGlory = g.getEmojiByName("gow_glory").toString();
         String emojiLevelStat = null;
-        if (isFullKingdom) {
+        if (isFullKingdom)
+        {
             emojiLevelStat = g.getEmojiByName("gow_" + kingdom.getLevelStat()).toString();
         }
 
@@ -65,29 +71,36 @@ public class AshKingdomCommand extends KrystaraCommand {
 
         String info = "";
         info += "Troops (" + troopNames.length + "): " + String.join(", ", troopNames) + "\n";
-        if (isFullKingdom) {
+        if (isFullKingdom)
+        {
             info += kingdom.getBannerName() + ": " + kingdom.getBannerDescription() + "\n";
         }
         info += "\n**Bonuses**\n";
 
-        for (Bonus bonus : kingdom.getBonuses()) {
+        for (Bonus bonus : kingdom.getBonuses())
+        {
             ArrayList<String> bonusStats = new ArrayList<>();
             info += "x" + bonus.getTroopCount() + ": " + bonus.getName() + " - ";
-            if (bonus.getArmor() > 0) {
+            if (bonus.getArmor() > 0)
+            {
                 bonusStats.add("+" + bonus.getArmor() + emojiArmor);
             }
-            if (bonus.getLife() > 0) {
+            if (bonus.getLife() > 0)
+            {
                 bonusStats.add("+" + bonus.getLife() + emojiLife);
             }
-            if (bonus.getAttack() > 0) {
+            if (bonus.getAttack() > 0)
+            {
                 bonusStats.add("+" + bonus.getAttack() + emojiAttack);
             }
-            if (bonus.getMagic() > 0) {
+            if (bonus.getMagic() > 0)
+            {
                 bonusStats.add("+" + bonus.getMagic() + emojiMagic);
             }
             info += String.join("  ", bonusStats) + "\n";
         }
-        if (isFullKingdom) {
+        if (isFullKingdom)
+        {
             info += "\n";
             info += "**Tribute**\n";
             info += emojiGold + kingdom.getTributeGold() + "   " + emojiSouls + kingdom.getTributeSouls() + "   "
@@ -106,27 +119,32 @@ public class AshKingdomCommand extends KrystaraCommand {
     }
 
     @Override
-    public String getHelpText() {
+    public String getHelpText()
+    {
         return "Shows information for the specified kingdom.";
     }
 
     @Override
-    public Boolean requiresAdmin() {
+    public Boolean requiresAdmin()
+    {
         return false;
     }
 
     @Override
-    public String getUsage() {
+    public String getUsage()
+    {
         return "?kingdom [name]";
     }
 
     @Override
-    public String getCommand() {
+    public String getCommand()
+    {
         return "kingdom";
     }
 
     @Override
-    public CommandType getCommandType() {
+    public CommandType getCommandType()
+    {
         return GOW;
     }
 }

@@ -11,22 +11,39 @@ import java.util.List;
  */
 public class HeroClass implements Nameable, java.io.Serializable
 {
+
     public static class Trait implements Nameable
     {
+
         private String code;
         private String name;
-        
-        public String getCode() { return this.code; }
-        public String getName() { return this.name; }
+
+        public String getCode()
+        {
+            return this.code;
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
     }
-    
+
     public static class Perk implements Nameable
     {
+
         private String name;
         private String perkType;
-        
-        public String getName() { return this.name; }
-        public String getPerkType() { return this.perkType; }
+
+        public String getName()
+        {
+            return this.name;
+        }
+
+        public String getPerkType()
+        {
+            return this.perkType;
+        }
     }
 
     private static final long serialVersionUID = 1L;
@@ -249,7 +266,7 @@ public class HeroClass implements Nameable, java.io.Serializable
     {
         return this.traitNames[index];
     }
-    
+
     public String getPageUrl()
     {
         return this.pageUrl;
@@ -269,7 +286,7 @@ public class HeroClass implements Nameable, java.io.Serializable
     {
         return Collections.unmodifiableList(this.perks);
     }
-    
+
     public Weapon getWeapon()
     {
         return this.weapon;

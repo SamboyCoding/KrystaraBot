@@ -11,15 +11,24 @@ import java.util.List;
  */
 public class Troop extends TeamMember implements java.io.Serializable
 {
+
     public static class Trait implements Nameable
     {
+
         private String code;
         private String name;
-        
-        public String getCode() { return this.code; }
-        public String getName() { return this.name; }
+
+        public String getCode()
+        {
+            return this.code;
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
     }
-    
+
     private static final long serialVersionUID = 1L;
     private String rarity = null;
     private String type = null;
@@ -181,7 +190,7 @@ public class Troop extends TeamMember implements java.io.Serializable
     {
         return this.traitNames[index];
     }
-    
+
     public String getPageUrl()
     {
         return this.pageUrl;

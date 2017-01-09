@@ -17,11 +17,12 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class AshSearchCommand extends KrystaraCommand
 {
+
     public AshSearchCommand()
     {
         commandName = "search";
     }
-    
+
     private String getTroopListAsString(List<Search.Troop> troops)
     {
         String[] names = troops.stream().map(t -> t.getName()).toArray(String[]::new);
@@ -47,8 +48,10 @@ public class AshSearchCommand extends KrystaraCommand
                 return;
             }
 
+            chnl.setTypingStatus(true);
+
             String searchOutput = "Search results for `" + searchTerm + "`:\n\n";
-            
+
             Search result = AshClient.query("searches/all?term=" + URLEncoder.encode(searchTerm, "UTF-8"), Search.class);
 
             String[] troopNames = result.getTroops().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
@@ -82,8 +85,8 @@ public class AshSearchCommand extends KrystaraCommand
                 searchOutput += "**Traits**:\n" + String.join("\n", traitNames) + "\n\n";
             }
             chnl.sendMessage(searchOutput);
-        }
-        catch (IOException e)
+            chnl.setTypingStatus(false);
+        } catch (IOException e)
         {
             chnl.sendMessage("Query failed.");
             throw e;

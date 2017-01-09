@@ -23,25 +23,31 @@ import sx.blah.discord.util.EmbedBuilder;
  *
  * @author Emily
  */
-public class AshSpellCommand extends KrystaraCommand {
+public class AshSpellCommand extends KrystaraCommand
+{
 
-    public AshSpellCommand() {
+    public AshSpellCommand()
+    {
         commandName = "spell";
     }
 
-    private String getTroopListAsString(List<Troop> troops) {
+    private String getTroopListAsString(List<Troop> troops)
+    {
         String[] names = troops.stream().map(t -> t.getName()).toArray(String[]::new);
         return String.join(", ", names);
     }
 
-    private String getWeaponListAsString(List<Weapon> weapons) {
+    private String getWeaponListAsString(List<Weapon> weapons)
+    {
         String[] names = weapons.stream().map(t -> t.getName()).toArray(String[]::new);
         return String.join(", ", names);
     }
 
     @Override
-    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception {
-        if (arguments.size() < 1) {
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        if (arguments.size() < 1)
+        {
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
@@ -49,23 +55,28 @@ public class AshSpellCommand extends KrystaraCommand {
         String spellName = String.join(" ", arguments);
         Search search = AshClient.query("searches/spells?term=" + URLEncoder.encode(spellName, "UTF-8"), Search.class);
         Search.Spell searchSpell = AshClient.getSingleResult(chnl, search.getSpells(), "spell", spellName, Search.Spell.class);
-        if (searchSpell == null) {
+        if (searchSpell == null)
+        {
             return;
         }
         Spell spell = AshClient.query("spells/" + searchSpell.getId() + "/details", Spell.class);
 
         String spellDesc = spell.getDescription();
         String spellMagicScalingText = spell.getMagicScalingText();
-        if (spellMagicScalingText != null) {
-            if (!spellDesc.contains("{2}")) {
+        if (spellMagicScalingText != null)
+        {
+            if (!spellDesc.contains("{2}"))
+            {
                 spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
-            } else {
+            } else
+            {
                 spellDesc = spellDesc.replace("{1}", "(half)");
                 spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
             }
         }
         String spellBoostRatioText = spell.getBoostRatioText();
-        if (spellBoostRatioText != null) {
+        if (spellBoostRatioText != null)
+        {
             spellDesc += spellBoostRatioText;
         }
 
@@ -86,35 +97,40 @@ public class AshSpellCommand extends KrystaraCommand {
         }
 
         EmbedObject o = new EmbedBuilder()
-            .withDesc(info)
-            .withTitle(spell.getName())
-            .withThumbnail(spell.getImageUrl())
-            .build();
+                .withDesc(info)
+                .withTitle(spell.getName())
+                .withThumbnail(spell.getImageUrl())
+                .build();
         chnl.sendMessage("", o, false);
     }
 
     @Override
-    public String getHelpText() {
+    public String getHelpText()
+    {
         return "Shows information for the specified spell.";
     }
 
     @Override
-    public Boolean requiresAdmin() {
+    public Boolean requiresAdmin()
+    {
         return false;
     }
 
     @Override
-    public String getUsage() {
+    public String getUsage()
+    {
         return "?spell [name]";
     }
 
     @Override
-    public String getCommand() {
+    public String getCommand()
+    {
         return "spell";
     }
 
     @Override
-    public CommandType getCommandType() {
+    public CommandType getCommandType()
+    {
         return GOW;
     }
 }

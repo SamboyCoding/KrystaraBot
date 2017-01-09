@@ -25,6 +25,7 @@ import sx.blah.discord.util.RateLimitException;
  */
 public class AshClient
 {
+
     public static <T> T query(String apiPathAndQuery, Class<T> c) throws IOException
     {
         URL url = new URL("http://ashtender.com/gems/api/" + apiPathAndQuery);
@@ -36,15 +37,15 @@ public class AshClient
         Gson gson = new Gson();
         return gson.fromJson(body, c);
     }
-    
-    public static <T extends Nameable> T getSingleResult(IChannel chnl, List<T> resultList, String typeString, String searchName, Class<T> type) 
-        throws MissingPermissionsException, RateLimitException, DiscordException
+
+    public static <T extends Nameable> T getSingleResult(IChannel chnl, List<T> resultList, String typeString, String searchName, Class<T> type)
+            throws MissingPermissionsException, RateLimitException, DiscordException
     {
         String searchNameLower = searchName.toLowerCase();
-        
+
         int prefixMatchCount = 0;
         T prefixMatch = null;
-        
+
         if (resultList.isEmpty())
         {
             String message = "No " + typeString + " \"" + searchName + "\" found.";
@@ -56,12 +57,12 @@ public class AshClient
         for (T result : resultList)
         {
             String resultNameLower = result.getName().toLowerCase();
-            
+
             if (resultNameLower.equals(searchNameLower))
             {
                 return result;
             }
-            
+
             // Count prefix matches
             if (resultNameLower.startsWith(searchNameLower))
             {
@@ -69,26 +70,26 @@ public class AshClient
                 prefixMatch = result;
             }
         }
-        
+
         // No exact match; was there only one prefix match?
         if (prefixMatchCount == 1)
         {
             // Assume it's correct
             return prefixMatch;
         }
-        
+
         // No single prefix match; was there only one result?
         if (resultList.size() == 1)
         {
             T result = resultList.get(0);
-            
+
             // Only one (fuzzy) match; assume it's correct but show a warning
             String message = "No " + typeString + " \"" + searchName + "\" found. Assuming '" + result.getName() + "'...";
             chnl.sendMessage(message);
 
             return result;
         }
-        
+
         // Ambiguity
         Stream<String> str = resultList.stream().map(t -> t.getName());
         Utilities.sendDisambiguationMessage(chnl, "Search term \"" + searchName + "\" is ambiguous.", str::iterator);

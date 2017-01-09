@@ -45,6 +45,8 @@ public class AshTeamCommand extends KrystaraCommand
             return;
         }
 
+        chnl.setTypingStatus(true);
+
         ArrayList<TeamMember> teamMembers = new ArrayList<>();
         Kingdom kingdom = null;
         Boolean hasWeapon = false;
@@ -76,8 +78,7 @@ public class AshTeamCommand extends KrystaraCommand
             if (isWeapon)
             {
                 teamMember = AshClient.query("weapons/" + searchTeamMember.getId() + "/details", Weapon.class);
-            }
-            else
+            } else
             {
                 teamMember = AshClient.query("troops/" + searchTeamMember.getId() + "/details", Troop.class);
             }
@@ -95,8 +96,7 @@ public class AshTeamCommand extends KrystaraCommand
             {
                 chnl.sendMessage("Using for team name instead.");
                 teamName = kingdomName;
-            }
-            else
+            } else
             {
                 kingdom = AshClient.query("kingdoms/" + searchKingdom.getId() + "/details", Kingdom.class);
                 if (!kingdom.getIsFullKingdom())
@@ -106,14 +106,13 @@ public class AshTeamCommand extends KrystaraCommand
                 }
             }
         }
-        
+
         if (teamName == null)
         {
             if (things.size() > 5)
             {
                 teamName = things.get(5).trim();
-            }
-            else
+            } else
             {
                 String[] teamTroopNames = teamMembers.stream().map(m -> m.getName()).toArray(String[]::new);
                 teamName = String.join(", ", teamTroopNames);
@@ -153,19 +152,21 @@ public class AshTeamCommand extends KrystaraCommand
         teamString += "\n\n" + bannerString + manaColors + "\n\n" + url;
 
         EmbedBuilder b = new EmbedBuilder()
-            .withDesc(teamString)
-            .withTitle(teamName)
-            .withUrl(url);
-        
+                .withDesc(teamString)
+                .withTitle(teamName)
+                .withUrl(url);
+
         if (kingdom != null)
         {
             b = b.withThumbnail(kingdom.getBannerImageUrl());
         }
-        
+
         EmbedObject o = b.build();
         chnl.sendMessage("", o, false);
         chnl.sendMessage("Also posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
         chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage("", o, false);
+
+        chnl.setTypingStatus(false);
     }
 
     @Override

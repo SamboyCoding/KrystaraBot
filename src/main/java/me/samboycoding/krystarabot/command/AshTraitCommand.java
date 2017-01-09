@@ -17,15 +17,19 @@ import sx.blah.discord.util.EmbedBuilder;
  *
  * @author Sam
  */
-public class AshTraitCommand extends KrystaraCommand {
+public class AshTraitCommand extends KrystaraCommand
+{
 
-    public AshTraitCommand() {
+    public AshTraitCommand()
+    {
         commandName = "trait";
     }
 
     @Override
-    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception {
-        if (arguments.size() < 1) {
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        if (arguments.size() < 1)
+        {
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
@@ -33,50 +37,58 @@ public class AshTraitCommand extends KrystaraCommand {
         String traitName = String.join(" ", arguments);
         Search search = AshClient.query("searches/traits?term=" + URLEncoder.encode(traitName, "UTF-8"), Search.class);
         Search.Trait searchTrait = AshClient.getSingleResult(chnl, search.getTraits(), "trait", traitName, Search.Trait.class);
-        if (searchTrait == null) {
+        if (searchTrait == null)
+        {
             return;
         }
         Trait trait = AshClient.query("traits/" + searchTrait.getCode() + "/details", Trait.class);
 
         String info = trait.getDescription() + "\n";
-        if (!trait.getTroops().isEmpty()) {
+        if (!trait.getTroops().isEmpty())
+        {
             String[] troopNames = trait.getTroops().stream().map(t -> t.getName()).toArray(String[]::new);
             info += "Used by: " + String.join(", ", troopNames) + "\n";
         }
-        if (!trait.getHeroClasses().isEmpty()) {
+        if (!trait.getHeroClasses().isEmpty())
+        {
             String[] heroClassNames = trait.getHeroClasses().stream().map(c -> c.getName()).toArray(String[]::new);
             info += "Used by: " + String.join(", ", heroClassNames) + "\n";
         }
 
         EmbedObject o = new EmbedBuilder()
-            .withDesc(info)
-            .withTitle(trait.getName())
-            .build();
+                .withDesc(info)
+                .withTitle(trait.getName())
+                .build();
         chnl.sendMessage("", o, false);
     }
 
     @Override
-    public String getHelpText() {
+    public String getHelpText()
+    {
         return "Shows information for the specified trait.";
     }
 
     @Override
-    public Boolean requiresAdmin() {
+    public Boolean requiresAdmin()
+    {
         return false;
     }
 
     @Override
-    public String getUsage() {
+    public String getUsage()
+    {
         return "?trait [name]";
     }
 
     @Override
-    public String getCommand() {
+    public String getCommand()
+    {
         return "trait";
     }
 
     @Override
-    public CommandType getCommandType() {
+    public CommandType getCommandType()
+    {
         return GOW;
     }
 

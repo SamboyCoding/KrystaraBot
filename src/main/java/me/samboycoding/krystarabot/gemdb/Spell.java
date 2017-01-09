@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class Spell implements Nameable, java.io.Serializable
 {
+
     private static final long serialVersionUID = 1L;
     private int id = 0;
     private String name = null;

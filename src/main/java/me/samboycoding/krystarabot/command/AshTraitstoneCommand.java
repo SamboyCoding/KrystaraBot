@@ -255,19 +255,19 @@ public class AshTraitstoneCommand extends KrystaraCommand
             Utilities.sendDisambiguationMessage(chnl, "Search term \"" + searchTerm + "\" is ambiguous.", str::iterator);
             return;
         }
-        
+
         Traitstone ts = traitstones.get(0);
-        me.samboycoding.krystarabot.gemdb.Traitstone traitstone = 
-            AshClient.query("traitstones/" + ts.getId() + "/details", 
-                me.samboycoding.krystarabot.gemdb.Traitstone.class);
-        
+        me.samboycoding.krystarabot.gemdb.Traitstone traitstone
+                = AshClient.query("traitstones/" + ts.getId() + "/details",
+                        me.samboycoding.krystarabot.gemdb.Traitstone.class);
+
         String info = getTraitstoneInfoText(traitstone, chnl);
-        
+
         EmbedObject o = new EmbedBuilder()
-            .withDesc(info)
-            .withTitle(traitstone.getName())
-            .withThumbnail(traitstone.getImageUrl())
-            .build();
+                .withDesc(info)
+                .withTitle(traitstone.getName())
+                .withThumbnail(traitstone.getImageUrl())
+                .build();
         chnl.sendMessage("", o, false);
     }
 

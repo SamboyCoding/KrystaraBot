@@ -10,26 +10,51 @@ import java.util.List;
  */
 public class Traitstone implements Nameable, java.io.Serializable
 {
+
     public static class Troop implements Nameable
     {
+
         private int id;
         private String name;
         private int count;
-        
-        public int getId() { return this.id; }
-        public String getName() { return this.name; }
-        public int getCount() { return this.count; }
+
+        public int getId()
+        {
+            return this.id;
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
+
+        public int getCount()
+        {
+            return this.count;
+        }
     }
-    
+
     public static class HeroClass implements Nameable
     {
+
         private int id;
         private String name;
         private int count;
-        
-        public int getId() { return this.id; }
-        public String getName() { return this.name; }
-        public int getCount() { return this.count; }
+
+        public int getId()
+        {
+            return this.id;
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
+
+        public int getCount()
+        {
+            return this.count;
+        }
     }
 
     private static final long serialVersionUID = 1L;
