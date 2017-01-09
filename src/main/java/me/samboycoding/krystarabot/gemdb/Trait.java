@@ -1,5 +1,9 @@
 package me.samboycoding.krystarabot.gemdb;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  * @author julians
@@ -13,6 +17,8 @@ public class Trait implements Nameable, java.io.Serializable
     private String language = null;
     private String name = null;
     private String description = null;
+    private ArrayList<Troop> troops = new ArrayList<>();
+    private ArrayList<HeroClass> classes = new ArrayList<>();
 
     public Trait()
     {
@@ -56,5 +62,15 @@ public class Trait implements Nameable, java.io.Serializable
     public String getDescription()
     {
         return this.description;
+    }
+
+    public List<Troop> getTroops()
+    {
+        return Collections.unmodifiableList(this.troops);
+    }
+
+    public List<HeroClass> getHeroClasses()
+    {
+        return Collections.unmodifiableList(this.classes);
     }
 }
