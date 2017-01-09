@@ -32,7 +32,6 @@ public class Spell implements Nameable, java.io.Serializable
         return this.id;
     }
 
-    @Override
     public void setName(String value)
     {
         this.name = value;

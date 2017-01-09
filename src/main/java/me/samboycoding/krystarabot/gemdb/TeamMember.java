@@ -42,7 +42,6 @@ public class TeamMember implements Nameable
         return this.language;
     }
 
-    @Override
     public void setName(String value)
     {
         this.name = value;

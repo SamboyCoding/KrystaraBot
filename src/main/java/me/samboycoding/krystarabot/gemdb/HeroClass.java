@@ -54,7 +54,6 @@ public class HeroClass implements Nameable, java.io.Serializable
         return this.language;
     }
 
-    @Override
     public void setName(String value)
     {
         this.name = value;

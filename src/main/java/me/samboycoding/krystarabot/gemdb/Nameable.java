@@ -6,8 +6,5 @@ package me.samboycoding.krystarabot.gemdb;
  */
 public interface Nameable
 {
-
-    public void setName(String value);
-
     public String getName();
 }

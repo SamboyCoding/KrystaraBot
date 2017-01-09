@@ -1,6 +1,9 @@
 package me.samboycoding.krystarabot.gemdb;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -8,7 +11,15 @@ import java.sql.Date;
  */
 public class Troop extends TeamMember implements java.io.Serializable
 {
-
+    public static class Trait implements Nameable
+    {
+        private String code;
+        private String name;
+        
+        public String getCode() { return this.code; }
+        public String getName() { return this.name; }
+    }
+    
     private static final long serialVersionUID = 1L;
     private String rarity = null;
     private String type = null;
@@ -23,6 +34,9 @@ public class Troop extends TeamMember implements java.io.Serializable
     private String kingdomName = null;
     private int traitstonesRequired = 0;
     private final String[] traitNames = new String[3];
+    private String pageUrl = null;
+    private String imageUrl = null;
+    private ArrayList<Trait> traits = new ArrayList<>();
 
     public Troop()
     {
@@ -166,5 +180,20 @@ public class Troop extends TeamMember implements java.io.Serializable
     public String getTraitName(int index)
     {
         return this.traitNames[index];
+    }
+    
+    public String getPageUrl()
+    {
+        return this.pageUrl;
+    }
+
+    public String getImageUrl()
+    {
+        return this.imageUrl;
+    }
+
+    public List<Trait> getTraits()
+    {
+        return Collections.unmodifiableList(this.traits);
     }
 }

@@ -100,7 +100,7 @@ public class Listener
                 main.registerCommand(new SqlTeamCommand());
                 main.registerCommand(new SqlTraitCommand());
                 main.registerCommand(new SqlTraitstoneCommand());
-                main.registerCommand(new SqlTroopCommand());
+                main.registerCommand(new AshTroopCommand());
                 main.registerCommand(new SqlWeaponCommand());
             } else
             {

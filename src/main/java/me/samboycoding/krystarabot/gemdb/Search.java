@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Search implements java.io.Serializable
 {
-    public static class Troop
+    public static class Troop implements Nameable
     {
         private int id;
         private String name;
@@ -25,7 +25,7 @@ public class Search implements java.io.Serializable
         public String getName() { return this.name; }
     }
     
-    public static class Spell
+    public static class Spell implements Nameable
     {
         private int id;
         private String name;
@@ -36,7 +36,7 @@ public class Search implements java.io.Serializable
         public List<Troop> getTroops() { return Collections.unmodifiableList(this.troops); }
     }
 
-    public static class Trait
+    public static class Trait implements Nameable
     {
         private String code;
         private String name;
@@ -47,7 +47,7 @@ public class Search implements java.io.Serializable
         public List<Troop> getTroops() { return Collections.unmodifiableList(this.troops); }
     }
 
-    public static class Kingdom
+    public static class Kingdom implements Nameable
     {
         private int id;
         private String name;
@@ -56,7 +56,7 @@ public class Search implements java.io.Serializable
         public String getName() { return this.name; }
     }
     
-    public static class HeroClass
+    public static class HeroClass implements Nameable
     {
         private int id;
         private String name;
@@ -65,7 +65,7 @@ public class Search implements java.io.Serializable
         public String getName() { return this.name; }
     }
 
-    public static class Weapon
+    public static class Weapon implements Nameable
     {
         private int id;
         private String name;
