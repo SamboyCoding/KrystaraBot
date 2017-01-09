@@ -46,6 +46,7 @@ public class Search implements java.io.Serializable
         private int id;
         private String name;
         private ArrayList<Troop> troops = new ArrayList<>();
+        private ArrayList<Weapon> weapons = new ArrayList<>();
 
         public int getId()
         {
@@ -61,6 +62,11 @@ public class Search implements java.io.Serializable
         {
             return Collections.unmodifiableList(this.troops);
         }
+
+        public List<Weapon> getWeapons()
+        {
+            return Collections.unmodifiableList(this.weapons);
+        }
     }
 
     public static class Trait implements Nameable
@@ -69,6 +75,7 @@ public class Search implements java.io.Serializable
         private String code;
         private String name;
         private ArrayList<Troop> troops = new ArrayList<>();
+        private ArrayList<HeroClass> classes = new ArrayList<>();
 
         public String getCode()
         {
@@ -83,6 +90,11 @@ public class Search implements java.io.Serializable
         public List<Troop> getTroops()
         {
             return Collections.unmodifiableList(this.troops);
+        }
+
+        public List<HeroClass> getHeroClasses()
+        {
+            return Collections.unmodifiableList(this.classes);
         }
     }
 

@@ -23,12 +23,17 @@ public class AshSearchCommand extends KrystaraCommand
         commandName = "search";
     }
 
-    private String getTroopListAsString(List<Search.Troop> troops)
+    private String getSearchListsAsString(List<? extends Search.SearchResult>... lists)
     {
-        String[] names = troops.stream().map(t -> t.getName()).toArray(String[]::new);
-        return "(" + String.join(", ", names) + ")";
+        ArrayList<Search.SearchResult> allResults = new ArrayList();
+        for (List<? extends Search.SearchResult> list : lists)
+        {
+            allResults.addAll(list);
+        }
+        String[] allNames = allResults.stream().map(t -> t.getName()).toArray(String[]::new);
+        return "(" + String.join(", ", allNames) + ")";
     }
-
+    
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -55,8 +60,8 @@ public class AshSearchCommand extends KrystaraCommand
             Search result = AshClient.query("searches/all?term=" + URLEncoder.encode(searchTerm, "UTF-8"), Search.class);
 
             String[] troopNames = result.getTroops().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
-            String[] traitNames = result.getTraits().stream().map(t -> "    - " + t.getName() + " " + getTroopListAsString(t.getTroops())).toArray(String[]::new);
-            String[] spellNames = result.getSpells().stream().map(t -> "    - " + t.getName() + " " + getTroopListAsString(t.getTroops())).toArray(String[]::new);
+            String[] traitNames = result.getTraits().stream().map(t -> "    - " + t.getName() + " " + getSearchListsAsString(t.getTroops(), t.getHeroClasses())).toArray(String[]::new);
+            String[] spellNames = result.getSpells().stream().map(t -> "    - " + t.getName() + " " + getSearchListsAsString(t.getTroops(), t.getWeapons())).toArray(String[]::new);
             String[] kingdomNames = result.getKingdoms().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
             String[] heroClassNames = result.getHeroClasses().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
             String[] weaponNames = result.getWeapons().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
