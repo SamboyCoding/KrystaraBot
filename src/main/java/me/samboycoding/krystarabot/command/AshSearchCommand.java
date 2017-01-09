@@ -33,7 +33,7 @@ public class AshSearchCommand extends KrystaraCommand
         String[] allNames = allResults.stream().map(t -> t.getName()).toArray(String[]::new);
         return "(" + String.join(", ", allNames) + ")";
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
