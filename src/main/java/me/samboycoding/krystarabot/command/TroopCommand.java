@@ -1,178 +1,99 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package me.samboycoding.krystarabot.command;
 
-import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import me.samboycoding.krystarabot.GameData;
-import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import me.samboycoding.krystarabot.main;
-import me.samboycoding.krystarabot.utilities.Utilities;
-import org.json.JSONObject;
+import java.util.Arrays;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
+import me.samboycoding.krystarabot.gemdb.AshClient;
+import me.samboycoding.krystarabot.gemdb.GemColor;
+import me.samboycoding.krystarabot.gemdb.Search;
+import me.samboycoding.krystarabot.gemdb.Troop;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
-/**
- * Represents the ?troop command
- *
- * @author Sam
- */
-public class TroopCommand extends KrystaraCommand
+public class TroopCommand extends QuestionCommand
 {
 
     public TroopCommand()
     {
         commandName = "troop";
+
     }
 
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
-        {
-            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
-            return;
-        }
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
 
-        JSONObject troopInfo;
-
-        String troopName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        troopInfo = main.data.getTroopByName(troopName);
-
-        if (troopInfo == null)
+        String troopName = String.join(" ", arguments);
+        Search search = Search.fromQuery("troops?term=" + URLEncoder.encode(troopName, "UTF-8"));
+        Troop.Summary troopSummary = AshClient.getSingleResult(chnl, search.getTroops(), "troop", troopName);
+        if (troopSummary == null)
         {
-            ArrayList<String> results = main.data.searchForTroop(troopName);
-
-            if (results.isEmpty())
-            {
-                chnl.sendMessage("No troop `" + troopName + "` found, " + sdr.mention());
-                return;
-            }
-            if (results.size() > 5)
-            {
-                chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
-                return;
-            }
-            if (results.size() > 1)
-            {
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + troopName + "\" is ambiguous.", results);
-                return;
-            }
-
-            troopInfo = main.data.getTroopByName(results.get(0));
+            return;
         }
 
-        String desc = troopInfo.getString("Description").replace("\n", "");
-        troopName = troopInfo.getString("Name");
-        String kingdom = troopInfo.getString("Kingdom");
-        String rarity = troopInfo.getString("TroopRarity");
-        String troopType = troopInfo.getString("Type").replace("-", "/");
-        String spell = troopInfo.getJSONObject("Spell").getString("Name");
-        int summonCost = troopInfo.getJSONObject("Spell").getInt("Cost");
-
-        String trait1;
-        String trait2;
-        String trait3;
-
-        switch (troopInfo.getJSONArray("ParsedTraits").length())
+        Troop troop = troopSummary.getDetails();
+        String spellDesc = troop.getSpellDescription();
+        String spellMagicScalingText = troop.getSpellMagicScalingText();
+        if (spellMagicScalingText != null)
         {
-            case 0:
-                trait1 = "None";
-                trait2 = "None";
-                trait3 = "None";
-                break;
-            case 1:
-                trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
-                trait2 = "None";
-                trait3 = "None";
-                break;
-            case 2:
-                trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
-                trait2 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
-                trait3 = "None";
-                break;
-            case 3:
-                trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
-                trait2 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
-                trait3 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
-                break;
-            default:
-                //4+ - only take first 3
-                trait1 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
-                trait2 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
-                trait3 = troopInfo.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
-                break;
+            if (!spellDesc.contains("{2}"))
+            {
+                spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
+            } else
+            {
+                spellDesc = spellDesc.replace("{1}", "(half)");
+                spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
+            }
         }
-
-        int armorLvl20 = main.data.getLevel20ForProperty(troopInfo.getInt("Armor_Base"), troopInfo.getJSONArray("ArmorIncrease"), troopInfo.getJSONArray("Ascension_Armor"));
-        int lifeLvl20 = main.data.getLevel20ForProperty(troopInfo.getInt("Health_Base"), troopInfo.getJSONArray("HealthIncrease"), troopInfo.getJSONArray("Ascension_Health"));
-        int attackLvl20 = main.data.getLevel20ForProperty(troopInfo.getInt("Attack_Base"), troopInfo.getJSONArray("AttackIncrease"), troopInfo.getJSONArray("Ascension_Attack"));
-        int magicLvl20 = main.data.getLevel20ForProperty(troopInfo.getInt("SpellPower_Base"), troopInfo.getJSONArray("SpellPowerIncrease"), null);
-
-        /*int armorLvl10 = main.data.getLevel10ForProperty(troopInfo.getInt("Armor_Base"), troopInfo.getJSONArray("ArmorIncrease"));
-        int lifeLvl10 = main.data.getLevel10ForProperty(troopInfo.getInt("Health_Base"), troopInfo.getJSONArray("HealthIncrease"));
-        int attackLvl10 = main.data.getLevel10ForProperty(troopInfo.getInt("Attack_Base"), troopInfo.getJSONArray("AttackIncrease"));
-        int magicLvl10 = main.data.getLevel10ForProperty(troopInfo.getInt("SpellPower_Base"), troopInfo.getJSONArray("SpellPowerIncrease"));
-
-        int armorLvl1 = troopInfo.getInt("Armor_Base");
-        int lifeLvl1 = troopInfo.getInt("Health_Base");
-        int attackLvl1 = troopInfo.getInt("Attack_Base");
-        int magicLvl1 = troopInfo.getInt("SpellPower_Base");
-         */
-        String troopId = troopInfo.getString("FileBase");
-        URL URL = new URL("http://ashtender.com/gems/assets/cards/" + troopId + ".jpg");
-        //get spell description
-        JSONObject troopSpell = main.data.getSpellInfo(spell);
-        String troopSpellDesc = troopSpell.getString("Description");
+        String spellBoostRatioText = troop.getSpellBoostRatioText();
+        if (spellBoostRatioText != null)
+        {
+            spellDesc += spellBoostRatioText;
+        }
 
         //Emojis
-        String emojiArmor = chnl.getGuild().getEmojiByName("gow_armor").toString();
-        String emojiLife = chnl.getGuild().getEmojiByName("gow_life").toString();
-        String emojiAttack = chnl.getGuild().getEmojiByName("gow_attack").toString();
-        String emojiMagic = chnl.getGuild().getEmojiByName("gow_magic").toString();
+        IGuild g = chnl.getGuild();
+        String emojiArmor = g.getEmojiByName("gow_armor").toString();
+        String emojiLife = g.getEmojiByName("gow_life").toString();
+        String emojiAttack = g.getEmojiByName("gow_attack").toString();
+        String emojiMagic = g.getEmojiByName("gow_magic").toString();
 
-        ArrayList<String> manaTypes = new ArrayList<>();
+        GemColor[] gemColors = GemColor.fromInteger(troop.getColors());
+        String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
 
-        if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorBlue"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_blue").toString());
-        }
-        if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorRed"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_red").toString());
-        }
-        if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorBrown"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_brown").toString());
-        }
-        if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorPurple"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_purple").toString());
-        }
-        if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorYellow"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_yellow").toString());
-        }
-        if (troopInfo.getJSONObject("ManaColors").getBoolean("ColorGreen"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_green").toString());
-        }
+        String[] traitNames = troop.getTraits().stream().map(t -> t.getName()).toArray(String[]::new);
 
-        String info = "**" + troopName + "** (" + desc + ")\n" + rarity + " from " + kingdom + ", Type: " + troopType + "\nTraits: " + trait1 + ", " + trait2 + ", " + trait3 + "\n\n**Spell**";
-        info += "\n" + spell + " (" + summonCost + ")\n" + troopSpellDesc;
-        info += "\n" + manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
+        String info = "";
+        info += troop.getRarity() + " _" + troop.getKingdomName() + "_ " + troop.getType() + "\n";
+        info += "(" + String.join(", ", traitNames) + ")\n\n";
+        info += "_" + troop.getSpellName() + "_ (" + troop.getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc + "\n\n";
 
-        info += "\n\n**Stats**";
-        //info += "\nLevel 1:   " + emojiArmor + " " + armorLvl1 + "    " + emojiLife + " " + lifeLvl1 + "    " + emojiAttack + " " + attackLvl1 + "    " + emojiMagic + " " + magicLvl1;
-        //info += "\nLevel 10:  " + emojiArmor + " " + armorLvl10 + "    " + emojiLife + " " + lifeLvl10 + "    " + emojiAttack + " " + attackLvl10 + "    " + emojiMagic + " " + magicLvl10;
-        info += "\nLevel 20: " + emojiArmor + " " + armorLvl20 + "    " + emojiLife + " " + lifeLvl20 + "    " + emojiAttack + " " + attackLvl20 + "    " + emojiMagic + " " + magicLvl20;
+        info += emojiArmor + troop.getMaxArmor() + "   " + emojiLife + troop.getMaxLife()
+                + "   " + emojiAttack + troop.getMaxAttack() + "   " + emojiMagic + troop.getMaxMagic() + "\n";
+        info += "_" + troop.getDescription() + "_";
 
-        chnl.sendMessage(info);
-        chnl.sendFile("", false, URL.openStream(), troopId + ".jpg");
+        EmbedObject o = new EmbedBuilder()
+                .withDesc(info)
+                .withTitle(troop.getName())
+                .withUrl(troop.getPageUrl())
+                .withThumbnail(troop.getImageUrl())
+                .build();
+        chnl.sendMessage("", o, false);
     }
 
     @Override
@@ -184,7 +105,7 @@ public class TroopCommand extends KrystaraCommand
     @Override
     public Boolean requiresAdmin()
     {
-        return false;
+        return true;
     }
 
     @Override
@@ -202,6 +123,6 @@ public class TroopCommand extends KrystaraCommand
     @Override
     public CommandType getCommandType()
     {
-        return GOW;
+        return MOD;
     }
 }

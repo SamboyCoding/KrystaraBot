@@ -1,13 +1,11 @@
 package me.samboycoding.krystarabot.command;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.quiz.QuizQuestion;
-import me.samboycoding.krystarabot.quiz.JsonQuizQuestionFactory;
 import me.samboycoding.krystarabot.quiz.QuizQuestionType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import org.apache.commons.io.FilenameUtils;

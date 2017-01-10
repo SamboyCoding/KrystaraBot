@@ -1,20 +1,25 @@
 package me.samboycoding.krystarabot.command;
 
-import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import me.samboycoding.krystarabot.GameData;
+import java.util.Arrays;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.gemdb.AshClient;
+import me.samboycoding.krystarabot.gemdb.GemColor;
+import me.samboycoding.krystarabot.gemdb.Search;
+import me.samboycoding.krystarabot.gemdb.Weapon;
 import me.samboycoding.krystarabot.utilities.Utilities;
-import org.json.JSONObject;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
- * Represents the ?troop command
+ * Represents the ?weapon command
  *
- * @author Sam
+ * @author Emily
  */
 public class WeaponCommand extends KrystaraCommand
 {
@@ -27,86 +32,57 @@ public class WeaponCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
-        {
-            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
-            return;
-        }
         if (arguments.size() < 1)
         {
-            chnl.sendMessage("You need to specify a weapon to search for!");
+            chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
 
-        JSONObject weaponInfo;
-
-        String weaponName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        weaponInfo = main.data.getTroopByName(weaponName);
-
-        if (weaponInfo == null)
+        String weaponName = String.join(" ", arguments);
+        Search search = Search.fromQuery("weapons?term=" + URLEncoder.encode(weaponName, "UTF-8"));
+        Weapon.Summary weaponSummary = AshClient.getSingleResult(chnl, search.getWeapons(), "weapon", weaponName);
+        if (weaponSummary == null)
         {
-            ArrayList<String> results = main.data.searchForWeapon(weaponName);
+            return;
+        }
 
-            if (results.isEmpty())
+        Weapon weapon = weaponSummary.getDetails();
+        String spellDesc = weapon.getSpellDescription();
+        String spellMagicScalingText = weapon.getSpellMagicScalingText();
+        if (spellMagicScalingText != null)
+        {
+            if (!spellDesc.contains("{2}"))
             {
-                chnl.sendMessage("No weapon `" + weaponName + "` found, " + sdr.mention());
-                return;
-            }
-            if (results.size() > 5)
+                spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
+            } else
             {
-                chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
-                return;
+                spellDesc = spellDesc.replace("{1}", "(half)");
+                spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
             }
-            if (results.size() > 1)
-            {
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + weaponName + "\" is ambiguous.", results);
-                return;
-            }
-
-            weaponInfo = main.data.getWeaponByName(results.get(0));
         }
-
-        weaponName = weaponInfo.getString("Name");
-        String rarity = weaponInfo.getString("WeaponRarity");
-        String spell = weaponInfo.getJSONObject("Spell").getString("Name");
-        int summonCost = weaponInfo.getJSONObject("Spell").getInt("Cost");
-
-        //get spell description
-        JSONObject weaponSpell = main.data.getSpellInfo(spell);
-        String weaponSpellDesc = weaponSpell.getString("Description");
-
-        ArrayList<String> manaTypes = new ArrayList<>();
-
-        if (weaponInfo.getJSONObject("ManaColors").getBoolean("ColorBlue"))
+        String spellBoostRatioText = weapon.getSpellBoostRatioText();
+        if (spellBoostRatioText != null)
         {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_blue").toString());
-        }
-        if (weaponInfo.getJSONObject("ManaColors").getBoolean("ColorRed"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_red").toString());
-        }
-        if (weaponInfo.getJSONObject("ManaColors").getBoolean("ColorBrown"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_brown").toString());
-        }
-        if (weaponInfo.getJSONObject("ManaColors").getBoolean("ColorPurple"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_purple").toString());
-        }
-        if (weaponInfo.getJSONObject("ManaColors").getBoolean("ColorYellow"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_yellow").toString());
-        }
-        if (weaponInfo.getJSONObject("ManaColors").getBoolean("ColorGreen"))
-        {
-            manaTypes.add(chnl.getGuild().getEmojiByName("mana_green").toString());
+            spellDesc += spellBoostRatioText;
         }
 
-        String info = "**" + weaponName + "**\n" + rarity + " weapon\n\n**Spell**";
-        info += "\n" + spell + " (" + summonCost + ")\n" + weaponSpellDesc;
-        info += "\n" + manaTypes.toString().replace("[", "").replace("]", "").replace(", ", "");
+        //Emojis
+        IGuild g = chnl.getGuild();
 
-        chnl.sendMessage(info);
+        GemColor[] gemColors = GemColor.fromInteger(weapon.getColors());
+        String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
+
+        String info = "";
+        info += weapon.getRarity() + "\n\n";
+        info += weapon.getSpellName() + " (" + weapon.getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc;
+
+        EmbedObject o = new EmbedBuilder()
+                .withDesc(info)
+                .withTitle(weapon.getName())
+                .withUrl(weapon.getPageUrl())
+                .withThumbnail(weapon.getImageUrl())
+                .build();
+        chnl.sendMessage("", o, false);
     }
 
     @Override

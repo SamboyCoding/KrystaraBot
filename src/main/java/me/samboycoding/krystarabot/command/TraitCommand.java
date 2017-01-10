@@ -1,17 +1,16 @@
 package me.samboycoding.krystarabot.command;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
-import me.samboycoding.krystarabot.main;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import me.samboycoding.krystarabot.gemdb.AshClient;
+import me.samboycoding.krystarabot.gemdb.Search;
+import me.samboycoding.krystarabot.gemdb.Trait;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  * Represents the ?trait command
@@ -29,53 +28,38 @@ public class TraitCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
-        {
-            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
-            return;
-        }
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
-        String traitName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        JSONObject traitInfo = main.data.getTraitByName(traitName);
-        if (traitInfo == null)
+
+        String traitName = String.join(" ", arguments);
+        Search search = Search.fromQuery("traits?term=" + URLEncoder.encode(traitName, "UTF-8"));
+        Search.TraitSummary traitSummary = AshClient.getSingleResult(chnl, search.getTraits(), "trait", traitName);
+        if (traitSummary == null)
         {
-            chnl.sendMessage("No trait `" + traitName + "` found, " + sdr.mention());
             return;
         }
-        traitName = traitInfo.getString("Name");
-        String traitDesc = traitInfo.getString("Description");
 
-        String result = "**" + traitName + "**: " + traitDesc + "\n";
-
-        HashSet<JSONObject> troopMap = new HashSet<>();
-        for (Object oTroop : GameData.arrayTroops)
+        Trait trait = traitSummary.getDetails();
+        String info = trait.getDescription() + "\n";
+        if (!trait.getTroops().isEmpty())
         {
-            JSONObject troop = (JSONObject) oTroop;
-            JSONArray traitTable = troop.getJSONArray("ParsedTraits");
-            for (Object oSearchTrait : traitTable)
-            {
-                JSONObject searchTrait = (JSONObject) oSearchTrait;
-                if (searchTrait.getString("Code").equals(traitInfo.getString("Code")))
-                {
-                    troopMap.add(troop);
-                }
-            }
+            String[] troopNames = trait.getTroops().stream().map(t -> t.getName()).toArray(String[]::new);
+            info += "Used by troops: " + String.join(", ", troopNames) + "\n";
+        }
+        if (!trait.getHeroClasses().isEmpty())
+        {
+            String[] heroClassNames = trait.getHeroClasses().stream().map(c -> c.getName()).toArray(String[]::new);
+            info += "Used by classes: " + String.join(", ", heroClassNames) + "\n";
         }
 
-        if (!troopMap.isEmpty())
-        {
-            JSONObject[] oTroops = troopMap.toArray(new JSONObject[0]);
-            ArrayList<JSONObject> troops = new ArrayList<>(Arrays.asList(oTroops));
-            troops.sort((t1, t2) -> t1.getString("Name").compareTo(t2.getString("Name")));
-            String[] troopNames = troops.stream().map(t -> t.getString("Name")).toArray(String[]::new);
-            result += "Used by: " + String.join(", ", troopNames) + "\n";
-        }
-
-        chnl.sendMessage(result);
+        EmbedObject o = new EmbedBuilder()
+                .withDesc(info)
+                .withTitle(trait.getName())
+                .build();
+        chnl.sendMessage("", o, false);
     }
 
     @Override

@@ -1,20 +1,21 @@
 package me.samboycoding.krystarabot.command;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
+import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
 import me.samboycoding.krystarabot.utilities.Utilities;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  * Represents the ?trait command
@@ -233,11 +234,6 @@ public class TraitstoneCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
-        {
-            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
-            return;
-        }
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need to specify a name or color to search for!");
@@ -249,7 +245,7 @@ public class TraitstoneCommand extends KrystaraCommand
 
         if (traitstones.isEmpty())
         {
-            chnl.sendMessage("No traitstone `" + searchTerm + "` found, " + sdr.mention());
+            chnl.sendMessage("No traitstone \"" + searchTerm + "\" found.");
             return;
         }
 
@@ -260,7 +256,19 @@ public class TraitstoneCommand extends KrystaraCommand
             return;
         }
 
-        chnl.sendMessage(getTraitstoneInfoText(traitstones.get(0), chnl));
+        Traitstone ts = traitstones.get(0);
+        me.samboycoding.krystarabot.gemdb.Traitstone traitstone
+                = AshClient.query("traitstones/" + ts.getId() + "/details",
+                        me.samboycoding.krystarabot.gemdb.Traitstone.class);
+
+        String info = getTraitstoneInfoText(traitstone, chnl);
+
+        EmbedObject o = new EmbedBuilder()
+                .withDesc(info)
+                .withTitle(traitstone.getName())
+                .withThumbnail(traitstone.getImageUrl())
+                .build();
+        chnl.sendMessage("", o, false);
     }
 
     /**
@@ -377,114 +385,47 @@ public class TraitstoneCommand extends KrystaraCommand
      * @param channel The current channel.
      * @return The informational text.
      */
-    private String getTraitstoneInfoText(Traitstone traitstone, IChannel channel)
+    private String getTraitstoneInfoText(me.samboycoding.krystarabot.gemdb.Traitstone traitstone, IChannel channel) throws SQLException, IOException
     {
-        int id = traitstone.getId();
-        ArrayList<String> kingdomNames = new ArrayList<>();
-
-        // Look for kingdoms that have this traitstone set as their ExploreRune
-        for (Object oKingdom : GameData.arrayKingdoms)
-        {
-            JSONObject kingdom = (JSONObject) oKingdom;
-            if (kingdom.has("ExploreRune") && !kingdom.isNull("ExploreRune") && kingdom.getInt("ExploreRune") == id)
-            {
-                // Found one, add the name to the list
-                kingdomNames.add(kingdom.getString("Name"));
-            }
-        }
-
-        // Look for troops and classes that have this traitstone as a cost, and accumulate costs
-        HashMap<JSONObject, Integer> troopNeededMap = getTraitstoneNeededMap(GameData.arrayTroops, id);
-        int totalTroopAmountNeeded = getTraitstoneNeededCount(troopNeededMap);
-        ArrayList<String> troopNeededNames = getTraitstoneNeededNames(troopNeededMap);
-
-        HashMap<JSONObject, Integer> classNeededMap = getTraitstoneNeededMap(GameData.arrayClasses, id);
-        int totalClassAmountNeeded = getTraitstoneNeededCount(classNeededMap);
-        ArrayList<String> classNeededNames = getTraitstoneNeededNames(classNeededMap);
+        String[] kingdomNames = traitstone.getKingdoms().stream().map(k -> k.getName()).toArray(String[]::new);
+        ArrayList<String> troopNames = traitstone.getTroops().stream().map(t -> t.getName() + " (" + t.getCount() + ")").collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<String> heroClassNames = traitstone.getHeroClasses().stream().map(c -> c.getName() + " (" + c.getCount() + ")").collect(Collectors.toCollection(ArrayList::new));
+        int totalNeeded = traitstone.getTroops().stream().mapToInt(t -> t.getCount()).sum()
+                + traitstone.getHeroClasses().stream().mapToInt(c -> c.getCount()).sum();
 
         String result = "";
 
-        result += "**" + traitstone.prettyName + "** ";
-
         // Transform color array into array of emoji strings, and then join
         IGuild guild = channel.getGuild();
-        String[] colors = Arrays.stream(traitstone.colors).map(c -> guild.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
+        GemColor[] gemColors = GemColor.fromInteger(traitstone.getColors());
+        String[] colors = Arrays.stream(gemColors).map(c -> guild.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
         result += String.join(" ", colors) + "\n";
 
         // Add relevant output if found
-        if (!kingdomNames.isEmpty())
+        if (kingdomNames.length > 0)
         {
             result += "Found in: " + String.join(", ", kingdomNames) + "\n";
         }
-        if (!troopNeededNames.isEmpty())
+        if (!troopNames.isEmpty())
         {
             final int LIMIT = 50;
-            int size = troopNeededNames.size();
+            int size = troopNames.size();
 
             if (size > LIMIT)
             {
                 String extraText = "... (" + (size - LIMIT) + " more)";
-                troopNeededNames.subList(LIMIT, size).clear();
-                troopNeededNames.add(extraText);
+                troopNames.subList(LIMIT, size).clear();
+                troopNames.add(extraText);
             }
-            result += "\nNeeded by troops: " + String.join(", ", troopNeededNames) + "\n";
+            result += "\nNeeded by troops: " + String.join(", ", troopNames) + "\n";
         }
-        if (!classNeededNames.isEmpty())
+        if (!heroClassNames.isEmpty())
         {
-            result += "\nNeeded by classes: " + String.join(", ", classNeededNames) + "\n";
+            result += "\nNeeded by classes: " + String.join(", ", heroClassNames) + "\n";
         }
-        result += "\nTotal needed: " + (totalTroopAmountNeeded + totalClassAmountNeeded) + "\n\n";
+        result += "\nTotal needed: " + totalNeeded + "\n\n";
 
         return result;
-    }
-
-    private ArrayList<String> getTraitstoneNeededNames(HashMap<JSONObject, Integer> troopNeededMap)
-    {
-        ArrayList<String> troopNeededNames = new ArrayList<>();
-        for (Object oTroop : troopNeededMap.keySet())
-        {
-            JSONObject troop = (JSONObject) oTroop;
-            int amountNeeded = troopNeededMap.get(troop);
-            troopNeededNames.add(troop.getString("Name") + " (" + amountNeeded + ")");
-        }
-        troopNeededNames.sort((s1, s2) -> s1.compareTo(s2));
-        return troopNeededNames;
-    }
-
-    private int getTraitstoneNeededCount(HashMap<JSONObject, Integer> troopNeededMap)
-    {
-        int totalAmountNeeded = 0;
-        for (int amountNeeded : troopNeededMap.values())
-        {
-            totalAmountNeeded += amountNeeded;
-        }
-        return totalAmountNeeded;
-    }
-
-    private HashMap<JSONObject, Integer> getTraitstoneNeededMap(JSONArray troops, int id) throws JSONException
-    {
-        HashMap<JSONObject, Integer> troopNeededMap = new HashMap<>();
-        for (Object oTroop : troops)
-        {
-            JSONObject troop = (JSONObject) oTroop;
-            JSONArray traitTable = troop.getJSONObject("TraitTable").getJSONArray("Runes");
-            for (Object oTraitCosts : traitTable)
-            {
-                JSONArray traitCosts = (JSONArray) oTraitCosts;
-                for (Object oTraitCost : traitCosts)
-                {
-                    JSONObject traitCost = (JSONObject) oTraitCost;
-                    if (traitCost.getInt("Id") == id)
-                    {
-                        // Add the trait's costs to the running total
-                        int needed = troopNeededMap.getOrDefault(troop, 0);
-                        needed += traitCost.getInt("Required");
-                        troopNeededMap.put(troop, needed);
-                    }
-                }
-            }
-        }
-        return troopNeededMap;
     }
 
     @Override

@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.TreeMap;
 import me.samboycoding.krystarabot.command.KrystaraCommand;
 import me.samboycoding.krystarabot.quiz.AshQuizQuestionFactory;
-import me.samboycoding.krystarabot.quiz.JsonQuizQuestionFactory;
 import me.samboycoding.krystarabot.quiz.QuizHandler;
 import me.samboycoding.krystarabot.quiz.QuizQuestionFactory;
 import org.apache.commons.io.FileUtils;
@@ -29,38 +28,14 @@ import sx.blah.discord.util.DiscordException;
  */
 public class main
 {
-
     private static final TreeMap<String, KrystaraCommand> commands = new TreeMap<>();
 
     private static IDiscordClient cl;
-    public static GameData data = new GameData();
-    public static UserDatabaseHandler databaseHandler = new UserDatabaseHandler();
     public static File logFile;
-    public static QuizHandler quizH;
-    public static QuizQuestionFactory quizQuestionFactory;
     public static ChatterBotSession cleverBot;
-
-    static
-    {
-        try
-        {
-            switch (IDReference.ENVIRONMENT)
-            {
-                case LYYA:
-                case DEV:
-                    quizQuestionFactory = new AshQuizQuestionFactory();
-                    break;
-                default:
-                    quizQuestionFactory = new JsonQuizQuestionFactory();
-                    break;
-            }
-
-            quizH = new QuizHandler(quizQuestionFactory);
-        } catch (Exception e)
-        {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
+    public static final UserDatabaseHandler databaseHandler = new UserDatabaseHandler();
+    public static final QuizQuestionFactory quizQuestionFactory = new AshQuizQuestionFactory();
+    public static final QuizHandler quizH = new QuizHandler(quizQuestionFactory);
 
     public static IDiscordClient getClient(String token)
     {
@@ -102,7 +77,6 @@ public class main
         cl = getClient(IDReference.MYTOKEN);
         cl.getDispatcher().registerListener(new Listener());
         logToBoth("Logged in and listener registered.");
-        new Thread(new GameDataLoaderThread(), "GameData Loading Thread").start();
         new IDReference(); //Init
         databaseHandler.loadJSON();
         logToBoth("Initializing Intelligent Talking...");
