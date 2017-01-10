@@ -79,31 +79,30 @@ public class Listener
             main.logToBoth("Registering commands...");
 
             main.registerCommand(new BanCommand());
+            main.registerCommand(new ClassCommand());
             main.registerCommand(new ClearCommand());
             main.registerCommand(new ClearcacheCommand());
             main.registerCommand(new ReigsterCodeCommand());
             main.registerCommand(new HelpCommand());
             main.registerCommand(new KickCommand());
+            main.registerCommand(new KingdomCommand());
             main.registerCommand(new LanguageCommand());
             main.registerCommand(new ListQuestionsCommand());
             main.registerCommand(new PingCommand());
             main.registerCommand(new PlatformCommand());
             main.registerCommand(new QuestionCommand());
             main.registerCommand(new QuizCommand());
-            main.registerCommand(new ServerstatsCommand());
-            main.registerCommand(new StopQuizCommand());
-            main.registerCommand(new Top10Command());
-            main.registerCommand(new UserstatsCommand());
-            main.registerCommand(new WarnCommand());
-
-            main.registerCommand(new ClassCommand());
-            main.registerCommand(new KingdomCommand());
             main.registerCommand(new SearchCommand());
+            main.registerCommand(new ServerstatsCommand());
             main.registerCommand(new SpellCommand());
+            main.registerCommand(new StopQuizCommand());
             main.registerCommand(new TeamCommand());
+            main.registerCommand(new Top10Command());
             main.registerCommand(new TraitCommand());
             main.registerCommand(new TraitstoneCommand());
             main.registerCommand(new TroopCommand());
+            main.registerCommand(new UserstatsCommand());
+            main.registerCommand(new WarnCommand());
             main.registerCommand(new WeaponCommand());
 
             String timestamp = "";
