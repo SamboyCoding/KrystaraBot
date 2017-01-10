@@ -1,32 +1,26 @@
 package me.samboycoding.krystarabot.gemdb;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- * @author julians
- */
 public class Traitstone implements Nameable, java.io.Serializable
 {
 
-    public static class Troop implements Nameable
+    private Traitstone()
+    {
+    }
+
+    public static Traitstone fromId(int id) throws IOException
+    {
+        return AshClient.query("traitstones/" + id + "/details", Traitstone.class);
+    }
+
+    public static class TroopSummaryWithCount extends Troop.Summary
     {
 
-        private int id;
-        private String name;
         private int count;
-
-        public int getId()
-        {
-            return this.id;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
 
         public int getCount()
         {
@@ -34,22 +28,10 @@ public class Traitstone implements Nameable, java.io.Serializable
         }
     }
 
-    public static class HeroClass implements Nameable
+    public static class HeroClassSummaryWithCount extends HeroClass.Summary
     {
 
-        private int id;
-        private String name;
         private int count;
-
-        public int getId()
-        {
-            return this.id;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
 
         public int getCount()
         {
@@ -63,13 +45,9 @@ public class Traitstone implements Nameable, java.io.Serializable
     private String name = null;
     private int colors = 0;
     private String imageUrl = null;
-    private ArrayList<Kingdom> kingdoms = new ArrayList<>();
-    private ArrayList<Troop> troops = new ArrayList<>();
-    private ArrayList<HeroClass> classes = new ArrayList<>();
-
-    public Traitstone()
-    {
-    }
+    private ArrayList<Kingdom.Summary> kingdoms = new ArrayList<>();
+    private ArrayList<TroopSummaryWithCount> troops = new ArrayList<>();
+    private ArrayList<HeroClassSummaryWithCount> classes = new ArrayList<>();
 
     public int getId()
     {
@@ -91,17 +69,17 @@ public class Traitstone implements Nameable, java.io.Serializable
         return this.imageUrl;
     }
 
-    public List<Kingdom> getKingdoms()
+    public List<Kingdom.Summary> getKingdoms()
     {
         return Collections.unmodifiableList(this.kingdoms);
     }
 
-    public List<Troop> getTroops()
+    public List<TroopSummaryWithCount> getTroops()
     {
         return Collections.unmodifiableList(this.troops);
     }
 
-    public List<HeroClass> getHeroClasses()
+    public List<HeroClassSummaryWithCount> getHeroClasses()
     {
         return Collections.unmodifiableList(this.classes);
     }

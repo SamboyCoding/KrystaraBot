@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.samboycoding.krystarabot.gemdb;
 
 import com.google.gson.Gson;
@@ -19,12 +14,10 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
-/**
- *
- * @author julians
- */
 public class AshClient
 {
+
+    private static final Gson GSON = new Gson();
 
     public static <T> T query(String apiPathAndQuery, Class<T> c) throws IOException
     {
@@ -32,13 +25,12 @@ public class AshClient
         URLConnection con = url.openConnection();
         InputStream in = con.getInputStream();
         String encoding = con.getContentEncoding();
-        encoding = encoding == null ? "UTF-8" : encoding;
+        encoding = (encoding == null) ? "UTF-8" : encoding;
         String body = IOUtils.toString(in, encoding);
-        Gson gson = new Gson();
-        return gson.fromJson(body, c);
+        return GSON.fromJson(body, c);
     }
 
-    public static <T extends Nameable> T getSingleResult(IChannel chnl, List<T> resultList, String typeString, String searchName, Class<T> type)
+    public static <T extends Nameable> T getSingleResult(IChannel chnl, List<T> resultList, String typeString, String searchName)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         String searchNameLower = searchName.toLowerCase();

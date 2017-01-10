@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
+import me.samboycoding.krystarabot.gemdb.SummaryBase;
 import me.samboycoding.krystarabot.gemdb.Kingdom;
 import me.samboycoding.krystarabot.gemdb.Search;
 import me.samboycoding.krystarabot.gemdb.TeamMember;
@@ -57,17 +58,17 @@ public class AshTeamCommand extends KrystaraCommand
             String thing = things.get(i).trim();
 
             // Search for the thing
-            Search search = AshClient.query("searches/all?term=" + URLEncoder.encode(thing, "UTF-8"), Search.class);
-            ArrayList<Search.SearchResult> searchResults = new ArrayList<>();
+            Search search = Search.fromQuery("all?term=" + URLEncoder.encode(thing, "UTF-8"));
+            ArrayList<SummaryBase> searchResults = new ArrayList<>();
             searchResults.addAll(search.getTroops());
             searchResults.addAll(search.getWeapons());
-            Search.SearchResult searchTeamMember = AshClient.getSingleResult(chnl, searchResults, "troop or weapon", thing, Search.SearchResult.class);
-            if (searchTeamMember == null)
+            SummaryBase teamMemberSummary = AshClient.getSingleResult(chnl, searchResults, "troop or weapon", thing);
+            if (teamMemberSummary == null)
             {
                 return;
             }
 
-            Boolean isWeapon = (searchTeamMember instanceof Search.Weapon);
+            Boolean isWeapon = (teamMemberSummary instanceof Weapon.Summary);
             if (hasWeapon && isWeapon)
             {
                 chnl.sendMessage("You cannot have two weapons on one team!");
@@ -77,10 +78,10 @@ public class AshTeamCommand extends KrystaraCommand
             TeamMember teamMember;
             if (isWeapon)
             {
-                teamMember = AshClient.query("weapons/" + searchTeamMember.getId() + "/details", Weapon.class);
+                teamMember = ((Weapon.Summary) teamMemberSummary).getDetails();
             } else
             {
-                teamMember = AshClient.query("troops/" + searchTeamMember.getId() + "/details", Troop.class);
+                teamMember = ((Troop.Summary) teamMemberSummary).getDetails();
             }
             teamMembers.add(teamMember);
         }
@@ -90,16 +91,16 @@ public class AshTeamCommand extends KrystaraCommand
             String kingdomName = things.get(4).trim();
 
             // Search for a kingdom by name or banner name
-            Search search = AshClient.query("searches/kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"), Search.class);
-            Search.Kingdom searchKingdom = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName, Search.Kingdom.class);
-            if (searchKingdom == null)
+            Search search = Search.fromQuery("kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"));
+            Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName);
+            if (kingdomSummary == null)
             {
                 chnl.sendMessage("Using for team name instead.");
                 teamName = kingdomName;
             } else
             {
-                kingdom = AshClient.query("kingdoms/" + searchKingdom.getId() + "/details", Kingdom.class);
-                if (!kingdom.getIsFullKingdom())
+                kingdom = kingdomSummary.getDetails();
+                if (!kingdom.isFullKingdom())
                 {
                     chnl.sendMessage("The kingdom \"" + kingdom.getName() + "\" has no banner.");
                     return;

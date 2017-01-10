@@ -35,24 +35,24 @@ public class AshTraitCommand extends KrystaraCommand
         }
 
         String traitName = String.join(" ", arguments);
-        Search search = AshClient.query("searches/traits?term=" + URLEncoder.encode(traitName, "UTF-8"), Search.class);
-        Search.Trait searchTrait = AshClient.getSingleResult(chnl, search.getTraits(), "trait", traitName, Search.Trait.class);
-        if (searchTrait == null)
+        Search search = Search.fromQuery("traits?term=" + URLEncoder.encode(traitName, "UTF-8"));
+        Search.TraitSummary traitSummary = AshClient.getSingleResult(chnl, search.getTraits(), "trait", traitName);
+        if (traitSummary == null)
         {
             return;
         }
-        Trait trait = AshClient.query("traits/" + searchTrait.getCode() + "/details", Trait.class);
 
+        Trait trait = traitSummary.getDetails();
         String info = trait.getDescription() + "\n";
         if (!trait.getTroops().isEmpty())
         {
             String[] troopNames = trait.getTroops().stream().map(t -> t.getName()).toArray(String[]::new);
-            info += "Used by: " + String.join(", ", troopNames) + "\n";
+            info += "Used by troops: " + String.join(", ", troopNames) + "\n";
         }
         if (!trait.getHeroClasses().isEmpty())
         {
             String[] heroClassNames = trait.getHeroClasses().stream().map(c -> c.getName()).toArray(String[]::new);
-            info += "Used by: " + String.join(", ", heroClassNames) + "\n";
+            info += "Used by classes: " + String.join(", ", heroClassNames) + "\n";
         }
 
         EmbedObject o = new EmbedBuilder()

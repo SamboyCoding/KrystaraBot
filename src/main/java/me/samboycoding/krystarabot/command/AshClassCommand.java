@@ -20,10 +20,6 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
-/**
- *
- * @author julians
- */
 public class AshClassCommand extends QuestionCommand
 {
 
@@ -43,14 +39,14 @@ public class AshClassCommand extends QuestionCommand
         }
 
         String heroClassName = String.join(" ", arguments);
-        Search search = AshClient.query("searches/classes?term=" + URLEncoder.encode(heroClassName, "UTF-8"), Search.class);
-        Search.HeroClass searchHeroClass = AshClient.getSingleResult(chnl, search.getHeroClasses(), "class", heroClassName, Search.HeroClass.class);
-        if (searchHeroClass == null)
+        Search search = Search.fromQuery("classes?term=" + URLEncoder.encode(heroClassName, "UTF-8"));
+        HeroClass.Summary heroClassSummary = AshClient.getSingleResult(chnl, search.getHeroClasses(), "class", heroClassName);
+        if (heroClassSummary == null)
         {
             return;
         }
-        HeroClass heroClass = AshClient.query("classes/" + searchHeroClass.getId() + "/details", HeroClass.class);
 
+        HeroClass heroClass = heroClassSummary.getDetails();
         String spellDesc = heroClass.getWeapon().getSpellDescription();
         String spellMagicScalingText = heroClass.getWeapon().getSpellMagicScalingText();
         if (spellMagicScalingText != null)
@@ -64,7 +60,7 @@ public class AshClassCommand extends QuestionCommand
                 spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
             }
         }
-        String spellBoostRatioText = heroClass.getSpellBoostRatioText();
+        String spellBoostRatioText = heroClass.getWeapon().getSpellBoostRatioText();
         if (spellBoostRatioText != null)
         {
             spellDesc += spellBoostRatioText;

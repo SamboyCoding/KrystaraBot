@@ -1,194 +1,89 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.samboycoding.krystarabot.gemdb;
 
-import com.google.gson.annotations.SerializedName;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- * @author julians
- */
 public class Search implements java.io.Serializable
 {
 
-    public static interface SearchResult extends Nameable
+    public static Search fromQuery(String query) throws IOException
     {
-
-        public int getId();
+        return AshClient.query("searches/" + query, Search.class);
     }
 
-    public static class Troop implements SearchResult
+    private Search()
     {
-
-        private int id;
-        private String name;
-
-        public int getId()
-        {
-            return this.id;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
     }
 
-    public static class Spell implements SearchResult
+    public static class SpellSummary extends Spell.Summary
     {
 
-        private int id;
-        private String name;
-        private ArrayList<Troop> troops = new ArrayList<>();
-        private ArrayList<Weapon> weapons = new ArrayList<>();
+        private ArrayList<Troop.Summary> troops = new ArrayList<>();
+        private ArrayList<Weapon.Summary> weapons = new ArrayList<>();
 
-        public int getId()
-        {
-            return this.id;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
-
-        public List<Troop> getTroops()
+        public List<Troop.Summary> getTroops()
         {
             return Collections.unmodifiableList(this.troops);
         }
 
-        public List<Weapon> getWeapons()
+        public List<Weapon.Summary> getWeapons()
         {
             return Collections.unmodifiableList(this.weapons);
         }
     }
 
-    public static class Trait implements Nameable
+    public static class TraitSummary extends Trait.Summary
     {
 
-        private String code;
-        private String name;
-        private ArrayList<Troop> troops = new ArrayList<>();
-        private ArrayList<HeroClass> classes = new ArrayList<>();
+        private ArrayList<Troop.Summary> troops = new ArrayList<>();
+        private ArrayList<HeroClass.Summary> classes = new ArrayList<>();
 
-        public String getCode()
-        {
-            return this.code;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
-
-        public List<Troop> getTroops()
+        public List<Troop.Summary> getTroops()
         {
             return Collections.unmodifiableList(this.troops);
         }
 
-        public List<HeroClass> getHeroClasses()
+        public List<HeroClass.Summary> getHeroClasses()
         {
             return Collections.unmodifiableList(this.classes);
         }
     }
 
-    public static class Kingdom implements SearchResult
-    {
+    private ArrayList<Troop.Summary> troops = new ArrayList<>();
+    private ArrayList<TraitSummary> traits = new ArrayList<>();
+    private ArrayList<SpellSummary> spells = new ArrayList<>();
+    private ArrayList<Kingdom.Summary> kingdoms = new ArrayList<>();
+    private ArrayList<HeroClass.Summary> classes = new ArrayList<>();
+    private ArrayList<Weapon.Summary> weapons = new ArrayList<>();
 
-        private int id;
-        private String name;
-
-        public int getId()
-        {
-            return this.id;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
-    }
-
-    public static class HeroClass implements SearchResult
-    {
-
-        private int id;
-        private String name;
-
-        public int getId()
-        {
-            return this.id;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
-    }
-
-    public static class Weapon implements SearchResult
-    {
-
-        private int id;
-        private String name;
-
-        public int getId()
-        {
-            return this.id;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
-    }
-
-    private ArrayList<Troop> troops = new ArrayList<>();
-    ;
-    private ArrayList<Trait> traits = new ArrayList<>();
-    ;
-    private ArrayList<Spell> spells = new ArrayList<>();
-    ;
-    private ArrayList<Kingdom> kingdoms = new ArrayList<>();
-    ;
-    private ArrayList<HeroClass> classes = new ArrayList<>();
-    ;
-    private ArrayList<Weapon> weapons = new ArrayList<>();
-
-    ;
-    
-    public List<Troop> getTroops()
+    public List<Troop.Summary> getTroops()
     {
         return Collections.unmodifiableList(this.troops);
     }
 
-    public List<Trait> getTraits()
+    public List<TraitSummary> getTraits()
     {
         return Collections.unmodifiableList(this.traits);
     }
 
-    public List<Spell> getSpells()
+    public List<SpellSummary> getSpells()
     {
         return Collections.unmodifiableList(this.spells);
     }
 
-    public List<Kingdom> getKingdoms()
+    public List<Kingdom.Summary> getKingdoms()
     {
         return Collections.unmodifiableList(this.kingdoms);
     }
 
-    public List<HeroClass> getHeroClasses()
+    public List<HeroClass.Summary> getHeroClasses()
     {
         return Collections.unmodifiableList(this.classes);
     }
 
-    public List<Weapon> getWeapons()
+    public List<Weapon.Summary> getWeapons()
     {
         return Collections.unmodifiableList(this.weapons);
     }

@@ -98,29 +98,15 @@ public class Listener
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
 
-            if (IDReference.ENVIRONMENT != IDReference.RuntimeEnvironment.LIVE)
-            {
-                main.registerCommand(new AshClassCommand());
-                main.registerCommand(new AshKingdomCommand());
-                main.registerCommand(new AshSearchCommand());
-                main.registerCommand(new AshSpellCommand());
-                main.registerCommand(new AshTeamCommand());
-                main.registerCommand(new AshTraitCommand());
-                main.registerCommand(new AshTraitstoneCommand());
-                main.registerCommand(new AshTroopCommand());
-                main.registerCommand(new AshWeaponCommand());
-            } else
-            {
-                main.registerCommand(new ClassCommand());
-                main.registerCommand(new KingdomCommand());
-                main.registerCommand(new SearchCommand());
-                main.registerCommand(new SpellCommand());
-                main.registerCommand(new TeamCommand());
-                main.registerCommand(new TraitCommand());
-                main.registerCommand(new TraitstoneCommand());
-                main.registerCommand(new TroopCommand());
-                main.registerCommand(new WeaponCommand());
-            }
+            main.registerCommand(new AshClassCommand());
+            main.registerCommand(new AshKingdomCommand());
+            main.registerCommand(new AshSearchCommand());
+            main.registerCommand(new AshSpellCommand());
+            main.registerCommand(new AshTeamCommand());
+            main.registerCommand(new AshTraitCommand());
+            main.registerCommand(new AshTraitstoneCommand());
+            main.registerCommand(new AshTroopCommand());
+            main.registerCommand(new AshWeaponCommand());
 
             String timestamp = "";
             Calendar now = main.getNow();
@@ -297,15 +283,18 @@ public class Listener
             String result = main.cleverBot.think(message);
             e.getMessage().getChannel().setTypingStatus(false);
             e.getMessage().getChannel().sendMessage(result);
-        } else if (!e.getMessage().getChannel().isPrivate())
-        {
-            //Message sent in a channel that's not bot-commands
-            e.getMessage().delete();
-            e.getMessage().getAuthor().getOrCreatePMChannel().sendMessage("Sorry, I don't talk in any channel apart from #bot-commands. Alternatively you can talk to me here, in PM, but don't @mention me... I don't need it in here.");
         } else
         {
-            //@Mentioned in a PM
-            e.getMessage().getChannel().sendMessage("Don't @mention me in PM! I don't like it. Just say what you want to say. ;(");
+            if (!e.getMessage().getChannel().isPrivate())
+            {
+                //Message sent in a channel that's not bot-commands
+                e.getMessage().delete();
+                e.getMessage().getAuthor().getOrCreatePMChannel().sendMessage("Sorry, I don't talk in any channel apart from #bot-commands. Alternatively you can talk to me here, in PM, but don't @mention me... I don't need it in here.");
+            } else
+            {
+                //@Mentioned in a PM
+                e.getMessage().getChannel().sendMessage("Don't @mention me in PM! I don't like it. Just say what you want to say. ;(");
+            }
         }
     }
 

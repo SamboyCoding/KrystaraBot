@@ -1,16 +1,14 @@
 package me.samboycoding.krystarabot.quiz;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
-import org.apache.commons.io.IOUtils;
+import me.samboycoding.krystarabot.gemdb.AshClient;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Alternative question factory for the quiz
@@ -23,77 +21,97 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
     private static class AshQuizQuestion extends QuizQuestion
     {
 
-        private final JSONObject question;
-
-        public AshQuizQuestion(JSONObject q)
+        private static class Answer
         {
-            question = q;
-        }
+
+            private String text = "";
+            private String detailsLink = "";
+
+            public String getText()
+            {
+                return text;
+            }
+
+            public String getDetailsLink()
+            {
+                return detailsLink;
+            }
+        };
+
+        private long seed = -1;
+        private String type = "";
+        private int difficulty = 0;
+        private String questionText = "";
+        private String questionSecondaryText = "";
+        private String questionImage = "";
+        private int correctAnswerIndex = -1;
+        private ArrayList<Answer> answers = new ArrayList<>();
 
         @Override
         public String getQuestionText()
         {
-            return question.getString("QuestionText");
+            return questionText;
         }
 
         @Override
         public String getAnswerText(int index)
         {
-            return question.getJSONArray("Answers").getJSONObject(index).getString("Text");
+            return answers.get(index).getText();
         }
 
         @Override
         public int getCorrectAnswerIndex()
         {
-            return question.getInt("CorrectAnswerIndex");
+            return correctAnswerIndex;
         }
 
         @Override
         public Difficulty getDifficulty()
         {
-            return Difficulty.fromInteger(question.getInt("Difficulty"));
+            return Difficulty.fromInteger(difficulty);
         }
 
         @Override
         public long getRandomSeed()
         {
-            return question.getLong("Seed");
+            return seed;
         }
 
         @Override
         public String getQuestionSecondaryText()
         {
-            if (!question.has("QuestionSecondaryText"))
-            {
-                return "";
-            }
-
-            return question.getString("QuestionSecondaryText");
+            return questionSecondaryText;
         }
 
         @Override
         public URL getQuestionImageUrl()
         {
-            if (!question.has("QuestionImage"))
-            {
-                return null;
-            }
-
-            String imageStr = question.getString("QuestionImage");
             URL result = null;
-            if (StringUtils.isEmpty(imageStr))
+
+            if (StringUtils.isEmpty(questionImage))
             {
                 return null;
             }
 
             try
             {
-                result = new URL(imageStr);
+                result = new URL(questionImage);
             } catch (MalformedURLException e)
             {
             }
 
             return result;
+        }
+    }
+
+    private static class AshQuizResponse
+    {
+
+        private ArrayList<AshQuizQuestion> questions = new ArrayList<>();
+
+        public List<AshQuizQuestion> getQuestions()
+        {
+            return Collections.unmodifiableList(this.questions);
         }
     }
 
@@ -117,22 +135,10 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
         return result;
     }
 
-    private QuizQuestion[] getQuestionsFromUrl(URL url) throws IOException
+    private QuizQuestion[] getQuestionsFromQuery(String apiPathAndQuery) throws IOException
     {
-        URLConnection con = url.openConnection();
-        InputStream in = con.getInputStream();
-        String encoding = con.getContentEncoding();
-        encoding = encoding == null ? "UTF-8" : encoding;
-        String body = IOUtils.toString(in, encoding);
-        JSONObject response = new JSONObject(body);
-        JSONArray questions = response.getJSONArray("Questions");
-        int count = questions.length();
-        QuizQuestion[] results = new QuizQuestion[count];
-        for (int i = 0; i < count; i++)
-        {
-            results[i] = new AshQuizQuestion(questions.getJSONObject(i));
-        }
-        return results;
+        AshQuizResponse response = AshClient.query(apiPathAndQuery, AshQuizResponse.class);
+        return response.getQuestions().toArray(new QuizQuestion[0]);
     }
 
     /**
@@ -147,8 +153,8 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
     @Override
     public QuizQuestion[] getQuestions(int count, Random r, QuizQuestionType type) throws MalformedURLException, IOException
     {
-        return getQuestionsFromUrl(
-                new URL("http://ashtender.com/gems/api/quiz?type=" + type.name() + "&count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL)));
+        return getQuestionsFromQuery(
+                "quiz?type=" + type.name() + "&count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL));
     }
 
     /**
@@ -164,8 +170,8 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
     @Override
     public QuizQuestion[] getQuestions(int count, Random r, QuizQuestion.Difficulty difficulty) throws MalformedURLException, IOException
     {
-        return getQuestionsFromUrl(
-                new URL("http://ashtender.com/gems/api/quiz?difficulty=" + difficulty.ordinal() + "&count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL)));
+        return getQuestionsFromQuery(
+                "quiz?difficulty=" + difficulty.ordinal() + "&count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL));
     }
 
     /**
@@ -181,7 +187,7 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
     @Override
     public QuizQuestion[] getQuestions(int count, Random r) throws MalformedURLException, IOException
     {
-        return getQuestionsFromUrl(
-                new URL("http://ashtender.com/gems/api/quiz?count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL)));
+        return getQuestionsFromQuery(
+                "quiz?count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL));
     }
 }

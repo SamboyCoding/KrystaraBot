@@ -7,6 +7,7 @@ import java.util.List;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
+import me.samboycoding.krystarabot.gemdb.Nameable;
 import me.samboycoding.krystarabot.gemdb.Search;
 import me.samboycoding.krystarabot.gemdb.Spell;
 import me.samboycoding.krystarabot.gemdb.Troop;
@@ -31,15 +32,9 @@ public class AshSpellCommand extends KrystaraCommand
         commandName = "spell";
     }
 
-    private String getTroopListAsString(List<Troop> troops)
+    private String getListAsString(List<? extends Nameable> list)
     {
-        String[] names = troops.stream().map(t -> t.getName()).toArray(String[]::new);
-        return String.join(", ", names);
-    }
-
-    private String getWeaponListAsString(List<Weapon> weapons)
-    {
-        String[] names = weapons.stream().map(t -> t.getName()).toArray(String[]::new);
+        String[] names = list.stream().map(t -> t.getName()).toArray(String[]::new);
         return String.join(", ", names);
     }
 
@@ -53,14 +48,14 @@ public class AshSpellCommand extends KrystaraCommand
         }
 
         String spellName = String.join(" ", arguments);
-        Search search = AshClient.query("searches/spells?term=" + URLEncoder.encode(spellName, "UTF-8"), Search.class);
-        Search.Spell searchSpell = AshClient.getSingleResult(chnl, search.getSpells(), "spell", spellName, Search.Spell.class);
-        if (searchSpell == null)
+        Search search = Search.fromQuery("spells?term=" + URLEncoder.encode(spellName, "UTF-8"));
+        Search.SpellSummary spellSummary = AshClient.getSingleResult(chnl, search.getSpells(), "spell", spellName);
+        if (spellSummary == null)
         {
             return;
         }
-        Spell spell = AshClient.query("spells/" + searchSpell.getId() + "/details", Spell.class);
 
+        Spell spell = spellSummary.getDetails();
         String spellDesc = spell.getDescription();
         String spellMagicScalingText = spell.getMagicScalingText();
         if (spellMagicScalingText != null)
@@ -89,11 +84,11 @@ public class AshSpellCommand extends KrystaraCommand
         String info = "(" + spell.getCost() + " " + String.join(" ", gemColorEmojis) + "): " + spellDesc + "\n";
         if (!spell.getTroops().isEmpty())
         {
-            info += "Used by troops: " + getTroopListAsString(spell.getTroops()) + "\n";
+            info += "Used by troops: " + getListAsString(spell.getTroops()) + "\n";
         }
         if (!spell.getWeapons().isEmpty())
         {
-            info += "Used by weapons: " + getWeaponListAsString(spell.getWeapons()) + "\n";
+            info += "Used by weapons: " + getListAsString(spell.getWeapons()) + "\n";
         }
 
         EmbedObject o = new EmbedBuilder()

@@ -1,15 +1,30 @@
 package me.samboycoding.krystarabot.gemdb;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- * @author Emily Ash
- */
 public class Spell implements Nameable, java.io.Serializable
 {
+
+    private Spell()
+    {
+    }
+
+    public static Spell fromId(int id) throws IOException
+    {
+        return AshClient.query("spells/" + id + "/details", Spell.class);
+    }
+
+    public static class Summary extends SummaryBase
+    {
+
+        public Spell getDetails() throws IOException
+        {
+            return Spell.fromId(getId());
+        }
+    }
 
     private static final long serialVersionUID = 1L;
     private int id = 0;
@@ -19,29 +34,13 @@ public class Spell implements Nameable, java.io.Serializable
     private String magicScalingText = null;
     private int cost = 0;
     private int colors = 0;
-    private String troopName = null;
-    private String weaponName = null;
     private String imageUrl = null;
-    private ArrayList<Troop> troops = new ArrayList<>();
-    private ArrayList<Weapon> weapons = new ArrayList<>();
-
-    public Spell()
-    {
-    }
-
-    public void setId(int value)
-    {
-        this.id = value;
-    }
+    private ArrayList<Troop.Summary> troops = new ArrayList<>();
+    private ArrayList<Weapon.Summary> weapons = new ArrayList<>();
 
     public int getId()
     {
         return this.id;
-    }
-
-    public void setName(String value)
-    {
-        this.name = value;
     }
 
     @Override
@@ -50,19 +49,9 @@ public class Spell implements Nameable, java.io.Serializable
         return this.name;
     }
 
-    public void setDescription(String value)
-    {
-        this.description = value;
-    }
-
     public String getDescription()
     {
         return this.description;
-    }
-
-    public void setCost(int value)
-    {
-        this.cost = value;
     }
 
     public int getCost()
@@ -70,19 +59,9 @@ public class Spell implements Nameable, java.io.Serializable
         return this.cost;
     }
 
-    public void setColors(int value)
-    {
-        this.colors = value;
-    }
-
     public int getColors()
     {
         return this.colors;
-    }
-
-    public void setBoostRatioText(String value)
-    {
-        this.boostRatioText = value;
     }
 
     public String getBoostRatioText()
@@ -90,34 +69,9 @@ public class Spell implements Nameable, java.io.Serializable
         return this.boostRatioText;
     }
 
-    public void setMagicScalingText(String value)
-    {
-        this.magicScalingText = value;
-    }
-
     public String getMagicScalingText()
     {
         return this.magicScalingText;
-    }
-
-    public void setTroopName(String value)
-    {
-        this.troopName = value;
-    }
-
-    public String getTroopName()
-    {
-        return this.troopName;
-    }
-
-    public void setWeaponName(String value)
-    {
-        this.weaponName = value;
-    }
-
-    public String getWeaponName()
-    {
-        return this.weaponName;
     }
 
     public String getImageUrl()
@@ -125,12 +79,12 @@ public class Spell implements Nameable, java.io.Serializable
         return this.imageUrl;
     }
 
-    public List<Weapon> getWeapons()
+    public List<Weapon.Summary> getWeapons()
     {
         return Collections.unmodifiableList(this.weapons);
     }
 
-    public List<Troop> getTroops()
+    public List<Troop.Summary> getTroops()
     {
         return Collections.unmodifiableList(this.troops);
     }
