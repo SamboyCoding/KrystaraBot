@@ -190,15 +190,24 @@ public class TeamCommand extends KrystaraCommand
                 if (troopId1 == null)
                 {
                     troopId1 = info.getInt("Id");
-                } else if (troopId2 == null)
+                } else
                 {
-                    troopId2 = info.getInt("Id");
-                } else if (troopId3 == null)
-                {
-                    troopId3 = info.getInt("Id");
-                } else if (troopId4 == null)
-                {
-                    troopId4 = info.getInt("Id");
+                    if (troopId2 == null)
+                    {
+                        troopId2 = info.getInt("Id");
+                    } else
+                    {
+                        if (troopId3 == null)
+                        {
+                            troopId3 = info.getInt("Id");
+                        } else
+                        {
+                            if (troopId4 == null)
+                            {
+                                troopId4 = info.getInt("Id");
+                            }
+                        }
+                    }
                 }
             }
 
@@ -230,15 +239,24 @@ public class TeamCommand extends KrystaraCommand
                 if (troopId1 == null)
                 {
                     troopId1 = info.getInt("Id");
-                } else if (troopId2 == null)
+                } else
                 {
-                    troopId2 = info.getInt("Id");
-                } else if (troopId3 == null)
-                {
-                    troopId3 = info.getInt("Id");
-                } else if (troopId4 == null)
-                {
-                    troopId4 = info.getInt("Id");
+                    if (troopId2 == null)
+                    {
+                        troopId2 = info.getInt("Id");
+                    } else
+                    {
+                        if (troopId3 == null)
+                        {
+                            troopId3 = info.getInt("Id");
+                        } else
+                        {
+                            if (troopId4 == null)
+                            {
+                                troopId4 = info.getInt("Id");
+                            }
+                        }
+                    }
                 }
             }
 

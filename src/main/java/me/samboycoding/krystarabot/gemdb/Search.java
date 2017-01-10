@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Search implements java.io.Serializable
 {
+
     public static Search fromQuery(String query) throws IOException
     {
         return AshClient.query("searches/" + query, Search.class);
@@ -18,6 +19,7 @@ public class Search implements java.io.Serializable
 
     public static class SpellSummary extends Spell.Summary
     {
+
         private ArrayList<Troop.Summary> troops = new ArrayList<>();
         private ArrayList<Weapon.Summary> weapons = new ArrayList<>();
 
@@ -34,6 +36,7 @@ public class Search implements java.io.Serializable
 
     public static class TraitSummary extends Trait.Summary
     {
+
         private ArrayList<Troop.Summary> troops = new ArrayList<>();
         private ArrayList<HeroClass.Summary> classes = new ArrayList<>();
 
@@ -54,7 +57,7 @@ public class Search implements java.io.Serializable
     private ArrayList<Kingdom.Summary> kingdoms = new ArrayList<>();
     private ArrayList<HeroClass.Summary> classes = new ArrayList<>();
     private ArrayList<Weapon.Summary> weapons = new ArrayList<>();
-    
+
     public List<Troop.Summary> getTroops()
     {
         return Collections.unmodifiableList(this.troops);

@@ -20,22 +20,24 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
 
     private static class AshQuizQuestion extends QuizQuestion
     {
+
         private static class Answer
         {
+
             private String text = "";
             private String detailsLink = "";
-            
+
             public String getText()
             {
                 return text;
             }
-            
+
             public String getDetailsLink()
             {
                 return detailsLink;
             }
         };
-        
+
         private long seed = -1;
         private String type = "";
         private int difficulty = 0;
@@ -44,7 +46,7 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
         private String questionImage = "";
         private int correctAnswerIndex = -1;
         private ArrayList<Answer> answers = new ArrayList<>();
-        
+
         @Override
         public String getQuestionText()
         {
@@ -85,7 +87,7 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
         public URL getQuestionImageUrl()
         {
             URL result = null;
-            
+
             if (StringUtils.isEmpty(questionImage))
             {
                 return null;
@@ -101,11 +103,12 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
             return result;
         }
     }
-    
+
     private static class AshQuizResponse
     {
+
         private ArrayList<AshQuizQuestion> questions = new ArrayList<>();
-        
+
         public List<AshQuizQuestion> getQuestions()
         {
             return Collections.unmodifiableList(this.questions);
@@ -151,7 +154,7 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
     public QuizQuestion[] getQuestions(int count, Random r, QuizQuestionType type) throws MalformedURLException, IOException
     {
         return getQuestionsFromQuery(
-            "quiz?type=" + type.name() + "&count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL));
+                "quiz?type=" + type.name() + "&count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL));
     }
 
     /**
@@ -168,7 +171,7 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
     public QuizQuestion[] getQuestions(int count, Random r, QuizQuestion.Difficulty difficulty) throws MalformedURLException, IOException
     {
         return getQuestionsFromQuery(
-            "quiz?difficulty=" + difficulty.ordinal() + "&count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL));
+                "quiz?difficulty=" + difficulty.ordinal() + "&count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL));
     }
 
     /**
@@ -185,6 +188,6 @@ public class AshQuizQuestionFactory implements QuizQuestionFactory
     public QuizQuestion[] getQuestions(int count, Random r) throws MalformedURLException, IOException
     {
         return getQuestionsFromQuery(
-            "quiz?count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL));
+                "quiz?count=" + count + "&seed=" + (r.nextInt() & 0xffffffffL));
     }
 }

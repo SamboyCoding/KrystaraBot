@@ -281,12 +281,15 @@ public class QuizQuestionTimer implements Runnable
         if (difficultyFilter != null)
         {
             difficulty = difficultyFilter;
-        } else if (questionTypeFilter != null)
-        {
-            difficulty = questionTypeFilter.difficulty;
         } else
         {
-            difficulty = questionDifficulties.get(iQuestion);
+            if (questionTypeFilter != null)
+            {
+                difficulty = questionTypeFilter.difficulty;
+            } else
+            {
+                difficulty = questionDifficulties.get(iQuestion);
+            }
         }
         return difficulty;
     }

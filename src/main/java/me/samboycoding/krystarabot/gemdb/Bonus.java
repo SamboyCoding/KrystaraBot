@@ -2,6 +2,7 @@ package me.samboycoding.krystarabot.gemdb;
 
 public class Bonus implements java.io.Serializable
 {
+
     private static final long serialVersionUID = 1L;
     private int troopCount = 0;
     private String typeCode = null;

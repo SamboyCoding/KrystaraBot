@@ -4,9 +4,11 @@ import java.io.IOException;
 
 public class Weapon extends TeamMember implements java.io.Serializable
 {
+
     private Weapon()
-    {}
-    
+    {
+    }
+
     public static Weapon fromId(int id) throws IOException
     {
         return AshClient.query("weapons/" + id + "/details", Weapon.class);
@@ -14,6 +16,7 @@ public class Weapon extends TeamMember implements java.io.Serializable
 
     public static class Summary extends SummaryBase
     {
+
         public Weapon getDetails() throws IOException
         {
             return Weapon.fromId(getId());

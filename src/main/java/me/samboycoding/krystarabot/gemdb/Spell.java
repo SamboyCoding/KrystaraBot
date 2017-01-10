@@ -7,9 +7,11 @@ import java.util.List;
 
 public class Spell implements Nameable, java.io.Serializable
 {
+
     private Spell()
-    {}
-    
+    {
+    }
+
     public static Spell fromId(int id) throws IOException
     {
         return AshClient.query("spells/" + id + "/details", Spell.class);
@@ -17,6 +19,7 @@ public class Spell implements Nameable, java.io.Serializable
 
     public static class Summary extends SummaryBase
     {
+
         public Spell getDetails() throws IOException
         {
             return Spell.fromId(getId());

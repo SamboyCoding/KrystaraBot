@@ -7,9 +7,11 @@ import java.util.List;
 
 public class Traitstone implements Nameable, java.io.Serializable
 {
+
     private Traitstone()
-    {}
-    
+    {
+    }
+
     public static Traitstone fromId(int id) throws IOException
     {
         return AshClient.query("traitstones/" + id + "/details", Traitstone.class);
@@ -17,6 +19,7 @@ public class Traitstone implements Nameable, java.io.Serializable
 
     public static class TroopSummaryWithCount extends Troop.Summary
     {
+
         private int count;
 
         public int getCount()
@@ -27,6 +30,7 @@ public class Traitstone implements Nameable, java.io.Serializable
 
     public static class HeroClassSummaryWithCount extends HeroClass.Summary
     {
+
         private int count;
 
         public int getCount()

@@ -7,9 +7,11 @@ import java.util.List;
 
 public class Trait implements Nameable, java.io.Serializable
 {
+
     private Trait()
-    {}
-    
+    {
+    }
+
     public static Trait fromCode(String code) throws IOException
     {
         return AshClient.query("traits/" + code + "/details", Trait.class);
@@ -17,14 +19,15 @@ public class Trait implements Nameable, java.io.Serializable
 
     public static class Summary implements Nameable
     {
+
         private String code;
         private String name;
-        
+
         public String getCode()
         {
             return code;
         }
-        
+
         public String getName()
         {
             return name;

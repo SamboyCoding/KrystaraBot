@@ -8,9 +8,11 @@ import java.util.List;
 
 public class Troop extends TeamMember implements java.io.Serializable
 {
+
     private Troop()
-    {}
-    
+    {
+    }
+
     public static Troop fromId(int id) throws IOException
     {
         return AshClient.query("troops/" + id + "/details", Troop.class);
@@ -18,6 +20,7 @@ public class Troop extends TeamMember implements java.io.Serializable
 
     public static class Summary extends SummaryBase
     {
+
         public Troop getDetails() throws IOException
         {
             return Troop.fromId(getId());

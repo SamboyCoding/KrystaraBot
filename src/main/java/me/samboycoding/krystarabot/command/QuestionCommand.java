@@ -69,12 +69,15 @@ public class QuestionCommand extends KrystaraCommand
         if (args.difficulty != null)
         {
             qs = main.quizQuestionFactory.getQuestions(args.questionCount, r, args.difficulty);
-        } else if (args.questionType != null)
-        {
-            qs = main.quizQuestionFactory.getQuestions(args.questionCount, r, args.questionType);
         } else
         {
-            qs = main.quizQuestionFactory.getQuestions(args.questionCount, r);
+            if (args.questionType != null)
+            {
+                qs = main.quizQuestionFactory.getQuestions(args.questionCount, r, args.questionType);
+            } else
+            {
+                qs = main.quizQuestionFactory.getQuestions(args.questionCount, r);
+            }
         }
 
         for (QuizQuestion q : qs)

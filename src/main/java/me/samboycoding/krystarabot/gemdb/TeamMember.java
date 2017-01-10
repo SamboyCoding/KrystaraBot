@@ -2,6 +2,7 @@ package me.samboycoding.krystarabot.gemdb;
 
 public class TeamMember implements Nameable
 {
+
     private int id = 0;
     private String language = null;
     private String name = null;

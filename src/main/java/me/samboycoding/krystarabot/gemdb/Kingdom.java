@@ -7,9 +7,11 @@ import java.util.List;
 
 public class Kingdom implements Nameable, java.io.Serializable
 {
+
     private Kingdom()
-    {}
-    
+    {
+    }
+
     public static Kingdom fromId(int id) throws IOException
     {
         return AshClient.query("kingdoms/" + id + "/details", Kingdom.class);
@@ -17,12 +19,13 @@ public class Kingdom implements Nameable, java.io.Serializable
 
     public static class Summary extends SummaryBase
     {
+
         public Kingdom getDetails() throws IOException
         {
             return Kingdom.fromId(getId());
         }
     }
-    
+
     private static final long serialVersionUID = 1L;
 
     private int id = 0;

@@ -1,4 +1,3 @@
-
 package me.samboycoding.krystarabot.gemdb;
 
 import com.google.gson.Gson;
@@ -17,8 +16,9 @@ import sx.blah.discord.util.RateLimitException;
 
 public class AshClient
 {
+
     private static final Gson GSON = new Gson();
-    
+
     public static <T> T query(String apiPathAndQuery, Class<T> c) throws IOException
     {
         URL url = new URL("http://ashtender.com/gems/api/" + apiPathAndQuery);

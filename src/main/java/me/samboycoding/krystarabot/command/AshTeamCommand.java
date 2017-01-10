@@ -78,10 +78,10 @@ public class AshTeamCommand extends KrystaraCommand
             TeamMember teamMember;
             if (isWeapon)
             {
-                teamMember = ((Weapon.Summary)teamMemberSummary).getDetails();
+                teamMember = ((Weapon.Summary) teamMemberSummary).getDetails();
             } else
             {
-                teamMember = ((Troop.Summary)teamMemberSummary).getDetails();
+                teamMember = ((Troop.Summary) teamMemberSummary).getDetails();
             }
             teamMembers.add(teamMember);
         }

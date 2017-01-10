@@ -80,16 +80,22 @@ public class GameData
             {
                 //Set original value
                 res += original + increases.getInt(i);
-            } else if (i < 15)
-            {
-                res += increases.getInt(i);
-            } else if (ascensions != null)
-            {
-                res += increases.getInt(i) + ascensions.getInt(j);
-                j++;
             } else
             {
-                res += increases.getInt(i);
+                if (i < 15)
+                {
+                    res += increases.getInt(i);
+                } else
+                {
+                    if (ascensions != null)
+                    {
+                        res += increases.getInt(i) + ascensions.getInt(j);
+                        j++;
+                    } else
+                    {
+                        res += increases.getInt(i);
+                    }
+                }
             }
 
         }
