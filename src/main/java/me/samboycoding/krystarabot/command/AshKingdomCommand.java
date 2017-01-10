@@ -39,14 +39,14 @@ public class AshKingdomCommand extends KrystaraCommand
         }
 
         String kingdomName = String.join(" ", arguments);
-        Search search = AshClient.query("searches/kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"), Search.class);
-        Search.Kingdom searchKingdom = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName, Search.Kingdom.class);
-        if (searchKingdom == null)
+        Search search = Search.fromQuery("kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"));
+        Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName);
+        if (kingdomSummary == null)
         {
             return;
         }
-        Kingdom kingdom = AshClient.query("kingdoms/" + searchKingdom.getId() + "/details", Kingdom.class);
 
+        Kingdom kingdom = kingdomSummary.getDetails();
         boolean isFullKingdom = kingdom.isFullKingdom();
 
         //Emojis

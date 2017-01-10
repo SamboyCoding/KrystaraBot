@@ -40,13 +40,13 @@ public class AshClassCommand extends QuestionCommand
 
         String heroClassName = String.join(" ", arguments);
         Search search = Search.fromQuery("classes?term=" + URLEncoder.encode(heroClassName, "UTF-8"));
-        Search.HeroClass searchHeroClass = AshClient.getSingleResult(chnl, search.getHeroClasses(), "class", heroClassName, Search.HeroClass.class);
-        if (searchHeroClass == null)
+        HeroClass.Summary heroClassSummary = AshClient.getSingleResult(chnl, search.getHeroClasses(), "class", heroClassName);
+        if (heroClassSummary == null)
         {
             return;
         }
-        HeroClass heroClass = AshClient.query("classes/" + searchHeroClass.getId() + "/details", HeroClass.class);
 
+        HeroClass heroClass = heroClassSummary.getDetails();
         String spellDesc = heroClass.getWeapon().getSpellDescription();
         String spellMagicScalingText = heroClass.getWeapon().getSpellMagicScalingText();
         if (spellMagicScalingText != null)

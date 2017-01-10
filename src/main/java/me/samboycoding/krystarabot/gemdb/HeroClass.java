@@ -8,19 +8,19 @@ import java.util.List;
 
 public class HeroClass implements Nameable, java.io.Serializable
 {
-    public static class Trait implements Nameable
+    private HeroClass()
+    {}
+    
+    public static HeroClass fromId(int id) throws IOException
     {
-        private String code;
-        private String name;
-
-        public String getCode()
+        return AshClient.query("classes/" + id + "/details", HeroClass.class);
+    }
+    
+    public static class Summary extends SummaryBase
+    {
+        public HeroClass getDetails() throws IOException
         {
-            return this.code;
-        }
-
-        public String getName()
-        {
-            return this.name;
+            return HeroClass.fromId(getId());
         }
     }
 

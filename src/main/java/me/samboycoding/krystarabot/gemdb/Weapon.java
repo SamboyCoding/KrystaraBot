@@ -1,15 +1,29 @@
 package me.samboycoding.krystarabot.gemdb;
 
+import java.io.IOException;
+
 public class Weapon extends TeamMember implements java.io.Serializable
 {
-    private static class HeroClass extends IdNamePair
-    {
-    }
+    private Weapon()
+    {}
     
+    public static Weapon fromId(int id) throws IOException
+    {
+        return AshClient.query("weapons/" + id + "/details", Weapon.class);
+    }
+
+    public static class Summary extends SummaryBase
+    {
+        public Weapon getDetails() throws IOException
+        {
+            return Weapon.fromId(getId());
+        }
+    }
+
     private static final long serialVersionUID = 1L;
     private String rarity = null;
     private int rarityId = 0;
-    private HeroClass owner = null;
+    private HeroClass.Summary owner = null;
     private String pageUrl = null;
     private String imageUrl = null;
 
@@ -23,7 +37,7 @@ public class Weapon extends TeamMember implements java.io.Serializable
         return this.rarityId;
     }
 
-    public HeroClass getOwner()
+    public HeroClass.Summary getOwner()
     {
         return this.owner;
     }

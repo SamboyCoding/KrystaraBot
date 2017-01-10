@@ -1,17 +1,26 @@
 package me.samboycoding.krystarabot.gemdb;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Spell implements Nameable, java.io.Serializable
 {
-    public static class Troop extends IdNamePair
-    {
-    }
+    private Spell()
+    {}
     
-    public static class Weapon extends IdNamePair
+    public static Spell fromId(int id) throws IOException
     {
+        return AshClient.query("spells/" + id + "/details", Spell.class);
+    }
+
+    public static class Summary extends SummaryBase
+    {
+        public Spell getDetails() throws IOException
+        {
+            return Spell.fromId(getId());
+        }
     }
 
     private static final long serialVersionUID = 1L;
@@ -23,8 +32,8 @@ public class Spell implements Nameable, java.io.Serializable
     private int cost = 0;
     private int colors = 0;
     private String imageUrl = null;
-    private ArrayList<Troop> troops = new ArrayList<>();
-    private ArrayList<Weapon> weapons = new ArrayList<>();
+    private ArrayList<Troop.Summary> troops = new ArrayList<>();
+    private ArrayList<Weapon.Summary> weapons = new ArrayList<>();
 
     public int getId()
     {
@@ -67,12 +76,12 @@ public class Spell implements Nameable, java.io.Serializable
         return this.imageUrl;
     }
 
-    public List<Weapon> getWeapons()
+    public List<Weapon.Summary> getWeapons()
     {
         return Collections.unmodifiableList(this.weapons);
     }
 
-    public List<Troop> getTroops()
+    public List<Troop.Summary> getTroops()
     {
         return Collections.unmodifiableList(this.troops);
     }

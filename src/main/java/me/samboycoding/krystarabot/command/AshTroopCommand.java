@@ -39,14 +39,14 @@ public class AshTroopCommand extends QuestionCommand
         }
 
         String troopName = String.join(" ", arguments);
-        Search search = AshClient.query("searches/troops?term=" + URLEncoder.encode(troopName, "UTF-8"), Search.class);
-        Search.Troop searchTroop = AshClient.getSingleResult(chnl, search.getTroops(), "troop", troopName, Search.Troop.class);
-        if (searchTroop == null)
+        Search search = Search.fromQuery("troops?term=" + URLEncoder.encode(troopName, "UTF-8"));
+        Troop.Summary troopSummary = AshClient.getSingleResult(chnl, search.getTroops(), "troop", troopName);
+        if (troopSummary == null)
         {
             return;
         }
-        Troop troop = AshClient.query("troops/" + searchTroop.getId() + "/details", Troop.class);
 
+        Troop troop = troopSummary.getDetails();
         String spellDesc = troop.getSpellDescription();
         String spellMagicScalingText = troop.getSpellMagicScalingText();
         if (spellMagicScalingText != null)

@@ -29,7 +29,7 @@ public class AshClient
         return gson.fromJson(body, c);
     }
 
-    public static <T extends Nameable> T getSingleResult(IChannel chnl, List<T> resultList, String typeString, String searchName, Class<T> type)
+    public static <T extends Nameable> T getSingleResult(IChannel chnl, List<T> resultList, String typeString, String searchName)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         String searchNameLower = searchName.toLowerCase();

@@ -44,14 +44,14 @@ public class AshWeaponCommand extends KrystaraCommand
         }
 
         String weaponName = String.join(" ", arguments);
-        Search search = AshClient.query("searches/weapons?term=" + URLEncoder.encode(weaponName, "UTF-8"), Search.class);
-        Search.Weapon searchWeapon = AshClient.getSingleResult(chnl, search.getWeapons(), "weapon", weaponName, Search.Weapon.class);
-        if (searchWeapon == null)
+        Search search = Search.fromQuery("weapons?term=" + URLEncoder.encode(weaponName, "UTF-8"));
+        Weapon.Summary weaponSummary = AshClient.getSingleResult(chnl, search.getWeapons(), "weapon", weaponName);
+        if (weaponSummary == null)
         {
             return;
         }
-        Weapon weapon = AshClient.query("weapons/" + searchWeapon.getId() + "/details", Weapon.class);
 
+        Weapon weapon = weaponSummary.getDetails();
         String spellDesc = weapon.getSpellDescription();
         String spellMagicScalingText = weapon.getSpellMagicScalingText();
         if (spellMagicScalingText != null)

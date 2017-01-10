@@ -48,14 +48,14 @@ public class AshSpellCommand extends KrystaraCommand
         }
 
         String spellName = String.join(" ", arguments);
-        Search search = AshClient.query("searches/spells?term=" + URLEncoder.encode(spellName, "UTF-8"), Search.class);
-        Search.Spell searchSpell = AshClient.getSingleResult(chnl, search.getSpells(), "spell", spellName, Search.Spell.class);
-        if (searchSpell == null)
+        Search search = Search.fromQuery("spells?term=" + URLEncoder.encode(spellName, "UTF-8"));
+        Search.SpellSummary spellSummary = AshClient.getSingleResult(chnl, search.getSpells(), "spell", spellName);
+        if (spellSummary == null)
         {
             return;
         }
-        Spell spell = AshClient.query("spells/" + searchSpell.getId() + "/details", Spell.class);
 
+        Spell spell = spellSummary.getDetails();
         String spellDesc = spell.getDescription();
         String spellMagicScalingText = spell.getMagicScalingText();
         if (spellMagicScalingText != null)

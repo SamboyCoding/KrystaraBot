@@ -1,5 +1,6 @@
 package me.samboycoding.krystarabot.gemdb;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,19 +8,19 @@ import java.util.List;
 
 public class Troop extends TeamMember implements java.io.Serializable
 {
-    public static class Trait implements Nameable
+    private Troop()
+    {}
+    
+    public static Troop fromId(int id) throws IOException
     {
-        private String code;
-        private String name;
+        return AshClient.query("troops/" + id + "/details", Troop.class);
+    }
 
-        public String getCode()
+    public static class Summary extends SummaryBase
+    {
+        public Troop getDetails() throws IOException
         {
-            return this.code;
-        }
-
-        public String getName()
-        {
-            return this.name;
+            return Troop.fromId(getId());
         }
     }
 
@@ -35,7 +36,7 @@ public class Troop extends TeamMember implements java.io.Serializable
     private String kingdomName = null;
     private String pageUrl = null;
     private String imageUrl = null;
-    private ArrayList<Trait> traits = new ArrayList<>();
+    private ArrayList<Trait.Summary> traits = new ArrayList<>();
 
     public String getRarity()
     {
@@ -92,7 +93,7 @@ public class Troop extends TeamMember implements java.io.Serializable
         return this.imageUrl;
     }
 
-    public List<Trait> getTraits()
+    public List<Trait.Summary> getTraits()
     {
         return Collections.unmodifiableList(this.traits);
     }

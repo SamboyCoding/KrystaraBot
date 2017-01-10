@@ -35,14 +35,14 @@ public class AshTraitCommand extends KrystaraCommand
         }
 
         String traitName = String.join(" ", arguments);
-        Search search = AshClient.query("searches/traits?term=" + URLEncoder.encode(traitName, "UTF-8"), Search.class);
-        Search.Trait searchTrait = AshClient.getSingleResult(chnl, search.getTraits(), "trait", traitName, Search.Trait.class);
-        if (searchTrait == null)
+        Search search = Search.fromQuery("traits?term=" + URLEncoder.encode(traitName, "UTF-8"));
+        Search.TraitSummary traitSummary = AshClient.getSingleResult(chnl, search.getTraits(), "trait", traitName);
+        if (traitSummary == null)
         {
             return;
         }
-        Trait trait = AshClient.query("traits/" + searchTrait.getCode() + "/details", Trait.class);
 
+        Trait trait = traitSummary.getDetails();
         String info = trait.getDescription() + "\n";
         if (!trait.getTroops().isEmpty())
         {

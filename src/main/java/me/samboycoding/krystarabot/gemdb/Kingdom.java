@@ -1,13 +1,26 @@
 package me.samboycoding.krystarabot.gemdb;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Kingdom implements Nameable, java.io.Serializable
 {
-    public static class Troop extends IdNamePair
+    private Kingdom()
+    {}
+    
+    public static Kingdom fromId(int id) throws IOException
     {
+        return AshClient.query("kingdoms/" + id + "/details", Kingdom.class);
+    }
+
+    public static class Summary extends SummaryBase
+    {
+        public Kingdom getDetails() throws IOException
+        {
+            return Kingdom.fromId(getId());
+        }
     }
     
     private static final long serialVersionUID = 1L;
@@ -32,10 +45,6 @@ public class Kingdom implements Nameable, java.io.Serializable
     private String bannerImageUrl = null;
     private ArrayList<Bonus> bonuses = new ArrayList<>();
     private ArrayList<Troop> troops = new ArrayList<>();
-
-    public Kingdom()
-    {
-    }
 
     public int getId()
     {

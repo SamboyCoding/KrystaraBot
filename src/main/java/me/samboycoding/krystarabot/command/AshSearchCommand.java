@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
+import me.samboycoding.krystarabot.gemdb.SummaryBase;
 import me.samboycoding.krystarabot.gemdb.Search;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -23,10 +24,10 @@ public class AshSearchCommand extends KrystaraCommand
         commandName = "search";
     }
 
-    private String getSearchListsAsString(List<? extends Search.SearchResult>... lists)
+    private String getSearchListsAsString(List<? extends SummaryBase>... lists)
     {
-        ArrayList<Search.SearchResult> allResults = new ArrayList();
-        for (List<? extends Search.SearchResult> list : lists)
+        ArrayList<SummaryBase> allResults = new ArrayList();
+        for (List<? extends SummaryBase> list : lists)
         {
             allResults.addAll(list);
         }
@@ -57,7 +58,7 @@ public class AshSearchCommand extends KrystaraCommand
 
             String searchOutput = "Search results for `" + searchTerm + "`:\n\n";
 
-            Search result = AshClient.query("searches/all?term=" + URLEncoder.encode(searchTerm, "UTF-8"), Search.class);
+            Search result = Search.fromQuery("all?term=" + URLEncoder.encode(searchTerm, "UTF-8"));
 
             String[] troopNames = result.getTroops().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
             String[] traitNames = result.getTraits().stream().map(t -> "    - " + t.getName() + " " + getSearchListsAsString(t.getTroops(), t.getHeroClasses())).toArray(String[]::new);
