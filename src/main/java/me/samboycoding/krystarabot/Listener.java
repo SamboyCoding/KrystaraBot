@@ -81,8 +81,7 @@ public class Listener
             main.registerCommand(new BanCommand());
             main.registerCommand(new ClassCommand());
             main.registerCommand(new ClearCommand());
-            main.registerCommand(new ClearcacheCommand());
-            main.registerCommand(new ReigsterCodeCommand());
+            main.registerCommand(new RegisterCodeCommand());
             main.registerCommand(new HelpCommand());
             main.registerCommand(new KickCommand());
             main.registerCommand(new KingdomCommand());
