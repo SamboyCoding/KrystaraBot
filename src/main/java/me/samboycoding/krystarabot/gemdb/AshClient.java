@@ -17,16 +17,17 @@ import sx.blah.discord.util.RateLimitException;
 
 public class AshClient
 {
+    private static final Gson GSON = new Gson();
+    
     public static <T> T query(String apiPathAndQuery, Class<T> c) throws IOException
     {
         URL url = new URL("http://ashtender.com/gems/api/" + apiPathAndQuery);
         URLConnection con = url.openConnection();
         InputStream in = con.getInputStream();
         String encoding = con.getContentEncoding();
-        encoding = encoding == null ? "UTF-8" : encoding;
+        encoding = (encoding == null) ? "UTF-8" : encoding;
         String body = IOUtils.toString(in, encoding);
-        Gson gson = new Gson();
-        return gson.fromJson(body, c);
+        return GSON.fromJson(body, c);
     }
 
     public static <T extends Nameable> T getSingleResult(IChannel chnl, List<T> resultList, String typeString, String searchName)
