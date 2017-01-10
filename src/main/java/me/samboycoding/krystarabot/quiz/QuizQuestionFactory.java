@@ -7,10 +7,6 @@ package me.samboycoding.krystarabot.quiz;
 
 import java.util.Random;
 
-/**
- *
- * @author julians
- */
 public interface QuizQuestionFactory
 {
 

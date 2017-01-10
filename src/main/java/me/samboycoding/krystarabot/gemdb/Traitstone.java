@@ -4,29 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- * @author julians
- */
 public class Traitstone implements Nameable, java.io.Serializable
 {
-
-    public static class Troop implements Nameable
+    public static class Kingdom extends IdNamePair
     {
+    }
 
-        private int id;
-        private String name;
+    public static class Troop extends IdNamePair
+    {
         private int count;
-
-        public int getId()
-        {
-            return this.id;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
 
         public int getCount()
         {
@@ -34,22 +20,9 @@ public class Traitstone implements Nameable, java.io.Serializable
         }
     }
 
-    public static class HeroClass implements Nameable
+    public static class HeroClass extends IdNamePair
     {
-
-        private int id;
-        private String name;
         private int count;
-
-        public int getId()
-        {
-            return this.id;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
 
         public int getCount()
         {

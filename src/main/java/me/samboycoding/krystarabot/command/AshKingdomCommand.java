@@ -47,7 +47,7 @@ public class AshKingdomCommand extends KrystaraCommand
         }
         Kingdom kingdom = AshClient.query("kingdoms/" + searchKingdom.getId() + "/details", Kingdom.class);
 
-        boolean isFullKingdom = kingdom.getIsFullKingdom();
+        boolean isFullKingdom = kingdom.isFullKingdom();
 
         //Emojis
         IGuild g = chnl.getGuild();

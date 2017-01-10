@@ -4,21 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- * @author Emily Ash
- */
 public class Kingdom implements Nameable, java.io.Serializable
 {
-
+    public static class Troop extends IdNamePair
+    {
+    }
+    
     private static final long serialVersionUID = 1L;
 
     private int id = 0;
-    private String language = null;
     private String name = null;
     private String byLine = null;
     private String description = null;
-    private String fileBase = null;
     private String bannerName = null;
     private String bannerDescription = null;
     private int tributeGold = 0;
@@ -40,29 +37,9 @@ public class Kingdom implements Nameable, java.io.Serializable
     {
     }
 
-    public void setId(int value)
-    {
-        this.id = value;
-    }
-
     public int getId()
     {
         return this.id;
-    }
-
-    public void setLanguage(String value)
-    {
-        this.language = value;
-    }
-
-    public String getLanguage()
-    {
-        return this.language;
-    }
-
-    public void setName(String value)
-    {
-        this.name = value;
     }
 
     @Override
@@ -71,19 +48,9 @@ public class Kingdom implements Nameable, java.io.Serializable
         return this.name;
     }
 
-    public void setByLine(String value)
-    {
-        this.byLine = value;
-    }
-
     public String getByLine()
     {
         return this.byLine;
-    }
-
-    public void setDescription(String value)
-    {
-        this.description = value;
     }
 
     public String getDescription()
@@ -91,29 +58,9 @@ public class Kingdom implements Nameable, java.io.Serializable
         return this.description;
     }
 
-    public void setFileBase(String value)
-    {
-        this.fileBase = value;
-    }
-
-    public String getFileBase()
-    {
-        return this.fileBase;
-    }
-
-    public void setBannerName(String value)
-    {
-        this.bannerName = value;
-    }
-
     public String getBannerName()
     {
         return this.bannerName;
-    }
-
-    public void setBannerDescription(String value)
-    {
-        this.bannerDescription = value;
     }
 
     public String getBannerDescription()
@@ -121,19 +68,9 @@ public class Kingdom implements Nameable, java.io.Serializable
         return this.bannerDescription;
     }
 
-    public void setTributeGold(int value)
-    {
-        this.tributeGold = value;
-    }
-
     public int getTributeGold()
     {
         return this.tributeGold;
-    }
-
-    public void setTributeGlory(int value)
-    {
-        this.tributeGlory = value;
     }
 
     public int getTributeGlory()
@@ -141,19 +78,9 @@ public class Kingdom implements Nameable, java.io.Serializable
         return this.tributeGlory;
     }
 
-    public void setTributeSouls(int value)
-    {
-        this.tributeSouls = value;
-    }
-
     public int getTributeSouls()
     {
         return this.tributeSouls;
-    }
-
-    public void setLevelManaColor(int value)
-    {
-        this.levelManaColor = value;
     }
 
     public int getLevelManaColor()
@@ -161,19 +88,9 @@ public class Kingdom implements Nameable, java.io.Serializable
         return this.levelManaColor;
     }
 
-    public void setLevelStat(String value)
-    {
-        this.levelStat = value;
-    }
-
     public String getLevelStat()
     {
         return this.levelStat;
-    }
-
-    public void setExploreTraitstoneName(String value)
-    {
-        this.exploreTraitstoneName = value;
     }
 
     public String getExploreTraitstoneName()
@@ -181,32 +98,17 @@ public class Kingdom implements Nameable, java.io.Serializable
         return this.exploreTraitstoneName;
     }
 
-    public void setExploreTraitstoneColors(int value)
-    {
-        this.exploreTraitstoneColors = value;
-    }
-
     public int getExploreTraitstoneColors()
     {
         return this.exploreTraitstoneColors;
     }
 
-    public void setIsUsed(boolean value)
-    {
-        this.isUsed = value;
-    }
-
-    public boolean getIsUsed()
+    public boolean isUsed()
     {
         return this.isUsed;
     }
 
-    public void setIsFullKingdom(boolean value)
-    {
-        this.isFullKingdom = value;
-    }
-
-    public boolean getIsFullKingdom()
+    public boolean isFullKingdom()
     {
         return this.isFullKingdom;
     }

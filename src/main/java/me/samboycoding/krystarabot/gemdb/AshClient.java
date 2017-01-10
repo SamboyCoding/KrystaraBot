@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package me.samboycoding.krystarabot.gemdb;
 
 import com.google.gson.Gson;
@@ -19,13 +15,8 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
-/**
- *
- * @author julians
- */
 public class AshClient
 {
-
     public static <T> T query(String apiPathAndQuery, Class<T> c) throws IOException
     {
         URL url = new URL("http://ashtender.com/gems/api/" + apiPathAndQuery);

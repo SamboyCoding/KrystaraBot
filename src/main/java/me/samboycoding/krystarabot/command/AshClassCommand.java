@@ -20,10 +20,6 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
-/**
- *
- * @author julians
- */
 public class AshClassCommand extends QuestionCommand
 {
 
@@ -43,7 +39,7 @@ public class AshClassCommand extends QuestionCommand
         }
 
         String heroClassName = String.join(" ", arguments);
-        Search search = AshClient.query("searches/classes?term=" + URLEncoder.encode(heroClassName, "UTF-8"), Search.class);
+        Search search = Search.fromQuery("classes?term=" + URLEncoder.encode(heroClassName, "UTF-8"));
         Search.HeroClass searchHeroClass = AshClient.getSingleResult(chnl, search.getHeroClasses(), "class", heroClassName, Search.HeroClass.class);
         if (searchHeroClass == null)
         {
@@ -64,7 +60,7 @@ public class AshClassCommand extends QuestionCommand
                 spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
             }
         }
-        String spellBoostRatioText = heroClass.getSpellBoostRatioText();
+        String spellBoostRatioText = heroClass.getWeapon().getSpellBoostRatioText();
         if (spellBoostRatioText != null)
         {
             spellDesc += spellBoostRatioText;

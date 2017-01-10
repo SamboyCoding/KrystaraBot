@@ -99,7 +99,7 @@ public class AshTeamCommand extends KrystaraCommand
             } else
             {
                 kingdom = AshClient.query("kingdoms/" + searchKingdom.getId() + "/details", Kingdom.class);
-                if (!kingdom.getIsFullKingdom())
+                if (!kingdom.isFullKingdom())
                 {
                     chnl.sendMessage("The kingdom \"" + kingdom.getName() + "\" has no banner.");
                     return;

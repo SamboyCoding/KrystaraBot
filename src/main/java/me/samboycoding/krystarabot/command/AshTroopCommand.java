@@ -5,7 +5,6 @@
  */
 package me.samboycoding.krystarabot.command;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +13,6 @@ import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
 import me.samboycoding.krystarabot.gemdb.Search;
 import me.samboycoding.krystarabot.gemdb.Troop;
-import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -22,10 +20,6 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
-/**
- *
- * @author julians
- */
 public class AshTroopCommand extends QuestionCommand
 {
 
