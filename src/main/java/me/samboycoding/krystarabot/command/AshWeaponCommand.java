@@ -32,11 +32,6 @@ public class AshWeaponCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
-        {
-            chnl.sendMessage("You cannot do that!");
-            return;
-        }
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need to specify a name to search for!");
