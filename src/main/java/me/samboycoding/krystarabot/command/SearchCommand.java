@@ -5,7 +5,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.SummaryBase;
 import me.samboycoding.krystarabot.gemdb.Search;
 import sx.blah.discord.handle.obj.IChannel;
@@ -24,9 +23,10 @@ public class SearchCommand extends KrystaraCommand
         commandName = "search";
     }
 
-    private String getSearchListsAsString(List<? extends SummaryBase>... lists)
+    @SafeVarargs
+    final String getSearchListsAsString(List<? extends SummaryBase>... lists)
     {
-        ArrayList<SummaryBase> allResults = new ArrayList();
+        ArrayList<SummaryBase> allResults = new ArrayList<>();
         for (List<? extends SummaryBase> list : lists)
         {
             allResults.addAll(list);
