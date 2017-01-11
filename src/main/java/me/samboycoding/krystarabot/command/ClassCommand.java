@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.samboycoding.krystarabot.command;
 
 import java.net.URLEncoder;
@@ -26,7 +21,6 @@ public class ClassCommand extends QuestionCommand
     public ClassCommand()
     {
         commandName = "class";
-
     }
 
     @Override

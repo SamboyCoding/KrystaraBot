@@ -28,6 +28,7 @@ import sx.blah.discord.util.DiscordException;
  */
 public class main
 {
+
     private static final TreeMap<String, KrystaraCommand> commands = new TreeMap<>();
 
     private static IDiscordClient cl;
