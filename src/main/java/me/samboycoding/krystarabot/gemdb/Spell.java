@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import me.samboycoding.krystarabot.Language;
 
 public class Spell implements Nameable, java.io.Serializable
 {
@@ -12,17 +13,17 @@ public class Spell implements Nameable, java.io.Serializable
     {
     }
 
-    public static Spell fromId(int id) throws IOException
+    public static Spell fromId(int id, Language lang) throws IOException
     {
-        return AshClient.query("spells/" + id + "/details", Spell.class);
+        return AshClient.query("spells/" + id + "/details", Spell.class, lang);
     }
 
     public static class Summary extends SummaryBase
     {
 
-        public Spell getDetails() throws IOException
+        public Spell getDetails(Language lang) throws IOException
         {
-            return Spell.fromId(getId());
+            return Spell.fromId(getId(), lang);
         }
     }
 

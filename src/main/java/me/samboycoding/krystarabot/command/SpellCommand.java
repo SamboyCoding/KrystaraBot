@@ -1,19 +1,28 @@
 package me.samboycoding.krystarabot.command;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import me.samboycoding.krystarabot.GameData;
+import java.util.Arrays;
+import java.util.List;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import me.samboycoding.krystarabot.main;
-import me.samboycoding.krystarabot.utilities.Utilities;
-import org.json.JSONObject;
+import me.samboycoding.krystarabot.gemdb.AshClient;
+import me.samboycoding.krystarabot.gemdb.GemColor;
+import me.samboycoding.krystarabot.gemdb.Nameable;
+import me.samboycoding.krystarabot.gemdb.Search;
+import me.samboycoding.krystarabot.gemdb.Spell;
+import me.samboycoding.krystarabot.gemdb.Troop;
+import me.samboycoding.krystarabot.gemdb.Weapon;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  * Represents the ?spell command
  *
- * @author Sam
+ * @author Emily
  */
 public class SpellCommand extends KrystaraCommand
 {
@@ -23,45 +32,71 @@ public class SpellCommand extends KrystaraCommand
         commandName = "spell";
     }
 
+    private String getListAsString(List<? extends Nameable> list)
+    {
+        String[] names = list.stream().map(t -> t.getName()).toArray(String[]::new);
+        return String.join(", ", names);
+    }
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
-        {
-            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
-            return;
-        }
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
-        String spellName = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        ArrayList<String> results = main.data.searchForSpell(spellName);
 
-        if (results.isEmpty())
+        String spellName = String.join(" ", arguments);
+        Search search = Search.fromQuery("spells?term=" + URLEncoder.encode(spellName, "UTF-8"));
+        Search.SpellSummary spellSummary = AshClient.getSingleResult(chnl, search.getSpells(), "spell", spellName);
+        if (spellSummary == null)
         {
-            chnl.sendMessage("No spell `" + spellName + "` found, " + sdr.mention());
-            return;
-        }
-        if (results.size() > 5)
-        {
-            chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
-            return;
-        }
-        if (results.size() > 1)
-        {
-            Utilities.sendDisambiguationMessage(chnl, "Search term \"" + spellName + "\" is ambiguous.", results);
             return;
         }
 
-        JSONObject spellInfo = main.data.getSpellInfo(results.get(0));
+        Spell spell = spellSummary.getDetails();
+        String spellDesc = spell.getDescription();
+        String spellMagicScalingText = spell.getMagicScalingText();
+        if (spellMagicScalingText != null)
+        {
+            if (!spellDesc.contains("{2}"))
+            {
+                spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
+            } else
+            {
+                spellDesc = spellDesc.replace("{1}", "(half)");
+                spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
+            }
+        }
+        String spellBoostRatioText = spell.getBoostRatioText();
+        if (spellBoostRatioText != null)
+        {
+            spellDesc += spellBoostRatioText;
+        }
 
-        spellName = spellInfo.getString("Name");
-        String spellDesc = spellInfo.getString("Description");
-        int spellCost = spellInfo.getInt("Cost");
+        //Emojis
+        IGuild g = chnl.getGuild();
 
-        chnl.sendMessage("**" + spellName + " (" + spellCost + "):** " + spellDesc);
+        GemColor[] gemColors = GemColor.fromInteger(spell.getColors());
+        String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
+
+        String info = "(" + spell.getCost() + " " + String.join(" ", gemColorEmojis) + "): " + spellDesc + "\n";
+        if (!spell.getTroops().isEmpty())
+        {
+            info += "Used by troops: " + getListAsString(spell.getTroops()) + "\n";
+        }
+        if (!spell.getWeapons().isEmpty())
+        {
+            info += "Used by weapons: " + getListAsString(spell.getWeapons()) + "\n";
+        }
+
+        EmbedObject o = new EmbedBuilder()
+                .withDesc(info)
+                .withTitle(spell.getName())
+                .withThumbnail(spell.getImageUrl())
+                .build();
+        chnl.sendMessage("", o, false);
     }
 
     @Override

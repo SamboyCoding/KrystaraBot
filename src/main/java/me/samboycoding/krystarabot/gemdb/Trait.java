@@ -4,22 +4,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import me.samboycoding.krystarabot.Language;
 
 public class Trait implements Nameable, java.io.Serializable
 {
-
     private Trait()
     {
     }
 
-    public static Trait fromCode(String code) throws IOException
+    public static Trait fromCode(String code, Language lang) throws IOException
     {
-        return AshClient.query("traits/" + code + "/details", Trait.class);
+        return AshClient.query("traits/" + code + "/details", Trait.class, lang);
     }
 
     public static class Summary implements Nameable
     {
-
         private String code;
         private String name;
 
@@ -33,9 +32,9 @@ public class Trait implements Nameable, java.io.Serializable
             return name;
         }
 
-        public Trait getDetails() throws IOException
+        public Trait getDetails(Language lang) throws IOException
         {
-            return Trait.fromCode(getCode());
+            return Trait.fromCode(getCode(), lang);
         }
     }
 

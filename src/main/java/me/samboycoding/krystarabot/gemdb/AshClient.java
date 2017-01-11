@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.stream.Stream;
+import me.samboycoding.krystarabot.Language;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import org.apache.commons.io.IOUtils;
 import sx.blah.discord.handle.obj.IChannel;
@@ -21,7 +22,12 @@ public class AshClient
 
     public static <T> T query(String apiPathAndQuery, Class<T> c) throws IOException
     {
-        URL url = new URL("http://ashtender.com/gems/api/" + apiPathAndQuery);
+        return query(apiPathAndQuery, c, Language.ENGLISH);
+    }
+
+    public static <T> T query(String apiPathAndQuery, Class<T> c, Language lang) throws IOException
+    {
+        URL url = new URL("http://ashtender.com/gems/" + lang.getCode() + "/api/" + apiPathAndQuery);
         URLConnection con = url.openConnection();
         InputStream in = con.getInputStream();
         String encoding = con.getContentEncoding();

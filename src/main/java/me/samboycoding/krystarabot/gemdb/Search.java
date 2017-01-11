@@ -8,6 +8,8 @@ import me.samboycoding.krystarabot.Language;
 
 public class Search implements java.io.Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     public static Search fromQuery(String query, Language lang) throws IOException
     {
         return AshClient.query("searches/" + query, Search.class, lang);

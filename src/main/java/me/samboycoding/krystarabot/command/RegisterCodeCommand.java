@@ -8,14 +8,14 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * Represents the ?coderegister command
+ * Represents the ?registercode command
  *
  * @author Sam
  */
-public class ReigsterCodeCommand extends KrystaraCommand
+public class RegisterCodeCommand extends KrystaraCommand
 {
 
-    public ReigsterCodeCommand()
+    public RegisterCodeCommand()
     {
         commandName = "registercode";
     }

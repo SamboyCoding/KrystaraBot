@@ -1,9 +1,6 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
-import me.samboycoding.krystarabot.GameDataLoaderThread;
-import static me.samboycoding.krystarabot.command.CommandType.BOTDEV;
-import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.Utilities;

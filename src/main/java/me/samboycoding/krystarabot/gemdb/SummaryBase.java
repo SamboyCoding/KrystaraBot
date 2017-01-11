@@ -2,7 +2,6 @@ package me.samboycoding.krystarabot.gemdb;
 
 public class SummaryBase implements Nameable
 {
-
     private int id;
     private String name;
 

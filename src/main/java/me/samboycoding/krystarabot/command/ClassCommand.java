@@ -1,24 +1,21 @@
 package me.samboycoding.krystarabot.command;
 
-import java.io.File;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import javax.imageio.ImageIO;
-import me.samboycoding.krystarabot.GameData;
-import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import me.samboycoding.krystarabot.main;
-import me.samboycoding.krystarabot.utilities.ImageUtils;
-import me.samboycoding.krystarabot.utilities.Utilities;
-import org.json.JSONObject;
+import java.util.Arrays;
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
+import me.samboycoding.krystarabot.gemdb.AshClient;
+import me.samboycoding.krystarabot.gemdb.GemColor;
+import me.samboycoding.krystarabot.gemdb.HeroClass;
+import me.samboycoding.krystarabot.gemdb.Search;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
-/**
- * Represents the ?class command.
- *
- * @author Sam
- */
-public class ClassCommand extends KrystaraCommand
+public class ClassCommand extends QuestionCommand
 {
 
     public ClassCommand()
@@ -29,71 +26,81 @@ public class ClassCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
-        {
-            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
-            return;
-        }
-
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need to specify a name to search for!");
             return;
         }
 
-        String className = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
-        ArrayList<String> results = main.data.searchForClass(className);
-
-        if (results.isEmpty())
+        String heroClassName = String.join(" ", arguments);
+        Search search = Search.fromQuery("classes?term=" + URLEncoder.encode(heroClassName, "UTF-8"));
+        HeroClass.Summary heroClassSummary = AshClient.getSingleResult(chnl, search.getHeroClasses(), "class", heroClassName);
+        if (heroClassSummary == null)
         {
-            chnl.sendMessage("No hero class `" + className + "` found, " + sdr.mention());
-            return;
-        }
-        if (results.size() > 5)
-        {
-            chnl.sendMessage("Search term is ambiguous (" + results.size() + " results). Please refine your search.");
-            return;
-        }
-        if (results.size() > 1)
-        {
-            Utilities.sendDisambiguationMessage(chnl, "Search term \"" + className + "\" is ambiguous.", results);
             return;
         }
 
-        JSONObject classInfo = main.data.getClassInfo(results.get(0));
-
-        className = classInfo.getString("Name");
-        String classKingdom = classInfo.getString("Kingdom");
-        String classTrait1 = classInfo.getJSONArray("ParsedTraits").getJSONObject(0).getString("Name");
-        String classTrait2 = classInfo.getJSONArray("ParsedTraits").getJSONObject(1).getString("Name");
-        String classTrait3 = classInfo.getJSONArray("ParsedTraits").getJSONObject(2).getString("Name");
-        String classAugment1 = classInfo.getJSONArray("Augment").getString(0);
-        String classAugment2 = classInfo.getJSONArray("Augment").getString(1);
-        String classAugment3 = classInfo.getJSONArray("Augment").getString(2);
-
-        File classIcon = new File("images/classes/" + className.toLowerCase() + ".png");
-        if (classIcon.exists())
+        HeroClass heroClass = heroClassSummary.getDetails();
+        String spellDesc = heroClass.getWeapon().getSpellDescription();
+        String spellMagicScalingText = heroClass.getWeapon().getSpellMagicScalingText();
+        if (spellMagicScalingText != null)
         {
-            File classIconShrunk = new File("images/classes/" + className.toLowerCase() + "_scaled.png");
-            if (!classIconShrunk.exists())
+            if (!spellDesc.contains("{2}"))
             {
-                ImageUtils.writeImageToFile(ImageUtils.scaleImage(0.5f, 0.5f, ImageIO.read(classIcon)), "png", classIconShrunk);
+                spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
+            } else
+            {
+                spellDesc = spellDesc.replace("{1}", "(half)");
+                spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
             }
-            chnl.sendFile(classIconShrunk);
         }
-        chnl.sendMessage("**" + className + "** (" + classKingdom + ")\nTraits: " + classTrait1 + ", " + classTrait2 + ", " + classTrait3 + "\nAugments: " + classAugment1 + ", " + classAugment2 + ", " + classAugment3);
+        String spellBoostRatioText = heroClass.getWeapon().getSpellBoostRatioText();
+        if (spellBoostRatioText != null)
+        {
+            spellDesc += spellBoostRatioText;
+        }
+
+        //Emojis
+        IGuild g = chnl.getGuild();
+        String emojiArmor = g.getEmojiByName("gow_armor").toString();
+        String emojiLife = g.getEmojiByName("gow_life").toString();
+        String emojiAttack = g.getEmojiByName("gow_attack").toString();
+        String emojiMagic = g.getEmojiByName("gow_magic").toString();
+
+        GemColor[] gemColors = GemColor.fromInteger(heroClass.getWeapon().getColors());
+        String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
+
+        String[] traitNames = heroClass.getTraits().stream().map(t -> t.getName()).toArray(String[]::new);
+        String[] perkNames = heroClass.getPerks().stream().map(p -> p.getName() + " (" + p.getPerkType() + ")").toArray(String[]::new);
+
+        String info = "";
+        info += "_" + heroClass.getKingdomName() + "_ " + heroClass.getType() + "\n";
+        info += "(" + String.join(", ", traitNames) + ")\n";
+        info += "One of: " + String.join(", ", perkNames) + "\n\n";
+        info += "**Class Weapon**";
+        info += "\n" + heroClass.getWeapon().getName() + " (" + heroClass.getWeapon().getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc;
+        info += "\n";
+
+        EmbedObject o = new EmbedBuilder()
+                .withDesc(info)
+                .withTitle(heroClass.getName())
+                .withUrl(heroClass.getPageUrl())
+                .withThumbnail(heroClass.getImageUrl())
+                .build();
+
+        chnl.sendMessage("", o, false);
     }
 
     @Override
     public String getHelpText()
     {
-        return "Shows information for the specified hero class.";
+        return "Shows information for the specified class.";
     }
 
     @Override
     public Boolean requiresAdmin()
     {
-        return false;
+        return true;
     }
 
     @Override
@@ -111,6 +118,6 @@ public class ClassCommand extends KrystaraCommand
     @Override
     public CommandType getCommandType()
     {
-        return GOW;
+        return MOD;
     }
 }

@@ -1,10 +1,12 @@
 package me.samboycoding.krystarabot.command;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import me.samboycoding.krystarabot.GameData;
+import java.util.List;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.gemdb.SummaryBase;
+import me.samboycoding.krystarabot.gemdb.Search;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -21,67 +23,80 @@ public class SearchCommand extends KrystaraCommand
         commandName = "search";
     }
 
+    @SafeVarargs
+    final String getSearchListsAsString(List<? extends SummaryBase>... lists)
+    {
+        ArrayList<SummaryBase> allResults = new ArrayList<>();
+        for (List<? extends SummaryBase> list : lists)
+        {
+            allResults.addAll(list);
+        }
+        String[] allNames = allResults.stream().map(t -> t.getName()).toArray(String[]::new);
+        return "(" + String.join(", ", allNames) + ")";
+    }
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
-        {
-            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
-            return;
-        }
         if (arguments.size() < 1)
         {
             chnl.sendMessage("You need to specify a search term!");
             return;
         }
-        String searchTerm = arguments.toString().replace("[", "").replace("]", "").replace(",", "");
 
-        if (searchTerm.length() < 4)
+        try
         {
-            chnl.sendMessage("Search term must be at least 4 characters long.");
-            return;
-        }
-        ArrayList<String> troopResults = new ArrayList<>();
-        ArrayList<String> traitResults = new ArrayList<>();
-        ArrayList<String> spellResults = new ArrayList<>();
-        ArrayList<String> kingdomResults = new ArrayList<>();
-        ArrayList<String> classResults = new ArrayList<>();
+            String searchTerm = String.join(" ", arguments);
 
-        troopResults.addAll(main.data.searchForTroop(searchTerm));
-        traitResults.addAll(main.data.searchForTrait(searchTerm));
-        spellResults.addAll(main.data.searchForSpell(searchTerm));
-        kingdomResults.addAll(main.data.searchForKingdom(searchTerm));
-        classResults.addAll(main.data.searchForClass(searchTerm));
+            if (searchTerm.length() < 4)
+            {
+                chnl.sendMessage("Search term must be at least 4 characters long.");
+                return;
+            }
 
-        String troopRes = troopResults.isEmpty() ? "None" : troopResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-        String traitRes = traitResults.isEmpty() ? "None" : traitResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-        String spellRes = spellResults.isEmpty() ? "None" : spellResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-        String kingdomRes = kingdomResults.isEmpty() ? "None" : kingdomResults.toString().replace("[", "").replace("]", "").replace("\"", "");
-        String classRes = classResults.isEmpty() ? "None" : classResults.toString().replace("[", "").replace("]", "").replace("\"", "");
+            chnl.setTypingStatus(true);
 
-        String searchOutput = "Search results for `" + searchTerm + "`:\n\n";
-        if (!troopRes.equals("None"))
-        {
-            searchOutput += "**Troops**:\n" + troopRes + "\n\n";
-        }
-        if (!traitRes.equals("None"))
-        {
-            searchOutput += "**Traits**:\n" + traitRes + "\n\n";
-        }
-        if (!spellRes.equals("None"))
-        {
-            searchOutput += "**Spells**:\n" + spellRes + "\n\n";
-        }
-        if (!kingdomRes.equals("None"))
-        {
-            searchOutput += "**Kingdoms**:\n" + kingdomRes + "\n\n";
-        }
-        if (!classRes.equals("None"))
-        {
-            searchOutput += "**Hero Classes**:\n" + classRes + "\n\n";
-        }
+            String searchOutput = "Search results for `" + searchTerm + "`:\n\n";
 
-        chnl.sendMessage(searchOutput);
+            Search result = Search.fromQuery("all?term=" + URLEncoder.encode(searchTerm, "UTF-8"));
+
+            String[] troopNames = result.getTroops().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
+            String[] traitNames = result.getTraits().stream().map(t -> "    - " + t.getName() + " " + getSearchListsAsString(t.getTroops(), t.getHeroClasses())).toArray(String[]::new);
+            String[] spellNames = result.getSpells().stream().map(t -> "    - " + t.getName() + " " + getSearchListsAsString(t.getTroops(), t.getWeapons())).toArray(String[]::new);
+            String[] kingdomNames = result.getKingdoms().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
+            String[] heroClassNames = result.getHeroClasses().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
+            String[] weaponNames = result.getWeapons().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
+            if (troopNames.length > 0)
+            {
+                searchOutput += "**Troops**:\n" + String.join("\n", troopNames) + "\n\n";
+            }
+            if (weaponNames.length > 0)
+            {
+                searchOutput += "**Weapons**:\n" + String.join("\n", weaponNames) + "\n\n";
+            }
+            if (heroClassNames.length > 0)
+            {
+                searchOutput += "**Hero Classes**:\n" + String.join("\n", heroClassNames) + "\n\n";
+            }
+            if (kingdomNames.length > 0)
+            {
+                searchOutput += "**Kingdoms**:\n" + String.join("\n", kingdomNames) + "\n\n";
+            }
+            if (spellNames.length > 0)
+            {
+                searchOutput += "**Spells**:\n" + String.join("\n", spellNames) + "\n\n";
+            }
+            if (traitNames.length > 0)
+            {
+                searchOutput += "**Traits**:\n" + String.join("\n", traitNames) + "\n\n";
+            }
+            chnl.sendMessage(searchOutput);
+            chnl.setTypingStatus(false);
+        } catch (IOException e)
+        {
+            chnl.sendMessage("Query failed.");
+            throw e;
+        }
     }
 
     @Override

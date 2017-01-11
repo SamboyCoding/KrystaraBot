@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import me.samboycoding.krystarabot.Language;
 
 public class Kingdom implements Nameable, java.io.Serializable
 {
@@ -12,17 +13,17 @@ public class Kingdom implements Nameable, java.io.Serializable
     {
     }
 
-    public static Kingdom fromId(int id) throws IOException
+    public static Kingdom fromId(int id, Language lang) throws IOException
     {
-        return AshClient.query("kingdoms/" + id + "/details", Kingdom.class);
+        return AshClient.query("kingdoms/" + id + "/details", Kingdom.class, lang);
     }
 
     public static class Summary extends SummaryBase
     {
 
-        public Kingdom getDetails() throws IOException
+        public Kingdom getDetails(Language lang) throws IOException
         {
-            return Kingdom.fromId(getId());
+            return Kingdom.fromId(getId(), lang);
         }
     }
 

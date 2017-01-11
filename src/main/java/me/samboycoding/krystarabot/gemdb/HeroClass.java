@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import me.samboycoding.krystarabot.Language;
 
 public class HeroClass implements Nameable, java.io.Serializable
 {
@@ -13,17 +14,17 @@ public class HeroClass implements Nameable, java.io.Serializable
     {
     }
 
-    public static HeroClass fromId(int id) throws IOException
+    public static HeroClass fromId(int id, Language lang) throws IOException
     {
-        return AshClient.query("classes/" + id + "/details", HeroClass.class);
+        return AshClient.query("classes/" + id + "/details", HeroClass.class, lang);
     }
 
     public static class Summary extends SummaryBase
     {
 
-        public HeroClass getDetails() throws IOException
+        public HeroClass getDetails(Language lang) throws IOException
         {
-            return HeroClass.fromId(getId());
+            return HeroClass.fromId(getId(), lang);
         }
     }
 

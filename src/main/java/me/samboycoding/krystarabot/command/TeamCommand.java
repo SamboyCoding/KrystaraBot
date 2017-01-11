@@ -1,17 +1,25 @@
 package me.samboycoding.krystarabot.command;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
-import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.gemdb.AshClient;
+import me.samboycoding.krystarabot.gemdb.GemColor;
+import me.samboycoding.krystarabot.gemdb.SummaryBase;
+import me.samboycoding.krystarabot.gemdb.Kingdom;
+import me.samboycoding.krystarabot.gemdb.Search;
+import me.samboycoding.krystarabot.gemdb.TeamMember;
+import me.samboycoding.krystarabot.gemdb.Troop;
+import me.samboycoding.krystarabot.gemdb.Weapon;
 import me.samboycoding.krystarabot.utilities.IDReference;
-import me.samboycoding.krystarabot.utilities.Utilities;
-import org.json.JSONObject;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 /**
  * Represent the ?team command
@@ -29,281 +37,137 @@ public class TeamCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!GameData.dataLoaded)
-        {
-            chnl.sendMessage("Sorry, the data hasn't been loaded (yet). Please try again shortly, and if it still doesn't work, contact one of the bot devs.");
-            return;
-        }
         ArrayList<String> things = new ArrayList<>();
-        Arrays.asList(argsFull.split(",")).forEach(new ConsumerImpl(things));
+        Arrays.asList(argsFull.split(",")).forEach(new ConsumerImpl<>(things));
 
         if (things.size() < 4)
         {
-            chnl.sendMessage("Usage: `?team [troop1],[troop2],[troop3],[troop4],[banner (optional)]`");
+            chnl.sendMessage("Usage: `?team [troop1],[troop2],[troop3],[troop4],[banner (optional)],[name (optional)]`");
             return;
         }
 
-        ArrayList<String> teamEntries = new ArrayList<>();
+        chnl.setTypingStatus(true);
 
-        Boolean manaRed = false,
-                manaBlue = false,
-                manaBrown = false,
-                manaYellow = false,
-                manaGreen = false,
-                manaPurple = false;
+        ArrayList<TeamMember> teamMembers = new ArrayList<>();
+        Kingdom kingdom = null;
+        Boolean hasWeapon = false;
+        String teamName = null;
 
         for (int i = 0; i < 4; i++)
         {
-            String thing = things.get(i);
+            String thing = things.get(i).trim();
 
-            JSONObject exact = main.data.getTroopByName(thing);
-            if (exact == null)
+            // Search for the thing
+            Search search = Search.fromQuery("all?term=" + URLEncoder.encode(thing, "UTF-8"));
+            ArrayList<SummaryBase> searchResults = new ArrayList<>();
+            searchResults.addAll(search.getTroops());
+            searchResults.addAll(search.getWeapons());
+            SummaryBase teamMemberSummary = AshClient.getSingleResult(chnl, searchResults, "troop or weapon", thing);
+            if (teamMemberSummary == null)
             {
-                exact = main.data.getWeaponByName(thing); //Try to get exact weapon, if no exact troop found.
-            }
-            if (exact != null)
-            {
-                if (exact.getJSONObject("ManaColors").getBoolean("ColorBlue"))
-                {
-                    manaBlue = true;
-                }
-                if (exact.getJSONObject("ManaColors").getBoolean("ColorRed"))
-                {
-                    manaRed = true;
-                }
-                if (exact.getJSONObject("ManaColors").getBoolean("ColorBrown"))
-                {
-                    manaBrown = true;
-                }
-                if (exact.getJSONObject("ManaColors").getBoolean("ColorYellow"))
-                {
-                    manaYellow = true;
-                }
-                if (exact.getJSONObject("ManaColors").getBoolean("ColorGreen"))
-                {
-                    manaGreen = true;
-                }
-                if (exact.getJSONObject("ManaColors").getBoolean("ColorPurple"))
-                {
-                    manaPurple = true;
-                }
-                teamEntries.add(exact.getString("Name"));
-                continue;
-            }
-            ArrayList<String> results = main.data.searchForTroop(thing);
-            results.addAll(main.data.searchForWeapon(thing)); //Search for weapons too
-
-            if (results.size() > 5)
-            {
-                chnl.sendMessage("Search term \"" + thing + "\" is ambiguous (" + results.size() + " results). Please refine your search.");
-                return;
-            }
-            if (results.size() > 1)
-            {
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + thing + "\" is ambiguous.", results);
-                return;
-            }
-            if (results.isEmpty())
-            {
-                chnl.sendMessage("Unknown troop/weapon \"" + thing + "\". Please correct it.");
                 return;
             }
 
-            for (String thingN : results)
+            Boolean isWeapon = (teamMemberSummary instanceof Weapon.Summary);
+            if (hasWeapon && isWeapon)
             {
-                JSONObject thng = main.data.getTroopByName(thingN);
-                if (thng.getJSONObject("ManaColors").getBoolean("ColorBlue"))
-                {
-                    manaBlue = true;
-                }
-                if (thng.getJSONObject("ManaColors").getBoolean("ColorRed"))
-                {
-                    manaRed = true;
-                }
-                if (thng.getJSONObject("ManaColors").getBoolean("ColorBrown"))
-                {
-                    manaBrown = true;
-                }
-                if (thng.getJSONObject("ManaColors").getBoolean("ColorYellow"))
-                {
-                    manaYellow = true;
-                }
-                if (thng.getJSONObject("ManaColors").getBoolean("ColorGreen"))
-                {
-                    manaGreen = true;
-                }
-                if (thng.getJSONObject("ManaColors").getBoolean("ColorPurple"))
-                {
-                    manaPurple = true;
-                }
-            }
-            teamEntries.add(results.get(0));
-        }
-
-        String manaColors = "This team uses the following colors: " + (manaBlue ? chnl.getGuild().getEmojiByName("mana_blue").toString() + " " : "");
-        manaColors += (manaGreen ? chnl.getGuild().getEmojiByName("mana_green").toString() + " " : "");
-        manaColors += (manaRed ? chnl.getGuild().getEmojiByName("mana_red").toString() + " " : "");
-        manaColors += (manaYellow ? chnl.getGuild().getEmojiByName("mana_yellow").toString() + " " : "");
-        manaColors += (manaPurple ? chnl.getGuild().getEmojiByName("mana_purple").toString() + " " : "");
-        manaColors += (manaBrown ? chnl.getGuild().getEmojiByName("mana_brown").toString() : "");
-        String teamString;
-        String url;
-        String bannerString = null;
-        if (things.size() == 5)
-        {
-            String bannerName2 = things.get(4);
-            ArrayList<String> banners = main.data.searchForBanner(things.get(4));
-            if (banners.size() > 5)
-            {
-                chnl.sendMessage("Search term \"" + bannerName2 + "\" is ambiguous (" + banners.size() + " results). Please refine your search.");
+                chnl.sendMessage("You cannot have two weapons on one team!");
                 return;
             }
-            if (banners.size() > 1)
+            hasWeapon = hasWeapon || isWeapon;
+            TeamMember teamMember;
+            if (isWeapon)
             {
-                Utilities.sendDisambiguationMessage(chnl, "Search term \"" + bannerName2 + "\" is ambiguous.", banners);
-                return;
-            }
-            if (banners.isEmpty())
-            {
-                chnl.sendMessage("Unknown banner/kingdom name \"" + bannerName2 + "\". Please correct it.");
-                return;
-            }
-
-            String banner = banners.get(0);
-
-            Integer troopId1 = null;
-            Integer troopId2 = null;
-            Integer troopId3 = null;
-            Integer troopId4 = null;
-
-            for (String t : teamEntries)
-            {
-                JSONObject info;
-                if (main.data.getTroopByName(t) == null)
-                {
-                    info = main.data.getWeaponByName(t);
-                } else
-                {
-                    info = main.data.getTroopByName(t);
-                }
-
-                if (troopId1 == null)
-                {
-                    troopId1 = info.getInt("Id");
-                } else
-                {
-                    if (troopId2 == null)
-                    {
-                        troopId2 = info.getInt("Id");
-                    } else
-                    {
-                        if (troopId3 == null)
-                        {
-                            troopId3 = info.getInt("Id");
-                        } else
-                        {
-                            if (troopId4 == null)
-                            {
-                                troopId4 = info.getInt("Id");
-                            }
-                        }
-                    }
-                }
-            }
-
-            int bannerId = main.data.getKingdomFromBanner(banner).getInt("Id");
-            String bannerDsc = main.data.getKingdomFromBanner(banner).getString("BannerManaDescription");
-            String kingdomNme = main.data.getKingdomFromBanner(banner).getString("Name");
-
-            url = "http://ashtender.com/gems/teams/" + troopId1 + "," + troopId2 + "," + troopId3 + "," + troopId4 + "?banner=" + bannerId;
-            teamString = sdr.mention() + " created team: \n\n";
-            bannerString = "**" + banner + "** (" + kingdomNme + ") - " + bannerDsc + "\n\n";
-        } else
-        {
-            Integer troopId1 = null;
-            Integer troopId2 = null;
-            Integer troopId3 = null;
-            Integer troopId4 = null;
-
-            for (String t : teamEntries)
-            {
-                JSONObject info;
-                if (main.data.getTroopByName(t) == null)
-                {
-                    info = main.data.getWeaponByName(t);
-                } else
-                {
-                    info = main.data.getTroopByName(t);
-                }
-
-                if (troopId1 == null)
-                {
-                    troopId1 = info.getInt("Id");
-                } else
-                {
-                    if (troopId2 == null)
-                    {
-                        troopId2 = info.getInt("Id");
-                    } else
-                    {
-                        if (troopId3 == null)
-                        {
-                            troopId3 = info.getInt("Id");
-                        } else
-                        {
-                            if (troopId4 == null)
-                            {
-                                troopId4 = info.getInt("Id");
-                            }
-                        }
-                    }
-                }
-            }
-
-            url = "http://ashtender.com/gems/teams/" + troopId1 + "," + troopId2 + "," + troopId3 + "," + troopId4;
-            teamString = sdr.mention() + " created team: \n\n";
-        }
-
-        teamString += "**Troops:**";
-
-        boolean weaponProcessed = false;
-        for (String t : teamEntries)
-        {
-            JSONObject info;
-            if (main.data.getTroopByName(t) == null)
-            {
-                info = main.data.getWeaponByName(t);
+                teamMember = ((Weapon.Summary) teamMemberSummary).getDetails();
             } else
             {
-                info = main.data.getTroopByName(t);
+                teamMember = ((Troop.Summary) teamMemberSummary).getDetails();
             }
+            teamMembers.add(teamMember);
+        }
 
-            String toAdd = "";
+        if (things.size() > 4)
+        {
+            String kingdomName = things.get(4).trim();
 
-            if (info.getBoolean("IsWeapon"))
+            // Search for a kingdom by name or banner name
+            Search search = Search.fromQuery("kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"));
+            Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName);
+            if (kingdomSummary == null)
             {
-                if (weaponProcessed)
+                chnl.sendMessage("Using for team name instead.");
+                teamName = kingdomName;
+            } else
+            {
+                kingdom = kingdomSummary.getDetails();
+                if (!kingdom.isFullKingdom())
                 {
-                    //Two weapons?
-                    chnl.sendMessage("You cannot have two weapons on one team!");
+                    chnl.sendMessage("The kingdom \"" + kingdom.getName() + "\" has no banner.");
                     return;
                 }
-
-                toAdd = "Hero (" + info.getString("Name") + ")";
-                weaponProcessed = true;
             }
-
-            if (toAdd.equals(""))
-            {
-                toAdd = info.getString("Name");
-            }
-
-            teamString += "\n\t-" + toAdd;
         }
-        teamString += "\n\n" + (bannerString != null ? bannerString : "") + manaColors + "\n\n" + url;
 
-        chnl.sendMessage("Team posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
-        chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage(teamString);
+        if (teamName == null)
+        {
+            if (things.size() > 5)
+            {
+                teamName = things.get(5).trim();
+            } else
+            {
+                String[] teamTroopNames = teamMembers.stream().map(m -> m.getName()).toArray(String[]::new);
+                teamName = String.join(", ", teamTroopNames);
+            }
+        }
+
+        int colors = 0;
+        for (TeamMember teamMember : teamMembers)
+        {
+            colors |= teamMember.getColors();
+        }
+
+        IGuild g = chnl.getGuild();
+        GemColor[] gemColors = GemColor.fromInteger(colors);
+        String[] gemColorEmojis = Arrays.stream(gemColors).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
+        String[] troopIds = teamMembers.stream().map(m -> Integer.toString(m.getId())).toArray(String[]::new);
+        String[] troopNames = teamMembers.stream().map(m ->
+        {
+            GemColor[] gemColorsThis = GemColor.fromInteger(m.getColors());
+            String[] gemColorEmojisThis = Arrays.stream(gemColorsThis).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
+            return "    - " + String.join(" ", gemColorEmojisThis) + " " + m.getName();
+        }).toArray(String[]::new);
+        String manaColors = "This team uses the following colors: " + String.join(" ", gemColorEmojis);
+
+        String bannerString = "";
+        String url = "http://ashtender.com/gems/teams/" + String.join(",", troopIds);
+
+        if (kingdom != null)
+        {
+            bannerString = "**" + kingdom.getBannerName() + "** (" + kingdom.getName() + ") - " + kingdom.getBannerDescription() + "\n\n";
+            url += "?banner=" + kingdom.getId();
+        }
+
+        String teamString = sdr.mention() + " created team: \n\n";
+        teamString += "**Troops:**\n";
+        teamString += String.join("\n", troopNames);
+        teamString += "\n\n" + bannerString + manaColors + "\n\n" + url;
+
+        EmbedBuilder b = new EmbedBuilder()
+                .withDesc(teamString)
+                .withTitle(teamName)
+                .withUrl(url);
+
+        if (kingdom != null)
+        {
+            b = b.withThumbnail(kingdom.getBannerImageUrl());
+        }
+
+        EmbedObject o = b.build();
+        chnl.sendMessage("", o, false);
+        chnl.sendMessage("Also posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
+        chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage("", o, false);
+
+        chnl.setTypingStatus(false);
     }
 
     @Override
@@ -321,7 +185,7 @@ public class TeamCommand extends KrystaraCommand
     @Override
     public String getUsage()
     {
-        return "?team [troop1],[troop2],[troop3],[troop4],[banner (optional)]";
+        return "?team [troop1],[troop2],[troop3],[troop4],[banner (optional)],[name (optional)]";
     }
 
     @Override
@@ -336,20 +200,25 @@ public class TeamCommand extends KrystaraCommand
         return GOW;
     }
 
-    private static class ConsumerImpl implements Consumer<String>
+    /**
+     * Enhanced consumer
+     *
+     * @author Sam
+     */
+    private static class ConsumerImpl<T> implements Consumer<T>
     {
 
-        private final ArrayList<String> things;
+        private final ArrayList<T> things;
 
-        public ConsumerImpl(ArrayList<String> things)
+        public ConsumerImpl(ArrayList<T> things)
         {
             this.things = things;
         }
 
         @Override
-        public void accept(String t)
+        public void accept(T t)
         {
-            things.add(t.trim());
+            things.add(t);
         }
     }
 

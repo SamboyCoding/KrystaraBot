@@ -15,7 +15,7 @@ public class IDReference
         LYYA
     }
 
-    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.LYYA;
+    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.DEV;
 
     public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL, CHATFRENCH, CHATGERMAN, CHATSPANISH;
     public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE, FRENCHROLE, GERMANROLE, SPANISHROLE;
@@ -88,7 +88,7 @@ public class IDReference
                 STREAMERROLE = "257921850913456128";
                 PCMOBILEROLE = "257921732491476993";
                 CONSOLEROLE = "257921797888933890";
-                QUIZMASTERROLE = "258992463216246785"; //TODO: Lyya, fill this in.
+                QUIZMASTERROLE = "258992463216246785";
 
                 SERVERID = "257915045487443981";
                 break;

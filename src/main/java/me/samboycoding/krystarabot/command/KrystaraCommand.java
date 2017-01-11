@@ -1,6 +1,7 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
+import me.samboycoding.krystarabot.Language;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -63,7 +64,22 @@ public abstract class KrystaraCommand implements Comparable<KrystaraCommand>
      * @return The raw command text
      */
     public abstract String getCommand();
-
+    
+    /**
+     * Gets whether or not the command can take localized suffixes
+     *
+     * @return True/false
+     */
+    public Boolean isLocalized()
+    {
+        return false;
+    }
+    
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull, Language lang) throws Exception
+    {
+        throw new UnsupportedOperationException("This command does not support localization!");
+    }
+    
     @Override
     public int compareTo(KrystaraCommand o)
     {

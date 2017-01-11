@@ -1,6 +1,7 @@
 package me.samboycoding.krystarabot.gemdb;
 
 import java.io.IOException;
+import me.samboycoding.krystarabot.Language;
 
 public class Weapon extends TeamMember implements java.io.Serializable
 {
@@ -9,17 +10,17 @@ public class Weapon extends TeamMember implements java.io.Serializable
     {
     }
 
-    public static Weapon fromId(int id) throws IOException
+    public static Weapon fromId(int id, Language lang) throws IOException
     {
-        return AshClient.query("weapons/" + id + "/details", Weapon.class);
+        return AshClient.query("weapons/" + id + "/details", Weapon.class, lang);
     }
 
     public static class Summary extends SummaryBase
     {
 
-        public Weapon getDetails() throws IOException
+        public Weapon getDetails(Language lang) throws IOException
         {
-            return Weapon.fromId(getId());
+            return Weapon.fromId(getId(), lang);
         }
     }
 

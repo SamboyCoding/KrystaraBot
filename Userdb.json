@@ -1,11 +1,20 @@
 {
-    "257915045487443981": {"234202516676542464": {
-        "QuizScore": 0,
-        "name": "Naga",
-        "messages": 141,
-        "ReceivesCodes": false,
-        "commands": 141
-    }},
+    "257915045487443981": {
+        "102450956045668352": {
+            "QuizScore": 0,
+            "name": "SamboyGaming",
+            "messages": 51,
+            "ReceivesCodes": false,
+            "commands": 0
+        },
+        "234202516676542464": {
+            "QuizScore": 0,
+            "name": "Naga",
+            "messages": 218,
+            "ReceivesCodes": false,
+            "commands": 193
+        }
+    },
     "247393304151326721": {
         "102450956045668352": {
             "QuizScore": 2501,

@@ -1,7 +1,6 @@
 package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
-import me.samboycoding.krystarabot.GameData;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.Utilities;
@@ -27,12 +26,6 @@ public class QuizCommand extends QuestionCommand
     {
         synchronized (this)
         {
-            if (!GameData.dataLoaded)
-            {
-                chnl.sendMessage("Unfortunately, the data is loaded yet. Please try again later, and if the problem persists, ask a bot dev to do `?reload-data`. Thanks!");
-                return;
-            }
-
             Arguments args;
 
             if (!Utilities.canUseAdminCommand(sdr, chnl.getGuild()))

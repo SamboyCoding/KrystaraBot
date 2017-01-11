@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import me.samboycoding.krystarabot.Language;
 
 public class Traitstone implements Nameable, java.io.Serializable
 {
@@ -12,9 +13,9 @@ public class Traitstone implements Nameable, java.io.Serializable
     {
     }
 
-    public static Traitstone fromId(int id) throws IOException
+    public static Traitstone fromId(int id, Language lang) throws IOException
     {
-        return AshClient.query("traitstones/" + id + "/details", Traitstone.class);
+        return AshClient.query("traitstones/" + id + "/details", Traitstone.class, lang);
     }
 
     public static class TroopSummaryWithCount extends Troop.Summary
@@ -54,6 +55,7 @@ public class Traitstone implements Nameable, java.io.Serializable
         return this.id;
     }
 
+    @Override
     public String getName()
     {
         return this.name;

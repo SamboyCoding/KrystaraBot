@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.quiz.QuizQuestion;
-import me.samboycoding.krystarabot.quiz.JsonQuizQuestionFactory;
 import me.samboycoding.krystarabot.quiz.QuizQuestionType;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;

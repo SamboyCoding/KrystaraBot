@@ -5,25 +5,24 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import me.samboycoding.krystarabot.Language;
 
 public class Troop extends TeamMember implements java.io.Serializable
 {
-
     private Troop()
     {
     }
 
-    public static Troop fromId(int id) throws IOException
+    public static Troop fromId(int id, Language lang) throws IOException
     {
-        return AshClient.query("troops/" + id + "/details", Troop.class);
+        return AshClient.query("troops/" + id + "/details", Troop.class, lang);
     }
 
     public static class Summary extends SummaryBase
     {
-
-        public Troop getDetails() throws IOException
+        public Troop getDetails(Language lang) throws IOException
         {
-            return Troop.fromId(getId());
+            return Troop.fromId(getId(), lang);
         }
     }
 
