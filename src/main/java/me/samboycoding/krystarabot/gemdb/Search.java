@@ -8,6 +8,8 @@ import java.util.List;
 public class Search implements java.io.Serializable
 {
 
+    private static final long serialVersionUID = 1L;
+
     public static Search fromQuery(String query) throws IOException
     {
         return AshClient.query("searches/" + query, Search.class);
