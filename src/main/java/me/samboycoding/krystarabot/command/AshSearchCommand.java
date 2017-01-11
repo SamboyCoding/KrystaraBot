@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import me.samboycoding.krystarabot.Language;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.SummaryBase;
@@ -36,7 +37,19 @@ public class AshSearchCommand extends KrystaraCommand
     }
 
     @Override
+    public Boolean isLocalized()
+    {
+        return true;
+    }
+
+    @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        handleCommand(sdr, chnl, msg, arguments, argsFull, Language.ENGLISH);
+    }
+    
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull, Language lang) throws Exception
     {
         if (arguments.size() < 1)
         {
@@ -58,7 +71,7 @@ public class AshSearchCommand extends KrystaraCommand
 
             String searchOutput = "Search results for `" + searchTerm + "`:\n\n";
 
-            Search result = Search.fromQuery("all?term=" + URLEncoder.encode(searchTerm, "UTF-8"));
+            Search result = Search.fromQuery("all?term=" + URLEncoder.encode(searchTerm, "UTF-8"), lang);
 
             String[] troopNames = result.getTroops().stream().map(t -> "    - " + t.getName()).toArray(String[]::new);
             String[] traitNames = result.getTraits().stream().map(t -> "    - " + t.getName() + " " + getSearchListsAsString(t.getTroops(), t.getHeroClasses())).toArray(String[]::new);

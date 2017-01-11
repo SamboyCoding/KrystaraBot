@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import me.samboycoding.krystarabot.Language;
 
 public class Search implements java.io.Serializable
 {
-
-    public static Search fromQuery(String query) throws IOException
+    public static Search fromQuery(String query, Language lang) throws IOException
     {
-        return AshClient.query("searches/" + query, Search.class);
+        return AshClient.query("searches/" + query, Search.class, lang);
     }
 
     private Search()

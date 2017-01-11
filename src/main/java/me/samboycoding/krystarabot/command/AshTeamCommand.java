@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
+import me.samboycoding.krystarabot.Language;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
@@ -35,7 +36,19 @@ public class AshTeamCommand extends KrystaraCommand
     }
 
     @Override
+    public Boolean isLocalized()
+    {
+        return true;
+    }
+
+    @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        handleCommand(sdr, chnl, msg, arguments, argsFull, Language.ENGLISH);
+    }
+    
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull, Language lang) throws Exception
     {
         ArrayList<String> things = new ArrayList<>();
         Arrays.asList(argsFull.split(",")).forEach(new ConsumerImpl<>(things));
@@ -58,7 +71,7 @@ public class AshTeamCommand extends KrystaraCommand
             String thing = things.get(i).trim();
 
             // Search for the thing
-            Search search = Search.fromQuery("all?term=" + URLEncoder.encode(thing, "UTF-8"));
+            Search search = Search.fromQuery("all?term=" + URLEncoder.encode(thing, "UTF-8"), lang);
             ArrayList<SummaryBase> searchResults = new ArrayList<>();
             searchResults.addAll(search.getTroops());
             searchResults.addAll(search.getWeapons());
@@ -78,10 +91,10 @@ public class AshTeamCommand extends KrystaraCommand
             TeamMember teamMember;
             if (isWeapon)
             {
-                teamMember = ((Weapon.Summary) teamMemberSummary).getDetails();
+                teamMember = ((Weapon.Summary) teamMemberSummary).getDetails(lang);
             } else
             {
-                teamMember = ((Troop.Summary) teamMemberSummary).getDetails();
+                teamMember = ((Troop.Summary) teamMemberSummary).getDetails(lang);
             }
             teamMembers.add(teamMember);
         }
@@ -91,7 +104,7 @@ public class AshTeamCommand extends KrystaraCommand
             String kingdomName = things.get(4).trim();
 
             // Search for a kingdom by name or banner name
-            Search search = Search.fromQuery("kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"));
+            Search search = Search.fromQuery("kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"), lang);
             Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName);
             if (kingdomSummary == null)
             {
@@ -99,7 +112,7 @@ public class AshTeamCommand extends KrystaraCommand
                 teamName = kingdomName;
             } else
             {
-                kingdom = kingdomSummary.getDetails();
+                kingdom = kingdomSummary.getDetails(lang);
                 if (!kingdom.isFullKingdom())
                 {
                     chnl.sendMessage("The kingdom \"" + kingdom.getName() + "\" has no banner.");

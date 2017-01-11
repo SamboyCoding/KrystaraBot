@@ -1,6 +1,7 @@
 package me.samboycoding.krystarabot;
 
 import java.awt.Color;
+import java.security.InvalidParameterException;
 import java.text.DateFormatSymbols;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import java.util.ArrayList;
@@ -190,6 +191,8 @@ public class Listener
             String command;
             ArrayList<String> arguments = new ArrayList<>();
             String argumentsFull = "";
+            Language lang = null;
+            
             if (content.contains(" "))
             {
                 //If it contains a space, process all the arguments.
@@ -203,18 +206,17 @@ public class Listener
             }
 
             main.logToBoth("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
-
+            
             TreeMap<String, KrystaraCommand> commands = main.getCommands();
 
-            if (commands.containsKey(command))
+            if (command.contains("."))
             {
-                commands.get(command).handleCommand(sdr, chnl, msg, arguments, argumentsFull);
-            } else
-            {
-                //No command found
-                chnl.sendMessage("Invalid command \"" + command + "\". Do `?help` for a list of commands.");
+                doLocalizedCommand(command, commands, chnl, sdr, msg, arguments, argumentsFull);
             }
-
+            else 
+            {
+                doNormalCommand(commands, command, sdr, chnl, msg, arguments, argumentsFull);
+            }
         } catch (RateLimitException rle)
         {
             try
@@ -247,6 +249,52 @@ public class Listener
         }
     }
     //</editor-fold>
+
+    private void doNormalCommand(TreeMap<String, KrystaraCommand> commands, String command, IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argumentsFull) throws Exception
+    {
+        if (commands.containsKey(command))
+        {
+            commands.get(command).handleCommand(sdr, chnl, msg, arguments, argumentsFull);
+        }
+        else
+        {
+            //No command found
+            chnl.sendMessage("Invalid command \"" + command + "\". Do `?help` for a list of commands.");
+        }
+    }
+
+    private void doLocalizedCommand(String command, TreeMap<String, KrystaraCommand> commands, IChannel chnl, IUser sdr, IMessage msg, ArrayList<String> arguments, String argumentsFull) throws Exception
+    {
+        Language lang;
+        // Localized; try to get a language
+        String[] parts = command.split("\\.");
+        command = parts[0];
+        try
+        {
+            lang = Language.fromShortCode(parts[1]);
+            if (commands.containsKey(command))
+            {
+                KrystaraCommand commandObj = commands.get(command);
+                if (!commandObj.isLocalized())
+                {
+                    chnl.sendMessage("This command does not accept a language suffix.");
+                }
+                else
+                {
+                    commandObj.handleCommand(sdr, chnl, msg, arguments, argumentsFull, lang);
+                }
+            }
+            else
+            {
+                //No command found
+                chnl.sendMessage("Invalid command \"" + command + "\". Do `?help` for a list of commands.");
+            }
+        }
+        catch (InvalidParameterException e2)
+        {
+            chnl.sendMessage(e2.getMessage());
+        }
+    }
 
     @EventSubscriber
     public void onJoin(UserJoinEvent e)
