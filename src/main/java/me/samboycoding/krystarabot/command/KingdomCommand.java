@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import me.samboycoding.krystarabot.Language;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.Bonus;
@@ -30,7 +31,19 @@ public class KingdomCommand extends KrystaraCommand
     }
 
     @Override
+    public Boolean isLocalized()
+    {
+        return true;
+    }
+    
+    @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        handleCommand(sdr, chnl, msg, arguments, argsFull, Language.ENGLISH);
+    }
+
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull, Language lang) throws Exception
     {
         if (arguments.size() < 1)
         {
@@ -39,14 +52,14 @@ public class KingdomCommand extends KrystaraCommand
         }
 
         String kingdomName = String.join(" ", arguments);
-        Search search = Search.fromQuery("kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"));
+        Search search = Search.fromQuery("kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"), lang);
         Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName);
         if (kingdomSummary == null)
         {
             return;
         }
 
-        Kingdom kingdom = kingdomSummary.getDetails();
+        Kingdom kingdom = kingdomSummary.getDetails(lang);
         boolean isFullKingdom = kingdom.isFullKingdom();
 
         //Emojis

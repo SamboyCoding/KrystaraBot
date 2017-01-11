@@ -2,6 +2,7 @@ package me.samboycoding.krystarabot.command;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import me.samboycoding.krystarabot.Language;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.Search;
@@ -26,7 +27,19 @@ public class TraitCommand extends KrystaraCommand
     }
 
     @Override
+    public Boolean isLocalized()
+    {
+        return true;
+    }
+    
+    @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        handleCommand(sdr, chnl, msg, arguments, argsFull, Language.ENGLISH);
+    }
+
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull, Language lang) throws Exception
     {
         if (arguments.size() < 1)
         {
@@ -35,14 +48,14 @@ public class TraitCommand extends KrystaraCommand
         }
 
         String traitName = String.join(" ", arguments);
-        Search search = Search.fromQuery("traits?term=" + URLEncoder.encode(traitName, "UTF-8"));
+        Search search = Search.fromQuery("traits?term=" + URLEncoder.encode(traitName, "UTF-8"), lang);
         Search.TraitSummary traitSummary = AshClient.getSingleResult(chnl, search.getTraits(), "trait", traitName);
         if (traitSummary == null)
         {
             return;
         }
 
-        Trait trait = traitSummary.getDetails();
+        Trait trait = traitSummary.getDetails(lang);
         String info = trait.getDescription() + "\n";
         if (!trait.getTroops().isEmpty())
         {

@@ -3,6 +3,7 @@ package me.samboycoding.krystarabot.command;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import me.samboycoding.krystarabot.Language;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
@@ -30,7 +31,19 @@ public class WeaponCommand extends KrystaraCommand
     }
 
     @Override
+    public Boolean isLocalized()
+    {
+        return true;
+    }
+    
+    @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        handleCommand(sdr, chnl, msg, arguments, argsFull, Language.ENGLISH);
+    }
+
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull, Language lang) throws Exception
     {
         if (arguments.size() < 1)
         {
@@ -39,14 +52,14 @@ public class WeaponCommand extends KrystaraCommand
         }
 
         String weaponName = String.join(" ", arguments);
-        Search search = Search.fromQuery("weapons?term=" + URLEncoder.encode(weaponName, "UTF-8"));
+        Search search = Search.fromQuery("weapons?term=" + URLEncoder.encode(weaponName, "UTF-8"), lang);
         Weapon.Summary weaponSummary = AshClient.getSingleResult(chnl, search.getWeapons(), "weapon", weaponName);
         if (weaponSummary == null)
         {
             return;
         }
 
-        Weapon weapon = weaponSummary.getDetails();
+        Weapon weapon = weaponSummary.getDetails(lang);
         String spellDesc = weapon.getSpellDescription();
         String spellMagicScalingText = weapon.getSpellMagicScalingText();
         if (spellMagicScalingText != null)

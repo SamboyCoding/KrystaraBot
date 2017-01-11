@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import me.samboycoding.krystarabot.Language;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
@@ -39,7 +40,19 @@ public class SpellCommand extends KrystaraCommand
     }
 
     @Override
+    public Boolean isLocalized()
+    {
+        return true;
+    }
+    
+    @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        handleCommand(sdr, chnl, msg, arguments, argsFull, Language.ENGLISH);
+    }
+
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull, Language lang) throws Exception
     {
         if (arguments.size() < 1)
         {
@@ -48,14 +61,14 @@ public class SpellCommand extends KrystaraCommand
         }
 
         String spellName = String.join(" ", arguments);
-        Search search = Search.fromQuery("spells?term=" + URLEncoder.encode(spellName, "UTF-8"));
+        Search search = Search.fromQuery("spells?term=" + URLEncoder.encode(spellName, "UTF-8"), lang);
         Search.SpellSummary spellSummary = AshClient.getSingleResult(chnl, search.getSpells(), "spell", spellName);
         if (spellSummary == null)
         {
             return;
         }
 
-        Spell spell = spellSummary.getDetails();
+        Spell spell = spellSummary.getDetails(lang);
         String spellDesc = spell.getDescription();
         String spellMagicScalingText = spell.getMagicScalingText();
         if (spellMagicScalingText != null)

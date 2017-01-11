@@ -8,6 +8,7 @@ package me.samboycoding.krystarabot.command;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import me.samboycoding.krystarabot.Language;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
@@ -30,7 +31,19 @@ public class TroopCommand extends QuestionCommand
     }
 
     @Override
+    public Boolean isLocalized()
+    {
+        return true;
+    }
+    
+    @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        handleCommand(sdr, chnl, msg, arguments, argsFull, Language.ENGLISH);
+    }
+
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull, Language lang) throws Exception
     {
         if (arguments.size() < 1)
         {
@@ -39,14 +52,14 @@ public class TroopCommand extends QuestionCommand
         }
 
         String troopName = String.join(" ", arguments);
-        Search search = Search.fromQuery("troops?term=" + URLEncoder.encode(troopName, "UTF-8"));
+        Search search = Search.fromQuery("troops?term=" + URLEncoder.encode(troopName, "UTF-8"), lang);
         Troop.Summary troopSummary = AshClient.getSingleResult(chnl, search.getTroops(), "troop", troopName);
         if (troopSummary == null)
         {
             return;
         }
 
-        Troop troop = troopSummary.getDetails();
+        Troop troop = troopSummary.getDetails(lang);
         String spellDesc = troop.getSpellDescription();
         String spellMagicScalingText = troop.getSpellMagicScalingText();
         if (spellMagicScalingText != null)
