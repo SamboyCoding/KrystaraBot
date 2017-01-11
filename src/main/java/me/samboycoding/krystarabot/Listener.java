@@ -281,6 +281,10 @@ public class Listener
             {
                 lang = Language.GERMAN;
             }
+            else if (chnl.getID().equals(IDReference.CHATITALIAN))
+            {
+                lang = Language.ITALIAN;
+            }
             else if (chnl.getID().equals(IDReference.CHATSPANISH))
             {
                 lang = Language.SPANISH;

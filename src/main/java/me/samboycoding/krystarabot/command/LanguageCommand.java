@@ -35,7 +35,7 @@ public class LanguageCommand extends KrystaraCommand
 
         if (arguments.size() < 1)
         {
-            chnl.sendMessage("Please specify a language. [french|german|spanish]");
+            chnl.sendMessage("Please specify a language. [french|german|italian|spanish]");
             return;
         }
         String lang = arguments.get(0).toLowerCase();
@@ -51,13 +51,18 @@ public class LanguageCommand extends KrystaraCommand
                 chnl.sendMessage(sdr.mention() + ", you joined **German**");
                 Utilities.logEvent(LogType.PLATFORMASSIGN, "**" + nameOfSender + "** assigned themselves to **German**");
                 break;
+            case "italian":
+                sdr.addRole(chnl.getGuild().getRoleByID(IDReference.ITALIANROLE));
+                chnl.sendMessage(sdr.mention() + ", you joined **Italian**");
+                Utilities.logEvent(LogType.PLATFORMASSIGN, "**" + nameOfSender + "** assigned themselves to **Italian**");
+                break;
             case "spanish":
                 sdr.addRole(chnl.getGuild().getRoleByID(IDReference.SPANISHROLE));
                 chnl.sendMessage(sdr.mention() + ", you joined **Spanish**");
                 Utilities.logEvent(LogType.PLATFORMASSIGN, "**" + nameOfSender + "** assigned themselves to **Spanish**");
                 break;
             default:
-                chnl.sendMessage("Please enter a valid language. Valid languages are: \"French\", \"German\" or \"Spanish\".");
+                chnl.sendMessage("Please enter a valid language. Valid languages are: \"French\", \"German\", \"Italian\", or \"Spanish\".");
         }
     }
 
@@ -76,7 +81,7 @@ public class LanguageCommand extends KrystaraCommand
     @Override
     public String getUsage()
     {
-        return "?language [french|german|spanish]";
+        return "?language [french|german|italian|spanish]";
     }
 
     @Override

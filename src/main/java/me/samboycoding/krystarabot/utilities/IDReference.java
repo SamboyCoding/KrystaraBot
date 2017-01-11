@@ -15,10 +15,10 @@ public class IDReference
         LYYA
     }
 
-    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.DEV;
+    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.LYYA;
 
-    public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL, CHATFRENCH, CHATGERMAN, CHATSPANISH;
-    public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE, FRENCHROLE, GERMANROLE, SPANISHROLE;
+    public static String LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL, CHATFRENCH, CHATGERMAN, CHATITALIAN, CHATSPANISH;
+    public static String ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE, FRENCHROLE, GERMANROLE, ITALIANROLE, SPANISHROLE;
     public static String SERVERID;
     public static String MYTOKEN; //Set in main method.
     public static String MYID; //Gets set once readyevent done.
@@ -36,6 +36,7 @@ public class IDReference
                 GLOBALCHANNEL = "237788799982239745";
                 CHATFRENCH = "262240512268959745";
                 CHATGERMAN = "262240429435650048";
+                CHATITALIAN = "268811063712153601";
                 CHATSPANISH = "262240467989561354";
 
                 //Roles
@@ -48,6 +49,7 @@ public class IDReference
                 QUIZMASTERROLE = "258958497012645888";
                 FRENCHROLE = "262240971817877535";
                 GERMANROLE = "262240808378302464";
+                ITALIANROLE = "268810835890012170";
                 SPANISHROLE = "262241006710161408";
 
                 SERVERID = "236897364697284618";
@@ -82,6 +84,7 @@ public class IDReference
                 GLOBALCHANNEL = "257915045487443981";
                 CHATFRENCH = "268803308783665152";
                 CHATGERMAN = "268803350466789376";
+                CHATITALIAN = "268811997032742912";
                 CHATSPANISH = "268803429550260234";
 
                 //Roles
