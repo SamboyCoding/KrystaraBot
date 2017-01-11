@@ -80,6 +80,9 @@ public class IDReference
                 BOTCOMMANDSCHANNEL = "257920671345016834";
                 TEAMSCHANNEL = "257917963506548737";
                 GLOBALCHANNEL = "257915045487443981";
+                CHATFRENCH = "268803308783665152";
+                CHATGERMAN = "268803350466789376";
+                CHATSPANISH = "268803429550260234";
 
                 //Roles
                 ADMINROLE = "257921387648253953";

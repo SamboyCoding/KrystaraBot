@@ -204,13 +204,18 @@ public class Listener
             
             TreeMap<String, KrystaraCommand> commands = main.getCommands();
 
-            if (command.contains("."))
+            doCommand(commands, command, sdr, chnl, msg, arguments, argumentsFull);
+        } catch (InvalidParameterException ipe)
+        {
+            try
             {
-                doLocalizedCommand(command, commands, chnl, sdr, msg, arguments, argumentsFull);
-            }
-            else 
+                chnl.sendMessage(ipe.getMessage());
+            } catch (Exception doubleException)
             {
-                doNormalCommand(commands, command, sdr, chnl, msg, arguments, argumentsFull);
+                main.logToBoth("Exception logging exception! Original exception: ");
+                ipe.printStackTrace();
+                main.logToBoth("Exception while logging: ");
+                doubleException.printStackTrace();
             }
         } catch (RateLimitException rle)
         {
@@ -245,49 +250,55 @@ public class Listener
     }
     //</editor-fold>
 
-    private void doNormalCommand(TreeMap<String, KrystaraCommand> commands, String command, IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argumentsFull) throws Exception
+    private void doCommand(TreeMap<String, KrystaraCommand> commands, String command, IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argumentsFull) throws Exception
     {
-        if (commands.containsKey(command))
-        {
-            commands.get(command).handleCommand(sdr, chnl, msg, arguments, argumentsFull);
-        }
-        else
-        {
-            //No command found
-            chnl.sendMessage("Invalid command \"" + command + "\". Do `?help` for a list of commands.");
-        }
-    }
-
-    private void doLocalizedCommand(String command, TreeMap<String, KrystaraCommand> commands, IChannel chnl, IUser sdr, IMessage msg, ArrayList<String> arguments, String argumentsFull) throws Exception
-    {
-        Language lang;
         // Localized; try to get a language
         String[] parts = command.split("\\.");
         command = parts[0];
-        try
+
+        if (!commands.containsKey(command))
         {
+            throw new InvalidParameterException("Invalid command \"" + command + "\". Type `?help` for a list of commands.");
+        }
+        
+        KrystaraCommand commandObj = commands.get(command);
+        Language lang = null;
+
+        if (parts.length > 1)
+        {
+            // User attempted to select a language; attempt to get the requested language
             lang = Language.fromShortCode(parts[1]);
-            if (commands.containsKey(command))
+        }
+
+        if ((lang == null) && commandObj.isLocalized())
+        {
+            // No language was explicitly selected, but default to the language of the current channel
+            if (chnl.getID().equals(IDReference.CHATFRENCH))
             {
-                KrystaraCommand commandObj = commands.get(command);
-                if (!commandObj.isLocalized())
-                {
-                    chnl.sendMessage("This command does not accept a language suffix.");
-                }
-                else
-                {
-                    commandObj.handleCommand(sdr, chnl, msg, arguments, argumentsFull, lang);
-                }
+                lang = Language.FRENCH;
             }
-            else
+            else if (chnl.getID().equals(IDReference.CHATGERMAN))
             {
-                //No command found
-                chnl.sendMessage("Invalid command \"" + command + "\". Do `?help` for a list of commands.");
+                lang = Language.GERMAN;
+            }
+            else if (chnl.getID().equals(IDReference.CHATSPANISH))
+            {
+                lang = Language.SPANISH;
             }
         }
-        catch (InvalidParameterException e2)
+
+        if (lang != null)
         {
-            chnl.sendMessage(e2.getMessage());
+            if (!commandObj.isLocalized())
+            {
+                // This command doesn't support a language
+                throw new InvalidParameterException("This command does not accept a language suffix.");
+            }
+            commands.get(command).handleCommand(sdr, chnl, msg, arguments, argumentsFull, lang);
+        }
+        else
+        {
+            commands.get(command).handleCommand(sdr, chnl, msg, arguments, argumentsFull);
         }
     }
 
