@@ -41,7 +41,7 @@ public class ClassCommand extends QuestionCommand
     {
         if (arguments.size() < 1)
         {
-            chnl.sendMessage("You need to specify a name to search for!");
+            chnl.sendMessage(lang.localize(Language.LocString.PLEASE_SPECIFY_TERM_TO_SEARCH));
             return;
         }
 
@@ -63,7 +63,7 @@ public class ClassCommand extends QuestionCommand
                 spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
             } else
             {
-                spellDesc = spellDesc.replace("{1}", "(half)");
+                spellDesc = spellDesc.replace("{1}", "(" + lang.localize(Language.LocString.MAGIC_SCALING_HALF) + ")");
                 spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
             }
         }
@@ -89,8 +89,8 @@ public class ClassCommand extends QuestionCommand
         String info = "";
         info += "_" + heroClass.getKingdomName() + "_ " + heroClass.getType() + "\n";
         info += "(" + String.join(", ", traitNames) + ")\n";
-        info += "One of: " + String.join(", ", perkNames) + "\n\n";
-        info += "**Class Weapon**";
+        info += lang.localize(Language.LocString.ONE_OF) + " " + String.join(", ", perkNames) + "\n\n";
+        info += "**" + lang.localize(Language.LocString.CLASS_WEAPON) + "**";
         info += "\n" + heroClass.getWeapon().getName() + " (" + heroClass.getWeapon().getSpellCost() + " " + String.join(" ", gemColorEmojis) + ")\n" + spellDesc;
         info += "\n";
 

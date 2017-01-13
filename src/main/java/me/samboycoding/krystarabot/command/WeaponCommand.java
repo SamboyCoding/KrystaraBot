@@ -46,7 +46,7 @@ public class WeaponCommand extends KrystaraCommand
     {
         if (arguments.size() < 1)
         {
-            chnl.sendMessage("You need to specify a name to search for!");
+            chnl.sendMessage(lang.localize(Language.LocString.PLEASE_SPECIFY_TERM_TO_SEARCH));
             return;
         }
 
@@ -68,7 +68,7 @@ public class WeaponCommand extends KrystaraCommand
                 spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
             } else
             {
-                spellDesc = spellDesc.replace("{1}", "(half)");
+                spellDesc = spellDesc.replace("{1}", "(" + lang.localize(Language.LocString.MAGIC_SCALING_HALF) + ")");
                 spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
             }
         }

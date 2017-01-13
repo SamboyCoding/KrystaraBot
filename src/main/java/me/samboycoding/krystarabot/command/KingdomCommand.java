@@ -47,7 +47,7 @@ public class KingdomCommand extends KrystaraCommand
     {
         if (arguments.size() < 1)
         {
-            chnl.sendMessage("You need to specify a name to search for!");
+            chnl.sendMessage(lang.localize(Language.LocString.PLEASE_SPECIFY_TERM_TO_SEARCH));
             return;
         }
 
@@ -83,12 +83,12 @@ public class KingdomCommand extends KrystaraCommand
         String[] troopNames = kingdom.getTroops().stream().map(t -> t.getName()).toArray(String[]::new);
 
         String info = "";
-        info += "Troops (" + troopNames.length + "): " + String.join(", ", troopNames) + "\n";
+        info += lang.localize(Language.LocString.CATEGORY_TROOPS) + " (" + troopNames.length + "): " + String.join(", ", troopNames) + "\n";
         if (isFullKingdom)
         {
             info += kingdom.getBannerName() + ": " + kingdom.getBannerDescription() + "\n";
         }
-        info += "\n**Bonuses**\n";
+        info += "\n**" + lang.localize(Language.LocString.CATEGORY_BONUSES) + "**\n";
 
         for (Bonus bonus : kingdom.getBonuses())
         {
@@ -115,11 +115,11 @@ public class KingdomCommand extends KrystaraCommand
         if (isFullKingdom)
         {
             info += "\n";
-            info += "**Tribute**\n";
+            info += "**" + lang.localize(Language.LocString.CATEGORY_TRIBUTE) + "**\n";
             info += emojiGold + kingdom.getTributeGold() + "   " + emojiSouls + kingdom.getTributeSouls() + "   "
                     + emojiGlory + kingdom.getTributeGlory() + "\n\n";
-            info += "Kingdom level 10 grants +1" + emojiLevelStat + " to all troops.\n";
-            info += "Exploration traitstone: " + kingdom.getExploreTraitstoneName() + " (" + String.join(" ", gemColorEmojis) + ")\n";
+            info += lang.localizeFormat(Language.LocString.KINGDOM_LEVEL_GRANTS_BONUS_FORMAT, 10, emojiLevelStat) + "\n";
+            info += lang.localize(Language.LocString.EXPLORATION_TRAITSTONE) + " " + kingdom.getExploreTraitstoneName() + " (" + String.join(" ", gemColorEmojis) + ")\n";
         }
 
         EmbedObject o = new EmbedBuilder()

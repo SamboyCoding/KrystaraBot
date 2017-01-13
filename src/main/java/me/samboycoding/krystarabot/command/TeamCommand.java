@@ -84,7 +84,7 @@ public class TeamCommand extends KrystaraCommand
             Boolean isWeapon = (teamMemberSummary instanceof Weapon.Summary);
             if (hasWeapon && isWeapon)
             {
-                chnl.sendMessage("You cannot have two weapons on one team!");
+                chnl.sendMessage(lang.localize(Language.LocString.ONLY_ONE_WEAPON_PER_TEAM));
                 return;
             }
             hasWeapon = hasWeapon || isWeapon;
@@ -108,14 +108,14 @@ public class TeamCommand extends KrystaraCommand
             Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), kingdomName, lang);
             if (kingdomSummary == null)
             {
-                chnl.sendMessage("Using for team name instead.");
+                chnl.sendMessage(lang.localize(Language.LocString.USING_FOR_TEAM_NAME_INSTEAD));
                 teamName = kingdomName;
             } else
             {
                 kingdom = kingdomSummary.getDetails(lang);
                 if (!kingdom.isFullKingdom())
                 {
-                    chnl.sendMessage("The kingdom \"" + kingdom.getName() + "\" has no banner.");
+                    chnl.sendMessage(lang.localizeFormat(Language.LocString.KINGDOM_HAS_NO_BANNER_FORMAT, kingdom.getName()));
                     return;
                 }
             }
@@ -149,7 +149,7 @@ public class TeamCommand extends KrystaraCommand
             String[] gemColorEmojisThis = Arrays.stream(gemColorsThis).map(c -> g.getEmojiByName(c.emoji).toString()).toArray(String[]::new);
             return "    - " + String.join(" ", gemColorEmojisThis) + " " + m.getName();
         }).toArray(String[]::new);
-        String manaColors = "This team uses the following colors: " + String.join(" ", gemColorEmojis);
+        String manaColors = lang.localize(Language.LocString.TEAM_USES_THESE_COLORS) + " " + String.join(" ", gemColorEmojis);
 
         String bannerString = "";
         String url = "http://ashtender.com/gems/teams/" + String.join(",", troopIds);
@@ -160,15 +160,15 @@ public class TeamCommand extends KrystaraCommand
             url += "?banner=" + kingdom.getId();
         }
 
-        String teamString = sdr.mention() + " created team: \n\n";
-        teamString += "**Troops:**\n";
+        String teamString = lang.localizeFormat(Language.LocString.USER_CREATED_TEAM_FORMAT, sdr.mention()) + "\n\n";
+        teamString += "**" + lang.localize(Language.LocString.CATEGORY_TROOPS) + "**:\n";
         teamString += String.join("\n", troopNames);
         teamString += "\n\n" + bannerString + manaColors + "\n\n" + url;
 
         EmbedBuilder b = new EmbedBuilder()
-                .withDesc(teamString)
-                .withTitle(teamName)
-                .withUrl(url);
+            .withDesc(teamString)
+            .withTitle(teamName)
+            .withUrl(url);
 
         if (kingdom != null)
         {
@@ -177,9 +177,13 @@ public class TeamCommand extends KrystaraCommand
 
         EmbedObject o = b.build();
         chnl.sendMessage("", o, false);
-        chnl.sendMessage("Also posted in " + chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).mention());
-        chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL).sendMessage("", o, false);
-
+        IChannel teamChannel = chnl.getGuild().getChannelByID(IDReference.TEAMSCHANNEL);
+        if (chnl != teamChannel)
+        {
+            chnl.sendMessage(lang.localizeFormat(Language.LocString.ALSO_POSTED_IN_FORMAT, teamChannel.mention()));
+            teamChannel.sendMessage("", o, false);
+        }
+        
         chnl.setTypingStatus(false);
     }
 

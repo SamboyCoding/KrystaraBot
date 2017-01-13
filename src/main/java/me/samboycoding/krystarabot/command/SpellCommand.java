@@ -54,7 +54,7 @@ public class SpellCommand extends KrystaraCommand
     {
         if (arguments.size() < 1)
         {
-            chnl.sendMessage("You need to specify a name to search for!");
+            chnl.sendMessage(lang.localize(Language.LocString.PLEASE_SPECIFY_TERM_TO_SEARCH));
             return;
         }
 
@@ -76,7 +76,7 @@ public class SpellCommand extends KrystaraCommand
                 spellDesc = spellDesc.replace("{1}", spellMagicScalingText);
             } else
             {
-                spellDesc = spellDesc.replace("{1}", "(half)");
+                spellDesc = spellDesc.replace("{1}", "(" + lang.localize(Language.LocString.MAGIC_SCALING_HALF) + ")");
                 spellDesc = spellDesc.replace("{2}", spellMagicScalingText);
             }
         }
@@ -95,11 +95,11 @@ public class SpellCommand extends KrystaraCommand
         String info = "(" + spell.getCost() + " " + String.join(" ", gemColorEmojis) + "): " + spellDesc + "\n";
         if (!spell.getTroops().isEmpty())
         {
-            info += "Used by troops: " + getListAsString(spell.getTroops()) + "\n";
+            info += lang.localize(Language.LocString.USED_BY_TROOPS) + " " + getListAsString(spell.getTroops()) + "\n";
         }
         if (!spell.getWeapons().isEmpty())
         {
-            info += "Used by weapons: " + getListAsString(spell.getWeapons()) + "\n";
+            info += lang.localize(Language.LocString.USED_BY_WEAPONS) + " " + getListAsString(spell.getWeapons()) + "\n";
         }
 
         EmbedObject o = new EmbedBuilder()
