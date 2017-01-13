@@ -53,7 +53,7 @@ public class KingdomCommand extends KrystaraCommand
 
         String kingdomName = String.join(" ", arguments);
         Search search = Search.fromQuery("kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"), lang);
-        Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName);
+        Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), kingdomName, lang);
         if (kingdomSummary == null)
         {
             return;

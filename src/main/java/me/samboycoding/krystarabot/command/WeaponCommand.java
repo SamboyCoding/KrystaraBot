@@ -9,7 +9,6 @@ import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
 import me.samboycoding.krystarabot.gemdb.Search;
 import me.samboycoding.krystarabot.gemdb.Weapon;
-import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -53,7 +52,7 @@ public class WeaponCommand extends KrystaraCommand
 
         String weaponName = String.join(" ", arguments);
         Search search = Search.fromQuery("weapons?term=" + URLEncoder.encode(weaponName, "UTF-8"), lang);
-        Weapon.Summary weaponSummary = AshClient.getSingleResult(chnl, search.getWeapons(), "weapon", weaponName);
+        Weapon.Summary weaponSummary = AshClient.getSingleResult(chnl, search.getWeapons(), weaponName, lang);
         if (weaponSummary == null)
         {
             return;

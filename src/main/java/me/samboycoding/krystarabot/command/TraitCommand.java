@@ -43,13 +43,13 @@ public class TraitCommand extends KrystaraCommand
     {
         if (arguments.size() < 1)
         {
-            chnl.sendMessage("You need to specify a name to search for!");
+            chnl.sendMessage(lang.localize(Language.LocString.PLEASE_SPECIFY_TERM_TO_SEARCH));
             return;
         }
 
         String traitName = String.join(" ", arguments);
         Search search = Search.fromQuery("traits?term=" + URLEncoder.encode(traitName, "UTF-8"), lang);
-        Search.TraitSummary traitSummary = AshClient.getSingleResult(chnl, search.getTraits(), "trait", traitName);
+        Search.TraitSummary traitSummary = AshClient.getSingleResult(chnl, search.getTraits(), traitName, lang);
         if (traitSummary == null)
         {
             return;
@@ -60,12 +60,12 @@ public class TraitCommand extends KrystaraCommand
         if (!trait.getTroops().isEmpty())
         {
             String[] troopNames = trait.getTroops().stream().map(t -> t.getName()).toArray(String[]::new);
-            info += "Used by troops: " + String.join(", ", troopNames) + "\n";
+            info += lang.localize(Language.LocString.USED_BY_TROOPS) + " " + String.join(", ", troopNames) + "\n";
         }
         if (!trait.getHeroClasses().isEmpty())
         {
             String[] heroClassNames = trait.getHeroClasses().stream().map(c -> c.getName()).toArray(String[]::new);
-            info += "Used by classes: " + String.join(", ", heroClassNames) + "\n";
+            info += lang.localize(Language.LocString.USED_BY_CLASSES) + " " + String.join(", ", heroClassNames) + "\n";
         }
 
         EmbedObject o = new EmbedBuilder()

@@ -75,7 +75,7 @@ public class TeamCommand extends KrystaraCommand
             ArrayList<SummaryBase> searchResults = new ArrayList<>();
             searchResults.addAll(search.getTroops());
             searchResults.addAll(search.getWeapons());
-            SummaryBase teamMemberSummary = AshClient.getSingleResult(chnl, searchResults, "troop or weapon", thing);
+            SummaryBase teamMemberSummary = AshClient.getSingleResult(chnl, searchResults, thing, lang);
             if (teamMemberSummary == null)
             {
                 return;
@@ -105,7 +105,7 @@ public class TeamCommand extends KrystaraCommand
 
             // Search for a kingdom by name or banner name
             Search search = Search.fromQuery("kingdoms?term=" + URLEncoder.encode(kingdomName, "UTF-8"), lang);
-            Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), "kingdom", kingdomName);
+            Kingdom.Summary kingdomSummary = AshClient.getSingleResult(chnl, search.getKingdoms(), kingdomName, lang);
             if (kingdomSummary == null)
             {
                 chnl.sendMessage("Using for team name instead.");

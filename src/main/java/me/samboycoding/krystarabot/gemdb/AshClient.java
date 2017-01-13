@@ -36,7 +36,7 @@ public class AshClient
         return GSON.fromJson(body, c);
     }
 
-    public static <T extends Nameable> T getSingleResult(IChannel chnl, List<T> resultList, String typeString, String searchName)
+    public static <T extends Nameable> T getSingleResult(IChannel chnl, List<T> resultList, String searchName, Language lang)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         String searchNameLower = searchName.toLowerCase();
@@ -46,7 +46,7 @@ public class AshClient
 
         if (resultList.isEmpty())
         {
-            String message = "No " + typeString + " \"" + searchName + "\" found.";
+            String message = lang.localizeFormat(Language.LocString.NO_THING_FOUND_FORMAT, searchName);
             chnl.sendMessage(message);
             return null;
         }
@@ -82,7 +82,8 @@ public class AshClient
             T result = resultList.get(0);
 
             // Only one (fuzzy) match; assume it's correct but show a warning
-            String message = "No " + typeString + " \"" + searchName + "\" found. Assuming '" + result.getName() + "'...";
+            String message = lang.localizeFormat(Language.LocString.NO_THING_FOUND_FORMAT, searchName) + " " +
+                lang.localizeFormat(Language.LocString.ASSUMING_THING_FORMAT, result.getName());
             chnl.sendMessage(message);
 
             return result;
@@ -90,7 +91,7 @@ public class AshClient
 
         // Ambiguity
         Stream<String> str = resultList.stream().map(t -> t.getName());
-        Utilities.sendDisambiguationMessage(chnl, "Search term \"" + searchName + "\" is ambiguous.", str::iterator);
+        Utilities.sendDisambiguationMessage(chnl, lang.localizeFormat(Language.LocString.TERM_IS_AMBIGUOUS_FORMAT, searchName), str::iterator);
 
         return null;
     }

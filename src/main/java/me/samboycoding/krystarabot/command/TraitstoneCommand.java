@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import me.samboycoding.krystarabot.Language;
 import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
@@ -18,7 +19,7 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
 /**
- * Represents the ?trait command
+ * Represents the ?traitstone command
  *
  * @author Emily Ash
  */
@@ -30,11 +31,23 @@ public class TraitstoneCommand extends KrystaraCommand
      */
     private static enum Rarity
     {
-        Minor,
-        Major,
-        Runic,
-        Arcane,
-        Celestial
+        Minor(Language.LocString.TRAITSTONE_RARITY_MINOR),
+        Major(Language.LocString.TRAITSTONE_RARITY_MAJOR),
+        Runic(Language.LocString.TRAITSTONE_RARITY_RUNIC),
+        Arcane(Language.LocString.TRAITSTONE_RARITY_ARCANE),
+        Celestial(Language.LocString.TRAITSTONE_RARITY_CELESTIAL);
+        
+        Language.LocString locName;
+        
+        Rarity(Language.LocString name)
+        {
+            locName = name;
+        }
+        
+        public String getName(Language lang)
+        {
+            return lang.localize(locName);
+        }
     }
 
     /**
@@ -42,182 +55,181 @@ public class TraitstoneCommand extends KrystaraCommand
      */
     private static enum Traitstone
     {
-        MinorWater("Minor Water Traitstone", Rarity.Minor, new GemColor[]
+        MinorWater(Language.LocString.TRAITSTONE_0, Rarity.Minor, new GemColor[]
         {
             GemColor.Blue
         }),
-        MinorNature("Minor Nature Traitstone", Rarity.Minor, new GemColor[]
+        MinorNature(Language.LocString.TRAITSTONE_1, Rarity.Minor, new GemColor[]
         {
             GemColor.Green
         }),
-        MinorFire("Minor Fire Traitstone", Rarity.Minor, new GemColor[]
+        MinorFire(Language.LocString.TRAITSTONE_2, Rarity.Minor, new GemColor[]
         {
             GemColor.Red
         }),
-        MinorWind("Minor Wind Traitstone", Rarity.Minor, new GemColor[]
+        MinorWind(Language.LocString.TRAITSTONE_3, Rarity.Minor, new GemColor[]
         {
             GemColor.Yellow
         }),
-        MinorMagic("Minor Magic Traitstone", Rarity.Minor, new GemColor[]
+        MinorMagic(Language.LocString.TRAITSTONE_4, Rarity.Minor, new GemColor[]
         {
             GemColor.Purple
         }),
-        MinorEarth("Minor Earth Traitstone", Rarity.Minor, new GemColor[]
+        MinorEarth(Language.LocString.TRAITSTONE_5, Rarity.Minor, new GemColor[]
         {
             GemColor.Brown
         }),
-        MajorWater("Major Water Traitstone", Rarity.Major, new GemColor[]
+        MajorWater(Language.LocString.TRAITSTONE_6, Rarity.Major, new GemColor[]
         {
             GemColor.Blue
         }),
-        MajorNature("Major Nature Traitstone", Rarity.Major, new GemColor[]
+        MajorNature(Language.LocString.TRAITSTONE_7, Rarity.Major, new GemColor[]
         {
             GemColor.Green
         }),
-        MajorFire("Major Fire Traitstone", Rarity.Major, new GemColor[]
+        MajorFire(Language.LocString.TRAITSTONE_8, Rarity.Major, new GemColor[]
         {
             GemColor.Red
         }),
-        MajorWind("Major Wind Traitstone", Rarity.Major, new GemColor[]
+        MajorWind(Language.LocString.TRAITSTONE_9, Rarity.Major, new GemColor[]
         {
             GemColor.Yellow
         }),
-        MajorMagic("Major Magic Traitstone", Rarity.Major, new GemColor[]
+        MajorMagic(Language.LocString.TRAITSTONE_10, Rarity.Major, new GemColor[]
         {
             GemColor.Purple
         }),
-        MajorEarth("Major Earth Traitstone", Rarity.Major, new GemColor[]
+        MajorEarth(Language.LocString.TRAITSTONE_11, Rarity.Major, new GemColor[]
         {
             GemColor.Brown
         }),
-        RunicWater("Runic Water Traitstone", Rarity.Runic, new GemColor[]
+        RunicWater(Language.LocString.TRAITSTONE_12, Rarity.Runic, new GemColor[]
         {
             GemColor.Blue
         }),
-        RunicNature("Runic Nature Traitstone", Rarity.Runic, new GemColor[]
+        RunicNature(Language.LocString.TRAITSTONE_13, Rarity.Runic, new GemColor[]
         {
             GemColor.Green
         }),
-        RunicFire("Runic Fire Traitstone", Rarity.Runic, new GemColor[]
+        RunicFire(Language.LocString.TRAITSTONE_14, Rarity.Runic, new GemColor[]
         {
             GemColor.Red
         }),
-        RunicWind("Runic Wind Traitstone", Rarity.Runic, new GemColor[]
+        RunicWind(Language.LocString.TRAITSTONE_15, Rarity.Runic, new GemColor[]
         {
             GemColor.Yellow
         }),
-        RunicMagic("Runic Magic Traitstone", Rarity.Runic, new GemColor[]
+        RunicMagic(Language.LocString.TRAITSTONE_16, Rarity.Runic, new GemColor[]
         {
             GemColor.Purple
         }),
-        RunicEarth("Runic Earth Traitstone", Rarity.Runic, new GemColor[]
+        RunicEarth(Language.LocString.TRAITSTONE_17, Rarity.Runic, new GemColor[]
         {
             GemColor.Brown
         }),
-        ArcaneStoic("Arcane Stoic Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneStoic(Language.LocString.TRAITSTONE_18, Rarity.Arcane, new GemColor[]
         {
             GemColor.Blue
         }),
-        ArcaneSwamp("Arcane Swamp Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneSwamp(Language.LocString.TRAITSTONE_19, Rarity.Arcane, new GemColor[]
         {
             GemColor.Blue, GemColor.Green
         }),
-        ArcaneBlood("Arcane Blood Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneBlood(Language.LocString.TRAITSTONE_20, Rarity.Arcane, new GemColor[]
         {
             GemColor.Blue, GemColor.Red
         }),
-        ArcaneBlade("Arcane Blade Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneBlade(Language.LocString.TRAITSTONE_21, Rarity.Arcane, new GemColor[]
         {
             GemColor.Blue, GemColor.Yellow
         }),
-        ArcaneSpirit("Arcane Spirit Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneSpirit(Language.LocString.TRAITSTONE_22, Rarity.Arcane, new GemColor[]
         {
             GemColor.Blue, GemColor.Purple
         }),
-        ArcaneShield("Arcane Shield Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneShield(Language.LocString.TRAITSTONE_23, Rarity.Arcane, new GemColor[]
         {
             GemColor.Blue, GemColor.Brown
         }),
-        ArcaneStealth("Arcane Stealth Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneStealth(Language.LocString.TRAITSTONE_24, Rarity.Arcane, new GemColor[]
         {
             GemColor.Green
         }),
-        ArcaneBeast("Arcane Beast Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneBeast(Language.LocString.TRAITSTONE_25, Rarity.Arcane, new GemColor[]
         {
             GemColor.Green, GemColor.Red
         }),
-        ArcaneLight("Arcane Light Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneLight(Language.LocString.TRAITSTONE_26, Rarity.Arcane, new GemColor[]
         {
             GemColor.Green, GemColor.Yellow
         }),
-        ArcaneVenom("Arcane Venom Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneVenom(Language.LocString.TRAITSTONE_27, Rarity.Arcane, new GemColor[]
         {
             GemColor.Green, GemColor.Purple
         }),
-        ArcaneForest("Arcane Forest Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneForest(Language.LocString.TRAITSTONE_28, Rarity.Arcane, new GemColor[]
         {
             GemColor.Green, GemColor.Brown
         }),
-        ArcaneRage("Arcane Rage Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneRage(Language.LocString.TRAITSTONE_29, Rarity.Arcane, new GemColor[]
         {
             GemColor.Red
         }),
-        ArcaneStorm("Arcane Storm Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneStorm(Language.LocString.TRAITSTONE_30, Rarity.Arcane, new GemColor[]
         {
             GemColor.Red, GemColor.Yellow
         }),
-        ArcaneDark("Arcane Dark Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneDark(Language.LocString.TRAITSTONE_31, Rarity.Arcane, new GemColor[]
         {
             GemColor.Red, GemColor.Purple
         }),
-        ArcaneLava("Arcane Lava Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneLava(Language.LocString.TRAITSTONE_32, Rarity.Arcane, new GemColor[]
         {
             GemColor.Red, GemColor.Brown
         }),
-        ArcaneSummer("Arcane Summer Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneSummer(Language.LocString.TRAITSTONE_33, Rarity.Arcane, new GemColor[]
         {
             GemColor.Yellow
         }),
-        ArcanePlains("Arcane Plains Traitstone", Rarity.Arcane, new GemColor[]
+        ArcanePlains(Language.LocString.TRAITSTONE_34, Rarity.Arcane, new GemColor[]
         {
             GemColor.Yellow, GemColor.Purple
         }),
-        ArcaneMountain("Arcane Mountain Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneMountain(Language.LocString.TRAITSTONE_35, Rarity.Arcane, new GemColor[]
         {
             GemColor.Yellow, GemColor.Brown
         }),
-        ArcaneDeath("Arcane Death Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneDeath(Language.LocString.TRAITSTONE_36, Rarity.Arcane, new GemColor[]
         {
             GemColor.Purple
         }),
-        ArcaneSkull("Arcane Skull Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneSkull(Language.LocString.TRAITSTONE_37, Rarity.Arcane, new GemColor[]
         {
             GemColor.Purple, GemColor.Brown
         }),
-        ArcaneDeep("Arcane Deep Traitstone", Rarity.Arcane, new GemColor[]
+        ArcaneDeep(Language.LocString.TRAITSTONE_38, Rarity.Arcane, new GemColor[]
         {
             GemColor.Brown
         }),
-        Celestial("Celestial Traitstone", Rarity.Celestial, new GemColor[]
+        Celestial(Language.LocString.TRAITSTONE_39, Rarity.Celestial, new GemColor[]
         {
             GemColor.Blue, GemColor.Green, GemColor.Red, GemColor.Yellow, GemColor.Purple, GemColor.Brown
         });
 
-        public final String prettyName;
+        public final Language.LocString locName;
         public final Rarity rarity;
         public final GemColor[] colors;
 
-        private Traitstone(String name, Rarity r, GemColor[] c)
+        private Traitstone(Language.LocString name, Rarity r, GemColor[] c)
         {
-            prettyName = name;
+            locName = name;
             rarity = r;
             colors = c;
         }
-
-        @Override
-        public String toString()
+        
+        public String getName(Language lang)
         {
-            return prettyName;
+            return lang.localize(locName);
         }
 
         public int getId()
@@ -232,36 +244,48 @@ public class TraitstoneCommand extends KrystaraCommand
     }
 
     @Override
+    public Boolean isLocalized()
+    {
+        return true;
+    }
+    
+    @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
+    {
+        handleCommand(sdr, chnl, msg, arguments, argsFull, Language.ENGLISH);
+    }
+
+    @Override
+    public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull, Language lang) throws Exception
     {
         if (arguments.size() < 1)
         {
-            chnl.sendMessage("You need to specify a name or color to search for!");
+            chnl.sendMessage(lang.localize(Language.LocString.PLEASE_SPECIFY_TERM_OR_COLOR_TO_SEARCH));
             return;
         }
 
-        ArrayList<Traitstone> traitstones = parseArguments(arguments);
+        ArrayList<Traitstone> traitstones = parseArguments(arguments, lang);
         String searchTerm = String.join(" ", arguments);
 
         if (traitstones.isEmpty())
         {
-            chnl.sendMessage("No traitstone \"" + searchTerm + "\" found.");
+            chnl.sendMessage(lang.localizeFormat(Language.LocString.NO_THING_FOUND_FORMAT, searchTerm));
             return;
         }
 
         if (traitstones.size() > 1)
         {
-            Stream<String> str = traitstones.stream().map(t -> t.toString());
-            Utilities.sendDisambiguationMessage(chnl, "Search term \"" + searchTerm + "\" is ambiguous.", str::iterator);
+            Stream<String> str = traitstones.stream().map(t -> t.getName(lang));
+            Utilities.sendDisambiguationMessage(chnl, lang.localizeFormat(Language.LocString.TERM_IS_AMBIGUOUS_FORMAT, searchTerm), str::iterator);
             return;
         }
 
         Traitstone ts = traitstones.get(0);
         me.samboycoding.krystarabot.gemdb.Traitstone traitstone
                 = AshClient.query("traitstones/" + ts.getId() + "/details",
-                        me.samboycoding.krystarabot.gemdb.Traitstone.class);
+                        me.samboycoding.krystarabot.gemdb.Traitstone.class, lang);
 
-        String info = getTraitstoneInfoText(traitstone, chnl);
+        String info = getTraitstoneInfoText(traitstone, chnl, lang);
 
         EmbedObject o = new EmbedBuilder()
                 .withDesc(info)
@@ -277,7 +301,7 @@ public class TraitstoneCommand extends KrystaraCommand
      * @param arguments User-supplied arguments.
      * @return The list of traitstones that match the arguments.
      */
-    private ArrayList<Traitstone> parseArguments(ArrayList<String> arguments)
+    private ArrayList<Traitstone> parseArguments(ArrayList<String> arguments, Language lang)
     {
         ArrayList<Traitstone> traitstones = new ArrayList<>();
         ArrayList<GemColor> colorArgs = new ArrayList<>();
@@ -292,7 +316,7 @@ public class TraitstoneCommand extends KrystaraCommand
             // If the argument exactly matches a color, track that color
             for (GemColor color : GemColor.values())
             {
-                if (color.name().toLowerCase().equals(arg))
+                if (color.getName(lang).toLowerCase().equals(arg))
                 {
                     if (!colorArgs.contains(color))
                     {
@@ -309,7 +333,7 @@ public class TraitstoneCommand extends KrystaraCommand
             {
                 for (Rarity rarity : Rarity.values())
                 {
-                    if (rarity.name().toLowerCase().equals(arg))
+                    if (rarity.getName(lang).toLowerCase().equals(arg))
                     {
                         rarityArg = rarity;
                         found = true;
@@ -346,7 +370,7 @@ public class TraitstoneCommand extends KrystaraCommand
             boolean found = true;
 
             // Match text in the name
-            String name = traitstone.prettyName.toLowerCase();
+            String name = traitstone.getName(lang).toLowerCase();
             for (String arg : nameArgs)
             {
                 if (!name.contains(arg))
@@ -385,7 +409,7 @@ public class TraitstoneCommand extends KrystaraCommand
      * @param channel The current channel.
      * @return The informational text.
      */
-    private String getTraitstoneInfoText(me.samboycoding.krystarabot.gemdb.Traitstone traitstone, IChannel channel) throws SQLException, IOException
+    private String getTraitstoneInfoText(me.samboycoding.krystarabot.gemdb.Traitstone traitstone, IChannel channel, Language lang) throws SQLException, IOException
     {
         String[] kingdomNames = traitstone.getKingdoms().stream().map(k -> k.getName()).toArray(String[]::new);
         ArrayList<String> troopNames = traitstone.getTroops().stream().map(t -> t.getName() + " (" + t.getCount() + ")").collect(Collectors.toCollection(ArrayList::new));
@@ -404,7 +428,7 @@ public class TraitstoneCommand extends KrystaraCommand
         // Add relevant output if found
         if (kingdomNames.length > 0)
         {
-            result += "Found in: " + String.join(", ", kingdomNames) + "\n";
+            result += lang.localize(Language.LocString.FOUND_IN) + " " + String.join(", ", kingdomNames) + "\n";
         }
         if (!troopNames.isEmpty())
         {
@@ -413,17 +437,17 @@ public class TraitstoneCommand extends KrystaraCommand
 
             if (size > LIMIT)
             {
-                String extraText = "... (" + (size - LIMIT) + " more)";
+                String extraText = "... (" + lang.localizeFormat(Language.LocString.N_MORE_FORMAT, size - LIMIT) + ")";
                 troopNames.subList(LIMIT, size).clear();
                 troopNames.add(extraText);
             }
-            result += "\nNeeded by troops: " + String.join(", ", troopNames) + "\n";
+            result += "\n" + lang.localize(Language.LocString.USED_BY_TROOPS) + " " + String.join(", ", troopNames) + "\n";
         }
         if (!heroClassNames.isEmpty())
         {
-            result += "\nNeeded by classes: " + String.join(", ", heroClassNames) + "\n";
+            result += "\n" + lang.localize(Language.LocString.USED_BY_CLASSES) + " " + String.join(", ", heroClassNames) + "\n";
         }
-        result += "\nTotal needed: " + totalNeeded + "\n\n";
+        result += "\n" + lang.localize(Language.LocString.TOTAL_NEEDED) + " " + totalNeeded + "\n\n";
 
         return result;
     }

@@ -53,7 +53,7 @@ public class TroopCommand extends QuestionCommand
 
         String troopName = String.join(" ", arguments);
         Search search = Search.fromQuery("troops?term=" + URLEncoder.encode(troopName, "UTF-8"), lang);
-        Troop.Summary troopSummary = AshClient.getSingleResult(chnl, search.getTroops(), "troop", troopName);
+        Troop.Summary troopSummary = AshClient.getSingleResult(chnl, search.getTroops(), troopName, lang);
         if (troopSummary == null)
         {
             return;

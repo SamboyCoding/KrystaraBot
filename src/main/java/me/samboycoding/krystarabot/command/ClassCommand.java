@@ -47,7 +47,7 @@ public class ClassCommand extends QuestionCommand
 
         String heroClassName = String.join(" ", arguments);
         Search search = Search.fromQuery("classes?term=" + URLEncoder.encode(heroClassName, "UTF-8"), lang);
-        HeroClass.Summary heroClassSummary = AshClient.getSingleResult(chnl, search.getHeroClasses(), "class", heroClassName);
+        HeroClass.Summary heroClassSummary = AshClient.getSingleResult(chnl, search.getHeroClasses(), heroClassName, lang);
         if (heroClassSummary == null)
         {
             return;

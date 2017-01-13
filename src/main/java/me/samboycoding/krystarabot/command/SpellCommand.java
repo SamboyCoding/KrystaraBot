@@ -11,8 +11,6 @@ import me.samboycoding.krystarabot.gemdb.GemColor;
 import me.samboycoding.krystarabot.gemdb.Nameable;
 import me.samboycoding.krystarabot.gemdb.Search;
 import me.samboycoding.krystarabot.gemdb.Spell;
-import me.samboycoding.krystarabot.gemdb.Troop;
-import me.samboycoding.krystarabot.gemdb.Weapon;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -62,7 +60,7 @@ public class SpellCommand extends KrystaraCommand
 
         String spellName = String.join(" ", arguments);
         Search search = Search.fromQuery("spells?term=" + URLEncoder.encode(spellName, "UTF-8"), lang);
-        Search.SpellSummary spellSummary = AshClient.getSingleResult(chnl, search.getSpells(), "spell", spellName);
+        Search.SpellSummary spellSummary = AshClient.getSingleResult(chnl, search.getSpells(), spellName, lang);
         if (spellSummary == null)
         {
             return;
