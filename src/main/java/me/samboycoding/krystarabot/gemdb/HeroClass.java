@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import me.samboycoding.krystarabot.Language;
 
-public class HeroClass implements Nameable, java.io.Serializable
+public class HeroClass implements Traitable, java.io.Serializable
 {
 
     private HeroClass()
@@ -54,7 +54,7 @@ public class HeroClass implements Nameable, java.io.Serializable
     private String weaponName = null;
     private String pageUrl = null;
     private String imageUrl = null;
-    private ArrayList<Trait> traits = new ArrayList<>();
+    private ArrayList<Traitable.TraitSummary> traits = new ArrayList<>();
     private ArrayList<Perk> perks = new ArrayList<>();
     private Weapon weapon = null;
 
@@ -89,7 +89,8 @@ public class HeroClass implements Nameable, java.io.Serializable
         return this.imageUrl;
     }
 
-    public List<Trait> getTraits()
+    @Override
+    public List<Traitable.TraitSummary> getTraits()
     {
         return Collections.unmodifiableList(this.traits);
     }

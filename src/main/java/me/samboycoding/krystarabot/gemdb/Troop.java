@@ -1,13 +1,12 @@
 package me.samboycoding.krystarabot.gemdb;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import me.samboycoding.krystarabot.Language;
 
-public class Troop extends TeamMember implements java.io.Serializable
+public class Troop extends TeamMember implements Traitable, java.io.Serializable
 {
     private Troop()
     {
@@ -25,7 +24,7 @@ public class Troop extends TeamMember implements java.io.Serializable
             return Troop.fromId(getId(), lang);
         }
     }
-
+    
     private static final long serialVersionUID = 1L;
     private String rarity = null;
     private String type = null;
@@ -38,7 +37,7 @@ public class Troop extends TeamMember implements java.io.Serializable
     private String kingdomName = null;
     private String pageUrl = null;
     private String imageUrl = null;
-    private ArrayList<Trait.Summary> traits = new ArrayList<>();
+    private ArrayList<TraitSummary> traits = new ArrayList<>();
 
     public String getRarity()
     {
@@ -95,7 +94,8 @@ public class Troop extends TeamMember implements java.io.Serializable
         return this.imageUrl;
     }
 
-    public List<Trait.Summary> getTraits()
+    @Override
+    public List<TraitSummary> getTraits()
     {
         return Collections.unmodifiableList(this.traits);
     }

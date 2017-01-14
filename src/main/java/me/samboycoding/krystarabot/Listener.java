@@ -98,6 +98,7 @@ public class Listener
             main.registerCommand(new TeamCommand());
             main.registerCommand(new Top10Command());
             main.registerCommand(new TraitCommand());
+            main.registerCommand(new TraitsCommand());
             main.registerCommand(new TraitstoneCommand());
             main.registerCommand(new TroopCommand());
             main.registerCommand(new UserstatsCommand());

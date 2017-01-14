@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import me.samboycoding.krystarabot.Language;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
 import me.samboycoding.krystarabot.gemdb.AshClient;
 import me.samboycoding.krystarabot.gemdb.GemColor;
 import me.samboycoding.krystarabot.gemdb.Search;
@@ -136,6 +136,6 @@ public class TroopCommand extends QuestionCommand
     @Override
     public CommandType getCommandType()
     {
-        return MOD;
+        return GOW;
     }
 }

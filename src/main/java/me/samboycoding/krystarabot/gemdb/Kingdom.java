@@ -20,7 +20,6 @@ public class Kingdom implements Nameable, java.io.Serializable
 
     public static class Summary extends SummaryBase
     {
-
         public Kingdom getDetails(Language lang) throws IOException
         {
             return Kingdom.fromId(getId(), lang);

@@ -18,6 +18,14 @@ public class Traitstone implements Nameable, java.io.Serializable
         return AshClient.query("traitstones/" + id + "/details", Traitstone.class, lang);
     }
 
+    public static class Summary extends SummaryBase
+    {
+        public Traitstone getDetails(Language lang) throws IOException
+        {
+            return Traitstone.fromId(getId(), lang);
+        }
+    }
+
     public static class TroopSummaryWithCount extends Troop.Summary
     {
 
