@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Properties;
 import me.samboycoding.krystarabot.command.TraitstoneCommand;
 import me.samboycoding.krystarabot.gemdb.GemColor;
+import org.apache.commons.lang3.StringUtils;
 
 public enum Language
 {
@@ -141,7 +142,13 @@ public enum Language
             props = getProps();
         }
         
-        return (String)props.get(locStr.name());
+        String result = (String)props.get(locStr.name());
+        if (StringUtils.isEmpty(result) && (this != ENGLISH))
+        {
+            main.logToBoth("Could not find " + this.name() + " string '" + locStr.name() + "', defaulting to English.");
+            result = ENGLISH.localize(locStr);
+        }
+        return result;
     }
     
     public String localizeFormat(LocString locStr, Object... args) throws IOException
