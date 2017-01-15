@@ -50,7 +50,7 @@ public class TroopCommand extends QuestionCommand
             chnl.sendMessage(lang.localize(Language.LocString.PLEASE_SPECIFY_TERM_TO_SEARCH));
             return;
         }
-
+        
         String troopName = String.join(" ", arguments);
         Search search = Search.fromQuery("troops?term=" + URLEncoder.encode(troopName, "UTF-8"), lang);
         Troop.Summary troopSummary = AshClient.getSingleResult(chnl, search.getTroops(), troopName, lang);
