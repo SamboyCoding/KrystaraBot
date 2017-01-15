@@ -135,11 +135,19 @@ public enum Language
         return this.code;
     }
     
-    public String localize(LocString locStr) throws IOException
+    public String localize(LocString locStr)
     {
         if (props == null)
         {
-            props = getProps();
+            try
+            {
+                props = getProps();
+            }
+            catch (IOException e)
+            {
+                main.logToBoth("Could not load " + this.name() + " string resources!");
+                return null;
+            }
         }
         
         String result = (String)props.get(locStr.name());
@@ -151,7 +159,7 @@ public enum Language
         return result;
     }
     
-    public String localizeFormat(LocString locStr, Object... args) throws IOException
+    public String localizeFormat(LocString locStr, Object... args)
     {
         return String.format(localize(locStr), args);
     }
