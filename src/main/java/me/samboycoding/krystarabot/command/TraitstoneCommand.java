@@ -276,7 +276,7 @@ public class TraitstoneCommand extends KrystaraCommand
         if (traitstones.size() > 1)
         {
             Stream<String> str = traitstones.stream().map(t -> t.getName(lang));
-            Utilities.sendDisambiguationMessage(chnl, lang.localizeFormat(Language.LocString.TERM_IS_AMBIGUOUS_FORMAT, searchTerm), str::iterator);
+            Utilities.sendDisambiguationMessage(chnl, lang.localizeFormat(Language.LocString.TERM_IS_AMBIGUOUS_FORMAT, searchTerm), str::iterator, lang);
             return;
         }
 

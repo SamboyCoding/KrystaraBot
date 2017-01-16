@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import me.samboycoding.krystarabot.Language;
 import me.samboycoding.krystarabot.main;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -124,13 +125,13 @@ public class Utilities
         }, waitCallback);
     }
 
-    public static IMessage sendDisambiguationMessage(IChannel channel, String prefix, Iterable<String> candidates)
+    public static IMessage sendDisambiguationMessage(IChannel channel, String prefix, Iterable<String> candidates, Language lang)
             throws MissingPermissionsException, RateLimitException, DiscordException
     {
         final int MAX_CANDIDATES = 10;
 
         Iterator<String> iterator = candidates.iterator();
-        String candidateText = prefix + " Possible results:\n\n";
+        String candidateText = prefix + " " + lang.localize(Language.LocString.POSSIBLE_RESULTS) + "\n\n";
         int i = 0;
         while (iterator.hasNext())
         {
@@ -146,7 +147,7 @@ public class Utilities
         {
             candidateText += "    *(+" + (i - MAX_CANDIDATES) + " more)*\n";
         }
-        candidateText += "\nPlease refine your search.";
+        candidateText += "\n" + lang.localize(Language.LocString.PLEASE_REFINE_YOUR_SEARCH);
         return channel.sendMessage(candidateText);
     }
 
