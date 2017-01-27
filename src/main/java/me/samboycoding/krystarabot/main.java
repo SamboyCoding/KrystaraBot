@@ -83,7 +83,7 @@ public class main
         logToBoth("Initializing Intelligent Talking...");
         ChatterBotFactory factory = new ChatterBotFactory();
 
-        ChatterBot bot1 = factory.create(ChatterBotType.JABBERWACKY);
+        ChatterBot bot1 = factory.create(ChatterBotType.CLEVERBOT);
         cleverBot = bot1.createSession();
 
         logToBoth("Intelligent talking loaded!");
