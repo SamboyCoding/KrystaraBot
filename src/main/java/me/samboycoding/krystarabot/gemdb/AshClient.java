@@ -91,7 +91,7 @@ public class AshClient
 
         // Ambiguity
         Stream<String> str = resultList.stream().map(t -> t.getName());
-        Utilities.sendDisambiguationMessage(chnl, lang.localizeFormat(Language.LocString.TERM_IS_AMBIGUOUS_FORMAT, searchName), str::iterator);
+        Utilities.sendDisambiguationMessage(chnl, lang.localizeFormat(Language.LocString.TERM_IS_AMBIGUOUS_FORMAT, searchName), str::iterator, lang);
 
         return null;
     }
