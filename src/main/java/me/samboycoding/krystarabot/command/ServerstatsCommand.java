@@ -41,7 +41,6 @@ public class ServerstatsCommand extends KrystaraCommand
         toSendServer += "\nRoles: " + numRolesGuild;
         toSendServer += "\nChannels: " + chnl.getGuild().getChannels().size();
         toSendServer += "\nMembers: " + chnl.getGuild().getUsers().size();
-        toSendServer += "\nMembers registered for codes: " + main.databaseHandler.getNumPeopleReceivingCodes(chnl.getGuild());
 
         int msgCount = 0;
         int cmdCount = 0;
