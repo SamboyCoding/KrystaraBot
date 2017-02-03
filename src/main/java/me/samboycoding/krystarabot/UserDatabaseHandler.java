@@ -52,10 +52,6 @@ public class UserDatabaseHandler
                     for (String id : server.keySet())
                     {
                         JSONObject usr = server.getJSONObject(id);
-                        if (!usr.has("ReceivesCodes") || usr.isNull("ReceivesCodes"))
-                        {
-                            usr.put("ReceivesCodes", false);
-                        }
                         newServer.put(id, usr);
                     }
 
@@ -91,10 +87,6 @@ public class UserDatabaseHandler
             for (String id : server.keySet())
             {
                 JSONObject usr = server.getJSONObject(id);
-                if (!usr.has("ReceivesCodes") || usr.isNull("ReceivesCodes"))
-                {
-                    usr.put("ReceivesCodes", false);
-                }
                 if (!usr.has("QuizScore") || usr.isNull("QuizScore"))
                 {
                     usr.put("QuizScore", 0);
@@ -108,7 +100,7 @@ public class UserDatabaseHandler
             main.logToBoth("Succesfully loaded user database from file!");
         } catch (IOException ex)
         {
-            main.logToBoth("Error reading codes file!");
+            main.logToBoth("Error reading user database file!");
             ex.printStackTrace();
         }
     }
@@ -167,7 +159,6 @@ public class UserDatabaseHandler
             newUser.put("messages", 1);
             newUser.put("name", usr.getName());
             newUser.put("commands", 0);
-            newUser.put("ReceivesCodes", false);
             newUser.put("QuizScore", amount);
             serverJSON.put(usr.getID(), newUser);
         } else
@@ -212,7 +203,6 @@ public class UserDatabaseHandler
             newUser.put("messages", 1);
             newUser.put("name", usr.getName());
             newUser.put("commands", 0);
-            newUser.put("ReceivesCodes", false);
             newUser.put("QuizScore", 0);
             serverJSON.put(usr.getID(), newUser);
         } else
@@ -247,7 +237,6 @@ public class UserDatabaseHandler
             newUser.put("messages", 1);
             newUser.put("name", usr.getName());
             newUser.put("commands", 1);
-            newUser.put("ReceivesCodes", false);
             newUser.put("QuizScore", 0);
             serverJSON.put(usr.getID(), newUser);
         } else
@@ -259,97 +248,6 @@ public class UserDatabaseHandler
             currentUser.put("commands", commands);
         }
         FileUtils.writeStringToFile(userDb, userDBJSON.toString(4), Charset.defaultCharset());
-    }
-
-    /**
-     * Sets whether the user receives codes via PM or not.
-     *
-     * @param server The server to set the value for
-     * @param usr The user to modify
-     * @param val Whether or not the user receives codes
-     * @throws IOException If the file cannot be written
-     */
-    public void setReceivesCodes(IGuild server, IUser usr, boolean val) throws IOException
-    {
-        if (!userDBJSON.has(server.getID()))
-        {
-            userDBJSON.put(server.getID(), new JSONObject());
-        }
-
-        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
-        if (serverJSON.isNull(usr.getID()))
-        {
-            //if key with sender id is NULL create new JSONObject for new user.
-            //Almost impossible, but could happen.
-
-            JSONObject newUser = new JSONObject();
-            newUser.put("messages", 0);
-            newUser.put("name", usr.getName());
-            newUser.put("commands", 0);
-            newUser.put("ReceivesCodes", val);
-            newUser.put("QuizScore", 0);
-            serverJSON.put(usr.getID(), newUser);
-        } else
-        {
-            //if key already exists, set the boolean
-            JSONObject currentUser = serverJSON.getJSONObject(usr.getID());
-            currentUser.put("ReceivesCodes", val);
-        }
-        FileUtils.writeStringToFile(userDb, userDBJSON.toString(4), Charset.defaultCharset());
-    }
-
-    /**
-     * Gets whether or not this user should receives codes via PM
-     *
-     * @param server The server to check
-     * @param usr The user to check
-     * @return True if the user should receive a PM, false if not or if the user
-     * is not found in the file.
-     */
-    public boolean getReceivesCodes(IGuild server, IUser usr)
-    {
-        if (!userDBJSON.has(server.getID()))
-        {
-            userDBJSON.put(server.getID(), new JSONObject());
-        }
-
-        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
-        if (serverJSON.isNull(usr.getID()))
-        {
-            return false;
-        } else
-        {
-            return serverJSON.getJSONObject(usr.getID()).getBoolean("ReceivesCodes");
-        }
-    }
-
-    /**
-     * Gets the number of users in the specified server that receive codes.
-     *
-     * @param server The server to search
-     * @return The number of users with "ReceivesCodes" set to true.
-     */
-    public int getNumPeopleReceivingCodes(IGuild server)
-    {
-        if (!userDBJSON.has(server.getID()))
-        {
-            return 0;
-        }
-
-        int count = 0;
-
-        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
-
-        for (String id : serverJSON.keySet())
-        {
-            JSONObject user = serverJSON.getJSONObject(id);
-            if (user.getBoolean("ReceivesCodes"))
-            {
-                count++;
-            }
-        }
-
-        return count;
     }
 
     /**
