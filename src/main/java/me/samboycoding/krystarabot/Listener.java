@@ -16,7 +16,7 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.impl.events.guild.member.NickNameChangeEvent;
+import sx.blah.discord.handle.impl.events.guild.member.NicknameChangedEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
@@ -24,7 +24,6 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MentionEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.Image;
@@ -38,7 +37,7 @@ import sx.blah.discord.util.RateLimitException;
  */
 public class Listener
 {
-
+    
     public static UserDatabaseHandler dbHandler = main.databaseHandler;
 
     //<editor-fold defaultstate="collapsed" desc="ReadyEvent handler">
@@ -74,11 +73,11 @@ public class Listener
         try
         {
             main.logToBoth("Setting status...");
-            cl.changeStatus(Status.game("?help"));
+            cl.changePlayingText("?help");
             main.logToBoth("My ID: " + main.getClient(null).getApplicationClientID());
             IDReference.MYID = main.getClient(null).getApplicationClientID();
             main.logToBoth("Registering commands...");
-
+            
             main.registerCommand(new BanCommand());
             main.registerCommand(new ClassCommand());
             main.registerCommand(new ClearCommand());
@@ -104,14 +103,14 @@ public class Listener
             main.registerCommand(new UserstatsCommand());
             main.registerCommand(new WarnCommand());
             main.registerCommand(new WeaponCommand());
-
+            
             String timestamp = "";
             Calendar now = main.getNow();
             timestamp += now.get(Calendar.DATE) + " of ";
             timestamp += new DateFormatSymbols().getMonths()[now.get(Calendar.MONTH)];
             timestamp += " " + now.get(Calendar.YEAR) + " at ";
             timestamp += main.getTimestamp("hh:mm:ss") + ".";
-
+            
             EmbedObject o = new EmbedBuilder()
                     .withAuthorName("KrystaraBot")
                     .withAuthorIcon("http://repo.samboycoding.me/static/krystarabot_icon.png")
@@ -119,9 +118,9 @@ public class Listener
                     .withDesc("Bot started on " + timestamp)
                     .withTitle("Hello, world!")
                     .build();
-
+            
             e.getClient().getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", o, false);
-
+            
             main.logToBoth("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
         {
@@ -137,7 +136,7 @@ public class Listener
         IMessage msg = e.getMessage();
         IUser sdr = msg.getAuthor();
         IChannel chnl = msg.getChannel();
-
+        
         try
         {
             if (chnl.isPrivate())
@@ -163,27 +162,27 @@ public class Listener
                 //Dev #bot-updates channel
                 return;
             }
-
+            
             if (chnl.equals(main.quizH.getQuizChannel()) && main.quizH.isQuizRunning())
             {
                 main.quizH.handleAnswer(msg);
                 return;
             }
-
+            
             String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
             String content = msg.getContent();
 
             //Message Counter
             dbHandler.countMessage(sdr, chnl.getGuild());
-
+            
             if (!content.startsWith("?"))
             {
                 //Not a command.
                 return;
             }
-
+            
             dbHandler.countCommand(sdr, chnl.getGuild());
-
+            
             String command;
             ArrayList<String> arguments = new ArrayList<>();
             String argumentsFull = "";
@@ -200,11 +199,11 @@ public class Listener
                 //Otherwise, leave them blank.
                 command = content.substring(1, content.length()).toLowerCase();
             }
-
+            
             main.logToBoth("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
             
             TreeMap<String, KrystaraCommand> commands = main.getCommands();
-
+            
             doCommand(commands, command, sdr, chnl, msg, arguments, argumentsFull);
         } catch (InvalidParameterException ipe)
         {
@@ -234,10 +233,10 @@ public class Listener
             try
             {
                 chnl.sendMessage("Something went wrong! Please direct one of the bot devs to the logs channel!");
-
+                
                 String exceptionName = ex.getClass().getName();
                 String fileName = ex.getStackTrace()[0].toString();
-
+                
                 chnl.getGuild().getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**Error Occurred** (" + (ex.getMessage() == null ? "No further information" : ex.getMessage()) + "): ```\n" + exceptionName + " occurred at " + fileName + "\n```");
                 ex.printStackTrace();
             } catch (Exception doubleException)
@@ -256,7 +255,7 @@ public class Listener
         // Localized; try to get a language
         String[] parts = command.split("\\.");
         command = parts[0];
-
+        
         if (!commands.containsKey(command))
         {
             throw new InvalidParameterException("Invalid command \"" + command + "\". Type `?help` for a list of commands.");
@@ -264,34 +263,31 @@ public class Listener
         
         KrystaraCommand commandObj = commands.get(command);
         Language lang = null;
-
+        
         if (parts.length > 1)
         {
             // User attempted to select a language; attempt to get the requested language
             lang = Language.fromShortCode(parts[1]);
         }
-
+        
         if ((lang == null) && commandObj.isLocalized())
         {
             // No language was explicitly selected, but default to the language of the current channel
             if (chnl.getID().equals(IDReference.CHATFRENCH))
             {
                 lang = Language.FRENCH;
-            }
-            else if (chnl.getID().equals(IDReference.CHATGERMAN))
+            } else if (chnl.getID().equals(IDReference.CHATGERMAN))
             {
                 lang = Language.GERMAN;
-            }
-            else if (chnl.getID().equals(IDReference.CHATITALIAN))
+            } else if (chnl.getID().equals(IDReference.CHATITALIAN))
             {
                 lang = Language.ITALIAN;
-            }
-            else if (chnl.getID().equals(IDReference.CHATSPANISH))
+            } else if (chnl.getID().equals(IDReference.CHATSPANISH))
             {
                 lang = Language.SPANISH;
             }
         }
-
+        
         if (lang != null)
         {
             if (!commandObj.isLocalized())
@@ -300,13 +296,12 @@ public class Listener
                 throw new InvalidParameterException("This command does not accept a language suffix.");
             }
             commands.get(command).handleCommand(sdr, chnl, msg, arguments, argumentsFull, lang);
-        }
-        else
+        } else
         {
             commands.get(command).handleCommand(sdr, chnl, msg, arguments, argumentsFull);
         }
     }
-
+    
     @EventSubscriber
     public void onJoin(UserJoinEvent e)
     {
@@ -314,7 +309,7 @@ public class Listener
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
             Utilities.logEvent(LogType.USERJOIN, "User **" + nameOfUser + "** has joined the server!");
-
+            
             if (e.getGuild().getUsers().size() % 100 == 0)
             {
                 Utilities.logEvent(LogType.MILESTONE, "The server now has " + e.getGuild().getUsers().size() + " users!");
@@ -324,7 +319,7 @@ public class Listener
             //Ignore.
         }
     }
-
+    
     @EventSubscriber
     public void talk(MentionEvent e) throws Exception
     {
@@ -337,7 +332,7 @@ public class Listener
         {
             //Message sent in bot-commands
             String message = e.getMessage().getContent().replace(main.getClient(null).getOurUser().mention() + " ", "");
-
+            
             e.getMessage().getChannel().setTypingStatus(true);
             String result = main.cleverBot.think(message);
             e.getMessage().getChannel().setTypingStatus(false);
@@ -356,29 +351,29 @@ public class Listener
             }
         }
     }
-
+    
     @EventSubscriber
     public void onLeave(UserLeaveEvent e)
     {
         try
         {
             String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
-
+            
             Utilities.logEvent(LogType.USERLEAVE, "User **" + nameOfUser + "** left the server!");
         } catch (Exception ignored)
         {
             //Ignore.
         }
     }
-
+    
     @EventSubscriber
-    public void onChangeName(NickNameChangeEvent e)
+    public void onChangeName(NicknameChangedEvent e)
     {
         try
         {
             String old = e.getOldNickname().isPresent() ? e.getOldNickname().get() : e.getUser().getName();
             String newName = e.getNewNickname().isPresent() ? e.getNewNickname().get() : e.getUser().getName();
-
+            
             Utilities.logEvent(LogType.RENAME, "User **" + old + "** changed their name to **" + newName + "**");
         } catch (Exception ignored)
         {

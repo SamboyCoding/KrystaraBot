@@ -31,7 +31,7 @@ public class TraitCommand extends KrystaraCommand
     {
         return true;
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {

@@ -82,8 +82,8 @@ public class AshClient
             T result = resultList.get(0);
 
             // Only one (fuzzy) match; assume it's correct but show a warning
-            String message = lang.localizeFormat(Language.LocString.NO_THING_FOUND_FORMAT, searchName) + " " +
-                lang.localizeFormat(Language.LocString.ASSUMING_THING_FORMAT, result.getName());
+            String message = lang.localizeFormat(Language.LocString.NO_THING_FOUND_FORMAT, searchName) + " "
+                    + lang.localizeFormat(Language.LocString.ASSUMING_THING_FORMAT, result.getName());
             chnl.sendMessage(message);
 
             return result;

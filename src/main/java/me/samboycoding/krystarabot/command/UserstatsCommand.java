@@ -10,8 +10,8 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Status;
 import static me.samboycoding.krystarabot.Listener.dbHandler;
+import sx.blah.discord.handle.obj.IPresence;
 
 /**
  *
@@ -51,7 +51,7 @@ public class UserstatsCommand extends KrystaraCommand
         String name = userstatsUsr.getName();
         String nickname = userstatsUsr.getNicknameForGuild(chnl.getGuild()).isPresent() ? userstatsUsr.getNicknameForGuild(chnl.getGuild()).get() : userstatsUsr.getName();
         Boolean hasNick = !name.equals(nickname);
-        Status state = userstatsUsr.getStatus();
+        IPresence state = userstatsUsr.getPresence();
         List<IRole> sdrRoles = userstatsUsr.getRolesForGuild(chnl.getGuild());
         int numRolesSdr = sdrRoles.size() - 1; //-1 to remove @everyone
         int messageCount = dbHandler.getMessageCountForUser(sdr, chnl.getGuild());
@@ -74,10 +74,10 @@ public class UserstatsCommand extends KrystaraCommand
         {
             toSend += "\nNickname: " + nickname;
         }
-        toSend += "\nIs playing: " + state.getType().equals(Status.StatusType.GAME);
-        toSend += "\nIs streaming: " + state.getType().equals(Status.StatusType.STREAM);
-        toSend += "\nStream URL: " + (state.getUrl().isPresent() ? state.getUrl().get() : "None");
-        toSend += "\nGame: " + (state.getStatusMessage() == null ? "nothing" : "\"" + state.getStatusMessage() + "\"");
+        toSend += "\nIs playing: " + state.getPlayingText().isPresent();
+        toSend += "\nIs streaming: " + state.getStreamingUrl().isPresent();
+        toSend += "\nStream URL: " + (state.getStreamingUrl().isPresent() ? state.getStreamingUrl().get() : "None");
+        toSend += "\nGame: " + (state.getPlayingText().isPresent() ? "\"" + state.getPlayingText().get() + "\"" : "nothing");
         toSend += "\nNumber of roles: " + numRolesSdr;
         toSend += "\nList of Roles: " + sdrRolesNice.toString();
         toSend += "\nMessages sent: " + messageCount;

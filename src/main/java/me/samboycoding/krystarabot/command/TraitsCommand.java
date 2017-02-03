@@ -35,7 +35,7 @@ public class TraitsCommand extends QuestionCommand
     {
         return true;
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -61,13 +61,12 @@ public class TraitsCommand extends QuestionCommand
         {
             return;
         }
-        
+
         Traitable traitable;
         if (traitableSummary instanceof HeroClass.Summary)
         {
             traitable = ((HeroClass.Summary) traitableSummary).getDetails(lang);
-        }
-        else
+        } else
         {
             traitable = ((Troop.Summary) traitableSummary).getDetails(lang);
         }
@@ -86,7 +85,7 @@ public class TraitsCommand extends QuestionCommand
                 .build();
         chnl.sendMessage("", o, false);
     }
-    
+
     private String getTraitText(Traitable.TraitSummary trait)
     {
         String text = "**" + trait.getName() + ":** " + trait.getDescription() + "\n";

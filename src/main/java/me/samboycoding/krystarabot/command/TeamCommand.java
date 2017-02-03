@@ -40,7 +40,7 @@ public class TeamCommand extends KrystaraCommand
     {
         return true;
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
@@ -166,9 +166,9 @@ public class TeamCommand extends KrystaraCommand
         teamString += "\n\n" + bannerString + manaColors + "\n\n" + url;
 
         EmbedBuilder b = new EmbedBuilder()
-            .withDesc(teamString)
-            .withTitle(teamName)
-            .withUrl(url);
+                .withDesc(teamString)
+                .withTitle(teamName)
+                .withUrl(url);
 
         if (kingdom != null)
         {
@@ -183,7 +183,7 @@ public class TeamCommand extends KrystaraCommand
             chnl.sendMessage(lang.localizeFormat(Language.LocString.ALSO_POSTED_IN_FORMAT, teamChannel.mention()));
             teamChannel.sendMessage("", o, false);
         }
-        
+
         chnl.setTypingStatus(false);
     }
 

@@ -8,6 +8,7 @@ import me.samboycoding.krystarabot.Language;
 
 public class Troop extends TeamMember implements Traitable, java.io.Serializable
 {
+
     private Troop()
     {
     }
@@ -19,12 +20,13 @@ public class Troop extends TeamMember implements Traitable, java.io.Serializable
 
     public static class Summary extends SummaryBase
     {
+
         public Troop getDetails(Language lang) throws IOException
         {
             return Troop.fromId(getId(), lang);
         }
     }
-    
+
     private static final long serialVersionUID = 1L;
     private String rarity = null;
     private String type = null;

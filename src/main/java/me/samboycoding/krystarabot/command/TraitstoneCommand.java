@@ -36,14 +36,14 @@ public class TraitstoneCommand extends KrystaraCommand
         Runic(Language.LocString.TRAITSTONE_RARITY_RUNIC),
         Arcane(Language.LocString.TRAITSTONE_RARITY_ARCANE),
         Celestial(Language.LocString.TRAITSTONE_RARITY_CELESTIAL);
-        
+
         Language.LocString locName;
-        
+
         Rarity(Language.LocString name)
         {
             locName = name;
         }
-        
+
         public String getName(Language lang)
         {
             return lang.localize(locName);
@@ -226,7 +226,7 @@ public class TraitstoneCommand extends KrystaraCommand
             rarity = r;
             colors = c;
         }
-        
+
         public String getName(Language lang)
         {
             return lang.localize(locName);
@@ -248,7 +248,7 @@ public class TraitstoneCommand extends KrystaraCommand
     {
         return true;
     }
-    
+
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {

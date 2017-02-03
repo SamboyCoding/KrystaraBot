@@ -8,6 +8,7 @@ import me.samboycoding.krystarabot.Language;
 
 public class Trait implements Nameable, java.io.Serializable
 {
+
     private Trait()
     {
     }
@@ -19,6 +20,7 @@ public class Trait implements Nameable, java.io.Serializable
 
     public static class Summary implements Nameable
     {
+
         private String code;
         private String name;
 

@@ -16,7 +16,7 @@ public enum Language
     FRENCH("fr", "fr-FR", "_fr"),
     ITALIAN("it", "it-IT", "_it"),
     SPANISH("es", "es-ES", "_es");
-    
+
     public enum LocString
     {
         ALSO_POSTED_IN_FORMAT,
@@ -103,22 +103,21 @@ public enum Language
         USED_BY_CLASSES,
         USED_BY_TROOPS,
         USED_BY_WEAPONS,
-        USER_CREATED_TEAM_FORMAT
-        ;
+        USER_CREATED_TEAM_FORMAT;
     }
-    
+
     private final String shortCode;
     private final String code;
     private final String propFileName;
     private Properties props;
-    
+
     Language(String shortCode, String code, String propFileName)
     {
         this.shortCode = shortCode;
         this.code = code;
         this.propFileName = propFileName;
     }
-    
+
     private java.util.Properties getProps() throws IOException
     {
         Properties props = new Properties();
@@ -126,7 +125,7 @@ public enum Language
         props.load(input);
         return props;
     }
-    
+
     public String getShortCode()
     {
         return this.shortCode;
@@ -136,7 +135,7 @@ public enum Language
     {
         return this.code;
     }
-    
+
     public String localize(LocString locStr)
     {
         if (props == null)
@@ -144,15 +143,14 @@ public enum Language
             try
             {
                 props = getProps();
-            }
-            catch (IOException e)
+            } catch (IOException e)
             {
                 main.logToBoth("Could not load " + this.name() + " string resources!");
                 return null;
             }
         }
-        
-        String result = (String)props.get(locStr.name());
+
+        String result = (String) props.get(locStr.name());
         if (StringUtils.isEmpty(result) && (this != ENGLISH))
         {
             main.logToBoth("Could not find " + this.name() + " string '" + locStr.name() + "', defaulting to English.");
@@ -160,12 +158,12 @@ public enum Language
         }
         return result;
     }
-    
+
     public String localizeFormat(LocString locStr, Object... args)
     {
         return String.format(localize(locStr), args);
     }
-    
+
     public static Language fromShortCode(String shortCode)
     {
         for (Language lang : values())
@@ -175,7 +173,7 @@ public enum Language
                 return lang;
             }
         }
-        
+
         throw new InvalidParameterException("Unrecognized language \"" + shortCode + "\".");
     }
 }

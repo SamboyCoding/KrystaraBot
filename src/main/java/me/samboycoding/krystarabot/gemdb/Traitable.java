@@ -11,21 +11,24 @@ import java.util.List;
 
 public interface Traitable extends Nameable
 {
+
     public static class TraitCost extends Traitstone.Summary
     {
+
         private int count = 0;
-        
+
         public int getCount()
         {
             return count;
         }
     }
-    
+
     public static class TraitSummary extends Trait.Summary
     {
+
         private ArrayList<TraitCost> costs = null;
         private String description = null;
-        
+
         public List<TraitCost> getCosts()
         {
             return Collections.unmodifiableList(this.costs);
@@ -36,9 +39,10 @@ public interface Traitable extends Nameable
             return description;
         }
     }
-    
+
     public List<TraitSummary> getTraits();
-    
+
     public String getImageUrl();
+
     public String getPageUrl();
 }

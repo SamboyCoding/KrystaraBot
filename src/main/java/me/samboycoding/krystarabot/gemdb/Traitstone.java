@@ -20,6 +20,7 @@ public class Traitstone implements Nameable, java.io.Serializable
 
     public static class Summary extends SummaryBase
     {
+
         public Traitstone getDetails(Language lang) throws IOException
         {
             return Traitstone.fromId(getId(), lang);

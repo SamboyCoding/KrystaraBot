@@ -28,7 +28,7 @@ public enum GemColor
         emoji = e;
         flag = f;
     }
-    
+
     public String getName(Language lang)
     {
         return lang.localize(locName);
