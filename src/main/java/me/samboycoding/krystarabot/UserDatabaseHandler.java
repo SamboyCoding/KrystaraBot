@@ -167,7 +167,7 @@ public class UserDatabaseHandler
             int current = currentUser.getInt("QuizScore");
             current += amount;
             currentUser.put("QuizScore", current);
-            if (current > 5000)
+            if (current > 1500)
             {
                 //Quiz Master!
                 IRole qMaster = server.getRoleByID(IDReference.QUIZMASTERROLE);
@@ -175,7 +175,7 @@ public class UserDatabaseHandler
                 if (!currentRoles.contains(qMaster))
                 {
                     usr.addRole(qMaster);
-                    server.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("Congratulations to " + usr.mention() + " on reaching 5000 points! You are now a quiz master!");
+                    server.getChannelByID(IDReference.GLOBALCHANNEL).sendMessage("Congratulations to " + usr.mention() + " on reaching 1500 quiz points! You are now a quiz master!");
                 }
             }
         }
