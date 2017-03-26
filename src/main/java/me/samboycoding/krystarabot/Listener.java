@@ -169,7 +169,7 @@ public class Listener
                 return;
             }
             
-            String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
+            String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()) != null ? sdr.getNicknameForGuild(msg.getGuild()) : sdr.getName();
             String content = msg.getContent();
 
             //Message Counter
@@ -307,7 +307,7 @@ public class Listener
     {
         try
         {
-            String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
+            String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()) != null ? e.getUser().getNicknameForGuild(e.getGuild()) : e.getUser().getName();
             Utilities.logEvent(LogType.USERJOIN, "User **" + nameOfUser + "** has joined the server!");
             
             if (e.getGuild().getUsers().size() % 100 == 0)
@@ -357,7 +357,7 @@ public class Listener
     {
         try
         {
-            String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()).isPresent() ? e.getUser().getNicknameForGuild(e.getGuild()).get() : e.getUser().getName();
+            String nameOfUser = e.getUser().getNicknameForGuild(e.getGuild()) != null ? e.getUser().getNicknameForGuild(e.getGuild()) : e.getUser().getName();
             
             Utilities.logEvent(LogType.USERLEAVE, "User **" + nameOfUser + "** left the server!");
         } catch (Exception ignored)

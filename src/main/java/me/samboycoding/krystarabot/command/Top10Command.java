@@ -89,7 +89,7 @@ public class Top10Command extends KrystaraCommand
                 int numSpaces = 60;
                 for (IUser u : ordered.descendingKeySet())
                 {
-                    String usrName = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
+                    String usrName = (u.getNicknameForGuild(chnl.getGuild()) != null ? u.getNicknameForGuild(chnl.getGuild()) : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
                     count++;
 
                     toSend += "\n" + usrName + Utilities.repeatString(" ", numSpaces - usrName.length()) + unordered.get(u);
@@ -120,7 +120,7 @@ public class Top10Command extends KrystaraCommand
                 numSpaces = 60;
                 for (IUser u : ordered.descendingKeySet())
                 {
-                    String usrName = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
+                    String usrName = (u.getNicknameForGuild(chnl.getGuild()) != null ? u.getNicknameForGuild(chnl.getGuild()) : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
                     count1++;
 
                     toSend1 += "\n" + usrName + Utilities.repeatString(" ", numSpaces - usrName.length()) + unordered.get(u);

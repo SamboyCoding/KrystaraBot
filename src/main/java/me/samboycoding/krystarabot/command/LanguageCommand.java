@@ -31,7 +31,7 @@ public class LanguageCommand extends KrystaraCommand
             return;
         }
 
-        String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
+        String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()) != null ? sdr.getNicknameForGuild(msg.getGuild()) : sdr.getName();
 
         if (arguments.size() < 1)
         {

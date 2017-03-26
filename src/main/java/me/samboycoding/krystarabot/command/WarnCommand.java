@@ -2,7 +2,6 @@ package me.samboycoding.krystarabot.command;
 
 import java.util.ArrayList;
 import static me.samboycoding.krystarabot.command.CommandType.MOD;
-import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
@@ -24,7 +23,7 @@ public class WarnCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
+        String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()) != null ? sdr.getNicknameForGuild(msg.getGuild()) : sdr.getName();
 
         if (arguments.size() < 2)
         {
@@ -40,7 +39,7 @@ public class WarnCommand extends KrystaraCommand
                 return;
             }
 
-            String nameOfUser = usr.getNicknameForGuild(msg.getGuild()).isPresent() ? usr.getNicknameForGuild(msg.getGuild()).get() : usr.getName();
+            String nameOfUser = usr.getNicknameForGuild(msg.getGuild()) != null ? usr.getNicknameForGuild(msg.getGuild()) : usr.getName();
 
             @SuppressWarnings("unchecked")
             ArrayList<String> messageArray = (ArrayList<String>) arguments.clone();

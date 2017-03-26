@@ -49,7 +49,7 @@ public class UserstatsCommand extends KrystaraCommand
             }
         }
         String name = userstatsUsr.getName();
-        String nickname = userstatsUsr.getNicknameForGuild(chnl.getGuild()).isPresent() ? userstatsUsr.getNicknameForGuild(chnl.getGuild()).get() : userstatsUsr.getName();
+        String nickname = userstatsUsr.getNicknameForGuild(chnl.getGuild()) != null ? userstatsUsr.getNicknameForGuild(chnl.getGuild()) : userstatsUsr.getName();
         Boolean hasNick = !name.equals(nickname);
         IPresence state = userstatsUsr.getPresence();
         List<IRole> sdrRoles = userstatsUsr.getRolesForGuild(chnl.getGuild());

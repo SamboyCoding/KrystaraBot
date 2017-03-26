@@ -7,7 +7,7 @@ import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.MessageList;
+import sx.blah.discord.util.MessageHistory;
 
 /**
  *
@@ -24,11 +24,10 @@ public class ClearCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
+        String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()) != null ? sdr.getNicknameForGuild(msg.getGuild()) : sdr.getName();
 
         try
         {
-            MessageList msgs = chnl.getMessages();
             if (arguments.size() < 1)
             {
                 chnl.sendMessage(sdr.mention() + ", that command needs an argument (a number between 1 and 100)");
@@ -42,6 +41,8 @@ public class ClearCommand extends KrystaraCommand
                 return;
             }
 
+            MessageHistory msgs = chnl.getMessageHistory(amount + 1);
+            
             if (amount == 1)
             {
                 //Cannot delete one with .bulkDelete()
@@ -65,9 +66,11 @@ public class ClearCommand extends KrystaraCommand
                 //Ignored
             }
 
+            toDelete.remove(0);
+            
             if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
             {
-                msgs.bulkDelete(toDelete);
+                chnl.bulkDelete(toDelete);
                 Utilities.cleanupMessage(chnl.sendMessage(toDelete.size() + " messages deleted (out of " + amount + " requested). This message will self-destruct in 10 seconds..."), 10000);
 
                 Utilities.logEvent(LogType.MESSAGEDELETE, "**" + nameOfSender + "** cleared " + toDelete.size() + " messages from channel **" + chnl.getName() + "**");

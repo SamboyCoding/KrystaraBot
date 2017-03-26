@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Random;
 import me.samboycoding.krystarabot.main;
 import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Easy;
@@ -418,7 +416,7 @@ public class QuizQuestionTimer implements Runnable
         for (IUser u : main.quizH.ordered.descendingKeySet())
         {
             Integer score = main.quizH.unordered.get(u);
-            String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()).isPresent() ? u.getNicknameForGuild(chnl.getGuild()).get() : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();;
+            String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()) != null ? u.getNicknameForGuild(chnl.getGuild()) : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();;
 
             main.databaseHandler.increaseUserQuizScore(u, chnl.getGuild(), score);
             if (numDone <= 10)
@@ -592,8 +590,8 @@ public class QuizQuestionTimer implements Runnable
                 if (entry.result == QuizSubmitResult.Correct
                         || entry.result == QuizSubmitResult.FirstCorrect)
                 {
-                    String name = entry.user.getNicknameForGuild(chnl.getGuild()).isPresent()
-                            ? entry.user.getNicknameForGuild(chnl.getGuild()).get() : entry.user.getName();
+                    String name = entry.user.getNicknameForGuild(chnl.getGuild()) != null
+                            ? entry.user.getNicknameForGuild(chnl.getGuild()) : entry.user.getName();
 
                     if (entry.result == QuizSubmitResult.FirstCorrect)
                     {

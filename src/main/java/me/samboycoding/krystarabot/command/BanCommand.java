@@ -28,7 +28,7 @@ public class BanCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()).isPresent() ? sdr.getNicknameForGuild(msg.getGuild()).get() : sdr.getName();
+        String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()) != null ? sdr.getNicknameForGuild(msg.getGuild()) : sdr.getName();
 
         if (arguments.size() < 1)
         {
@@ -46,7 +46,7 @@ public class BanCommand extends KrystaraCommand
                 return;
             }
 
-            String nameOfUser = usr.getNicknameForGuild(msg.getGuild()).isPresent() ? usr.getNicknameForGuild(msg.getGuild()).get() : usr.getName();
+            String nameOfUser = usr.getNicknameForGuild(msg.getGuild()) != null ? usr.getNicknameForGuild(msg.getGuild()) : usr.getName();
 
             chnl.getGuild().banUser(usr);
 
