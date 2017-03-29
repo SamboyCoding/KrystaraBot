@@ -141,7 +141,7 @@ public class UserDatabaseHandler
      * cannot add roles, but needs too
      * @throws sx.blah.discord.util.RateLimitException If the bot is rate
      * limited
-     * @throws sx.blah.discord.util.DiscordException If something else does
+     * @throws sx.blah.discord.util.DiscordException If something else goes
      * wrong
      */
     public void increaseUserQuizScore(IUser usr, IGuild server, int amount) throws IOException, MissingPermissionsException, RateLimitException, DiscordException
@@ -165,9 +165,9 @@ public class UserDatabaseHandler
         { //if key already exists, increase message counter
             JSONObject currentUser = serverJSON.getJSONObject(usr.getID());
             int current = currentUser.getInt("QuizScore");
-            current += amount;
-            currentUser.put("QuizScore", current);
-            if (current > 1500)
+            int newVal = current + amount;
+            currentUser.put("QuizScore", newVal);
+            if (newVal >= 1500 && current < 1500)
             {
                 //Quiz Master!
                 IRole qMaster = server.getRoleByID(IDReference.QUIZMASTERROLE);
