@@ -27,7 +27,7 @@ public class AshClient
 
     public static <T> T query(String apiPathAndQuery, Class<T> c, Language lang) throws IOException
     {
-        URL url = new URL("http://ashtender.com/gems/" + lang.getCode() + "/api/" + apiPathAndQuery);
+        URL url = new URL("http://gowdb.com/" + lang.getCode() + "/api/" + apiPathAndQuery);
         URLConnection con = url.openConnection();
         InputStream in = con.getInputStream();
         String encoding = con.getContentEncoding();

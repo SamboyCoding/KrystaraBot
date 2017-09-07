@@ -152,7 +152,7 @@ public class TeamCommand extends KrystaraCommand
         String manaColors = lang.localize(Language.LocString.TEAM_USES_THESE_COLORS) + " " + String.join(" ", gemColorEmojis);
 
         String bannerString = "";
-        String url = "http://ashtender.com/gems/teams/" + String.join(",", troopIds);
+        String url = "http://gowdb.com/teams/" + String.join(",", troopIds);
 
         if (kingdom != null)
         {
