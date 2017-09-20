@@ -37,7 +37,7 @@ public class BanCommand extends KrystaraCommand
         }
         if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
-            String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
+            long id = Long.parseLong(arguments.get(0).replace("<@", "").replace("!", "").replace(">", ""));
             IUser usr = chnl.getGuild().getUserByID(id);
 
             if (usr == null)
