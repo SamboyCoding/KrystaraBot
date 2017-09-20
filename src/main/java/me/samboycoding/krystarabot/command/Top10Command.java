@@ -1,18 +1,15 @@
 package me.samboycoding.krystarabot.command;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
-import static me.samboycoding.krystarabot.command.CommandType.SERVER;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.Main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.util.*;
+
+import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 
 /**
  * Represents the ?top10 command
@@ -61,80 +58,62 @@ public class Top10Command extends KrystaraCommand
         }
 
         LinkedHashMap<IUser, Integer> unordered = new LinkedHashMap<>();
-        ValueComparator comp = new ValueComparator((Map<IUser, Integer>) unordered);
+        ValueComparator comp = new ValueComparator(unordered);
         TreeMap<IUser, Integer> ordered = new TreeMap<>(comp);
 
         // Ignore bot and bot-dev IDs
         ArrayList<String> ignoreIds = new ArrayList<>(Arrays.asList(
-                IDReference.MYID, "190663943260340224", "102450956045668352", "234202516676542464"
+                IDReference.MYID + "", "190663943260340224", "102450956045668352", "234202516676542464"
         ));
 
         switch (operation)
         {
             case "messages":
 
-                main.databaseHandler.getUserIDList(chnl.getGuild()).stream().filter((id)
+                Main.databaseHandler.getUserIDList(chnl.getGuild()).stream().filter((id)
                         -> !(ignoreIds.contains(id))).map((id)
-                        -> chnl.getGuild().getUserByID(id)).forEach((current)
-                        ->
-                {
-                    unordered.put(current, main.databaseHandler.getMessageCountForUser(current, chnl.getGuild()));
-                });
+                        -> chnl.getGuild().getUserByID(Long.parseLong(id))).forEach((current)
+                        -> unordered.put(current, Main.databaseHandler.getMessageCountForUser(current, chnl.getGuild())));
 
                 ordered.putAll(unordered); //Now it's sorted, by values
 
-                String toSend = "```\nTOP 10 USERS (BY MESSAGE COUNT) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Number of messages\n";
-
-                int count = 0;
-                int numSpaces = 60;
-                for (IUser u : ordered.descendingKeySet())
-                {
-                    String usrName = (u.getNicknameForGuild(chnl.getGuild()) != null ? u.getNicknameForGuild(chnl.getGuild()) : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
-                    count++;
-
-                    toSend += "\n" + usrName + Utilities.repeatString(" ", numSpaces - usrName.length()) + unordered.get(u);
-                    if (count > 10)
-                    {
-                        break;
-                    }
-                }
-
-                toSend += "\n```";
-
-                chnl.sendMessage(toSend);
                 break;
             case "quiz":
 
-                main.databaseHandler.getUserIDList(chnl.getGuild()).stream().filter((id) -> !(id.equals(IDReference.MYID))).map((id) -> chnl.getGuild().getUserByID(id)).forEach((current)
+                Main.databaseHandler.getUserIDList(chnl.getGuild()).stream().filter((id) -> (Long.parseLong(id) != IDReference.MYID)).map((id) -> chnl.getGuild().getUserByID(Long.parseLong(id))).forEach((current)
                         ->
                 {
                     //Skip the bot.
-                    unordered.put(current, main.databaseHandler.getQuizScore(current, chnl.getGuild()));
+                    unordered.put(current, Main.databaseHandler.getQuizScore(current, chnl.getGuild()));
                 });
 
                 ordered.putAll(unordered); //Now it's sorted, by values
 
                 String toSend1 = "```\nTOP 10 USERS (BY QUIZ SCORE) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Quiz Score\n";
 
-                int count1 = 0;
-                numSpaces = 60;
-                for (IUser u : ordered.descendingKeySet())
-                {
-                    String usrName = (u.getNicknameForGuild(chnl.getGuild()) != null ? u.getNicknameForGuild(chnl.getGuild()) : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
-                    count1++;
-
-                    toSend1 += "\n" + usrName + Utilities.repeatString(" ", numSpaces - usrName.length()) + unordered.get(u);
-                    if (count1 > 10)
-                    {
-                        break;
-                    }
-                }
-
                 toSend1 += "\n```";
 
                 chnl.sendMessage(toSend1);
                 break;
         }
+        StringBuilder toSend = new StringBuilder("```\nTOP 10 USERS (BY MESSAGE COUNT) IN SERVER\nName" + Utilities.repeatString(" ", 56) + "Number of messages\n");
+
+        int count = 0;
+        int numSpaces = 60;
+
+        for (IUser u : ordered.descendingKeySet()) {
+            String usrName = (u.getNicknameForGuild(chnl.getGuild()) != null ? u.getNicknameForGuild(chnl.getGuild()) : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
+            count++;
+
+            toSend.append("\n").append(usrName).append(Utilities.repeatString(" ", numSpaces - usrName.length())).append(unordered.get(u));
+            if (count > 10) {
+                break;
+            }
+        }
+
+        toSend.append("\n```");
+
+        chnl.sendMessage(toSend.toString());
     }
 
     @Override

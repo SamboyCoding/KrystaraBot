@@ -1,26 +1,20 @@
 package me.samboycoding.krystarabot.utilities;
 
-import java.awt.Color;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 import me.samboycoding.krystarabot.Language;
-import me.samboycoding.krystarabot.main;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
+import me.samboycoding.krystarabot.Main;
+import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
+
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.util.*;
+import java.util.List;
 
 /**
  * Various utilities
@@ -62,21 +56,21 @@ public class Utilities
                     .withDesc(text);
         }
 
-        main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", bldr.build(), false);
+        Main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", bldr.build(), false);
     }
 
     @FunctionalInterface
     public interface WaitCallback
     {
 
-        public void run() throws InterruptedException;
+        void run() throws InterruptedException;
     }
 
     @FunctionalInterface
     private interface SafeOperation
     {
 
-        public IMessage run() throws MissingPermissionsException, RateLimitException, DiscordException;
+        IMessage run() throws MissingPermissionsException, RateLimitException, DiscordException;
     }
 
     private static IMessage doSafeOperation(SafeOperation op, WaitCallback waitCallback)

@@ -1,12 +1,14 @@
 package me.samboycoding.krystarabot.command;
 
-import java.util.ArrayList;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.util.ArrayList;
+
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 
 /**
  *
@@ -25,15 +27,14 @@ public class KickCommand extends KrystaraCommand
     {
         String nameOfSender = sdr.getNicknameForGuild(msg.getGuild()) != null ? sdr.getNicknameForGuild(msg.getGuild()) : sdr.getName();
 
-        if (arguments.size() < 1)
+        if (msg.getMentions().size() < 1)
         {
             chnl.sendMessage("You need an @mention of a user to kick!");
             return;
         }
         if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
-            String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
-            IUser usr = chnl.getGuild().getUserByID(id);
+            IUser usr = msg.getMentions().get(0);
 
             if (usr == null)
             {

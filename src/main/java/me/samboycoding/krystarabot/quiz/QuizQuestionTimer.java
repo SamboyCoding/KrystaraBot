@@ -1,14 +1,6 @@
 package me.samboycoding.krystarabot.quiz;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Random;
-import me.samboycoding.krystarabot.main;
-import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Easy;
-import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Hard;
-import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.Moderate;
+import me.samboycoding.krystarabot.Main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import org.apache.commons.io.FilenameUtils;
@@ -18,6 +10,14 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Random;
+
+import static me.samboycoding.krystarabot.quiz.QuizQuestion.Difficulty.*;
 
 /**
  * The thread that handles the asking/answering of questions
@@ -235,7 +235,7 @@ public class QuizQuestionTimer implements Runnable
             {
                 if (el.getClassName().equals(QuizQuestionTimer.class.getName()))
                 {
-                    main.logToBoth("[Error] [Quiz] Rate limited! Line " + el.getLineNumber() + " limited for " + rle.getRetryDelay() + " ms.");
+                    Main.logToBoth("[Error] [Quiz] Rate limited! Line " + el.getLineNumber() + " limited for " + rle.getRetryDelay() + " ms.");
                     success = true;
                 }
             }
@@ -243,7 +243,7 @@ public class QuizQuestionTimer implements Runnable
             if (!success)
             {
                 //Failed to provide meaningful error.
-                main.logToBoth("Rate limited, but not us, but happening in us?! For: " + rle.getRetryDelay() + ". Stacktrace: ");
+                Main.logToBoth("Rate limited, but not us, but happening in us?! For: " + rle.getRetryDelay() + ". Stacktrace: ");
                 rle.printStackTrace();
             }
 
@@ -408,17 +408,17 @@ public class QuizQuestionTimer implements Runnable
         Utilities.sendLargeMessage(chnl, quizLog, waitCallback);
         sleepFor(1000);
 
-        main.quizH.ordered.putAll(main.quizH.unordered); //Sort.
+        Main.quizH.ordered.putAll(Main.quizH.unordered); //Sort.
 
         String scores = "```\nName" + Utilities.repeatString(" ", 46) + "Score"
                 + "\n" + Utilities.repeatString("-", 80);
         int numDone = 0;
-        for (IUser u : main.quizH.ordered.descendingKeySet())
+        for (IUser u : Main.quizH.ordered.descendingKeySet())
         {
-            Integer score = main.quizH.unordered.get(u);
-            String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()) != null ? u.getNicknameForGuild(chnl.getGuild()) : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();;
+            Integer score = Main.quizH.unordered.get(u);
+            String nameOfUser = (u.getNicknameForGuild(chnl.getGuild()) != null ? u.getNicknameForGuild(chnl.getGuild()) : u.getName()).replaceAll("[^A-Za-z0-9 ]", "").trim();
 
-            main.databaseHandler.increaseUserQuizScore(u, chnl.getGuild(), score);
+            Main.databaseHandler.increaseUserQuizScore(u, chnl.getGuild(), score);
             if (numDone <= 10)
             {
                 scores += "\n" + nameOfUser + Utilities.repeatString(" ", 50 - nameOfUser.length()) + score;

@@ -18,7 +18,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>me.samboycoding.krystarabot.main</mainClass>
+                    <mainClass>me.samboycoding.krystarabot.Main</mainClass>
                 </transformer>
               </transformers>
               <filters>

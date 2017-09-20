@@ -1,16 +1,17 @@
 package me.samboycoding.krystarabot.command;
 
-import java.util.ArrayList;
-import java.util.List;
-import static me.samboycoding.krystarabot.command.CommandType.SERVER;
-import me.samboycoding.krystarabot.main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static me.samboycoding.krystarabot.Listener.dbHandler;
+import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 
 /**
  * Represents the ?serverstats command
@@ -28,7 +29,7 @@ public class ServerstatsCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        if (chnl.getLongID() != IDReference.BOTCOMMANDSCHANNEL && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             sdr.getOrCreatePMChannel().sendMessage("To reduce spam, serverstats can only be used in the #bot-commands channel. Thanks!");
             return;
@@ -46,8 +47,8 @@ public class ServerstatsCommand extends KrystaraCommand
         int cmdCount = 0;
         for (String id : dbHandler.getUserIDList(chnl.getGuild()))
         {
-            msgCount += dbHandler.getMessageCountForUser(chnl.getGuild().getUserByID(id), chnl.getGuild());
-            cmdCount += dbHandler.getCommandCountForUser(chnl.getGuild().getUserByID(id), chnl.getGuild());
+            msgCount += dbHandler.getMessageCountForUser(chnl.getGuild().getUserByID(Long.parseLong(id)), chnl.getGuild());
+            cmdCount += dbHandler.getCommandCountForUser(chnl.getGuild().getUserByID(Long.parseLong(id)), chnl.getGuild());
         }
 
         toSendServer += "\nMessages sent: " + msgCount;

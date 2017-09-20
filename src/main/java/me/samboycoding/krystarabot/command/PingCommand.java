@@ -1,12 +1,14 @@
 package me.samboycoding.krystarabot.command;
 
-import java.time.ZoneId;
-import java.util.ArrayList;
-import static me.samboycoding.krystarabot.command.CommandType.SERVER;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.Main;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.time.ZoneId;
+import java.util.ArrayList;
+
+import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 
 /**
  * Represents the ?ping command
@@ -25,14 +27,14 @@ public class PingCommand extends KrystaraCommand
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
         msg.delete();
-        long lagTime = ((Long) (msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis()));
+        long lagTime = msg.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         /*if (lagTime < 0)
         {
-            main.logToBoth("Negative ping time?! Flipping.... Was: " + lagTime);
+            Main.logToBoth("Negative ping time?! Flipping.... Was: " + lagTime);
             lagTime = (long) Math.sqrt(lagTime * lagTime); //Makes it positive.
-            main.logToBoth("Is: " + lagTime);
+            Main.logToBoth("Is: " + lagTime);
         }*/
-        main.logToBoth("Pong!");
+        Main.logToBoth("Pong!");
         chnl.sendMessage("Pong! `" + lagTime + "ms lag`.");
     }
 

@@ -1,13 +1,11 @@
 package me.samboycoding.krystarabot;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.Properties;
-import me.samboycoding.krystarabot.command.TraitstoneCommand;
-import me.samboycoding.krystarabot.gemdb.GemColor;
-import org.apache.commons.lang3.StringUtils;
 
 public enum Language
 {
@@ -16,6 +14,50 @@ public enum Language
     FRENCH("fr", "fr-FR", "_fr"),
     ITALIAN("it", "it-IT", "_it"),
     SPANISH("es", "es-ES", "_es");
+
+    public String localize(LocString locStr) {
+        if (props == null) {
+            try {
+                props = getProps();
+            } catch (IOException e) {
+                Main.logToBoth("Could not load " + this.name() + " string resources!");
+                return null;
+            }
+        }
+
+        String result = (String) props.get(locStr.name());
+        if (StringUtils.isEmpty(result) && (this != ENGLISH)) {
+            Main.logToBoth("Could not find " + this.name() + " string '" + locStr.name() + "', defaulting to English.");
+            result = ENGLISH.localize(locStr);
+        }
+        return result;
+    }
+
+    private final String shortCode;
+    private final String code;
+    private final String propFileName;
+    private Properties props;
+
+    Language(String shortCode, String code, String propFileName) {
+        this.shortCode = shortCode;
+        this.code = code;
+        this.propFileName = propFileName;
+    }
+
+    private java.util.Properties getProps() throws IOException {
+        Properties props = new Properties();
+        InputStream input = Language.class.getClassLoader().getResourceAsStream("Messages" + this.propFileName + ".properties");
+        props.load(input);
+        return props;
+    }
+
+    public String getShortCode() {
+        return this.shortCode;
+    }
+
+    public String getCode() {
+        return this.code;
+    }
 
     public enum LocString
     {
@@ -103,60 +145,7 @@ public enum Language
         USED_BY_CLASSES,
         USED_BY_TROOPS,
         USED_BY_WEAPONS,
-        USER_CREATED_TEAM_FORMAT;
-    }
-
-    private final String shortCode;
-    private final String code;
-    private final String propFileName;
-    private Properties props;
-
-    Language(String shortCode, String code, String propFileName)
-    {
-        this.shortCode = shortCode;
-        this.code = code;
-        this.propFileName = propFileName;
-    }
-
-    private java.util.Properties getProps() throws IOException
-    {
-        Properties props = new Properties();
-        InputStream input = Language.class.getClassLoader().getResourceAsStream("Messages" + this.propFileName + ".properties");
-        props.load(input);
-        return props;
-    }
-
-    public String getShortCode()
-    {
-        return this.shortCode;
-    }
-
-    public String getCode()
-    {
-        return this.code;
-    }
-
-    public String localize(LocString locStr)
-    {
-        if (props == null)
-        {
-            try
-            {
-                props = getProps();
-            } catch (IOException e)
-            {
-                main.logToBoth("Could not load " + this.name() + " string resources!");
-                return null;
-            }
-        }
-
-        String result = (String) props.get(locStr.name());
-        if (StringUtils.isEmpty(result) && (this != ENGLISH))
-        {
-            main.logToBoth("Could not find " + this.name() + " string '" + locStr.name() + "', defaulting to English.");
-            result = ENGLISH.localize(locStr);
-        }
-        return result;
+        USER_CREATED_TEAM_FORMAT
     }
 
     public String localizeFormat(LocString locStr, Object... args)

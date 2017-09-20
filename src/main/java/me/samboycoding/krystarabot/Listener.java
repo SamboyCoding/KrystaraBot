@@ -1,34 +1,31 @@
 package me.samboycoding.krystarabot;
 
-import java.awt.Color;
-import java.security.InvalidParameterException;
-import java.text.DateFormatSymbols;
-import me.samboycoding.krystarabot.utilities.IDReference;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.TreeMap;
 import me.samboycoding.krystarabot.command.*;
-import static me.samboycoding.krystarabot.utilities.IDReference.RuntimeEnvironment.DEV;
+import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
+import sx.blah.discord.handle.impl.events.ReadyEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MentionEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.NicknameChangedEvent;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MentionEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.EmbedBuilder;
+import sx.blah.discord.util.*;
 import sx.blah.discord.util.Image;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
+
+import java.awt.*;
+import java.security.InvalidParameterException;
+import java.text.DateFormatSymbols;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.TreeMap;
 
 /**
  * Main event listener
@@ -37,79 +34,79 @@ import sx.blah.discord.util.RateLimitException;
  */
 public class Listener
 {
-    
-    public static UserDatabaseHandler dbHandler = main.databaseHandler;
+
+    public static UserDatabaseHandler dbHandler = Main.databaseHandler;
 
     //<editor-fold defaultstate="collapsed" desc="ReadyEvent handler">
     @EventSubscriber
     public void onReady(ReadyEvent e) throws DiscordException, RateLimitException, MissingPermissionsException
     {
-        IDiscordClient cl = main.getClient(null);
-        main.logToBoth("Beginning ReadyEvent Init...");
+        IDiscordClient cl = Main.getClient(null);
+        Main.logToBoth("Beginning ReadyEvent Init...");
         try
         {
-            main.logToBoth("Attempting to change username, please wait...");
+            Main.logToBoth("Attempting to change username, please wait...");
             switch (IDReference.ENVIRONMENT)
             {
                 case LIVE:
-                    main.logToBoth("Logging in to LIVE server.");
+                    Main.logToBoth("Logging in to LIVE server.");
                     cl.changeUsername("Krystara");
                     break;
                 case DEV:
-                    main.logToBoth("Logging in to TESTING server.");
+                    Main.logToBoth("Logging in to TESTING server.");
                     cl.changeUsername("Krystara *Testing*");
                     break;
                 default:
-                    main.logToBoth("Logging in to LYYATESTING server.");
+                    Main.logToBoth("Logging in to LYYATESTING server.");
                     cl.changeUsername("Krystara *LyyaTesting*");
                     break;
             }
-            main.logToBoth("Changing image...");
+            Main.logToBoth("Changing image...");
             cl.changeAvatar(Image.forUrl("png", "http://repo.samboycoding.me/static/krystarabot_icon.png"));
         } catch (DiscordException ex)
         {
-            main.logToBoth("Failed to change username. Rate limited most likely. Message: " + ex.getMessage());
+            Main.logToBoth("Failed to change username. Rate limited most likely. Message: " + ex.getMessage());
         }
         try
         {
-            main.logToBoth("Setting status...");
+            Main.logToBoth("Setting status...");
             cl.changePlayingText("?help");
-            main.logToBoth("My ID: " + main.getClient(null).getApplicationClientID());
-            IDReference.MYID = main.getClient(null).getApplicationClientID();
-            main.logToBoth("Registering commands...");
-            
-            main.registerCommand(new BanCommand());
-            main.registerCommand(new ClassCommand());
-            main.registerCommand(new ClearCommand());
-            main.registerCommand(new HelpCommand());
-            main.registerCommand(new KickCommand());
-            main.registerCommand(new KingdomCommand());
-            main.registerCommand(new LanguageCommand());
-            main.registerCommand(new ListQuestionsCommand());
-            main.registerCommand(new PingCommand());
-            main.registerCommand(new PlatformCommand());
-            main.registerCommand(new QuestionCommand());
-            main.registerCommand(new QuizCommand());
-            main.registerCommand(new SearchCommand());
-            main.registerCommand(new ServerstatsCommand());
-            main.registerCommand(new SpellCommand());
-            main.registerCommand(new StopQuizCommand());
-            main.registerCommand(new TeamCommand());
-            main.registerCommand(new Top10Command());
-            main.registerCommand(new TraitCommand());
-            main.registerCommand(new TraitsCommand());
-            main.registerCommand(new TraitstoneCommand());
-            main.registerCommand(new TroopCommand());
-            main.registerCommand(new UserstatsCommand());
-            main.registerCommand(new WarnCommand());
-            main.registerCommand(new WeaponCommand());
+            Main.logToBoth("My ID: " + Main.getClient(null).getApplicationClientID());
+            IDReference.MYID = Main.getClient(null).getOurUser().getLongID();
+            Main.logToBoth("Registering commands...");
+
+            Main.registerCommand(new BanCommand());
+            Main.registerCommand(new ClassCommand());
+            Main.registerCommand(new ClearCommand());
+            Main.registerCommand(new HelpCommand());
+            Main.registerCommand(new KickCommand());
+            Main.registerCommand(new KingdomCommand());
+            Main.registerCommand(new LanguageCommand());
+            Main.registerCommand(new ListQuestionsCommand());
+            Main.registerCommand(new PingCommand());
+            Main.registerCommand(new PlatformCommand());
+            Main.registerCommand(new QuestionCommand());
+            Main.registerCommand(new QuizCommand());
+            Main.registerCommand(new SearchCommand());
+            Main.registerCommand(new ServerstatsCommand());
+            Main.registerCommand(new SpellCommand());
+            Main.registerCommand(new StopQuizCommand());
+            Main.registerCommand(new TeamCommand());
+            Main.registerCommand(new Top10Command());
+            Main.registerCommand(new TraitCommand());
+            Main.registerCommand(new TraitsCommand());
+            Main.registerCommand(new TraitstoneCommand());
+            Main.registerCommand(new TroopCommand());
+            Main.registerCommand(new UserstatsCommand());
+            Main.registerCommand(new WarnCommand());
+            Main.registerCommand(new WeaponCommand());
             
             String timestamp = "";
-            Calendar now = main.getNow();
+            Calendar now = Main.getNow();
             timestamp += now.get(Calendar.DATE) + " of ";
             timestamp += new DateFormatSymbols().getMonths()[now.get(Calendar.MONTH)];
             timestamp += " " + now.get(Calendar.YEAR) + " at ";
-            timestamp += main.getTimestamp("hh:mm:ss") + ".";
+            timestamp += Main.getTimestamp("hh:mm:ss") + ".";
             
             EmbedObject o = new EmbedBuilder()
                     .withAuthorName("KrystaraBot")
@@ -120,8 +117,8 @@ public class Listener
                     .build();
             
             e.getClient().getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("", o, false);
-            
-            main.logToBoth("Finished processing readyEvent. Bot is 100% up now.\n\n");
+
+            Main.logToBoth("Finished processing readyEvent. Bot is 100% up now.\n\n");
         } catch (Exception ex)
         {
             ex.printStackTrace();
@@ -129,7 +126,6 @@ public class Listener
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Command Handler">
     @EventSubscriber
     public void onCommand(MessageReceivedEvent e)
     {
@@ -147,25 +143,25 @@ public class Listener
                 } else
                 {
                     chnl.setTypingStatus(true);
-                    String result = main.cleverBot.think(msg.getContent());
+                    String result = Main.cleverBot.think(msg.getContent());
                     chnl.setTypingStatus(false);
                     chnl.sendMessage(result);
                 }
                 return;
             }
-            if (e.getMessage().getAuthor().getID().equals(IDReference.MYID))
+            if (e.getMessage().getAuthor().getLongID() == IDReference.MYID)
             {
                 return; //Do not process own messages. (I don't think this happens, but still.)
             }
-            if (e.getMessage().getChannel().getID().equals("247417978440777728"))
+            if (e.getMessage().getChannel().getLongID() == 247417978440777728L)
             {
                 //Dev #bot-updates channel
                 return;
             }
-            
-            if (chnl.equals(main.quizH.getQuizChannel()) && main.quizH.isQuizRunning())
+
+            if (chnl.equals(Main.quizH.getQuizChannel()) && Main.quizH.isQuizRunning())
             {
-                main.quizH.handleAnswer(msg);
+                Main.quizH.handleAnswer(msg);
                 return;
             }
             
@@ -199,10 +195,10 @@ public class Listener
                 //Otherwise, leave them blank.
                 command = content.substring(1, content.length()).toLowerCase();
             }
-            
-            main.logToBoth("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
-            
-            TreeMap<String, KrystaraCommand> commands = main.getCommands();
+
+            Main.logToBoth("Recieved Command: \"" + command + "\" from user \"" + nameOfSender + "\" in channel \"" + chnl.getName() + "\"");
+
+            TreeMap<String, KrystaraCommand> commands = Main.getCommands();
             
             doCommand(commands, command, sdr, chnl, msg, arguments, argumentsFull);
         } catch (InvalidParameterException ipe)
@@ -212,20 +208,20 @@ public class Listener
                 chnl.sendMessage(ipe.getMessage());
             } catch (Exception doubleException)
             {
-                main.logToBoth("Exception logging exception! Original exception: ");
+                Main.logToBoth("Exception logging exception! Original exception: ");
                 ipe.printStackTrace();
-                main.logToBoth("Exception while logging: ");
+                Main.logToBoth("Exception while logging: ");
                 doubleException.printStackTrace();
             }
         } catch (RateLimitException rle)
         {
             try
             {
-                main.logToBoth("Rate limited! Time until un-ratelimited: " + rle.getRetryDelay() + "ms");
-                main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[RATELIMIT]** - Bot needs to slow down! We're rate limited for another " + rle.getRetryDelay() + " milliseconds, please tell SamboyCoding or MrSnake that the following section is too fast: " + rle.getMethod());
+                Main.logToBoth("Rate limited! Time until un-ratelimited: " + rle.getRetryDelay() + "ms");
+                Main.getClient(null).getGuildByID(IDReference.SERVERID).getChannelByID(IDReference.LOGSCHANNEL).sendMessage("**[RATELIMIT]** - Bot needs to slow down! We're rate limited for another " + rle.getRetryDelay() + " milliseconds, please tell SamboyCoding or MrSnake that the following section is too fast: " + rle.getMethod());
             } catch (Exception e2)
             {
-                main.logToBoth("Exception sending ratelimit warning!");
+                Main.logToBoth("Exception sending ratelimit warning!");
                 e2.printStackTrace();
             }
         } catch (Exception ex)
@@ -241,9 +237,9 @@ public class Listener
                 ex.printStackTrace();
             } catch (Exception doubleException)
             {
-                main.logToBoth("Exception logging exception! Original exception: ");
+                Main.logToBoth("Exception logging exception! Original exception: ");
                 ex.printStackTrace();
-                main.logToBoth("Exception while logging: ");
+                Main.logToBoth("Exception while logging: ");
                 doubleException.printStackTrace();
             }
         }
@@ -273,16 +269,16 @@ public class Listener
         if ((lang == null) && commandObj.isLocalized())
         {
             // No language was explicitly selected, but default to the language of the current channel
-            if (chnl.getID().equals(IDReference.CHATFRENCH))
+            if (chnl.getLongID() == IDReference.CHATFRENCH)
             {
                 lang = Language.FRENCH;
-            } else if (chnl.getID().equals(IDReference.CHATGERMAN))
+            } else if (chnl.getLongID() == IDReference.CHATGERMAN)
             {
                 lang = Language.GERMAN;
-            } else if (chnl.getID().equals(IDReference.CHATITALIAN))
+            } else if (chnl.getLongID() == IDReference.CHATITALIAN)
             {
                 lang = Language.ITALIAN;
-            } else if (chnl.getID().equals(IDReference.CHATSPANISH))
+            } else if (chnl.getLongID() == IDReference.CHATSPANISH)
             {
                 lang = Language.SPANISH;
             }
@@ -328,13 +324,13 @@ public class Listener
             //@everyone mentioned, not me personally.
             return;
         }
-        if (e.getMessage().getChannel().getID().equals(IDReference.BOTCOMMANDSCHANNEL))
+        if (e.getMessage().getChannel().getLongID() == IDReference.BOTCOMMANDSCHANNEL)
         {
             //Message sent in bot-commands
-            String message = e.getMessage().getContent().replace(main.getClient(null).getOurUser().mention() + " ", "");
+            String message = e.getMessage().getContent().replace(Main.getClient(null).getOurUser().mention() + " ", "");
             
             e.getMessage().getChannel().setTypingStatus(true);
-            String result = main.cleverBot.think(message);
+            String result = Main.cleverBot.think(message);
             e.getMessage().getChannel().setTypingStatus(false);
             e.getMessage().getChannel().sendMessage(result);
         } else

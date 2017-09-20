@@ -1,10 +1,5 @@
 package me.samboycoding.krystarabot;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
@@ -14,6 +9,12 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles the MessageCounter JSON file
@@ -32,20 +33,20 @@ public class UserDatabaseHandler
     {
         try
         {
-            main.logToBoth("Attempting to load user database...");
+            Main.logToBoth("Attempting to load user database...");
             if (userDb.exists())
             { //file existent -> load
-                main.logToBoth("Existing user database found, loading...");
+                Main.logToBoth("Existing user database found, loading...");
                 loadFromJSON();
             } else
             { // file not existent -> create 
-                main.logToBoth("No message counter file found, attempting to import old data...");
+                Main.logToBoth("No message counter file found, attempting to import old data...");
                 if (messageCounterOld.exists())
                 {
-                    main.logToBoth("Old file exists... migrating");
+                    Main.logToBoth("Old file exists... migrating");
                     messageCounterOld.renameTo(userDb);
                     loadFromJSON();
-                    JSONObject server = userDBJSON.getJSONObject(IDReference.SERVERID);
+                    JSONObject server = userDBJSON.getJSONObject("" + IDReference.SERVERID);
 
                     JSONObject newServer = new JSONObject();
                     //Loop through all the users and add the missing values
@@ -55,21 +56,21 @@ public class UserDatabaseHandler
                         newServer.put(id, usr);
                     }
 
-                    userDBJSON.remove(IDReference.SERVERID);
-                    userDBJSON.put(IDReference.SERVERID, newServer);
-                    main.logToBoth("Successfully migrated");
+                    userDBJSON.remove("" + IDReference.SERVERID);
+                    userDBJSON.put("" + IDReference.SERVERID, newServer);
+                    Main.logToBoth("Successfully migrated");
                     return;
                 }
-                main.logToBoth("Creating a fresh user database...");
+                Main.logToBoth("Creating a fresh user database...");
 
                 userDb.createNewFile();
                 FileUtils.writeStringToFile(userDb, "{}", Charset.defaultCharset());
                 userDBJSON = new JSONObject();
             }
-            main.logToBoth("Success!");
+            Main.logToBoth("Success!");
         } catch (IOException e)
         {
-            main.logToBoth("Error loading/creating message counter file! Messages will NOT be counted...!");
+            Main.logToBoth("Error loading/creating message counter file! Messages will NOT be counted...!");
             e.printStackTrace();
         }
     }
@@ -82,7 +83,7 @@ public class UserDatabaseHandler
             String jsonRaw = FileUtils.readFileToString(userDb, Charset.defaultCharset());
             userDBJSON = new JSONObject(jsonRaw);
 
-            JSONObject server = userDBJSON.getJSONObject(IDReference.SERVERID);
+            JSONObject server = userDBJSON.getJSONObject("" + IDReference.SERVERID);
 
             for (String id : server.keySet())
             {
@@ -92,15 +93,15 @@ public class UserDatabaseHandler
                     usr.put("QuizScore", 0);
                 }
             }
-            userDBJSON.remove(IDReference.SERVERID);
-            userDBJSON.put(IDReference.SERVERID, server);
+            userDBJSON.remove("" + IDReference.SERVERID);
+            userDBJSON.put("" + IDReference.SERVERID, server);
 
             FileUtils.writeStringToFile(userDb, userDBJSON.toString(4), Charset.defaultCharset(), false);
 
-            main.logToBoth("Succesfully loaded user database from file!");
+            Main.logToBoth("Succesfully loaded user database from file!");
         } catch (IOException ex)
         {
-            main.logToBoth("Error reading user database file!");
+            Main.logToBoth("Error reading user database file!");
             ex.printStackTrace();
         }
     }
@@ -114,18 +115,18 @@ public class UserDatabaseHandler
      */
     public int getQuizScore(IUser usr, IGuild server)
     {
-        if (!userDBJSON.has(server.getID()))
+        if (!userDBJSON.has(server.getStringID()))
         {
-            userDBJSON.put(server.getID(), new JSONObject());
+            userDBJSON.put(server.getStringID(), new JSONObject());
         }
 
-        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
-        if (serverJSON.isNull(usr.getID()))
+        JSONObject serverJSON = userDBJSON.getJSONObject(server.getStringID());
+        if (serverJSON.isNull(usr.getStringID()))
         {
             return -1;
         } else
         {
-            return serverJSON.getJSONObject(usr.getID()).getInt("QuizScore");
+            return serverJSON.getJSONObject(usr.getStringID()).getInt("QuizScore");
         }
     }
 
@@ -146,13 +147,13 @@ public class UserDatabaseHandler
      */
     public void increaseUserQuizScore(IUser usr, IGuild server, int amount) throws IOException, MissingPermissionsException, RateLimitException, DiscordException
     {
-        if (!userDBJSON.has(server.getID()))
+        if (!userDBJSON.has(server.getStringID()))
         {
-            userDBJSON.put(server.getID(), new JSONObject());
+            userDBJSON.put(server.getStringID(), new JSONObject());
         }
 
-        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
-        if (serverJSON.isNull(usr.getID()))
+        JSONObject serverJSON = userDBJSON.getJSONObject(server.getStringID());
+        if (serverJSON.isNull(usr.getStringID()))
         {
             //if key with sender id is NULL create new JSONObject for new user 
             JSONObject newUser = new JSONObject();
@@ -160,10 +161,10 @@ public class UserDatabaseHandler
             newUser.put("name", usr.getName());
             newUser.put("commands", 0);
             newUser.put("QuizScore", amount);
-            serverJSON.put(usr.getID(), newUser);
+            serverJSON.put(usr.getStringID(), newUser);
         } else
         { //if key already exists, increase message counter
-            JSONObject currentUser = serverJSON.getJSONObject(usr.getID());
+            JSONObject currentUser = serverJSON.getJSONObject(usr.getStringID());
             int current = currentUser.getInt("QuizScore");
             int newVal = current + amount;
             currentUser.put("QuizScore", newVal);
@@ -191,12 +192,12 @@ public class UserDatabaseHandler
      */
     public void countMessage(IUser usr, IGuild server) throws IOException
     {
-        if (!userDBJSON.has(server.getID()))
+        if (!userDBJSON.has(server.getStringID()))
         {
-            userDBJSON.put(server.getID(), new JSONObject());
+            userDBJSON.put(server.getStringID(), new JSONObject());
         }
-        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
-        if (serverJSON.isNull(usr.getID()))
+        JSONObject serverJSON = userDBJSON.getJSONObject(server.getStringID());
+        if (serverJSON.isNull(usr.getStringID()))
         {
             //if key with sender id is NULL create new JSONObject for new ueser 
             JSONObject newUser = new JSONObject();
@@ -204,10 +205,10 @@ public class UserDatabaseHandler
             newUser.put("name", usr.getName());
             newUser.put("commands", 0);
             newUser.put("QuizScore", 0);
-            serverJSON.put(usr.getID(), newUser);
+            serverJSON.put(usr.getStringID(), newUser);
         } else
         { //if key already exists, increase message counter
-            JSONObject currentUser = serverJSON.getJSONObject(usr.getID());
+            JSONObject currentUser = serverJSON.getJSONObject(usr.getStringID());
             int messages = currentUser.getInt("messages");
             messages++;
             currentUser.put("messages", messages);
@@ -224,13 +225,13 @@ public class UserDatabaseHandler
      */
     public void countCommand(IUser usr, IGuild server) throws IOException
     {
-        if (!userDBJSON.has(server.getID()))
+        if (!userDBJSON.has(server.getStringID()))
         {
-            userDBJSON.put(server.getID(), new JSONObject());
+            userDBJSON.put(server.getStringID(), new JSONObject());
         }
 
-        JSONObject serverJSON = userDBJSON.getJSONObject(server.getID());
-        if (serverJSON.isNull(usr.getID()))
+        JSONObject serverJSON = userDBJSON.getJSONObject(server.getStringID());
+        if (serverJSON.isNull(usr.getStringID()))
         {
             //if key with sender id is NULL create new JSONObject for new ueser 
             JSONObject newUser = new JSONObject();
@@ -238,11 +239,11 @@ public class UserDatabaseHandler
             newUser.put("name", usr.getName());
             newUser.put("commands", 1);
             newUser.put("QuizScore", 0);
-            serverJSON.put(usr.getID(), newUser);
+            serverJSON.put(usr.getStringID(), newUser);
         } else
         {
             //if key already exists, increase commands counter
-            JSONObject currentUser = serverJSON.getJSONObject(usr.getID());
+            JSONObject currentUser = serverJSON.getJSONObject(usr.getStringID());
             int commands = currentUser.getInt("commands");
             commands++;
             currentUser.put("commands", commands);
@@ -258,14 +259,14 @@ public class UserDatabaseHandler
      */
     public ArrayList<String> getUserIDList(IGuild forServer)
     {
-        if (!userDBJSON.has(forServer.getID()))
+        if (!userDBJSON.has(forServer.getStringID()))
         {
             return null;
         }
         ArrayList<String> res = new ArrayList<>();
-        for (String s : userDBJSON.getJSONObject(forServer.getID()).keySet())
+        for (String s : userDBJSON.getJSONObject(forServer.getStringID()).keySet())
         {
-            if (forServer.getUserByID(s) == null)
+            if (forServer.getUserByID(Long.parseLong(s)) == null)
             {
                 continue;
             }
@@ -290,18 +291,18 @@ public class UserDatabaseHandler
         {
             return 0; //Null checking.   
         }
-        if (userDBJSON.isNull(where.getID()))
+        if (userDBJSON.isNull(where.getStringID()))
         {
-            main.logToBoth("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
+            Main.logToBoth("No server data for server: " + where.getName() + " with id: " + where.getStringID() + "!");
             return -1; //No server data. (Almost) impossible since the countXxx function is should be called before this, so the server data should be created.
         }
 
-        if (userDBJSON.getJSONObject(where.getID()).isNull(who.getID()))
+        if (userDBJSON.getJSONObject(where.getStringID()).isNull(who.getStringID()))
         {
             return 0; //No user data
         }
 
-        return userDBJSON.getJSONObject(where.getID()).getJSONObject(who.getID()).getInt("messages");
+        return userDBJSON.getJSONObject(where.getStringID()).getJSONObject(who.getStringID()).getInt("messages");
     }
 
     /**
@@ -320,17 +321,17 @@ public class UserDatabaseHandler
             return 0; //Null checking.   
         }
 
-        if (userDBJSON.isNull(where.getID()))
+        if (userDBJSON.isNull(where.getStringID()))
         {
-            main.logToBoth("No server data for server: " + where.getName() + " with id: " + where.getID() + "!");
+            Main.logToBoth("No server data for server: " + where.getName() + " with id: " + where.getStringID() + "!");
             return -1; //No server data. (Almost) impossible since the countXxx function is should be called before this, so the server data should be created.
         }
 
-        if (userDBJSON.getJSONObject(where.getID()).isNull(who.getID()))
+        if (userDBJSON.getJSONObject(where.getStringID()).isNull(who.getStringID()))
         {
             return 0; //No user data
         }
 
-        return userDBJSON.getJSONObject(where.getID()).getJSONObject(who.getID()).getInt("commands");
+        return userDBJSON.getJSONObject(where.getStringID()).getJSONObject(who.getStringID()).getInt("commands");
     }
 }

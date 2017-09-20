@@ -1,12 +1,14 @@
 package me.samboycoding.krystarabot.command;
 
-import java.util.ArrayList;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
 import me.samboycoding.krystarabot.utilities.LogType;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.util.ArrayList;
+
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 
 /**
  *
@@ -32,7 +34,7 @@ public class WarnCommand extends KrystaraCommand
         if (Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
-            IUser usr = chnl.getGuild().getUserByID(id);
+            IUser usr = chnl.getGuild().getUserByID(Long.parseLong(id));
             if (usr == null)
             {
                 chnl.sendMessage("Invaild @mention!");

@@ -1,10 +1,6 @@
 package me.samboycoding.krystarabot.command;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Random;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.Main;
 import me.samboycoding.krystarabot.quiz.QuizQuestion;
 import me.samboycoding.krystarabot.quiz.QuizQuestionType;
 import me.samboycoding.krystarabot.utilities.Utilities;
@@ -12,6 +8,11 @@ import org.apache.commons.io.FilenameUtils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -66,15 +67,15 @@ public class QuestionCommand extends KrystaraCommand
         QuizQuestion[] qs = null;
         if (args.difficulty != null)
         {
-            qs = main.quizQuestionFactory.getQuestions(args.questionCount, r, args.difficulty);
+            qs = Main.quizQuestionFactory.getQuestions(args.questionCount, r, args.difficulty);
         } else
         {
             if (args.questionType != null)
             {
-                qs = main.quizQuestionFactory.getQuestions(args.questionCount, r, args.questionType);
+                qs = Main.quizQuestionFactory.getQuestions(args.questionCount, r, args.questionType);
             } else
             {
-                qs = main.quizQuestionFactory.getQuestions(args.questionCount, r);
+                qs = Main.quizQuestionFactory.getQuestions(args.questionCount, r);
             }
         }
 

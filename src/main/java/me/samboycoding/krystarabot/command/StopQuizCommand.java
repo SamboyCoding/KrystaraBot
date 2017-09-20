@@ -1,12 +1,14 @@
 package me.samboycoding.krystarabot.command;
 
-import java.util.ArrayList;
-import static me.samboycoding.krystarabot.command.CommandType.MOD;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.Main;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.util.ArrayList;
+
+import static me.samboycoding.krystarabot.command.CommandType.MOD;
 
 /**
  * Represents the ?reload-data command
@@ -30,9 +32,9 @@ public class StopQuizCommand extends KrystaraCommand
             return;
         }
 
-        if (main.quizH.isQuizRunning())
+        if (Main.quizH.isQuizRunning())
         {
-            main.quizH.abort();
+            Main.quizH.abort();
             chnl.sendMessage("Stopped the quiz.");
         } else
         {

@@ -1,12 +1,14 @@
 package me.samboycoding.krystarabot.command;
 
-import java.util.ArrayList;
-import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.Main;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.util.ArrayList;
+
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
 
 /**
  * Represents the ?quiz command
@@ -43,7 +45,7 @@ public class QuizCommand extends QuestionCommand
                 return;
             }
 
-            main.quizH.initializeQuiz(chnl.getGuild(), sdr, chnl, args.questionCount, args.difficulty, args.questionType, args.randomSeed);
+            Main.quizH.initializeQuiz(chnl.getGuild(), sdr, chnl, args.questionCount, args.difficulty, args.questionType, args.randomSeed);
         }
     }
 

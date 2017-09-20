@@ -1,13 +1,12 @@
 package me.samboycoding.krystarabot.command;
 
-import java.util.ArrayList;
-import static me.samboycoding.krystarabot.command.CommandType.GOW;
-import me.samboycoding.krystarabot.main;
-import me.samboycoding.krystarabot.utilities.IDReference;
-import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.util.ArrayList;
+
+import static me.samboycoding.krystarabot.command.CommandType.GOW;
 
 /**
  * Represents the ?codes command
@@ -31,7 +30,7 @@ public class CodesCommand extends KrystaraCommand
             return;
         }
         
-        ArrayList<String> codes = main.codes.getLiveCodes();
+        ArrayList<String> codes = Main.codes.getLiveCodes();
         if (codes.isEmpty())
         {
             sdr.getOrCreatePMChannel().sendMessage("No codes are currently \"Alive\".");

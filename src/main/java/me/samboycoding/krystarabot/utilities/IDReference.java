@@ -8,19 +8,18 @@ package me.samboycoding.krystarabot.utilities;
 public class IDReference
 {
 
-    public static enum RuntimeEnvironment
-    {
-        LIVE,
-        DEV,
-        LYYA
-    }
-
-    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.LIVE;
+    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.DEV;
+    public static String MYTOKEN; //Set in Main method.
 
     public static long LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL, CHATFRENCH, CHATGERMAN, CHATITALIAN, CHATSPANISH;
     public static long ADMINROLE, DEVROLE, MODROLE, STREAMERROLE, PCMOBILEROLE, CONSOLEROLE, QUIZMASTERROLE, FRENCHROLE, GERMANROLE, ITALIANROLE, SPANISHROLE;
     public static long SERVERID;
-    public static long MYTOKEN; //Set in main method.
+
+    public enum RuntimeEnvironment {
+        LIVE,
+        DEV,
+        LYYA
+    }
     public static long MYID; //Gets set once readyevent done.
 
     public IDReference()

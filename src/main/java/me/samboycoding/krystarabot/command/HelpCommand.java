@@ -1,16 +1,15 @@
 package me.samboycoding.krystarabot.command;
 
-import java.util.ArrayList;
-import java.util.TreeMap;
-import static me.samboycoding.krystarabot.command.CommandType.SERVER;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.Main;
 import me.samboycoding.krystarabot.utilities.Utilities;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
+
+import java.util.ArrayList;
+import java.util.TreeMap;
+
+import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 
 /**
  * Represents the ?help command
@@ -28,7 +27,7 @@ public class HelpCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        TreeMap<String, KrystaraCommand> cmdList = main.getCommands();
+        TreeMap<String, KrystaraCommand> cmdList = Main.getCommands();
 
         ArrayList<String> helpText = new ArrayList<>();
 

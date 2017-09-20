@@ -1,17 +1,15 @@
 package me.samboycoding.krystarabot.command;
 
-import java.util.ArrayList;
-import java.util.List;
-import static me.samboycoding.krystarabot.command.CommandType.SERVER;
-import me.samboycoding.krystarabot.main;
+import me.samboycoding.krystarabot.Main;
 import me.samboycoding.krystarabot.utilities.IDReference;
 import me.samboycoding.krystarabot.utilities.Utilities;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static me.samboycoding.krystarabot.Listener.dbHandler;
-import sx.blah.discord.handle.obj.IPresence;
+import static me.samboycoding.krystarabot.command.CommandType.SERVER;
 
 /**
  *
@@ -28,7 +26,7 @@ public class UserstatsCommand extends KrystaraCommand
     @Override
     public void handleCommand(IUser sdr, IChannel chnl, IMessage msg, ArrayList<String> arguments, String argsFull) throws Exception
     {
-        if (!chnl.getID().equals(IDReference.BOTCOMMANDSCHANNEL) && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
+        if (chnl.getLongID() != IDReference.BOTCOMMANDSCHANNEL && !Utilities.canUseAdminCommand(sdr, chnl.getGuild()))
         {
             sdr.getOrCreatePMChannel().sendMessage("To reduce spam, userstats can only be used in the #bot-commands channel. Thanks!");
             return;
@@ -41,7 +39,7 @@ public class UserstatsCommand extends KrystaraCommand
         } else
         {
             String id = arguments.get(0).replace("<@", "").replace("!", "").replace(">", "");
-            userstatsUsr = chnl.getGuild().getUserByID(id);
+            userstatsUsr = chnl.getGuild().getUserByID(Long.parseLong(id));
             if (userstatsUsr == null)
             {
                 chnl.sendMessage("Invalid @mention! Please @mention a valid user!");
@@ -82,7 +80,7 @@ public class UserstatsCommand extends KrystaraCommand
         toSend += "\nList of Roles: " + sdrRolesNice.toString();
         toSend += "\nMessages sent: " + messageCount;
         toSend += "\nCommands sent: " + commandCount;
-        toSend += "\nQuiz Points: " + main.databaseHandler.getQuizScore(userstatsUsr, chnl.getGuild());
+        toSend += "\nQuiz Points: " + Main.databaseHandler.getQuizScore(userstatsUsr, chnl.getGuild());
         toSend += "\n```";
 
         chnl.sendMessage(toSend);
