@@ -17,7 +17,6 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.*;
-import sx.blah.discord.util.Image;
 
 import java.awt.*;
 import java.security.InvalidParameterException;
@@ -50,19 +49,19 @@ public class Listener
             {
                 case LIVE:
                     Main.logToBoth("Logging in to LIVE server.");
-                    cl.changeUsername("Krystara");
+                    RequestBuffer.request(() -> cl.changeUsername("Krystara"));
                     break;
                 case DEV:
                     Main.logToBoth("Logging in to TESTING server.");
-                    cl.changeUsername("Krystara *Testing*");
+                    RequestBuffer.request(() -> cl.changeUsername("Krystara *Testing*"));
                     break;
                 default:
                     Main.logToBoth("Logging in to LYYATESTING server.");
-                    cl.changeUsername("Krystara *LyyaTesting*");
+                    RequestBuffer.request(() -> cl.changeUsername("Krystara *LyyaTesting*"));
                     break;
             }
-            Main.logToBoth("Changing image...");
-            cl.changeAvatar(Image.forUrl("png", "http://repo.samboycoding.me/static/krystarabot_icon.png"));
+            //Main.logToBoth("Changing image...");
+            //RequestBuffer.request(() -> cl.changeAvatar(Image.forUrl("png", "http://repo.samboycoding.me/static/krystarabot_icon.png")));
         } catch (DiscordException ex)
         {
             Main.logToBoth("Failed to change username. Rate limited most likely. Message: " + ex.getMessage());

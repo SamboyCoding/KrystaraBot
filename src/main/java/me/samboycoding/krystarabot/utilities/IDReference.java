@@ -8,7 +8,7 @@ package me.samboycoding.krystarabot.utilities;
 public class IDReference
 {
 
-    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.DEV;
+    public static final RuntimeEnvironment ENVIRONMENT = RuntimeEnvironment.LIVE;
     public static String MYTOKEN; //Set in Main method.
 
     public static long LOGSCHANNEL, CODESCHANNEL, BOTCOMMANDSCHANNEL, TEAMSCHANNEL, GLOBALCHANNEL, CHATFRENCH, CHATGERMAN, CHATITALIAN, CHATSPANISH;
