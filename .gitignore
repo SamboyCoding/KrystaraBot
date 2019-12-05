@@ -3,3 +3,6 @@
 /token.txt
 /dependency-reduced-pom.xml
 /MessageCounter.json
+.idea/
+
+.gradle/
