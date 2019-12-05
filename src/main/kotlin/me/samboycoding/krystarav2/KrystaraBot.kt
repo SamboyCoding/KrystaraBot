@@ -1,9 +1,11 @@
 package me.samboycoding.krystarav2
 
 import club.minnced.jda.reactor.ReactiveEventManager
-import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.events.ReadyEvent
 import club.minnced.jda.reactor.on
+import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.events.ReadyEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import org.slf4j.Logger
 import org.slf4j.simple.SimpleLoggerFactory
 import java.lang.System.getenv
@@ -20,9 +22,17 @@ class KrystaraBot {
         manager.on<ReadyEvent>()
             .next()
             .subscribe(this::onReady)
+
+        manager.on<MessageReceivedEvent>()
+            .subscribe(CommandHandler::handleEvent)
+
+        jda = JDABuilder()
+            .setToken(token)
+            .setEventManager(manager)
+            .build()
     }
 
-    fun onReady(event: ReadyEvent) {
+    private fun onReady(event: ReadyEvent) {
         botLogger.info("Ready in ${event.guildTotalCount} guilds")
     }
 
