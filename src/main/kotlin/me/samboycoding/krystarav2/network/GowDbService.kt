@@ -65,6 +65,9 @@ interface GowDbService {
     @GET("searches/spells")
     fun searchSpells(@Query("term") searchTerm: String): Call<SpellsResponse>
 
+    @GET("searches/troops")
+    fun searchTroops(@Query("term") searchTerm: String): Call<TroopsResponse>
+
     @GET("searches/all")
     fun searchAll(@Query("term") searchTerm: String): Call<AllResponse>
 

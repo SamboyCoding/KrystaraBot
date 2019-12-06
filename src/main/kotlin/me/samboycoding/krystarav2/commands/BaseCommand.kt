@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.*
 
 abstract class BaseCommand {
-    private lateinit var context: CommandData
+    public lateinit var context: CommandData
 
     protected open fun getCommandWord(): String {
         throw NotImplementedError("Command must either override getCommandWord or override getCommandWords to not call getCommandWord.")

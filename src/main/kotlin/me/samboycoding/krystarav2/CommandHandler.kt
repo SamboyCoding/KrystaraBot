@@ -1,6 +1,6 @@
 package me.samboycoding.krystarav2
 
-import me.samboycoding.krystarav2.commands.*
+import me.samboycoding.krystarav2.commands.BaseCommand
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
 object CommandHandler {
@@ -12,7 +12,7 @@ object CommandHandler {
         val msg = event.message
         val guild = msg.guild
 
-        if(!msg.contentRaw.startsWith("!")) return
+        if(!msg.contentRaw.startsWith("?")) return
 
         val data = msg.getCommandData(guild)
 

@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.VoiceChannel
 
 
 fun Message.getCommandData(guild: Guild): CommandData {
-    val withoutPrefix = contentRaw.removePrefix("!")
+    val withoutPrefix = contentRaw.removePrefix("?")
 
     return CommandData(withoutPrefix, guild, this)
 }
