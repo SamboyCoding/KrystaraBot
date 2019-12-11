@@ -1,5 +1,6 @@
 package me.samboycoding.krystarav2.network
 
+import me.samboycoding.krystarav2.model.*
 import me.samboycoding.krystarav2.network.model.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,7 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-val DEBUG = true
+val DEBUG = false
 
 interface GowDbService {
 
@@ -18,19 +19,19 @@ interface GowDbService {
     fun getClasses(): Call<ClassesResponse>
 
     @GET("classes/{id}")
-    fun getClass(@Path("id") id: Int): Call<ClassesResponse>
+    fun getClass(@Path("id") id: Int): Call<Class>
 
     @GET("kingdoms")
     fun getKingdoms(): Call<KingdomsResponse>
 
     @GET("kingdoms/{id}")
-    fun getKingdom(@Path("id") id: Int): Call<KingdomsResponse>
+    fun getKingdom(@Path("id") id: Int): Call<Kingdom>
 
     @GET("spells")
     fun getSpells(): Call<SpellsResponse>
 
     @GET("spells/{id}")
-    fun getSpell(@Path("id") id: Int): Call<SpellsResponse>
+    fun getSpell(@Path("id") id: Int): Call<Spell>
 
     @GET("traits")
     fun getTraits(): Call<TraitsResponse>
@@ -47,14 +48,14 @@ interface GowDbService {
     @GET("troops")
     fun getTroops(): Call<TroopsResponse>
 
-    @GET("troops/{id}")
-    fun getTroop(@Path("id") id: Int): Call<TroopsResponse>
+    @GET("troops/{id}/details")
+    fun getTroop(@Path("id") id: Int): Call<Troop>
 
     @GET("weapons")
     fun getWeapons(): Call<WeaponsResponse>
 
     @GET("weapons/{id}")
-    fun getWeapon(@Path("id") id: Int): Call<WeaponsResponse>
+    fun getWeapon(@Path("id") id: Int): Call<Weapon>
 
     @GET("searches/classes")
     fun searchClasses(@Query("term") searchTerm: String): Call<ClassesResponse>

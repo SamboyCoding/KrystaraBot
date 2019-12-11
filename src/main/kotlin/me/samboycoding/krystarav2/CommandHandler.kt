@@ -1,11 +1,12 @@
 package me.samboycoding.krystarav2
 
 import me.samboycoding.krystarav2.commands.BaseCommand
+import me.samboycoding.krystarav2.commands.TroopCommand
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
 object CommandHandler {
     val commands: ArrayList<BaseCommand> = arrayListOf(
-
+        TroopCommand()
     )
 
     fun handleEvent(event: MessageReceivedEvent) {
